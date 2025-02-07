@@ -1,21 +1,10 @@
 {
-    "name":"Wheels.fw",
-    "version":"3.0.0-SNAPSHOT",
-    "author":"CFWheels Core Team and Community",
-    "shortDescription":"CFWheels MVC Framework Core Directory",
-    "location":"ForgeboxStorage",
-    "slug":"wheels.fw",
-    "directory":"vendor/wheels",
-    "createPackageDirectory":true,
-    "packageDirectory":"vendor/wheels",
-    "homepage":"https://cfwheels.org/",
-    "documentation":"https://docs.cfwheels.org/",
-    "changelog":"https://github.com/cfwheels/cfwheels/blob/master/CHANGELOG.md",
-    "bugs":"https://github.com/cfwheels/cfwheels/issues",
-    "repository":{
-        "type":"git",
-        "URL":"https://github.com/cfwheels/cfwheels"
-    },
+    "name":"Wheels.dev",
+    "version":"0.0.0.1",
+    "author":"Wheels Core Team",
+    "shortDescription":"Wheels Community website",
+    "slug":"wheels.dev",
+    "homepage":"https://wheels.dev/",
     "keywords":[
         "mvc",
         "rails",
@@ -46,13 +35,7 @@
         "testbox":"^5"
     },
     "type":"mvc",
-    "private":false,
-    "license":[
-        {
-            "type":"Apache License 2.0",
-            "URL":"https://github.com/cfwheels/cfwheels/blob/master/LICENSE"
-        }
-    ],
+    "private":true,
     "scripts":{
         "onServerInstall":"cfpm install image,mail,zip,debugger,caching,mysql,postgresql,sqlserver",
         "format":"cfformat run --overwrite",
