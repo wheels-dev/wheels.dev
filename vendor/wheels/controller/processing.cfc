@@ -63,7 +63,22 @@ component {
 					if (Len(local.appendToKey)) {
 						for (local.item in local.appendToKey) {
 							if (IsDefined(local.item)) {
-								local.key &= Evaluate(local.item);
+								scopeMap = {
+									"request": request,
+									"arguments": arguments,
+									"application": application,
+									"session": session,
+									"variables": variables
+								};
+
+								// Extract scope name and variable name from local.item
+								local.scopeName = listFirst(local.item, ".");
+								local.varName = listLast(local.item, ".");
+								if (structKeyExists(scopeMap, local.scopeName) && structKeyExists(scopeMap[local.scopeName], local.varName)) {
+									local.key &= scopeMap[local.scopeName][local.varName];
+								} else {
+									throw(type = "Wheels.KeyNotFound", message = "The `#local.item#` argument was not found.");
+								}
 							}
 						}
 					}
