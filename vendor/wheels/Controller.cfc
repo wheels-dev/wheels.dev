@@ -132,7 +132,7 @@ component output="false" displayName="Controller" extends="wheels.Global"{
 		&& StructKeyExists(application, "wheels")
 		&& StructKeyExists(application.wheels, "viewPath")
 	) {
-		include "/wheels/tests/_assets/views/helpers.cfm";
+		include "#application.wheels.viewPath#/helpers.cfm";
 	}
 
 	/**

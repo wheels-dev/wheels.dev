@@ -161,7 +161,7 @@ component output="false" {
     }
 	}
 
-	public void function $location(boolean delay){
+	public void function $location(boolean delay = false){
     StructDelete(arguments, "$args", false);
     if(NOT arguments.delay){
       StructDelete(arguments, "delay", false);

@@ -53,7 +53,7 @@ component output="false" {
 	// Put environment vars into env struct
 	if ( !structKeyExists(this,"env") ) {
 		this.env = {};
-		envFilePath = this.appDir & ".env";
+		envFilePath = this.appDir & "../.env";
 		if (fileExists(envFilePath)) {
 			envStruct = {};
 
