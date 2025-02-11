@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wheels.dev</title>
     <!-- Bootstrap CSS -->
-    <link href="stylesheets/bootstrap.css" rel="stylesheet">
-    <link href="stylesheets/style.css" rel="stylesheet">
-    <link href="stylesheets/swiper.css" rel="stylesheet">
+    <link href="/stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <link href="/stylesheets/swiper.css" rel="stylesheet">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
     <nav class="navbar navbar-expand-lg py-2">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="images/wheels-logo.png" alt="Bootstrap" width="260">
+                <img src="/images/wheels-logo.png" alt="Bootstrap" width="260">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -75,16 +75,16 @@
             </div>
             <div class="row justify-content-center align-items-center mt-5 gy-3 text-center gx-5">
                 <div class="col-md-auto">
-                    <img src="images/github.png" class="img-fluid" width="174">
+                    <img src="/images/github.png" class="img-fluid" width="174">
                 </div>
                 <div class="col-md-auto">
-                    <img src="images/google.png" class="img-fluid" width="151">
+                    <img src="/images/google.png" class="img-fluid" width="151">
                 </div>
                 <div class="col-md-auto">
-                    <img src="images/github.png" class="img-fluid" width="174">
+                    <img src="/images/github.png" class="img-fluid" width="174">
                 </div>
                 <div class="col-md-auto">
-                    <img src="images/google.png" class="img-fluid" width="151">
+                    <img src="/images/google.png" class="img-fluid" width="151">
                 </div>
             </div>
         </div>
@@ -613,7 +613,7 @@
                     <button class="bg--primary fs-16px px-3 py-2 rounded text-white">Explore community</button>
                 </div>
                 <div class="col-lg-6 text-center col-12">
-                    <img src="images/community.png" class="img-fluid" alt="Community" width="428" height="428">
+                    <img src="/images/community.png" class="img-fluid" alt="Community" width="428" height="428">
                 </div>
             </div>
         </div>
@@ -625,13 +625,13 @@
                 <p class="fs-22px">7 individuals are supporting WHEELS.FW <br> Contribute on Open Collective</p>
             </div>
             <div class="d-flex justify-content-center mt-5 gap-3">
-                <img src="images/person1.png" alt="" height="271" width="146">
-                <img src="images/person2.png" class="mt-5" alt="" height="271" width="146">
-                <img src="images/person3.png" alt="" height="271" width="146">
-                <img src="images/person4.png" class="mt-5" alt="" height="271" width="146">
-                <img src="images/person5.png" alt="" height="271" width="146">
-                <img src="images/person6.png" class="mt-5" alt="" height="271" width="146">
-                <img src="images/person7.png" alt="" height="271" width="146">
+                <img src="/images/person1.png" alt="" height="271" width="146">
+                <img src="/images/person2.png" class="mt-5" alt="" height="271" width="146">
+                <img src="/images/person3.png" alt="" height="271" width="146">
+                <img src="/images/person4.png" class="mt-5" alt="" height="271" width="146">
+                <img src="/images/person5.png" alt="" height="271" width="146">
+                <img src="/images/person6.png" class="mt-5" alt="" height="271" width="146">
+                <img src="/images/person7.png" alt="" height="271" width="146">
             </div>
         </div>
     </main>
@@ -640,7 +640,7 @@
         <div class="container">
             <div class="row gx-5">
                 <div class="col-md-4">
-                    <img src="images/wheels-logo.png" width="284" alt="">
+                    <img src="/images/wheels-logo.png" width="284" alt="">
                     <div class="mt-3">
                         <p class="fs-18px fw-semibold p-0 m-0">Let's Keep in touch</p>
                         <p class="fs-12px fw-semibold">Enter your email to stay up to date with the latest updates from
@@ -754,9 +754,9 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="javascripts/bootstrap.js"></script>
-    <script src="javascripts/swiper.js"></script>
-    <script src="javascripts/custom.js"></script>
+    <script src="/javascripts/bootstrap.js"></script>
+    <script src="/javascripts/swiper.js"></script>
+    <script src="/javascripts/custom.js"></script>
 </body>
 
 </html>
