@@ -36,7 +36,7 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16 active" aria-current="page" href="/HomeController/index">Home</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/HomeController/index">Home</a>
 							</li>
 							<li class="nav-item px-3">
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">API</a>
