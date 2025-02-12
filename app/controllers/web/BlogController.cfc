@@ -3,14 +3,37 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,create", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
-    /**
-	* View all Rules
-	**/
-	function index() {
-		
-	}
+    function Index() {
+        blogService = new app.models.services.BlogService();
+        // blogs = blogService.getAllBlogs();
+    }
+
+    function create() {
+        blogService = new app.models.services.BlogService();
+        // blog = blogService.createBlog();
+    }
+
+    function store() {
+        blogService = new app.models.services.BlogService();
+        // blog = blogService.storeBlog();
+    }
+
+    function show() {
+        blogService = new app.models.services.BlogService();
+        // blog = blogService.getBlog();
+    }
+
+    function update() {
+        blogService = new app.models.services.BlogService();
+        // blog = blogService.updateBlog();    
+    }
+
+    function destroy() {
+        blogService = new app.models.services.BlogService();
+        // blog = blogService.destroyBlog();
+    }
 }
