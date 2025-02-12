@@ -16,13 +16,16 @@
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
 			<link href="/stylesheets/style.css" rel="stylesheet">
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
+			<link rel="preconnect" href="https://fonts.googleapis.com">
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+			<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 		</head>
 	
 		<body>
 			<!-- Navigation -->
-			<nav class="navbar navbar-expand-lg py-2">
+			<nav class="navbar sticky-top navbar-expand-lg py-2">
 				<div class="container">
-					<a class="navbar-brand" href="#">
+					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="260">
 					</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -31,31 +34,33 @@
 						<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0">
+						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-0 active" aria-current="page" href="#">Home</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/HomeController/index">Home</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-0" aria-current="page" href="#">API</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">API</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-0" aria-current="page" href="#">Discussions</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/BlogController/index">Blogs</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-0" aria-current="page" href="#">Issue Tracker</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Discussions</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-0" aria-current="page" href="#">Plugins</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Issue Tracker</a>
+							</li>
+							<li class="nav-item px-3">
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Plugins</a>
 							</li>
 						</ul>
-						<div>
+						<div class="d-lg-block d-none">
 							<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<rect width="40" height="39.4186" rx="10" fill="#EF3B2D" />
 								<path
 									d="M20 8C18.4241 8 16.8637 8.31039 15.4078 8.91345C13.9519 9.5165 12.629 10.4004 11.5147 11.5147C9.26428 13.7652 8 16.8174 8 20C8 25.304 11.444 29.804 16.208 31.4C16.808 31.496 17 31.124 17 30.8V28.772C13.676 29.492 12.968 27.164 12.968 27.164C12.416 25.772 11.636 25.4 11.636 25.4C10.544 24.656 11.72 24.68 11.72 24.68C12.92 24.764 13.556 25.916 13.556 25.916C14.6 27.74 16.364 27.2 17.048 26.912C17.156 26.132 17.468 25.604 17.804 25.304C15.14 25.004 12.344 23.972 12.344 19.4C12.344 18.068 12.8 17 13.58 16.148C13.46 15.848 13.04 14.6 13.7 12.98C13.7 12.98 14.708 12.656 17 14.204C17.948 13.94 18.98 13.808 20 13.808C21.02 13.808 22.052 13.94 23 14.204C25.292 12.656 26.3 12.98 26.3 12.98C26.96 14.6 26.54 15.848 26.42 16.148C27.2 17 27.656 18.068 27.656 19.4C27.656 23.984 24.848 24.992 22.172 25.292C22.604 25.664 23 26.396 23 27.512V30.8C23 31.124 23.192 31.508 23.804 31.4C28.568 29.792 32 25.304 32 20C32 18.4241 31.6896 16.8637 31.0866 15.4078C30.4835 13.9519 29.5996 12.629 28.4853 11.5147C27.371 10.4004 26.0481 9.5165 24.5922 8.91345C23.1363 8.31039 21.5759 8 20 8Z"
 									fill="white" />
 							</svg>
-		
 						</div>
 					</div>
 				</div>
@@ -67,79 +72,91 @@
 
 			<footer class="bg-white pt-5 pb-3 border-top">
 				<div class="container">
-					<div class="row gx-5">
+					<div class="row gy-3 gx-5">
 						<div class="col-md-4">
 							<img src="/images/wheels-logo.png" width="284" alt="">
 							<div class="mt-3">
-								<p class="fs-18px fw-semibold p-0 m-0">Let's Keep in touch</p>
-								<p class="fs-12px fw-semibold">Enter your email to stay up to date with the latest updates from
+								<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
+								<p class="fs-12 fw-semibold">Enter your email to stay up to date with the latest updates from
 									Wheels.dev</p>
 							</div>
 							<div>
-								<input type="email" class="form-control mb-2" placeholder="your@email.com">
-								<button class="text-white py-2 fs-12px rounded-2 bg--primary w-100">Subscribe to
+								<input type="email" class="form-control mb-2 fs-12" placeholder="your@email.com">
+								<button class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe to
 									newsletter</button>
 							</div>
 						</div>
 						<div class="col-md-2">
-							<h6 class="fw-bold fs-14px">Guides</h6>
+							<h6 class="fw-bold fs-16 text--secondary">Guides</h6>
 							<ul class="list-unstyled">
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Introduction</a>
+								<li class="mt-3"><a href="#"
+										class="text--secondary fs-14 text-decoration-none">Introduction</a>
 								</li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Command Line
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Command Line
 										Tools</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Working with
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Working with
 										Wheels</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Handling
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Handling
 										Requests</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Multiple Formats</a>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Multiple
+										Formats</a>
 								</li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Displaying Views</a>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Displaying
+										Views</a>
 								</li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Database
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Database
 										Interaction</a></li>
 							</ul>
 						</div>
 						<div class="col-md-2">
-							<h6 class="fw-bold fs-14px">Meta</h6>
+							<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 							<ul class="list-unstyled">
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Log in</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Entries feed</a>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Log in</a>
 								</li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Comments feed</a>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Entries
+										feed</a>
 								</li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">WordPress.org</a>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Comments
+										feed</a>
+								</li>
+								<li class="mt-3"><a href="#"
+										class="text--secondary fs-14 text-decoration-none">WordPress.org</a>
 								</li>
 							</ul>
 						</div>
 						<div class="col-md-2">
-							<h6 class="fw-bold fs-14px">Plugins</h6>
+							<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
 							<ul class="list-unstyled">
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Installing and Using
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Installing and
+										Using
 										PI</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Developing
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Developing
 										Plugins</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Publishing
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Publishing
 										Plugins</a></li>
 							</ul>
 						</div>
 						<div class="col-md-2">
-							<h6 class="fw-bold fs-14px">External Links</h6>
+							<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
 							<ul class="list-unstyled">
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Source Code</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Issue Tracker</a>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Source
+										Code</a></li>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Issue
+										Tracker</a>
 								</li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Sponsor Us</a></li>
-								<li class="mt-3"><a href="#" class="text-dark fs-16px text-decoration-none">Community</a></li>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Sponsor Us</a>
+								</li>
+								<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Community</a>
+								</li>
 							</ul>
 						</div>
 					</div>
 					<hr>
 					<div class="text-muted d-flex justify-content-between align-items-center">
 						<div>
-							<p class="p-0 m-0 fs-12px">&copy; 2025 Wheels. All rights reserved.</p>
-							<p class="fs-12px">Wheels is licensed under the Apache License, Version 2.0.</p>
-							<p class="fs-12px">ColdFusion hosting provided by Vivio Technologies.</p>
+							<p class="p-0 m-0 fs-12">&copy; 2025 Wheels. All rights reserved.</p>
+							<p class="fs-12">Wheels is licensed under the Apache License, Version 2.0.</p>
+							<p class="fs-12">ColdFusion hosting provided by Vivio Technologies.</p>
 						</div>
 						<div class="d-flex justify-content-center gap-3">
 							<a href="#" class="text-dark">
@@ -155,7 +172,7 @@
 										d="M10.5201 0.248536C8.69846 0.247922 6.90798 0.721253 5.32461 1.62202C3.74124 2.52279 2.41945 3.81999 1.48913 5.38619C0.558809 6.95238 0.0519596 8.73366 0.0183855 10.555C-0.0151887 12.3764 0.425667 14.1751 1.29764 15.7745L0.0551367 20.132C0.011417 20.285 0.0102522 20.4471 0.051768 20.6007C0.0932837 20.7543 0.175908 20.8937 0.290748 21.0039C0.405588 21.114 0.548296 21.1908 0.703512 21.2259C0.858728 21.261 1.02058 21.2531 1.17164 21.203L5.26313 19.8398C6.65763 20.6456 8.21882 21.1199 9.82592 21.2258C11.433 21.3317 13.043 21.0666 14.5312 20.4508C16.0194 19.835 17.346 18.8851 18.4084 17.6745C19.4708 16.464 20.2404 15.0253 20.6578 13.4698C21.0753 11.9142 21.1292 10.2835 20.8156 8.70372C20.5019 7.12397 19.8291 5.63754 18.849 4.35943C17.869 3.08132 16.6081 2.04579 15.1638 1.33295C13.7196 0.620115 12.1307 0.249074 10.5201 0.248536ZM7.02013 8.99854C7.02013 8.76647 7.11232 8.54391 7.27641 8.37982C7.4405 8.21572 7.66306 8.12354 7.89513 8.12354H13.1451C13.3772 8.12354 13.5997 8.21572 13.7638 8.37982C13.9279 8.54391 14.0201 8.76647 14.0201 8.99854C14.0201 9.2306 13.9279 9.45316 13.7638 9.61725C13.5997 9.78135 13.3772 9.87354 13.1451 9.87354H7.89513C7.66306 9.87354 7.4405 9.78135 7.27641 9.61725C7.11232 9.45316 7.02013 9.2306 7.02013 8.99854ZM7.89513 11.6235H11.3951C11.6272 11.6235 11.8497 11.7157 12.0138 11.8798C12.1779 12.0439 12.2701 12.2665 12.2701 12.4985C12.2701 12.7306 12.1779 12.9532 12.0138 13.1173C11.8497 13.2814 11.6272 13.3735 11.3951 13.3735H7.89513C7.66306 13.3735 7.4405 13.2814 7.27641 13.1173C7.11232 12.9532 7.02013 12.7306 7.02013 12.4985C7.02013 12.2665 7.11232 12.0439 7.27641 11.8798C7.4405 11.7157 7.66306 11.6235 7.89513 11.6235Z"
 										fill="#0C1620" />
 								</svg>
-		
+
 							</a>
 							<a href="#" class="text-dark">
 								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
