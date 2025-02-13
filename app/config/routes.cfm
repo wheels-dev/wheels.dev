@@ -24,6 +24,7 @@
 			.get(name = "guides", pattern = "guides", to = "web.GuidesController##Index")
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
+			.get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
 		.end()
 
