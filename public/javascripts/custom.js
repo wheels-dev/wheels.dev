@@ -26,8 +26,8 @@ const handleBlogFilter = (type, button) => {
     const archives = document.getElementById('Archives');
     const categories = document.getElementById('Categories');
 
-    blogsContainer.classList.remove('col-12', 'col-10');
-    blogsContainer.classList.add(type === 'All' ? 'col-12' : 'col-10');
+    blogsContainer.classList.remove('col-lg-12', 'col-lg-10');
+    blogsContainer.classList.add(type === 'All' ? 'col-lg-12' : 'col-lg-10');
     filtersContainer.classList.remove('d-none');
 
     const buttons = document.querySelectorAll('.filter-blog-button');
