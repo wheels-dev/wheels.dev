@@ -14,13 +14,15 @@
 			<title>Wheels.dev</title>
 			<!-- Bootstrap CSS -->
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
+			<link href="/stylesheets/color.css" rel="stylesheet">
 			<link href="/stylesheets/style.css" rel="stylesheet">
+			<link href="/stylesheets/utils.css" rel="stylesheet">
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
 			<link rel="preconnect" href="https://fonts.googleapis.com">
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 			<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 		</head>
-	
 		<body>
 			<!-- Navigation -->
 			<nav class="navbar sticky-top navbar-expand-lg py-2">
