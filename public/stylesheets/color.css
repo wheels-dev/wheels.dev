@@ -1,0 +1,45 @@
+:root {
+    --primary: #EF3B2D;
+    --primary-rgb: 239, 59, 45;
+    --secondary: #0C1620;
+    --secondary-rgb: rgba(12, 22, 32, 1);
+    --body: #F9F9F9;
+    --iris: #5454D4;
+    --lightGray: #9D9D9D;
+}
+
+.text--primary {
+    color: var(--primary);
+}
+
+.bg--primary {
+    background-color: var(--primary);
+}
+
+.text--secondary {
+    color: var(--secondary);
+}
+
+.text--secondary\/70 {
+    color: rgba(var(--secondary-rgb), 0.7);
+}
+
+.bg--secondary {
+    background-color: var(--secondary);
+}
+
+.text--lightGray {
+    color: var(--lightGray);
+}
+
+.bg--iris {
+    background-color: var(--iris);
+}
+
+.border--iris {
+    border: 1px solid var(--iris);
+}
+
+.text--iris {
+    color: var(--iris);
+}
