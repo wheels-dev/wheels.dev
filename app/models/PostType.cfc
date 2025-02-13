@@ -1,6 +1,6 @@
 component extends="app.Models.Model" {
     function config() {
-        table("roles");
+        table("post_types");
 
         property(name="id", column="id", type="integer", required=true, primarykey=true);
         property(name="name", column="name", type="string", required=false, default="");
@@ -9,9 +9,9 @@ component extends="app.Models.Model" {
         property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
     }
 
-    // fetch all roles
-    public function getAllRoles(){
-        var roles = findAll();
-        return roles;
+    // fetch all post types
+    public function getAllPostTypes(){
+        var posttypes = findAll();
+        return posttypes;
     }
 }

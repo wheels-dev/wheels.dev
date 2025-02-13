@@ -1,4 +1,4 @@
-component extends="app.Model" {
+component extends="app.Models.Model" {
 
 
 }
