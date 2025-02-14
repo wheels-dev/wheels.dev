@@ -8,8 +8,9 @@ component extends="app.Controllers.Controller" {
     }
 
     function Index() {
-        blogService = new app.models.services.BlogService();
-        // blogs = blogService.getAllBlogs();
+        blogModel = model("Blog"); // Get model instance
+        blogService = new app.services.BlogService(blogModel);
+        blogs = blogService.getAllBlogs();
     }
 
     function create() {
