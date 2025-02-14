@@ -1,71 +1,64 @@
 component extends="wheels.migrator.Migration" hint="creates comment table" {
 
-	function up() {
-		transaction {
-			try {
-				// your code goes here
-				// create comments table
-				t = createTable(name = 'comments');
-				t.text(columnNames='content');
-				t.boolean(columnNames='is_deleted');
-				t.integer(columnNames='comment_parent_id'); 				
-				t.integer(columnNames = 'blog_id'); 				
-				t.integer(columnNames = 'auther_id'); 				
-				t.integer(columnNames = 'updated_by'); 
-				t.integer(columnNames = 'deleted_by'); 
-				t.timestamps();
-				t.create();
+    function up() {
+        transaction {
+            try {
+                // create comments table
+                t = createTable(name = 'comments', force=false, id=true, primaryKey='id');
+                t.text(columnNames='content', nullable=false);
+                t.boolean(columnNames='is_deleted', nullable=false, default=false);
+                t.integer(columnNames='comment_parent_id', nullable=true);
+                t.integer(columnNames='blog_id', nullable=false);
+                t.integer(columnNames='author_id', nullable=false);
+                t.integer(columnNames='updated_by', nullable=true);
+                t.integer(columnNames='deleted_by', nullable=true);
+                t.datetime(columnNames='published_at', nullable=true);
+                t.boolean(columnNames='is_published', nullable=false, default=false);
+                t.timestamps();
+                t.create();
 
-				addForeignKey(table = "comments", column = "blog_id", referenceTable = "blog_posts", referenceColumn = "id");
-				// addForeignKey(table = "comments", column = "auther_id", referenceTable = "users", referenceColumn = "id");
-				// addForeignKey(table = "comments", column = "updated_by", referenceTable = "users", referenceColumn = "id");
-				// addForeignKey(table = "comments", column = "deleted_by", referenceTable = "users", referenceColumn = "id");
+                // add foreign key constraints
+                addForeignKey(table = "comments", column = "blog_id", referenceTable = "blog_posts", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "author_id", referenceTable = "users", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "updated_by", referenceTable = "users", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "deleted_by", referenceTable = "users", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "comment_parent_id", referenceTable = "comments", referenceColumn = "id");
 
-				execute("
-					ALTER TABLE comments ADD CONSTRAINT fk_comments_auther_id 
-					FOREIGN KEY (auther_id) REFERENCES users(id);
-				");
+            } catch (any ex) {
+                local.exception = ex;
+            }
 
-				execute("
-					ALTER TABLE comments ADD CONSTRAINT fk_comments_updated_by 
-					FOREIGN KEY (updated_by) REFERENCES users(id);
-				");
+            if (StructKeyExists(local, "exception")) {
+                transaction action="rollback";
+                Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
+            } else {
+                transaction action="commit";
+            }
+        }
+    }
 
-				execute("
-					ALTER TABLE comments ADD CONSTRAINT fk_comments_deleted_by 
-					FOREIGN KEY (deleted_by) REFERENCES users(id);
-				");
+    function down() {
+        transaction {
+            try {
+                // drop foreign key constraints using raw SQL
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_blog_id");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_author_id");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_updated_by");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_deleted_by");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_comment_parent_id");
 
-			} catch (any e) {
-				local.exception = e;
-			}
+                // drop comments table
+                dropTable(name = 'comments');
+            } catch (any ex) {
+                local.exception = ex;
+            }
 
-			if (StructKeyExists(local, "exception")) {
-				transaction action="rollback";
-				Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
-			} else {
-				transaction action="commit";
-			}
-		}
-	}
-
-	function down() {
-		transaction {
-			try {
-				// your code goes here
-				// drop comments table
-				dropTable('comments');
-			} catch (any e) {
-				local.exception = e;
-			}
-
-			if (StructKeyExists(local, "exception")) {
-				transaction action="rollback";
-				Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
-			} else {
-				transaction action="commit";
-			}
-		}
-	}
-
+            if (StructKeyExists(local, "exception")) {
+                transaction action="rollback";
+                Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
+            } else {
+                transaction action="commit";
+            }
+        }
+    }
 }

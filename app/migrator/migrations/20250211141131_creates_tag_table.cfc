@@ -1,49 +1,45 @@
 component extends="wheels.migrator.Migration" hint="creates tag table" {
 
-	function up() {
-		transaction {
-			try {
-				// your code goes here
-				// create tags table
-				t = createTable(name = 'tags');
-				t.string(columnNames='name');
-				t.integer(columnNames = 'blog_id'); 
-				t.timestamps();
-				t.create();
+    function up() {
+        transaction {
+            try {
+                // create tags table
+                t = createTable(name = 'tags', force=false, id=true, primaryKey='id');
+                t.string(columnNames='name', nullable=false, default='', limit=255);
+                t.integer(columnNames='blog_id', nullable=false);
+                t.string(columnNames='description', nullable=true, default='', limit=500);
+                t.boolean(columnNames='is_active', nullable=false, default=true);
+                t.timestamps();
+                t.create();
 
-				addForeignKey(table = "tags", column = "blog_id", referenceTable = "blog_posts", referenceColumn = "id");
+            } catch (any ex) {
+                local.exception = ex;
+            }
 
-			} catch (any e) {
-				local.exception = e;
-			}
+            if (StructKeyExists(local, "exception")) {
+                transaction action="rollback";
+                Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
+            } else {
+                transaction action="commit";
+            }
+        }
+    }
 
-			if (StructKeyExists(local, "exception")) {
-				transaction action="rollback";
-				Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
-			} else {
-				transaction action="commit";
-			}
-		}
-	}
+    function down() {
+        transaction {
+            try {
+                // drop tags table
+                dropTable(name = 'tags');
+            } catch (any ex) {
+                local.exception = ex;
+            }
 
-	function down() {
-		transaction {
-			try {
-				// your code goes here
-				// drop tags table
-				dropTable('tags');
-				
-			} catch (any e) {
-				local.exception = e;
-			}
-
-			if (StructKeyExists(local, "exception")) {
-				transaction action="rollback";
-				Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
-			} else {
-				transaction action="commit";
-			}
-		}
-	}
-
+            if (StructKeyExists(local, "exception")) {
+                transaction action="rollback";
+                Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
+            } else {
+                transaction action="commit";
+            }
+        }
+    }
 }

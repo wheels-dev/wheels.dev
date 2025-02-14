@@ -3,10 +3,11 @@ component extends="wheels.migrator.Migration" hint="creates post_status table" {
 	function up() {
 		transaction {
 			try {
-				// your code goes here
 				// create post_statuses table
 				t = createTable(name = 'post_statuses');
-				t.string(columnNames='name');
+				t.string(columnNames='name', nullable=false, default='', limit=255);
+				t.string(columnNames='description', nullable=true, default='', limit=500);
+				t.boolean(columnNames='is_active', nullable=false, default=true);
 				t.timestamps();
 				t.create();
 				
@@ -26,10 +27,8 @@ component extends="wheels.migrator.Migration" hint="creates post_status table" {
 	function down() {
 		transaction {
 			try {
-				// your code goes here
 				// drop post_statuses table
-				dropTable('post_statuses');
-
+				dropTable(name = 'post_statuses');
 			} catch (any e) {
 				local.exception = e;
 			}
