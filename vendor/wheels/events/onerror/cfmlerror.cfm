@@ -91,12 +91,22 @@
 		</cfif>
 		<!--- always skip cause since it's just a copy of rootCause anyway --->
 		<cfset local.skip = ListAppend(local.skip, "exception.cause")>
+		<cfset local.scopeMap = {
+			"CGI": CGI,
+			"Form": Form,
+			"URL": URL,
+			"Application": Application,
+			"Session": Session,
+			"Request": Request,
+			"Cookie": Cookie,
+			"Arguments.Exception": Arguments.Exception
+		}>
 		<h1>Details</h1>
 		<cfloop list="#local.scopes#" index="local.i">
 			<cfset local.scopeName = ListLast(local.i, ".")>
 			<cfif NOT ListFindNoCase(local.skip, local.scopeName) AND IsDefined(local.scopeName)>
 				<cftry>
-					<cfset local.scope = Evaluate(local.i)>
+					<cfset local.scope = local.scopeMap[local.i]>
 					<cfif IsStruct(local.scope)>
 						<p>
 							<strong>#local.scopeName#</strong>

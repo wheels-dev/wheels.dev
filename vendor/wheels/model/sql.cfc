@@ -282,7 +282,7 @@ component {
 			local.rv = "";
 			local.addedProperties = "";
 			local.addedPropertiesByModel = {};
-			local.selectArray = $splitByCommasOutsideFunctions(arguments.list);
+			local.selectArray = $splitOutsideFunctions(arguments.list, ",");
 			local.iEnd = arrayLen(local.selectArray);
 			for (local.i = 1; local.i <= local.iEnd; local.i++) {
 				local.iItem = Trim(local.selectArray[i]);
@@ -922,44 +922,5 @@ component {
 		return local.rv;
 	}
 
-	public array function $splitByCommasOutsideFunctions(required string list) {
-		local.rv = [];
-		local.temp = "";
-		local.insideFunction = false;
-		local.bracketCount = 0;
-
-		for (i = 1; i <= len(arguments.list); i++) {
-			local.char = mid(arguments.list, i, 1);
-
-			// Check if we are entering or exiting a function's parentheses
-			if (local.char == "(") {
-				local.bracketCount++;
-			} else if (local.char == ")") {
-				local.bracketCount--;
-			}
-
-			// Determine if we are inside a function (any content enclosed by parentheses)
-			if (local.bracketCount > 0) {
-				local.insideFunction = true;
-			} else if (local.bracketCount == 0) {
-				local.insideFunction = false;
-			}
-
-			// Split based on commas outside functions
-			if (local.char == "," && !local.insideFunction) {
-				arrayAppend(local.rv, trim(local.temp));
-				local.temp = "";
-			} else {
-				local.temp &= local.char;
-			}
-		}
-
-		// Append the final segment
-		if (len(trim(local.temp))) {
-			arrayAppend(local.rv, trim(local.temp));
-		}
-
-		return local.rv;
-	}
 
 }

@@ -7,6 +7,27 @@
 	mapper()
 		// CLI-Appends-Here
 
+		.namespace("api")
+			.namespace("v1")
+				.get(name = "get_guides", pattern = "guides", to = "api.GuidesController##Index")
+				.get(name = "get_guide", pattern = "guides/:id", to = "api.GuidesController##Show")
+
+				.get(name = "get_blog_posts", pattern = "blog", to = "api.BlogController##Index")
+				.get(name = "get_blog_post", pattern = "blog/:id", to = "api.BlogController##Show")
+
+				.get(name = "get_downloads", pattern = "downloads", to = "api.DownloadsController##Index")
+			.end()
+		.end()
+
+		.namespace("")
+			.get(name = "home", pattern = "home", to = "web.HomeController##Index")
+			.get(name = "guides", pattern = "guides", to = "web.GuidesController##Index")
+			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
+			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
+			.get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
+			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
+		.end()
+
 		// The "wildcard" call below enables automatic mapping of "controller/action" type routes.
 		// This way you don't need to explicitly add a route every time you create a new action in a controller.
 		.wildcard()
