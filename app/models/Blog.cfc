@@ -24,10 +24,9 @@ component extends="app.Models.Model" {
         belongsTo(name="user", foreignKey="createdby"); 
     }
 
-    // fetch all blogs with corresponding users
+    // Fetch all latest blog posts with corresponding users
     public function getAllBlogs() {
-        // var blogs = findAll();
-        var blogs = findAll(include="User");
+        var blogs = findAll(include="User", order="createdAt DESC");
         return blogs;
     }    
 }
