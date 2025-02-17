@@ -165,7 +165,7 @@ component output="false" {
     StructDelete(arguments, "$args", false);
     if(NOT arguments.delay){
       StructDelete(arguments, "delay", false);
-      location(attributeCollection="#arguments#");
+      cflocation(attributeCollection="#arguments#");
     }
 	}
 
@@ -2611,5 +2611,45 @@ component output="false" {
 		return local.rv;
 	}
 
-		include "/app/global/functions.cfm";
+	public array function $splitOutsideFunctions(required string list, required string splitBy) {
+		local.rv = [];
+		local.temp = "";
+		local.insideFunction = false;
+		local.bracketCount = 0;
+
+		for (i = 1; i <= len(arguments.list); i++) {
+			local.char = mid(arguments.list, i, 1);
+
+			// Check if we are entering or exiting a function's parentheses
+			if (local.char == "(") {
+				local.bracketCount++;
+			} else if (local.char == ")") {
+				local.bracketCount--;
+			}
+
+			// Determine if we are inside a function (any content enclosed by parentheses)
+			if (local.bracketCount > 0) {
+				local.insideFunction = true;
+			} else if (local.bracketCount == 0) {
+				local.insideFunction = false;
+			}
+
+			// Split based on commas outside functions
+			if (local.char == arguments.splitBy && !local.insideFunction) {
+				arrayAppend(local.rv, trim(local.temp));
+				local.temp = "";
+			} else {
+				local.temp &= local.char;
+			}
+		}
+
+		// Append the final segment
+		if (len(trim(local.temp))) {
+			arrayAppend(local.rv, trim(local.temp));
+		}
+
+		return local.rv;
+	}
+
+	include "/app/global/functions.cfm";
 }
