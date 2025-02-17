@@ -1,0 +1,64 @@
+component extends="wheels.migrator.Migration" hint="creates comment table" {
+
+    function up() {
+        transaction {
+            try {
+                // create comments table
+                t = createTable(name = 'comments', force=false, id=true, primaryKey='id');
+                t.text(columnNames='content', nullable=false);
+                t.boolean(columnNames='is_deleted', nullable=false, default=false);
+                t.integer(columnNames='comment_parent_id', nullable=true);
+                t.integer(columnNames='blog_id', nullable=false);
+                t.integer(columnNames='author_id', nullable=false);
+                t.integer(columnNames='updated_by', nullable=true);
+                t.integer(columnNames='deleted_by', nullable=true);
+                t.datetime(columnNames='published_at', nullable=true);
+                t.boolean(columnNames='is_published', nullable=false, default=false);
+                t.timestamps();
+                t.create();
+
+                // add foreign key constraints
+                addForeignKey(table = "comments", column = "blog_id", referenceTable = "blog_posts", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "author_id", referenceTable = "users", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "updated_by", referenceTable = "users", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "deleted_by", referenceTable = "users", referenceColumn = "id");
+                addForeignKey(table = "comments", column = "comment_parent_id", referenceTable = "comments", referenceColumn = "id");
+
+            } catch (any ex) {
+                local.exception = ex;
+            }
+
+            if (StructKeyExists(local, "exception")) {
+                transaction action="rollback";
+                Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
+            } else {
+                transaction action="commit";
+            }
+        }
+    }
+
+    function down() {
+        transaction {
+            try {
+                // drop foreign key constraints using raw SQL
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_blog_id");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_author_id");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_updated_by");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_deleted_by");
+                execute(sql="ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_comment_parent_id");
+
+                // drop comments table
+                dropTable(name = 'comments');
+            } catch (any ex) {
+                local.exception = ex;
+            }
+
+            if (StructKeyExists(local, "exception")) {
+                transaction action="rollback";
+                Throw(errorCode = "1", detail = local.exception.detail, message = local.exception.message, type = "any");
+            } else {
+                transaction action="commit";
+            }
+        }
+    }
+}

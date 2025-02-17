@@ -1,0 +1,179 @@
+/* utils */
+
+
+/* Fonts Sizes */
+
+.fs-12 {
+    /* max 14px, min 14px */
+    font-size: clamp(0.75rem, 0.75rem + 0vw, 0.75rem);
+}
+
+.fs-14 {
+    /* max 14px, min 14px */
+    font-size: clamp(0.875rem, 0.875rem + 0vw, 0.875rem);
+}
+
+.fs-16 {
+    /* max 16px, min 16px */
+    font-size: clamp(1rem, 1rem + 0vw, 1rem);
+}
+
+.fs-18 {
+    /* max 18px, min 18px */
+    font-size: clamp(1.125rem, 1.125rem + 0vw, 1.125rem);
+}
+
+.fs-22 {
+    /* max 22px, min 20px */
+    font-size: clamp(1.25rem, 1.2137rem + 0.1613vw, 1.375rem);
+}
+
+.fs-24 {
+    /* max 24px, min 20px */
+    font-size: clamp(1.25rem, 1.1774rem + 0.3226vw, 1.5rem);
+}
+
+.fs-36 {
+    /* max 36px, min 26px */
+    font-size: clamp(1.625rem, 1.4435rem + 0.8065vw, 2.25rem);
+}
+
+.fs-60 {
+    /* max 60px, min 26px */
+    font-size: clamp(1.625rem, 1.0081rem + 2.7419vw, 3.75rem);
+}
+
+.fs-64 {
+    /* max 64px, min 26px */
+    font-size: clamp(1.625rem, 0.9355rem + 3.0645vw, 4rem);
+}
+
+/* Width */
+
+.w-max {
+    width: max-content;
+}
+
+.w-200 {
+    width: 200px;
+}
+
+/* height */
+.h-max {
+    height: max-content;
+}
+
+.h-70vh {
+    height: 70vh;
+}
+
+/* Size */
+.size-320{
+    width: 320px;
+    height: 320px;
+}
+
+/* Border radius */
+
+.rounded-18 {
+    border-radius: 18px;
+}
+
+.rounded-tl-18 {
+    border-top-left-radius: 18px;
+}
+
+.rounded-bl-18 {
+    border-bottom-left-radius: 18px;
+}
+
+/* Line height */
+
+.line-height-70 {
+    line-height: clamp(1.625rem, 0.8266rem + 3.5484vw, 4.375rem);
+}
+
+/* scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Right/Left/Bottom/Top  */
+
+.right-10{
+    right: 10px;
+}
+
+.bottom-10{
+    bottom: 10px;
+}
+
+@media (min-width: 992px) {
+    .divide-x-primary> :not([hidden])~ :not([hidden]) {
+        border-right-width: 0;
+        border-left-width: 1px;
+        border-color: var(--primary)
+    }
+}
+
+
+.nav-pills-primary .nav-link.active {
+    background-color: rgba(var(--primary-rgb), 0.2);
+    border: 1px solid rgba(var(--primary-rgb), 0.6);
+}
+
+.border-transparent {
+    border-color: transparent;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.line-clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+}
+
+.line-clamp-5 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+}
+
+.line-clamp-6 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+}
+
