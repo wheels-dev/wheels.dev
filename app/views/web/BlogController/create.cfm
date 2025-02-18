@@ -12,11 +12,13 @@
             <div class="p-3 flex-grow-1 bg-white rounded-start-4 d-flex justify-content-between flex-column">
                 <h1 class="text-center">Create Blog Post</h1>
                 <form id="blogForm" hx-post="/blog/store" hx-target="#message" hx-swap="innerHTML">
-                    <label class="form-label">Title:</label>
-                    <input class="form-control" type="text" name="title" id="title" required>
+                    <input class="form-control" type="hidden" name="id" id="id" value="">
+
+                    <label class="form-label">Title<font style="color:red;">*</font>:</label>
+                    <input class="form-control" type="text" name="title" id="title" value="" required>
 
                     <cfoutput>
-                        <label class="form-label">Post Category:</label>
+                        <label class="form-label">Post Category<font style="color:red;">*</font>:</label>
                         <select class="form-control" name="categoryId" id="categoryId" required>
                             <option value="">Select Category</option>
                             <cfloop query="categorylist">
@@ -24,7 +26,7 @@
                             </cfloop>
                         </select>
                     
-                        <label class="form-label">Post Status:</label>
+                        <label class="form-label">Post Status<font style="color:red;">*</font>:</label>
                         <select class="form-control" name="statusId" id="statusId" required>
                             <option value="">Select Status</option>
                             <cfloop query="statuslist">
@@ -32,7 +34,7 @@
                             </cfloop>
                         </select>
                         
-                        <label class="form-label">Post Type:</label>
+                        <label class="form-label">Post Type<font style="color:red;">*</font>:</label>
                         <select class="form-control" name="posttypeId" id="posttypeId" required>
                             <option value="">Select Post Type</option>
                             <cfloop query="posttypelist">
@@ -41,7 +43,7 @@
                         </select>
                     </cfoutput>
 
-                    <label for="content" class="form-label">Content:</label>
+                    <label for="content" class="form-label">Content<font style="color:red;">*</font>:</label>
                     <div class="form-control" id="editor" style="height: 300px;"></div>
                     <input class="form-control" type="hidden" name="content" id="content"><br>
                     
@@ -62,65 +64,65 @@
     
     <script>
         const quill = new Quill('#editor', { theme: 'snow' });
-    
+
+        function syncQuillContent() {
+            document.getElementById('content').value = quill.root.innerHTML.trim();
+        }
+
+        document.getElementById('blogForm').addEventListener("submit", function(event) {
+            syncQuillContent(); // Ensure content is set before submit
+        });
+
         document.getElementById('blogForm').addEventListener("htmx:configRequest", function(event) {
-            let isValid = true;
-    
+            var isValid = true;
+            
             const title = document.getElementById('title');
             const categoryId = document.getElementById('categoryId');
             const statusId = document.getElementById('statusId');
             const posttypeId = document.getElementById('posttypeId');
             const content = document.getElementById('content');
             const editor = document.getElementById("editor");
-    
-            // Sync Quill content with hidden input
-            content.value = quill.root.innerHTML.trim();
-    
-            // Reset validation classes
+
+            syncQuillContent(); // Sync content for validation
+
+            // Reset validation styles
             [title, categoryId, statusId, posttypeId].forEach(field => field.classList.remove("is-invalid"));
             editor.classList.remove("border-danger");
-    
-            // Validate title
+
+            // Validate fields
             if (title.value.trim() === "") {
                 isValid = false;
                 title.classList.add("is-invalid");
             }
-    
-            // Validate category 
             if (categoryId.value.trim() === "") {
                 isValid = false;
                 categoryId.classList.add("is-invalid");
             }
-    
-            // Validate post status 
             if (statusId.value.trim() === "") {
                 isValid = false;
                 statusId.classList.add("is-invalid");
             }
-    
-            // Validate post type 
             if (posttypeId.value.trim() === "") {
                 isValid = false;
                 posttypeId.classList.add("is-invalid");
             }
-    
-            // Validate content (Quill editor)
             if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
                 isValid = false;
                 editor.classList.add("border-danger");
             }
-    
-            // If validation fails, prevent HTMX from sending request
+
+            // If validation fails, prevent request
             if (!isValid) {
-                event.preventDefault(); // Prevent HTMX request
+                event.preventDefault();
                 alert("Please fill out all required fields.");
             }
         });
-    
+
         // Live preview while typing
         quill.on("text-change", function() {
             document.getElementById("preview").innerHTML = quill.root.innerHTML;
         });
+
     </script>
     
 </main>

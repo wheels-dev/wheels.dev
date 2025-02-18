@@ -46,70 +46,25 @@
 
         <div class="row justify-content-center justify-content-lg-between">
             <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1">
-                <a href="/blog/1" class="d-flex px-lg-2 px-0 rounded-4 overflow-hidden mb-3 justify-content-between">
-                    <div
-                        class="p-3 flex-grow-1 bg-white rounded-start-4 d-flex justify-content-between flex-column ">
-                        <div>
-                            <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                <p class="text--iris fw-medium fs-12 m-0">Peter Amiri</p>
+                <cfoutput>
+                    <cfloop query="blogs">
+                        <a href="/blog/#id#" class="d-flex px-lg-2 px-0 rounded-4 overflow-hidden mb-3 justify-content-between">
+                            <div
+                                class="p-3 flex-grow-1 bg-white rounded-start-4 d-flex justify-content-between flex-column ">
+                                <div>
+                                    <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
+                                        <p class="text--iris fw-medium fs-12 m-0">#blogs.name#</p>
+                                    </div>
+                                    <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
+                                </div>
+                                <p class="text--lightGray fs-12 fw-medium">#dateformat(blogs.createdat, 'MMMM DD, YYYY')#</p>
                             </div>
-                            <p class="fs-18 mt-4 text-black fw-bold">Celebrating 20 Years of Wheels: A Look Back and a
-                                Step Forward as Wheels.dev</p>
-                        </div>
-                        <p class="text--lightGray fs-12 fw-medium">January 3rd, 2025</p>
-                    </div>
-                    <div class="d-lg-block d-none position-relative">
-                        <img src="/images/blogs.jpg" class="img-fluid rounded-end-4">
-                    </div>
-                </a>
-                <a href="/blog/1" class="d-flex px-lg-2 px-0 rounded-4 overflow-hidden mb-3 justify-content-between">
-                    <div
-                        class="p-3 flex-grow-1 bg-white rounded-start-4 d-flex justify-content-between flex-column ">
-                        <div>
-                            <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                <p class="text--iris fw-medium fs-12 m-0">Peter Amiri</p>
+                            <div class="d-lg-block d-none position-relative">
+                                <img src="/images/blogs.jpg" class="img-fluid rounded-end-4">
                             </div>
-                            <p class="fs-18 mt-4 text-black fw-bold">Celebrating 20 Years of Wheels: A Look Back and a
-                                Step Forward as Wheels.dev</p>
-                        </div>
-                        <p class="text--lightGray fs-12 fw-medium">January 3rd, 2025</p>
-                    </div>
-                    <div class="d-lg-block d-none">
-                        <img src="/images/blogs.jpg" class="img-fluid rounded-end-4">
-                    </div>
-                </a>
-                <a href="/blog/1" class="d-flex px-lg-2 px-0 rounded-4 overflow-hidden mb-3 justify-content-between">
-                    <div
-                        class="p-3 flex-grow-1 bg-white rounded-start-4 d-flex justify-content-between flex-column ">
-                        <div>
-                            <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                <p class="text--iris fw-medium fs-12 m-0">Peter Amiri</p>
-                            </div>
-                            <p class="fs-18 mt-4 text-black fw-bold">Celebrating 20 Years of Wheels: A Look Back and a
-                                Step Forward as Wheels.dev</p>
-                        </div>
-                        <p class="text--lightGray fs-12 fw-medium">January 3rd, 2025</p>
-                    </div>
-                    <div class="d-lg-block d-none">
-                        <img src="/images/blogs.jpg" class="img-fluid rounded-end-4">
-                    </div>
-                </a>
-                <a href="/blog/1" class="d-flex px-lg-2 px-0 rounded-4 overflow-hidden mb-3 justify-content-between">
-                    <div
-                        class="p-3 flex-grow-1 bg-white rounded-start-4 d-flex justify-content-between flex-column ">
-                        <div>
-                            <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                <p class="text--iris fw-medium fs-12 m-0">Peter Amiri</p>
-                            </div>
-                            <p class="fs-18 mt-4 text-black fw-bold">Celebrating 20 Years of Wheels: A Look Back and a
-                                Step Forward as Wheels.dev</p>
-                        </div>
-                        <p class="text--lightGray fs-12 fw-medium">January 3rd, 2025</p>
-                    </div>
-                    <div class="d-lg-block d-none">
-                        <img src="/images/blogs.jpg" class="img-fluid rounded-end-4">
-                    </div>
-                </a>
+                        </a>
+                    </cfloop>
+                </cfoutput>
             </div>
             <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
                 <div class="d-none bg-white p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto"
