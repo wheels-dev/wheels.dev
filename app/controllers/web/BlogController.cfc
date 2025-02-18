@@ -14,27 +14,28 @@ component extends="app.Controllers.Controller" {
     }
 
     function create() {
-        blogService = new app.models.services.BlogService();
-        // blog = blogService.createBlog();
+        categorylist = model("Category").getAllCategories();
+        statuslist = model("PostStatus").getAllPostStatuses();
+        posttypelist = model("PostType").getAllPostTypes();
     }
 
     function store() {
-        blogService = new app.models.services.BlogService();
-        // blog = blogService.storeBlog();
+        blogModel = model("Blog"); // Get model instance
+        blogService = new app.services.BlogService(blogModel);
     }
 
     function show() {
-        blogService = new app.models.services.BlogService();
-        // blog = blogService.getBlog();
+        blogModel = model("Blog"); // Get model instance
+        blogService = new app.services.BlogService(blogModel);
     }
 
     function update() {
-        blogService = new app.models.services.BlogService();
-        // blog = blogService.updateBlog();    
+        blogModel = model("Blog"); // Get model instance
+        blogService = new app.services.BlogService(blogModel);
     }
 
     function destroy() {
-        blogService = new app.models.services.BlogService();
-        // blog = blogService.destroyBlog();
+        blogModel = model("Blog"); // Get model instance
+        blogService = new app.services.BlogService(blogModel);
     }
 }
