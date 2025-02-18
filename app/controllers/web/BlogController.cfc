@@ -10,7 +10,7 @@ component extends="app.Controllers.Controller" {
     function Index() {
         blogModel = model("Blog"); // Get model instance
         blogService = new app.services.BlogService(blogModel);
-        blogs = blogService.getAllBlogs();
+        blogs = blogModel.getAllBlogs();
     }
 
     function create() {
@@ -22,11 +22,16 @@ component extends="app.Controllers.Controller" {
     function store() {
         blogModel = model("Blog"); // Get model instance
         blogService = new app.services.BlogService(blogModel);
+        message = blogService.saveBlog(params);
+        // Redirect to the create page
+        redirectTo(action="create");
     }
 
     function show() {
         blogModel = model("Blog"); // Get model instance
         blogService = new app.services.BlogService(blogModel);
+        blog = blogService.getBlogById(params.id);
+        blogs = blogModel.getAllBlogs();
     }
 
     function update() {

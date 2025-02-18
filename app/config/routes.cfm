@@ -25,7 +25,7 @@
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
-			// .post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
+			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 			// .get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")			
 			.get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
