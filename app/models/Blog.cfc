@@ -19,9 +19,13 @@ component extends="app.Models.Model" {
         property(name="createdBy", column="created_by", type="integer", required=false, foreignkey=true, references="User(id)");
         property(name="updatedBy", column="updated_by", type="integer", required=false, foreignkey=true, references="User(id)");
         property(name="deletedBy", column="deleted_by", type="integer", required=false, foreignkey=true, references="User(id)");
+        // property(name="blogId", column="blog_id", type="integer", required=false, foreignkey=true, references="Tag(id)");
 
         // Define associations
-        belongsTo(name="user", foreignKey="createdby"); 
+        belongsTo(name="User", foreignKey="createdBy"); 
+        belongsTo(name="Category", foreignKey="categoryId"); 
+        belongsTo(name="PostStatus", foreignKey="statusId");
+
     }
 
     // Fetch all latest blog posts with corresponding users
