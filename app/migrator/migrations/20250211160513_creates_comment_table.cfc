@@ -19,11 +19,25 @@ component extends="wheels.migrator.Migration" hint="creates comment table" {
 
                 // add foreign key constraints
                 addForeignKey(table = "comments", column = "blog_id", referenceTable = "blog_posts", referenceColumn = "id");
-                addForeignKey(table = "comments", column = "author_id", referenceTable = "users", referenceColumn = "id");
-                addForeignKey(table = "comments", column = "updated_by", referenceTable = "users", referenceColumn = "id");
-                addForeignKey(table = "comments", column = "deleted_by", referenceTable = "users", referenceColumn = "id");
+                // addForeignKey(table = "comments", column = "author_id", referenceTable = "users", referenceColumn = "id");
+                // addForeignKey(table = "comments", column = "updated_by", referenceTable = "users", referenceColumn = "id");
+                // addForeignKey(table = "comments", column = "deleted_by", referenceTable = "users", referenceColumn = "id");
                 addForeignKey(table = "comments", column = "comment_parent_id", referenceTable = "comments", referenceColumn = "id");
+                
+                execute("
+                    ALTER TABLE comments ADD CONSTRAINT fk_comments_created_by 
+                    FOREIGN KEY (author_id) REFERENCES users(id);
+                ");
 
+                execute("
+                    ALTER TABLE comments ADD CONSTRAINT fk_comments_updated_by 
+                    FOREIGN KEY (updated_by) REFERENCES users(id);
+                ");
+
+                execute("
+                    ALTER TABLE comments ADD CONSTRAINT fk_comments_deleted_by 
+                    FOREIGN KEY (deleted_by) REFERENCES users(id);
+                ");
             } catch (any ex) {
                 local.exception = ex;
             }

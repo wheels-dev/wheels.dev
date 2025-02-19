@@ -32,7 +32,7 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
                     table='tags',
                     column='blog_id',
                     referenceTable='blog_posts',
-                    referenceColumn='id',
+                    referenceColumn='id'
                 );
 
 				execute("
