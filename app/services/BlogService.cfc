@@ -11,7 +11,29 @@ component {
     }
     
     function getBlogById(required numeric id) {
-        return variables.Blog.findOne(where="id = #arguments.id#");
+        // return variables.Blog.findOne(where="id = #arguments.id#");
+        return variables.Blog.findOne(
+            where="blog_posts.id = #arguments.id#",
+            include="User, Category, PostStatus",
+            options={sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                blog_posts.createdat AS createdDate, 
+                users.name AS authorName, 
+                categories.name AS categoryName, 
+                post_statuses.name AS statusName 
+                FROM blog_posts 
+                INNER JOIN users ON users.id = blog_posts.userId
+                INNER JOIN categories ON categories.id = blog_posts.categoryId
+                INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
+                WHERE blog_posts.id = #arguments.id#"
+            }
+        );
+
+        // return variables.Blog.findone(
+        //     where="blog_posts.id = #arguments.id#",
+        //     include="User, Category, PostStatus",
+        //     select="blog_posts.title, blog_posts.content, blog_posts.createdat,
+        //     users.name As username, categories.name As catname, post_statuses.name As satname"
+        // );
     }
     
     function getBlogBySlug(required string slug) {
