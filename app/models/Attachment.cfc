@@ -13,6 +13,8 @@ component extends="app.Models.Model" {
         property(name="blogId", column="blog_id", type="integer", required=false, foreignkey=true, references="Blog(id)");
         property(name="commentId", column="comment_id", type="integer", required=false, foreignkey=true, references="Comment(id)");
         
+        // Define associations
+        belongsTo(name="Blog", foreignKey="blogId"); 
     }
 
     // fetch all attachments
