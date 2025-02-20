@@ -15,8 +15,18 @@ component extends="wheels.migrator.Migration" hint="creates feature table" {
                 t.create();
 
                 // add foreign key constraints
-                addForeignKey(table = "features", column = "created_by", referenceTable = "users", referenceColumn = "id");
-                addForeignKey(table = "features", column = "updated_by", referenceTable = "users", referenceColumn = "id");
+                // addForeignKey(table = "features", column = "created_by", referenceTable = "users", referenceColumn = "id");
+                // addForeignKey(table = "features", column = "updated_by", referenceTable = "users", referenceColumn = "id");
+
+                execute("
+					ALTER TABLE features ADD CONSTRAINT fk_features_created_by 
+					FOREIGN KEY (created_by) REFERENCES users(id);
+				");
+
+				execute("
+					ALTER TABLE features ADD CONSTRAINT fk_features_updated_by 
+					FOREIGN KEY (updated_by) REFERENCES users(id);
+				");
 
             } catch (any ex) {
                 local.exception = ex;
