@@ -181,3 +181,12 @@
     -webkit-line-clamp: 6;
 }
 
+.resize-none{
+    resize: none;
+}
+
+/* Outline */
+
+.outline-none{
+    outline: none;
+}
