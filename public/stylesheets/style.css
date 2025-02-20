@@ -144,3 +144,24 @@ main.main-blog {
 #wheels-debug-area {
     display: none;
 }
+
+/* Blog comments */
+.parent_comment::after{
+    content: '';
+    position: absolute;
+    height: 90%;
+    background: black;
+    width: 1px;
+    top: 48px;
+    left: 2%;
+}
+
+.sub_comments::after{
+    content: '';
+    position: absolute;
+    background: black;
+    width: 48px;
+    height: 1px;
+    top: 43%;
+    left: -4.8%;
+}
