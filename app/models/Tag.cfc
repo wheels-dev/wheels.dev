@@ -11,6 +11,8 @@ component extends="app.Models.Model" {
         // Defining the foreign key
         property(name="blogId", column="blog_id", type="integer", required=false, foreignkey=true, references="Blog(id)");
 
+        // Define associations
+        belongsTo(name="Blog", foreignKey="blogId"); 
     }
 
     // fetch all tags

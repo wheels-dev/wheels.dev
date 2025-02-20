@@ -20,7 +20,7 @@ component extends="wheels.migrator.Migration" hint="creates user table" {
                     table='users',
                     column='role_id',
                     referenceTable='roles',
-                    referenceColumn='id',
+                    referenceColumn='id'
                 );
 
             } catch (any ex) {

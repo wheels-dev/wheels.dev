@@ -24,7 +24,8 @@ component extends="app.Controllers.Controller" {
         blogService = new app.services.BlogService(blogModel);
         message = blogService.saveBlog(params);
         // Redirect to the create page
-        redirectTo(action="create");
+        // redirectTo(action="create");
+        redirectTo(action="create", success="#message#");
     }
 
     function show() {
@@ -32,6 +33,11 @@ component extends="app.Controllers.Controller" {
         blogService = new app.services.BlogService(blogModel);
         blog = blogService.getBlogById(params.id);
         blogs = blogModel.getAllBlogs();
+        tagService = new app.services.TagService(model("Tag"));
+        tags = tagService.getTagsByBlogid(params.id);
+        attachmentService = new app.services.AttachmentService(model("Attachment"));
+        attachments = attachmentService.getAttachmentsByBlogid(params.id);
+    
     }
 
     function update() {
