@@ -41,8 +41,9 @@
 
     <!-- Cards -->
     <div class="container pb-5">
-        <div class="row g-5">
-            <cfloop query = "features">
+        <div class="row g-5" id="features-container" hx-get="/home/loadFeatures" hx-trigger="load" hx-target="#features-container" hx-swap="innerHTML">
+            <!-- Features will be loaded here via HTMX -->
+            <!---<cfloop query = "features">
                 <div class="col-lg-4">
                     <div
                         class="px-4 pt-4 pb-2 bg-white border-transparent border-2 cards rounded-5 cursor-pointer shadow-sm">
@@ -57,21 +58,22 @@
                         </cfoutput>
                     </div>
                 </div>
-            </cfloop>
+            </cfloop>--->
         </div>
     </div>
 
     <!-- Latest blogs -->
     <div class="pt-5 blog-main">
         <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
-        <div class="swiper py-5 blogSwiper">
-            <div class="swiper-wrapper">
-                <cfloop query= "blogs">
+        <div class="swiper py-5 blogSwiper h-max">
+            <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
+                <!-- Blogs will be loaded here via HTMX -->
+                <!---<cfloop query= "blogs">
                     <div class="p-4 bg-white rounded-5 shadow-sm swiper-slide">
                         <cfoutput>
                             <div>
                                 <p class="fs-18 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
-                                <p class="fs-16 fw-medium text--lightGray line-clamp-2">#blogs.content#</p>
+                                
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="fs-16 fw-medium text--lightGray">#dateformat(blogs.createdat, 'MMMM DD, YYYY')# by #blogs.name#</p>
@@ -79,7 +81,7 @@
                             </div>
                         </cfoutput>
                     </div>
-                </cfloop>
+                </cfloop>--->
             </div>
         </div>
     </div>
@@ -87,8 +89,9 @@
     <!-- our guide  -->
     <div class="gudie-main py-5">
         <h1 class="text-center text-white fs-60 fw-bold">Our Guide</h1>
-        <div class="container mt-5">
-            <div class="row">
+        <div class="container mt-5" id="guides-container" hx-get="/home/loadGuides" hx-trigger="load" hx-target="#guides-container" hx-swap="innerHTML">
+            <!-- Guides will be loaded here via HTMX -->
+            <!---<div class="row">
                 <div class="col-4 border-end">
                     <!-- Vertical Tabs Navigation -->
                     <div class="nav flex-column nav-pills-primary" id="v-pills-tab" role="tablist"
@@ -289,7 +292,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--->
         </div>
     </div>
 

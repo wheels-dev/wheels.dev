@@ -2,7 +2,7 @@ var swiper = new Swiper(".blogSwiper", {
     spaceBetween: 30,
     freeMode: true,
     initialSlide: 2,
-    autoHeight: true,
+    // autoHeight: true,
     slidesOffsetBefore: 250,
     breakpoints: {
         640: {

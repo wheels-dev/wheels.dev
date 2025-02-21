@@ -21,6 +21,12 @@
 
 		.namespace("")
 			.get(name = "home", pattern = "home", to = "web.HomeController##Index")
+			// Route for loading features with HTMX
+			.get(name = "loadFeatures", pattern = "home/loadFeatures", to = "web.HomeController##loadFeatures")
+			// Route for loading blogs with HTMX
+			.get(name = "loadBlogs", pattern = "home/loadBlogs", to = "web.HomeController##loadBlogs")
+			// Route for loading guides with HTMX
+			.get(name = "loadGuides", pattern = "home/loadGuides", to = "web.HomeController##loadGuides")
 			.get(name = "guides", pattern = "guides", to = "web.GuidesController##Index")
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
