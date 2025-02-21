@@ -110,26 +110,39 @@
                     </div>
                 </div>
             </div>
-
-            <!-- recent blogs -->
-            <div class="pt-5 blog-main">
-                <h1 class="text-center fw-bold fs-60">Recent Blogs</h1>
-                <div class="swiper py-5 blogSwiper">
-                    <div class="swiper-wrapper">
-                        <cfloop query="blogs">
-                            <div class="p-4 bg-white rounded-5 shadow-sm swiper-slide">
-                                <div>
-                                    <p class="fs-18 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="fs-16 fw-medium text--lightGray">#dateformat(blogs.createdat, 'MMMM DD,
-                                        YYYY')# by #blogs.name#</p>
-                                    <button class="bg--iris fs-16 text-white rounded-2 px-3 py-1">Learn more</button>
-                                </div>
-                            </div>
-                        </cfloop>
-                    </div>
-                </div>
-            </div>
     </cfoutput>
+    
+    <!--- recent blogs 
+    <div class="pt-5 blog-main">
+        <h1 class="text-center fw-bold fs-60">Recent Blogs</h1>
+        <div class="swiper py-5 blogSwiper">
+            <div class="swiper-wrapper">
+                <cfloop query="blogs">
+                    <div class="p-4 bg-white rounded-5 shadow-sm swiper-slide">
+                        <div>
+                            <p class="fs-18 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="fs-16 fw-medium text--lightGray">#dateformat(blogs.createdat, 'MMMM DD,
+                                YYYY')# by #blogs.name#</p>
+                            <button class="bg--iris fs-16 text-white rounded-2 px-3 py-1">Learn more</button>
+                        </div>
+                    </div>
+                </cfloop>
+            </div>
+        </div>
+    </div>--->
+
+    <!-- Latest blogs -->
+    
+    <div class="pt-5 blog-main">
+        <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
+        <div class="swiper py-5 blogSwiper h-max">
+            <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
+                
+            </div>
+        </div>
+    </div>
+            
+    
 </main>
