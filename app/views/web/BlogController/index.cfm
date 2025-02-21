@@ -60,7 +60,7 @@
                                 <p class="text--lightGray fs-12 fw-medium">#dateformat(blogs.createdat, 'MMMM DD, YYYY')#</p>
                             </div>
                             <div class="d-lg-block d-none position-relative">
-                                <img src="/images/blogs.jpg" class="img-fluid rounded-end-4">
+                                <img src="/images/blogs.jpg" width="320" class="rounded-end-4">
                             </div>
                         </a>
                     </cfloop>

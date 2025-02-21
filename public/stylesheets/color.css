@@ -43,3 +43,7 @@
 .text--iris {
     color: var(--iris);
 }
+
+.fill--iris{
+    fill: var(--iris);
+}
