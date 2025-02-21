@@ -18,10 +18,14 @@
 			<link href="/stylesheets/style.css" rel="stylesheet">
 			<link href="/stylesheets/utils.css" rel="stylesheet">
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
+			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
 			<link rel="preconnect" href="https://fonts.googleapis.com">
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 			<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+			<script src="/javascripts/htmx.min.js"></script>
+			<script src="/javascripts/quill.min.js"></script>
+
 		</head>
 		<body>
 			<!-- Navigation -->
@@ -205,7 +209,6 @@
 			<script src="/javascripts/bootstrap.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
-
 		</body>
 	</html>
 </cfif>

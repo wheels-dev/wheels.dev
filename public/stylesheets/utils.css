@@ -67,6 +67,10 @@
     height: 70vh;
 }
 
+.min-h-200{
+    min-height: 200px;
+}
+
 /* Size */
 .size-320{
     width: 320px;
@@ -177,3 +181,12 @@
     -webkit-line-clamp: 6;
 }
 
+.resize-none{
+    resize: none;
+}
+
+/* Outline */
+
+.outline-none{
+    outline: none;
+}
