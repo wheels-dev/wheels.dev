@@ -28,7 +28,11 @@ component extends="wheels.migrator.Migration" hint="creates tag table" {
     function down() {
         transaction {
             try {
+                // drop foreign key constraints using raw SQL
+                execute(sql="ALTER TABLE tags DROP CONSTRAINT IF EXISTS fk_tags_blog_id");
+                
                 // drop tags table
+                
                 dropTable(name = 'tags');
             } catch (any ex) {
                 local.exception = ex;
