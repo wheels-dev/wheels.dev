@@ -3,7 +3,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,create", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,loadFeatures,loadBlogs,loadGuides", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -11,12 +11,28 @@ component extends="app.Controllers.Controller" {
 	* View all Rules
 	**/
 	function index() {
-        featureModel = model("Feature"); // Get model instance
-        homeService = new app.services.HomeService(featureModel);
-        features = homeService.getAllFeatures(); // feature list to show in home page
-        
-        blogModel = model("Blog"); // Get model instance
-        blogs = blogModel.getAllBlogs(); // blog list to show in home page
-        
 	}
+
+    function loadFeatures() {
+        featureModel = model("Feature"); // Get Feature model instance
+        homeService = new app.services.HomeService(featureModel);
+        features = homeService.getAllFeatures(); // Get feature list
+        
+        renderPartial(partial="partials/_features", locals={ features = features }); // Return a partial view for HTMX
+    }
+
+    function loadBlogs() {
+        blogModel = model("Blog"); // Get Blog model instance
+        blogs = blogModel.getAllBlogs(); // Get blog list
+        
+        renderPartial(partial="partials/_blogs", locals={ blogs = blogs }); // Return a partial view for HTMX
+    }
+    
+    function loadGuides() {
+        guideModel = model("Guide"); // Get Guide model instance
+        guides = guideModel.getAllGuides(); // Get Guide list
+        
+        renderPartial(partial="partials/_guides", locals={ guides = guides }); // Return a partial view for HTMX
+    }
+    
 }
