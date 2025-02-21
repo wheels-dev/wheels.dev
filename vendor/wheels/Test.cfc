@@ -204,7 +204,7 @@ component output="false" displayName="Test" extends="wheels.Global"{
 	 * @display  Whether to display the debug call. False returns without outputting anything into the buffer. Good when you want to leave the debug command in the test for later purposes, but don't want it to display
 		*/
 	public any function debug(required string expression, boolean display = true) {
-		local.attributeArgs = {"var" = Evaluate(arguments.expression), "label" = arguments.expression};
+		local.attributeArgs = {"var" = evaluateExpression(arguments.expression), "label" = arguments.expression};
 		local.dump = "";
 
 		// this string will be added to the request key regardless of display argument
@@ -726,6 +726,59 @@ component output="false" displayName="Test" extends="wheels.Global"{
 	public any function $isCoreFile(required string path) {
 		local.path = Replace(arguments.path, ExpandPath("/"), "", "one");
 		return (Left(local.path, 7) == "wheels/" || ListFindNoCase("index.cfm", local.path));
+	}
+
+	public any function evaluateExpression(required string expression) {
+		local.parts = $splitOutsideFunctions(arguments.expression, ".");
+
+		try {
+			if (arrayLen(local.parts) == 1) {
+				if(structKeyExists(variables, local.parts[1])){
+					return variables[local.parts[1]];
+				} else if(findNoCase("(", local.parts[1])){
+					local.match = reFind("\(([^()]+)\)", local.parts[1], 1, true);
+					local.functionName = listToArray(local.parts[1], "(");
+					if(local.match.len[1] == 0){
+						return variables[local.functionName[1]]();
+					} else{
+						local.args = listToArray(local.match.match[2], "=");
+						if(arrayLen(local.args) == 2){
+							return invoke(variables, local.functionName[1], variables[local.args[2]]);
+						} else {
+							// Use the Evaluate function to run Built-in functions
+							return Evaluate("expression");
+						}
+					}
+				}
+			} else if (arrayLen(local.parts) == 2 && structKeyExists(variables, local.parts[1]) && !reFind("\\(", local.parts[2])) {
+				local.structRef = variables[local.parts[1]];
+				if (structKeyExists(local.structRef, local.parts[2])) {
+					return local.structRef[local.parts[2]];
+				}
+			} else {
+				local.match = reFind("\(([^()]+)\)", local.parts[2], 1, true);
+				if(local.match.len[1] == 0){
+					local.functionName = replaceNoCase(local.parts[2], "()", "");
+					local.structRef = variables[local.parts[1]];
+					if (structKeyExists(local.structRef, local.functionName)) {
+						return invoke(local.structRef, local.functionName);
+					}
+				} else {
+					if(findNoCase("=", local.match.match[2]) != 0){
+						local.args = listToArray(local.match.match[2], "=");
+						local.functionName = listToArray(local.parts[2], "(");
+						local.structRef = variables[local.parts[1]];
+						if (structKeyExists(local.structRef, local.functionName[1])) {
+							return invoke(local.structRef, local.functionName[1], variables[local.args[2]]);
+						}
+					}
+				}
+			}
+
+			throw("Invalid expression: #arguments.expression#");
+		} catch (any e) {
+			return "Error evaluating expression: " & e.message;
+		}
 	}
 
 	function onDIcomplete(){
