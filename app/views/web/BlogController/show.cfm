@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <div class="position-relative parent_comment">
+                            <div class="position-relative">
                                 <div class="d-flex align-items-start gap-3">
                                     <div class="bg-body-secondary rounded-5 flex-shrink-0" style="width:3rem; height:3rem">
                                     </div>
@@ -83,7 +83,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex pt-5 align-items-start gap-3 sub_comments position-relative" style="margin-left: 70px;">
+                                <div class="d-flex pt-5 align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                     <div class="bg-body-secondary rounded-5 flex-shrink-0" style="width:3rem; height:3rem">
                                     </div>
                                     <div class="p-3 rounded-4 bg-light">
@@ -94,7 +94,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="d-flex pt-5 align-items-start gap-3 sub_comments position-relative" style="margin-left: 70px;">
+                                <div class="d-flex pt-5 align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                     <div class="bg-body-secondary rounded-5 flex-shrink-0" style="width:3rem; height:3rem">
                                     </div>
                                     <div class="p-3 rounded-4 bg-light">

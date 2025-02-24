@@ -1,6 +1,6 @@
 <cfoutput query="features">
     <div class="col-lg-4">
-        <div class="px-4 pt-4 pb-2 bg-white border-transparent border-2 cards rounded-5 cursor-pointer shadow-sm">
+        <div class="px-4 py-4 bg-white border-transparent border-2 cards rounded-5 cursor-pointer shadow-sm">
             <div class="icon-container d-flex justify-content-center align-items-center">
                 #features.image#
             </div>

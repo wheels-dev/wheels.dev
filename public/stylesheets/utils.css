@@ -33,6 +33,11 @@
     font-size: clamp(1.25rem, 1.1774rem + 0.3226vw, 1.5rem);
 }
 
+.fs-32 {
+    /* max 32px, min 26px */
+    font-size: clamp(1.625rem, 1.5161rem + 0.4839vw, 2rem);
+}
+
 .fs-36 {
     /* max 36px, min 26px */
     font-size: clamp(1.625rem, 1.4435rem + 0.8065vw, 2.25rem);
@@ -189,4 +194,12 @@
 
 .outline-none{
     outline: none;
+}
+
+/* space between childs */
+
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0.75rem /* 12px */ * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0.75rem /* 12px */ * var(--tw-space-y-reverse));
 }

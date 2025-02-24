@@ -300,7 +300,7 @@
     <div class="container py-5 mt-5">
         <div class="row align-items-center gy-5">
             <div class="col-lg-6 text-center col-12">
-                <p class="fs-60 line-height-70 fw-bold">Welcome to our community</p>
+                <p class="fs-60 mb-3 line-height-70 fw-bold">Welcome to our community</p>
                 <button class="bg--primary fs-16 px-3 py-2 rounded text-white">Explore community</button>
             </div>
             <div class="col-lg-6 text-center col-12">
@@ -312,7 +312,7 @@
     <!-- Top contribute -->
     <div class="container py-5 mt-5">
         <div class="text-center">
-            <p class="fs-60 text--secondary line-height-70 fw-bold">Top Contribute</p>
+            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contribute</p>
             <p class="fs-22 text--secondary/70">7 individuals are supporting WHEELS.FW <br> Contribute on Open
                 Collective</p>
         </div>
