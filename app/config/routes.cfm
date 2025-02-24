@@ -30,11 +30,18 @@
 			.get(name = "guides", pattern = "guides", to = "web.GuidesController##Index")
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
-			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
-			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
-			// .get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")			
-			.get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
+			
+			// New routes for loading categories, statuses, and post types
+			.get(name = "loadCategories", pattern = "blog/loadCategories", to = "web.BlogController##loadCategories")
+			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
+			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
+			
+			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
+			.get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
+			// .get(name = "blog-detail", pattern = "[slug]", to = "web.BlogController##show")			
+			
+			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 		.end()
 
 		// The "wildcard" call below enables automatic mapping of "controller/action" type routes.

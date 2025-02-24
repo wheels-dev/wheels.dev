@@ -10,7 +10,7 @@ component extends="app.Models.Model" {
     }
 
     // fetch all post statuses
-    public function getAllPostStatuses(){
+    public function getAll(){
         var poststatuses = findAll();
         return poststatuses;
     }

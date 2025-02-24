@@ -10,47 +10,35 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Title <span class="text-danger">*</span>
                         </label>
-                        <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title"
-                            id="title" value="" required>
+                        <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" required>
                     </div>
 
-                    <cfoutput>
-                        <div class="mb-3">
-                            <label class="form-label mb-1 fs-14 fw-medium">
-                                Post Category <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control fs-14" name="categoryId" id="categoryId" required>
-                                <option value="">Select Category</option>
-                                <cfloop query="categorylist">
-                                    <option value="#id#">#name#</option>
-                                </cfloop>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label mb-1 fs-14 fw-medium">
+                            Post Category <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control fs-14" name="categoryId" id="categoryId" required hx-get="/blog/loadCategories" hx-trigger="load" hx-target="#categoryId" hx-swap="innerHTML">
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label mb-1 fs-14 fw-medium">
-                                Post Status <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control fs-14" name="statusId" id="statusId" required>
-                                <option value="">Select Status</option>
-                                <cfloop query="statuslist">
-                                    <option value="#id#">#name#</option>
-                                </cfloop>
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label mb-1 fs-14 fw-medium">
+                            Post Status <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control fs-14" name="statusId" id="statusId" required hx-get="/blog/loadStatuses" hx-trigger="load" hx-target="#statusId" hx-swap="innerHTML">
+                            <option value="">Select Status</option>
+                        </select>
+                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label mb-1 fs-14 fw-medium">
-                                Post Type <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control fs-14" name="posttypeId" id="posttypeId" required>
-                                <option value="">Select Post Type</option>
-                                <cfloop query="posttypelist">
-                                    <option value="#id#">#name#</option>
-                                </cfloop>
-                            </select>
-                        </div>
-                    </cfoutput>
+                    <div class="mb-3">
+                        <label class="form-label mb-1 fs-14 fw-medium">
+                            Post Type <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control fs-14" name="posttypeId" id="posttypeId" required hx-get="/blog/loadPostTypes" hx-trigger="load" hx-target="#posttypeId" hx-swap="innerHTML">
+                            <option value="">Select Post Type</option>
+                        </select>
+                    </div>
 
                     <div class="mb-3">
                         <label for="content" class="form-label mb-1 fs-14 fw-medium">
@@ -75,7 +63,6 @@
     </div>
 
     <script>
-       
         const quill = new Quill('#editor', { theme: 'snow' });
 
         function syncQuillContent() {
@@ -84,9 +71,7 @@
 
         document.getElementById('blogForm').addEventListener("submit", function (event) {
             syncQuillContent(); // Ensure content is set before submit
-        });
 
-        document.getElementById('blogForm').addEventListener("htmx:configRequest", function (event) {
             var isValid = true;
 
             const title = document.getElementById('title');
@@ -95,8 +80,6 @@
             const posttypeId = document.getElementById('posttypeId');
             const content = document.getElementById('content');
             const editor = document.getElementById("editor");
-
-            syncQuillContent(); // Sync content for validation
 
             // Reset validation styles
             [title, categoryId, statusId, posttypeId].forEach(field => field.classList.remove("is-invalid"));
@@ -135,7 +118,5 @@
         quill.on("text-change", function () {
             document.getElementById("preview").innerHTML = quill.root.innerHTML;
         });
-
     </script>
-
 </main>
