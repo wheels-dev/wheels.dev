@@ -11,7 +11,7 @@ component extends="app.Models.Model" {
     }
 
     // fetch all categories
-    public function getAllCategories(){
+    public function getAll(){
         var categories = findAll();
         return categories;
     }

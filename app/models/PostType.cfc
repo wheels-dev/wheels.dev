@@ -10,7 +10,7 @@ component extends="app.Models.Model" {
     }
 
     // fetch all post types
-    public function getAllPostTypes(){
+    public function getAll(){
         var posttypes = findAll();
         return posttypes;
     }
