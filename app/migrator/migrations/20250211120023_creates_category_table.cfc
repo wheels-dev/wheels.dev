@@ -5,9 +5,9 @@ component extends="wheels.migrator.Migration" hint="creates category table" {
             try {
                 // create categories table
                 var t = createTable(name='categories', force=false, id=true, primaryKey='id');
-                t.string(columnNames='name', nullable=false, default='', limit=255);
-                t.integer(columnNames='parent_id', nullable=true);
-                t.string(columnNames='description', nullable=true, default='', limit=500);
+                t.string(columnNames='name', null=false, default='', limit=255);
+                t.integer(columnNames='parent_id', null=true);
+                t.string(columnNames='description', null=true, default='', limit=500);
                 t.timestamps();
                 t.create();
                 transaction action="commit";

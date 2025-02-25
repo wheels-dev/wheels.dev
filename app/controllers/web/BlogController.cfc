@@ -12,7 +12,8 @@ component extends="app.Controllers.Controller" {
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
             
-        blogs = blogService.getAll();
+        blogs = blogModel.getAll();
+
         // Add code to render the blogs if needed
     }
 

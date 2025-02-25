@@ -5,12 +5,12 @@ component extends="wheels.migrator.Migration" hint="creates feature table" {
             try {
                 // create features table
                 t = createTable(name = 'features', force=false, id=true, primaryKey='id');
-                t.string(columnNames='title', nullable=false, default='', limit=255);
-                t.text(columnNames='description', nullable=true);
-                t.string(columnNames='image', nullable=true, limit=255);
-                t.boolean(columnNames='is_active', nullable=false, default=true);
-                t.integer(columnNames='created_by', nullable=false);
-                t.integer(columnNames='updated_by', nullable=true);
+                t.string(columnNames='title', null=false, default='', limit=255);
+                t.text(columnNames='description', null=true);
+                t.string(columnNames='image', null=true, limit=255);
+                t.boolean(columnNames='is_active', null=false, default=true);
+                t.integer(columnNames='created_by', null=false);
+                t.integer(columnNames='updated_by', null=true);
                 t.timestamps();
                 t.create();
 

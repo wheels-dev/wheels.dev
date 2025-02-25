@@ -5,18 +5,20 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
 			try {
 				// create blog_posts table
 				t = createTable(name = 'blog_posts', force=false, id=true, primaryKey='id');
-                t.string(columnNames='title', nullable=false, default='', limit=255);
-                t.string(columnNames='slug', nullable=false, default='', limit=255, unique=true);
-                t.text(columnNames='content', nullable=false);
-                t.string(columnNames='excerpt', nullable=true, default='', limit=500);
-                t.integer(columnNames='status_id', nullable=false);
-                t.integer(columnNames='category_id', nullable=false);
-                t.integer(columnNames='post_type_id', nullable=false);
-                t.integer(columnNames='created_by', nullable=false);
-                t.integer(columnNames='updated_by', nullable=true);
-                t.integer(columnNames='deleted_by', nullable=true);
-                t.datetime(columnNames='published_at', nullable=true);
-                t.boolean(columnNames='is_published', nullable=false, default=false);
+                t.string(columnNames='title', null=false, default='', limit=255);
+                t.string(columnNames='slug', null=false, default='', limit=255, unique=true);
+                t.text(columnNames='content', null=false);
+                t.string(columnNames='excerpt', null=false, default='', limit=500);
+                t.integer(columnNames='status_id', null=false);
+                t.integer(columnNames='category_id', null=false);
+                t.integer(columnNames='post_type_id', null=false);
+                t.integer(columnNames='created_by', null=false);
+                t.integer(columnNames='updated_by', null=true);
+                t.integer(columnNames='deleted_by', null=true);
+                t.datetime(columnNames='published_at', null=true);
+                t.boolean(columnNames='is_published', null=false, default=false);
+				t.boolean(columnNames='is_deleted', null=false, default=false);
+				t.boolean(columnNames='is_comment_closed', null=false, default=false);
                 t.timestamps();
                 t.create();
 

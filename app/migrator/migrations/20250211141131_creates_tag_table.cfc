@@ -5,10 +5,10 @@ component extends="wheels.migrator.Migration" hint="creates tag table" {
             try {
                 // create tags table
                 t = createTable(name = 'tags', force=false, id=true, primaryKey='id');
-                t.string(columnNames='name', nullable=false, default='', limit=255);
-                t.integer(columnNames='blog_id', nullable=false);
-                t.string(columnNames='description', nullable=true, default='', limit=500);
-                t.boolean(columnNames='is_active', nullable=false, default=true);
+                t.string(columnNames='name', null=false, default='', limit=255);
+                t.integer(columnNames='blog_id', null=false);
+                t.string(columnNames='description', null=true, default='', limit=500);
+                t.boolean(columnNames='is_active', null=false, default=true);
                 t.timestamps();
                 t.create();
 
