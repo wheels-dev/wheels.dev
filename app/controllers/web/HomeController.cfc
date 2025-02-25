@@ -1,5 +1,4 @@
-// Frontend home page
-// home controller
+// Home controller
 component extends="app.Controllers.Controller" {
 
     function config() {
@@ -8,31 +7,46 @@ component extends="app.Controllers.Controller" {
     }
 
     /**
-	* View all Rules
-	**/
-	function index() {
-	}
+     * View all Rules
+     **/
+    function index() {
+        // Add code to render the home page if needed
+    }
 
+    // Function to load features
     function loadFeatures() {
-        featureModel = model("Feature"); // Get Feature model instance
-        homeService = new app.services.HomeService(featureModel);
-        features = homeService.getAllFeatures(); // Get feature list
-        
-        renderPartial(partial="partials/_features", locals={ features = features }); // Return a partial view for HTMX
+        var featureModel = model("Feature"); // Get Feature model instance
+        var homeService = new app.services.HomeService(featureModel);
+        try {
+            features = homeService.getAllFeatures(); // Get feature list
+            renderPartial(partial="partials/features"); // Return a partial view for HTMX
+        } catch (any e) {
+            // Handle error
+            renderPartial(partial="partials/error", message="Failed to load features.");
+        }
     }
 
+    // Function to load blogs
     function loadBlogs() {
-        blogModel = model("Blog"); // Get Blog model instance
-        blogs = blogModel.getAll(); // Get blog list
-        
-        renderPartial(partial="partials/_blogs", locals={ blogs = blogs }); // Return a partial view for HTMX
+        var blogModel = model("Blog"); // Get Blog model instance
+        try {
+            blogs = blogModel.getAll(); // Get blog list
+            renderPartial(partial="partials/blogs"); // Return a partial view for HTMX
+        } catch (any e) {
+            // Handle error
+            renderPartial(partial="partials/error", message="Failed to load blogs.");
+        }
     }
     
+    // Function to load guides
     function loadGuides() {
-        guideModel = model("Guide"); // Get Guide model instance
-        guides = guideModel.getAllGuides(); // Get Guide list
-        
-        renderPartial(partial="partials/_guides", locals={ guides = guides }); // Return a partial view for HTMX
+        var guideModel = model("Guide"); // Get Guide model instance
+        try {
+            guides = guideModel.getAll(); // Get Guide list
+            renderPartial(partial="partials/guides"); // Return a partial view for HTMX
+        } catch (any e) {
+            // Handle error
+            renderPartial(partial="partials/error", message="Failed to load guides.");
+        }
     }
-    
 }
