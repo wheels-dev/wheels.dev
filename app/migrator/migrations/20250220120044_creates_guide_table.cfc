@@ -6,15 +6,15 @@ component extends="wheels.migrator.Migration" hint="creates guide table" {
 				// your code goes here
 				// create guides table
 				t = createTable(name='guides', force=false, id=true, primaryKey='id');
-				t.string(columnNames='tab', nullable=false, default='', limit=255);
-				t.string(columnNames='title', nullable=false, default='', limit=255);
-				t.string(columnNames='subtitle', nullable=false, default='', limit=255);
-				t.string(columnNames='heading_1', nullable=false, default='', limit=255);
-				t.string(columnNames='heading_2', nullable=false, default='', limit=255);
-				t.string(columnNames='heading_url', nullable=false, default='', limit=255);
-				t.text(columnNames='content', nullable=false);
-				t.integer(columnNames='parent_id', nullable=true);
-				t.string(columnNames='description', nullable=true, default='', limit=500);
+				t.string(columnNames='tab', null=false, default='', limit=255);
+				t.string(columnNames='title', null=false, default='', limit=255);
+				t.string(columnNames='subtitle', null=false, default='', limit=255);
+				t.string(columnNames='heading_1', null=false, default='', limit=255);
+				t.string(columnNames='heading_2', null=false, default='', limit=255);
+				t.string(columnNames='heading_url', null=false, default='', limit=255);
+				t.text(columnNames='content', null=false);
+				t.integer(columnNames='parent_id', null=true);
+				t.string(columnNames='description', null=true, default='', limit=500);
 				t.timestamps();
 				t.create();
 

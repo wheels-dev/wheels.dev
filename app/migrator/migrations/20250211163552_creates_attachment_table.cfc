@@ -5,13 +5,13 @@ component extends="wheels.migrator.Migration" hint="creates attachment table" {
             try {
                 // create attachments table
                 t = createTable(name = 'attachments', force=false, id=true, primaryKey='id');
-                t.string(columnNames='path', nullable=false, limit=255);
-                t.string(columnNames='file_name', nullable=false, limit=255);
-                t.string(columnNames='file_type', nullable=false, limit=50);
-                t.integer(columnNames='file_size', nullable=false);
-                t.integer(columnNames='blog_id', nullable=true);
-                t.integer(columnNames='comment_id', nullable=true);
-                t.integer(columnNames='uploaded_by', nullable=false);
+                t.string(columnNames='path', null=false, limit=255);
+                t.string(columnNames='file_name', null=false, limit=255);
+                t.string(columnNames='file_type', null=false, limit=50);
+                t.integer(columnNames='file_size', null=false);
+                t.integer(columnNames='blog_id', null=true);
+                t.integer(columnNames='comment_id', null=true);
+                t.integer(columnNames='uploaded_by', null=false);
                 t.timestamps();
                 t.create();
 

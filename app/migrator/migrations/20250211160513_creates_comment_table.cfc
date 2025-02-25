@@ -5,15 +5,15 @@ component extends="wheels.migrator.Migration" hint="creates comment table" {
             try {
                 // create comments table
                 t = createTable(name = 'comments', force=false, id=true, primaryKey='id');
-                t.text(columnNames='content', nullable=false);
-                t.boolean(columnNames='is_deleted', nullable=false, default=false);
-                t.integer(columnNames='comment_parent_id', nullable=true);
-                t.integer(columnNames='blog_id', nullable=false);
-                t.integer(columnNames='author_id', nullable=false);
-                t.integer(columnNames='updated_by', nullable=true);
-                t.integer(columnNames='deleted_by', nullable=true);
-                t.datetime(columnNames='published_at', nullable=true);
-                t.boolean(columnNames='is_published', nullable=false, default=false);
+                t.text(columnNames='content', null=false);
+                t.boolean(columnNames='is_deleted', null=false, default=false);
+                t.integer(columnNames='comment_parent_id', null=true);
+                t.integer(columnNames='blog_id', null=false);
+                t.integer(columnNames='author_id', null=false);
+                t.integer(columnNames='updated_by', null=true);
+                t.integer(columnNames='deleted_by', null=true);
+                t.datetime(columnNames='published_at', null=true);
+                t.boolean(columnNames='is_published', null=false, default=false);
                 t.timestamps();
                 t.create();
 

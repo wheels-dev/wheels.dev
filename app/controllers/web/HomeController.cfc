@@ -23,7 +23,7 @@ component extends="app.Controllers.Controller" {
 
     function loadBlogs() {
         blogModel = model("Blog"); // Get Blog model instance
-        blogs = blogModel.getAllBlogs(); // Get blog list
+        blogs = blogModel.getAll(); // Get blog list
         
         renderPartial(partial="partials/_blogs", locals={ blogs = blogs }); // Return a partial view for HTMX
     }

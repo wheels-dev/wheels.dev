@@ -5,9 +5,9 @@ component extends="wheels.migrator.Migration" hint="creates post_type table" {
             try {
                 // create post_types table
                 t = createTable(name = 'post_types', force=false, id=true, primaryKey='id');
-                t.string(columnNames='name', nullable=false, default='', limit=255);
-                t.string(columnNames='description', nullable=true, default='', limit=100);
-                t.boolean(columnNames='is_active', nullable=false, default=true);
+                t.string(columnNames='name', null=false, default='', limit=255);
+                t.string(columnNames='description', null=true, default='', limit=100);
+                t.boolean(columnNames='is_active', null=false, default=true);
                 t.timestamps();
                 t.create();
 
