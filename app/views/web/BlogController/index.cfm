@@ -1,4 +1,4 @@
-<main class="main-blog">
+<main class="main-bg">
     <!-- Blog filter -->
     <div class="container py-5">
         <div class="row">
@@ -10,7 +10,7 @@
                 <div class="d-flex flex-wrap align-items-center justify-content-end gap-3">
                     <!-- px-4 fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg--iris text-white -->
                     <button onclick="handleBlogFilter('All', this)"
-                        class="px-4 filter-blog-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg--iris text-white text--secondary">
+                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg--iris text-white text--secondary">
                         All
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -20,7 +20,7 @@
                         </svg>
                     </button>
                     <button onclick="handleBlogFilter('Archives', this)"
-                        class="px-4 filter-blog-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
                         Archives
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +30,7 @@
                         </svg>
                     </button>
                     <button onclick="handleBlogFilter('Categories', this)"
-                        class="px-4 filter-blog-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
                         Categories
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">

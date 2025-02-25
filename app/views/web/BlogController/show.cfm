@@ -1,4 +1,4 @@
-<main class="main-blog">
+<main class="main-bg">
     <cfoutput>
         <cfset tagList="">
             <cfloop query="tags">
