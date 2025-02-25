@@ -16,7 +16,7 @@ component extends="app.Models.Model" {
     }
 
     // fetch all tags
-    public function getAllTags(){
+    public function getAll(){
         var tags = findAll();
         return tags;
     }

@@ -12,15 +12,14 @@ component extends="app.Controllers.Controller" {
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
             
-        blogs = blogService.getAll();
+        blogs = blogModel.getAll();
+
         // Add code to render the blogs if needed
     }
 
     // Function to show the create blog form
     function create() {
-        categoryList = model("Category").getAll();
-        statusList = model("PostStatus").getAll();
-        postTypeList = model("PostType").getAll();
+        // Add code to render the create blog form if needed
     }
 
     // Function to store a new blog
