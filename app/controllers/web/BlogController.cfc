@@ -11,15 +11,16 @@ component extends="app.Controllers.Controller" {
     function index() {
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
-        var blogs = blogService.getAll();
+            
+        blogs = blogService.getAll();
         // Add code to render the blogs if needed
     }
 
     // Function to show the create blog form
     function create() {
-        var categoryList = model("Category").getAll();
-        var statusList = model("PostStatus").getAll();
-        var postTypeList = model("PostType").getAll();
+        categoryList = model("Category").getAll();
+        statusList = model("PostStatus").getAll();
+        postTypeList = model("PostType").getAll();
     }
 
     // Function to store a new blog
@@ -77,20 +78,19 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the dropdown
     function loadCategories() {
-        var categories = model("Category").getAll();
-        writeDump(categories);
+        categories = model("Category").getAll();
         renderPartial(partial="partials/categories");
     }
 
     // Function to load statuses for the dropdown
     function loadStatuses() {
-        var statuses = model("PostStatus").getAll();
+        statuses = model("PostStatus").getAll();
         renderPartial(partial="partials/statuses");
     }
 
     // Function to load post types for the dropdown
     function loadPostTypes() {
-        var postTypes = model("PostType").getAll();
+        postTypes = model("PostType").getAll();
         renderPartial(partial="partials/postTypes");
     }
 }
