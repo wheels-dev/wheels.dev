@@ -30,7 +30,7 @@ const handleBlogFilter = (type, button) => {
     blogsContainer.classList.add(type === 'All' ? 'col-lg-12' : 'col-lg-10');
     filtersContainer.classList.remove('d-none');
 
-    const buttons = document.querySelectorAll('.filter-blog-button');
+    const buttons = document.querySelectorAll('.filter-button');
     buttons.forEach(btn => {
         btn.classList.add('bg-transparent');
         btn.classList.remove('bg--iris', 'text-white');

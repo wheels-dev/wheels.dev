@@ -2,7 +2,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-lg-3 col-12">
+            <div class="col-lg-3 col-12 p-3" style="background-color: rgba(6, 18, 31, 1);">
                 <div class="accordion" id="guidesAccordion">
                     <div class="accordion-item bg-transparent border-0">
                         <div class="accordion-header pe-2 text-white">
@@ -12,12 +12,11 @@
                                 Introduction
                             </button>
                         </div>
-                        <div id="introduction" class="accordion-collapse collapse show"
-                            data-bs-parent="#guidesAccordion">
-                            <div class="accordion-body space-y-3 pt-3 px-0">
+                        <div id="introduction" class="accordion-collapse collapse show" data-bs-parent="#guidesAccordion">
+                            <div class="accordion-body pb-0 space-y-3 pt-3 px-0 parent_accordion position-relative">
                                 <div class="accordion" id="guidesSubAccordion">
                                     <div class="accordion-item bg-transparent border-0">
-                                        <div class="accordion-header rounded bg-white/10 ps-3 pe-2 py-2 text-white">
+                                        <div class="accordion-header rounded bg-white/10 ps-4 pe-2 py-2 text-white">
                                             <button
                                                 class="accordion-button fs-14 fw-semibold shadow-none p-0 bg-transparent text-white"
                                                 type="button" data-bs-toggle="collapse"
@@ -27,8 +26,8 @@
                                             </button>
                                         </div>
                                         <div id="introduction_getstarted" class="accordion-collapse collapse show" data-bs-parent="#guidesSubAccordion">
-                                            <div class="accordion-body ps-4">
-                                                <div class="space-y-3">
+                                            <div class="accordion-body ps-4 child_accordion position-relative">
+                                                <div class="space-y-3 ps-3">
                                                     <p class="fs-14 fw-normal text-white">Running Local Develoment
                                                         Servers</p>
                                                     <p class="fs-14 fw-normal text-white">Beginner Turtorial : Hello
@@ -40,10 +39,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="space-y-3 ps-3">
+                                <div class="space-y-3 ps-4">
                                     <p class="fs-14 fw-normal text-white">FrameWork and CFWheels</p>
                                     <p class="fs-14 fw-normal text-white">Requirements</p>
-                                    <p class="fs-14 fw-normal text-white">Manual Installation</p>
                                     <p class="fs-14 fw-normal text-white">Manual Installation</p>
                                     <p class="fs-14 fw-normal text-white">Upgrading</p>
                                     <p class="fs-14 fw-normal text-white">Screencasts</p>
