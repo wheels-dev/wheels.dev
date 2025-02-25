@@ -19,9 +19,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to show the create blog form
     function create() {
-        categoryList = model("Category").getAll();
-        statusList = model("PostStatus").getAll();
-        postTypeList = model("PostType").getAll();
+        // Add code to render the create blog form if needed
     }
 
     // Function to store a new blog

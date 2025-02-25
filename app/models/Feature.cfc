@@ -1,6 +1,5 @@
 component extends="app.Models.Model" {
     function config() {
-        datasource("wheels_dev");
         table("features");
         
 

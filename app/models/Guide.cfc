@@ -17,7 +17,7 @@ component extends="app.Models.Model" {
     }
 
     // fetch all guides
-    public function getAllGuides(){
+    public function getAll(){
         var guides = findAll();
         return guides;
     }
