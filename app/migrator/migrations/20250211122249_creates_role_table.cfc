@@ -5,8 +5,8 @@ component extends="wheels.migrator.Migration" hint="creates role table" {
             try {
                 // create roles table
                 t = createTable(name = 'roles');
-                t.string(columnNames='name', nullable=false, default='', limit=255);
-                t.string(columnNames='description', nullable=true, default='', limit=100);
+                t.string(columnNames='name', null=false, default='', limit=255);
+                t.string(columnNames='description', null=true, default='', limit=100);
                 t.timestamps();
                 t.create();
 
