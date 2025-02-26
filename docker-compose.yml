@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   miranda:
-    image: 10.100.10.116:5000/wheels.dev-img
+    image: 10.100.10.116:5000/wheels-img
     deploy:
       replicas: 3
       restart_policy:
@@ -15,13 +15,13 @@ services:
     ports:
       - "50052:8080"
     networks:
-      - wheels.dev-net
+      - wheels-net
     volumes:
-      - wheels.dev-data:/data
+      - wheels-data:/data
 
 networks:
-  wheels.dev-net:
+  wheels-net:
     driver: overlay
 
 volumes:
-  wheels.dev-data:
+  wheels-data:
