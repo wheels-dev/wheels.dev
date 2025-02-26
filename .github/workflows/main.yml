@@ -1,0 +1,36 @@
+name: Deploy to Docker Swarm
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-push:
+    runs-on: [self-hosted, linux, wheels]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build and Push Docker Image
+        run: |
+          box install
+          docker build -t ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels.dev-img .
+          docker push ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels.dev-img:dev
+          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SWARM_MANAGER_IP }}:/home/${{ secrets.SSH_USER }}/wheels.dev
+
+  deploy:
+    runs-on: [self-hosted, linux, wheels]
+    needs: build-and-push
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Docker Swarm
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SWARM_MANAGER_IP }} << 'EOF'
+            cd /home/${{ secrets.SSH_USER }}/wheels.dev
+            docker stack deploy -c docker-compose.yml miranda
+          EOF
