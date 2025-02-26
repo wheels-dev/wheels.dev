@@ -6,6 +6,7 @@
 		#includeContent()#
 	</cfoutput>
 <cfelse>
+	<!DOCTYPE html>
 	<html>
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
