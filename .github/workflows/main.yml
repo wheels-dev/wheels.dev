@@ -3,7 +3,7 @@ name: Deploy to Docker Swarm
 on:
   push:
     branches:
-      - dev
+      - develop
 
 jobs:
   build-and-push:
@@ -30,7 +30,6 @@ jobs:
 
       - name: Deploy to Docker Swarm
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SWARM_MANAGER_IP }} << 'EOF'
             cd /home/${{ secrets.SSH_USER }}/wheels.dev
             docker stack deploy -c docker-compose.yml miranda
           EOF
