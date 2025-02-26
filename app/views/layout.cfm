@@ -49,7 +49,7 @@
 									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/home">Home</a>
 								</li>
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="##">API</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/api">API</a>
 								</li>
 								<li class="nav-item px-3">
 									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/blog">Blogs</a>
