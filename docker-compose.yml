@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  miranda:
+    image: 10.100.10.116:5000/wheels.dev-img
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 15s
+      placement:
+        constraints: []
+    ports:
+      - "50052:8080"
+    networks:
+      - wheels.dev-net
+    volumes:
+      - wheels.dev-data:/data
+
+networks:
+  wheels.dev-net:
+    driver: overlay
+
+volumes:
+  wheels.dev-data:

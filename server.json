@@ -1,7 +1,11 @@
 {
     "name":"wheelsdev",
     "web":{
-        "host":"localhost",
+        "host":"0.0.0.0",
+        "http":{
+            "enable":true,
+            "port":"8080"
+        },
         "webroot":"public",
         "rewrites":{
             "enable":true,
