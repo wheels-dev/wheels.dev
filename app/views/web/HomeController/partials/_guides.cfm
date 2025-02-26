@@ -7,7 +7,7 @@
                     <cfset preview_guides_tab = guides.tab>
                     <cfset guides.tab = Replace(guides.tab, " ", "-", "all")>
                     <button 
-                        <cfif guides.id eq 1> 
+                        <cfif guides.tab eq 'INTRODUCTION'>
                             class="nav-link fs-18 text-white fw-bold rounded-2 active"
                         <cfelse>
                             class="nav-link fs-18 mt-3 text-white fw-bold rounded-2"
@@ -24,7 +24,7 @@
             <div class="tab-content" id="v-pills-tabContent">
                 <cfloop query= "guides">
                 <div 
-                    <cfif guides.id eq 1> 
+                    <cfif guides.tab eq 'INTRODUCTION'>
                         class="tab-pane fade show active"
                     <cfelse>
                         class="tab-pane fade"

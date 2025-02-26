@@ -1,7 +1,7 @@
 <main class="bg--secondary p-5">
 
-    <div class="container">
-        <div class="row">
+    <div class="container" id="guides-container" hx-get="/guides/loadingGuides" hx-trigger="load" hx-target="#guides-container" hx-swap="innerHTML">
+        <!---<div class="row">
             <div class="col-lg-3 col-12 p-3" style="background-color: rgba(6, 18, 31, 1);">
                 <div class="accordion" id="guidesAccordion">
                     <div class="accordion-item bg-transparent border-0">
@@ -86,6 +86,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>--->
     </div>
 </main>
