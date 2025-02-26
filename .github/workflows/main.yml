@@ -17,7 +17,7 @@ jobs:
         run: |
           box install
           docker build -t ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels.dev-img .
-          docker push ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels.dev-img:dev
+          docker push ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels.dev-img
           scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SWARM_MANAGER_IP }}:/home/${{ secrets.SSH_USER }}/wheels.dev
 
   deploy:
