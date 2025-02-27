@@ -1,5 +1,4 @@
 //  Login, Register UI
-// Frontend home page
 component extends="app.Controllers.Controller" {
 
     function config() {
