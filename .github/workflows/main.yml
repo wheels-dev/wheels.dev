@@ -15,6 +15,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
+          mv .env-testing .env
           box install
           docker build -t ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels-img .
           docker push ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels-img
