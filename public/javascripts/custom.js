@@ -32,19 +32,9 @@ const handleBlogFilter = (type, button) => {
 
     const buttons = document.querySelectorAll('.filter-button');
     buttons.forEach(btn => {
-        btn.classList.add('bg-transparent');
-        btn.classList.remove('bg--iris', 'text-white');
-        const svg = btn.querySelector('svg');
-        if (svg) {
-            svg.classList.add('d-none');
-        }
+        btn.classList.remove('active');
     });
-    const svg = button.querySelector('svg');
-    if (svg) {
-        svg.classList.remove('d-none');
-    }
-    button.classList.remove('bg-transparent');
-    button.classList.add('bg--iris', 'text-white');
+    button.classList.add('active');
 
     Array.from(filtersContainer.children).forEach(child => child.classList.add('d-none'));
 
@@ -66,19 +56,9 @@ const handleApiSection = (type, button) => {
 
     const buttons = document.querySelectorAll('.filter-button');
     buttons.forEach(btn => {
-        btn.classList.add('bg-transparent');
-        btn.classList.remove('bg--iris', 'text-white');
-        const svg = btn.querySelector('svg');
-        if (svg) {
-            svg.classList.add('d-none');
-        }
+        btn.classList.remove('active');
     });
-    const svg = button.querySelector('svg');
-    if (svg) {
-        svg.classList.remove('d-none');
-    }
-    button.classList.remove('bg-transparent');
-    button.classList.add('bg--iris', 'text-white');
+    button.classList.add('active');
 
     if(type === "All"){
         sectionContainer.classList.add("d-none");

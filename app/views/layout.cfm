@@ -20,6 +20,7 @@
 			<link href="/stylesheets/utils.css" rel="stylesheet">
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
 			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
+			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<link rel="preconnect" href="https://fonts.googleapis.com">
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 			<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -216,10 +217,9 @@
 
 			<!-- Bootstrap JS -->
 			<script src="/javascripts/bootstrap.js"></script>
-			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
-			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<script src="/javascripts/select2.min.js"></script>
 		</body>
 	</html>
