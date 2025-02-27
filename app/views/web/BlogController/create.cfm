@@ -57,42 +57,86 @@
 
                     <div class="mb-3">
                         <label class="form-label mb-1 fs-14 fw-medium">
-                            Attachment
+                            Cover Image
                         </label>
                         <input class="form-control fs-14" type="file" name="attachment" id="attachment" value="">
                     </div>
 
                     <div class="mb-3">
-                        <label for="content" class="form-label mb-1 fs-14 fw-medium">
-                            Content <span class="text-danger">*</span>
-                        </label>
-                        <textarea class="form-control fs-14" name="content" id="content" style="height: 300px;"></textarea>
+                    <div id="toolbar-container">
+                        <span class="ql-formats">
+                            <select class="ql-font"></select>
+                            <select class="ql-size"></select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-bold"></button>
+                            <button class="ql-italic"></button>
+                            <button class="ql-underline"></button>
+                            <button class="ql-strike"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <select class="ql-color"></select>
+                            <select class="ql-background"></select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-script" value="sub"></button>
+                            <button class="ql-script" value="super"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-header" value="1"></button>
+                            <button class="ql-header" value="2"></button>
+                            <button class="ql-blockquote"></button>
+                            <button class="ql-code-block"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-list" value="ordered"></button>
+                            <button class="ql-list" value="bullet"></button>
+                            <button class="ql-indent" value="-1"></button>
+                            <button class="ql-indent" value="+1"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-direction" value="rtl"></button>
+                            <select class="ql-align"></select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-link"></button>
+                            <button class="ql-image"></button>
+                            <button class="ql-video"></button>
+                            <button class="ql-formula"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-clean"></button>
+                        </span>
+                        </div>
+                        <div class="form-control" id="editor" style="height: 300px;"></div>
+                        <input class="form-control" type="hidden" name="content" id="content">
                     </div>
 
                     <div class="text-end">
                         <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                     </div>
                 </form>
-
                 <div id="message"></div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
     <script>
-        ClassicEditor
-            .create(document.querySelector('#content'))
-            .then(editor => {
-                window.editor = editor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        const quill = new Quill('#editor', {
+            modules: {
+            syntax: true,
+            toolbar: '#toolbar-container',
+            },
+            placeholder: 'Compose an epic...',
+            theme: 'snow',
+        });
+
+        function syncQuillContent() {
+            document.getElementById('content').value = quill.root.innerHTML.trim();
+        }
 
         document.getElementById('blogForm').addEventListener("submit", function (event) {
-            // Ensure content is set before submit
-            document.getElementById('content').value = editor.getData();
+            syncQuillContent(); // Ensure content is set before submit
 
             var isValid = true;
 
@@ -103,9 +147,11 @@
             const posttag = document.getElementById('posttag');
             const content = document.getElementById('content');
             const excerpt = document.getElementById('excerpt');
+            const editor = document.getElementById("editor");
 
             // Reset validation styles
             [title, categoryId, statusId, posttypeId, posttag, excerpt].forEach(field => field.classList.remove("is-invalid"));
+            editor.classList.remove("border-danger");
 
             // Validate fields
             if (title.value.trim() === "") {
@@ -132,9 +178,9 @@
                 isValid = false;
                 excerpt.classList.add("is-invalid");
             }
-            if (content.value.trim() === "") {
+            if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
                 isValid = false;
-                editor.ui.view.editable.element.classList.add("border-danger");
+                editor.classList.add("border-danger");
             }
 
             // If validation fails, prevent request
