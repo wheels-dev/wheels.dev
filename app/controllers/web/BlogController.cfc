@@ -13,13 +13,11 @@ component extends="app.Controllers.Controller" {
         var blogService = new app.services.BlogService(blogModel);
             
         blogs = blogModel.getAll();
-
-        // Add code to render the blogs if needed
     }
 
     // Function to show the create blog form
     function create() {
-        // Add code to render the create blog form if needed
+        renderView(layout="blogLayout");
     }
 
     // Function to store a new blog
@@ -28,10 +26,10 @@ component extends="app.Controllers.Controller" {
         var blogService = new app.services.BlogService(blogModel);
         try {
             var message = blogService.saveBlog(params);
-            redirectTo(action="create", success="#message#");
+            redirectTo(action="index", success="#message#");
         } catch (any e) {
             // Handle error
-            redirectTo(action="create", error="Failed to save blog post.");
+            redirectTo(action="error", errorMessage="Failed to save blog post.");
         }
     }
 
@@ -58,7 +56,7 @@ component extends="app.Controllers.Controller" {
             redirectTo(action="show", id=params.id, success="#message#");
         } catch (any e) {
             // Handle error
-            redirectTo(action="show", id=params.id, error="Failed to update blog post.");
+            redirectTo(action="show", id=params.id, errorMessage="Failed to update blog post.");
         }
     }
 
@@ -71,7 +69,7 @@ component extends="app.Controllers.Controller" {
             redirectTo(action="index", success="#message#");
         } catch (any e) {
             // Handle error
-            redirectTo(action="index", error="Failed to delete blog post.");
+            redirectTo(action="index", errorMessage="Failed to delete blog post.");
         }
     }
 
@@ -91,5 +89,10 @@ component extends="app.Controllers.Controller" {
     function loadPostTypes() {
         postTypes = model("PostType").getAll();
         renderPartial(partial="partials/postTypes");
+    }
+
+    function error() {
+        // Add code to render the error page if needed
+        renderPartial(partial="partials/_error");
     }
 }

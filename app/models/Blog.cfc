@@ -2,18 +2,21 @@ component extends="app.Models.Model" {
     function config(){
         table("blog_posts");
 
-        property(name="id", column="id", type="integer", required=true, primarykey=true);
-        property(name="title", column="title", type="string", required=true, default="");
+        property(name="id", column="id", type="integer", required=true, primaryKey=true);
+
+        property(name="title", column="title", type="string", required=true, default="", limit=255);
         property(name="content", column="content", type="text", required=true, default="");
-        property(name="slug", column="slug", type="string", required=true, default="", unique=true);
-        property(name="excerpt", column="excerpt", type="string", required=true, default="");
+        property(name="slug", column="slug", type="string", required=true, default="", limit=255);
+        property(name="excerpt", column="excerpt", type="string", required=true, default="", limit=500);
+
         property(name="isCommentClosed", column="is_comment_closed", type="boolean", required=true, default=false);
-        property(name="isDeleted", column="is_deleted", type="boolean", required=true, default=false);
-        property(name="ispublished", column="is_published", type="boolean", required=true, default=false);
-        property(name="createdAt", column="createdat", type="datetime", required=false, default="");
-        property(name="updatedAt", column="updatedat", type="datetime", required=false, default="");
-        property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
-        property(name="publishedAt", column="published_at", type="datetime", required=false, default="");
+        property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
+
+        property(name="createdAt", column="created_at", type="datetime", required=false);
+        property(name="updatedAt", column="updated_at", type="datetime", required=false);
+        property(name="deletedAt", column="deleted_at", type="datetime", required=false);
+        property(name="publishedAt", column="published_at", type="datetime", required=false);
+
 
         // Defining the foreign key
         property(name="statusId", column="status_id", type="integer", required=true, foreignkey=true, references="PostStatus(id)");
@@ -22,7 +25,7 @@ component extends="app.Models.Model" {
         property(name="createdBy", column="created_by", type="integer", required=true, foreignkey=true, references="User(id)");
         property(name="updatedBy", column="updated_by", type="integer", required=false, foreignkey=true, references="User(id)");
         property(name="deletedBy", column="deleted_by", type="integer", required=false, foreignkey=true, references="User(id)");
-        // property(name="blogId", column="blog_id", type="integer", required=false, foreignkey=true, references="Tag(id)");
+        property(name="tagId", column="blog_id", type="integer", required=false, foreignkey=true, references="Tag(id)");
 
         // Define associations
         belongsTo(name="User", foreignKey="createdBy"); 
@@ -35,5 +38,5 @@ component extends="app.Models.Model" {
     public function getAll() {
         var blogs = findAll(include="User", order="createdAt DESC");
         return blogs;
-    }    
+    }
 }

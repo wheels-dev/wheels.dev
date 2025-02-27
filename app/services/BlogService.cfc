@@ -36,13 +36,10 @@ component {
     function saveBlog(required struct blogData) {
         var message = "";
 
-        // A slug is a URL-friendly version of the post's title. 
-        // It usually appears at the end of the URL and is used to identify the post in a way that's easy to read and remember.
+        // slug  
         var slug = rereplace(lcase(blogData.title), "[^a-z0-9- ]", "", "all");
         blogData.slug = replace(slug, " ", "-", "all");
 
-        // Start the transaction
-        // transaction {
             try {
                 
                 // Check if the blog ID is greater than 0 (for editing an existing post)
@@ -58,7 +55,7 @@ component {
                         blog.postTypeId = blogData.postTypeId;
                         blog.slug = blogData.slug;
                         blog.updatedAt = now();
-                        blog.updatedBy = 1; // Replace with logged-in user ID
+                        blog.updatedBy = application.wo.GetSignedInUserId();
                         blog.save();
                         message = "Blog post updated successfully.";
                     } else {
@@ -67,7 +64,7 @@ component {
                 } else {
                     // Check if a blog post with the same title and category already exists
                     var existingBlog = variables.Blog.findFirst(
-                        where="title = '#blogData.title#' AND categoryId = '#blogData.categoryId#' AND isDeleted = 0"
+                        where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
                     );
 
                     if (!isObject(existingBlog)) {
@@ -81,17 +78,8 @@ component {
                         newBlog.postTypeId = blogData.postTypeId;
                         newBlog.createdAt = now();
                         newBlog.updatedAt = now();
-                        newBlog.createdBy = 1; // Replace with logged-in user ID
-                        newBlog.isDeleted = false;
+                        newBlog.createdBy = application.wo.GetSignedInUserId();
                         newBlog.save();
-
-                        // Save tags if find
-                        // if (structKeyExists(blogData, "posttag") && arrayLen(blogData.posttag) > 0) {
-                        // }
-                        
-                        // // Save attachments if find
-                        // if (structKeyExists(blogData, "attachment") && arrayLen(blogData.attachment) > 0) {
-                        // }
 
                         message = "Blog post created successfully.";
                     } else {
@@ -99,14 +87,10 @@ component {
                     }
                 }
                 
-                // transaction action="commit"; 
             } catch (any e) {
-                
-                // transaction action="rollback";
                 // Catch any errors and store the message
                 message = "Error: " & e.message;
             }
-        // }
 
         // Return the message
         return message;

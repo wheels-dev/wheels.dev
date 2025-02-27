@@ -12,6 +12,14 @@ component extends="wheels.migrator.Migration" hint="creates tag table" {
                 t.timestamps();
                 t.create();
 
+                // add foreign key constraint
+                addForeignKey(
+                    table='tags',
+                    column='blog_id',
+                    referenceTable='blog_posts',
+                    referenceColumn='id'
+                );
+
             } catch (any ex) {
                 local.exception = ex;
             }
