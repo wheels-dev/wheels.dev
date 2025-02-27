@@ -28,14 +28,6 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
 				// addForeignKey(table = "blog_posts", column = "created_by", referenceTable = "users", referenceColumn = "id");
 				// addForeignKey(table = "blog_posts", column = "updated_by", referenceTable = "users", referenceColumn = "id");
 				// addForeignKey(table = "blog_posts", column = "deleted_by", referenceTable = "users", referenceColumn = "id");
-				
-				// add foreign key constraint
-                addForeignKey(
-                    table='tags',
-                    column='blog_id',
-                    referenceTable='blog_posts',
-                    referenceColumn='id'
-                );
 
 				execute("
 					ALTER TABLE blog_posts ADD CONSTRAINT fk_blog_posts_created_by 
