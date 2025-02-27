@@ -32,19 +32,9 @@ const handleBlogFilter = (type, button) => {
 
     const buttons = document.querySelectorAll('.filter-button');
     buttons.forEach(btn => {
-        btn.classList.add('bg-transparent');
-        btn.classList.remove('bg--iris', 'text-white');
-        const svg = btn.querySelector('svg');
-        if (svg) {
-            svg.classList.add('d-none');
-        }
+        btn.classList.remove('active');
     });
-    const svg = button.querySelector('svg');
-    if (svg) {
-        svg.classList.remove('d-none');
-    }
-    button.classList.remove('bg-transparent');
-    button.classList.add('bg--iris', 'text-white');
+    button.classList.add('active');
 
     Array.from(filtersContainer.children).forEach(child => child.classList.add('d-none'));
 
@@ -61,33 +51,21 @@ const handleBlogFilter = (type, button) => {
 
 const handleApiSection = (type, button) => {
 
-    const apiContainer = document.getElementById('apiContainer');
     const sectionContainer = document.getElementById('sectionContainer');
+    const functionsContainer = document.getElementById('functionsContainer');
 
     const buttons = document.querySelectorAll('.filter-button');
     buttons.forEach(btn => {
-        btn.classList.add('bg-transparent');
-        btn.classList.remove('bg--iris', 'text-white');
-        const svg = btn.querySelector('svg');
-        if (svg) {
-            svg.classList.add('d-none');
-        }
+        btn.classList.remove('active');
     });
-    const svg = button.querySelector('svg');
-    if (svg) {
-        svg.classList.remove('d-none');
-    }
-    button.classList.remove('bg-transparent');
-    button.classList.add('bg--iris', 'text-white');
+    button.classList.add('active');
 
     if(type === "All"){
-        apiContainer.classList.remove("col-lg-9", "col-12");
-        apiContainer.classList.add("col-12");
-        sectionContainer.classList.add("d-none")
+        sectionContainer.classList.add("d-none");
+        functionsContainer.classList.remove("d-none");
     }else{
-        apiContainer.classList.add("col-lg-9", "col-12");
-        apiContainer.classList.remove("col-12");
-        sectionContainer.classList.remove("d-none")
+        sectionContainer.classList.remove("d-none");
+        functionsContainer.classList.add("d-none");
     }
 }
 
