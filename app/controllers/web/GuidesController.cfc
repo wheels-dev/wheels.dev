@@ -1,5 +1,5 @@
-// Frontend home page
-// home controller
+// Frontend guide page
+// guides controller
 component extends="app.Controllers.Controller" {
 
     function config() {

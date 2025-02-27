@@ -31,6 +31,8 @@
 			.get(name = "loadingGuides", pattern = "guides/loadingGuides", to = "web.GuidesController##loadingGuides")
 
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
+			.get(name = "loadVersions", pattern = "api/loadVersions", to = "web.ApiController##loadVersions")
+
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
 			
