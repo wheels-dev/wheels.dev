@@ -76,6 +76,7 @@ component {
                         newBlog.categoryId = blogData.categoryId;
                         newBlog.statusId = blogData.statusId;
                         newBlog.postTypeId = blogData.postTypeId;
+                        newBlog.excerpt = blogData.excerpt;
                         newBlog.createdAt = now();
                         newBlog.updatedAt = now();
                         newBlog.createdBy = application.wo.GetSignedInUserId();
