@@ -13,10 +13,10 @@ services:
       placement:
         constraints: []
     ports:
-      - "50052:60051"
+      - "50052:60052"
     environment:
-      - PORT=60051
-      - HEALTHCHECK_URI=http://127.0.0.1:60051/
+      - PORT=60052
+      - HEALTHCHECK_URI=http://127.0.0.1:60052/
     networks:
       - wheels-net
     volumes:

@@ -4,7 +4,7 @@
         "host":"0.0.0.0",
         "http":{
             "enable":true,
-            "port":"60051"
+            "port":"60052"
         },
         "webroot":"public",
         "rewrites":{
