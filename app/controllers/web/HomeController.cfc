@@ -37,16 +37,4 @@ component extends="app.Controllers.Controller" {
             renderPartial(partial="partials/error", message="Failed to load blogs.");
         }
     }
-    
-    // Function to load guides
-    function loadGuides() {
-        var guideModel = model("Guide"); // Get Guide model instance
-        try {
-            guides = guideModel.getAll(); // Get Guide list
-            renderPartial(partial="partials/guides"); // Return a partial view for HTMX
-        } catch (any e) {
-            // Handle error
-            renderPartial(partial="partials/error", message="Failed to load guides.");
-        }
-    }
 }
