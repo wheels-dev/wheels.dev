@@ -1,21 +1,23 @@
-component extends="wheels.migrator.Migration" hint="creates function_attribute table" {
+component extends="wheels.migrator.Migration" hint="creates permission table" {
 
 	function up() {
 		transaction {
 			try {
-				// create function_attributes table
-                t = createTable(name = 'function_attributes');
+				// create permissions table
+                t = createTable(name = 'permissions');
                 t.string(columnNames='name', null=false, default='', limit=255);
-				t.string(columnNames='type', null=true);
-				t.boolean(columnNames='required', null=false, default=true);
-				t.boolean(columnNames='default', null=false, default=true);
-				t.text(columnNames='description', null=true);
-				t.integer(columnNames='function_id', null=false);
+                t.boolean(columnNames='status', null=false, default='');
+				t.integer(columnNames='module_id', null=false);
                 t.timestamps();
                 t.create();
 
-				// Add Foreign Keys
-				addForeignKey(table = "function_attributes", column = "function_id", referenceTable = "functions", referenceColumn = "id");
+				// add foreign key constraint
+                addForeignKey(
+                    table='permissions',
+                    column='module_id',
+                    referenceTable='modules',
+                    referenceColumn='id'
+                );
 			} catch (any e) {
 				local.exception = e;
 			}
@@ -33,10 +35,10 @@ component extends="wheels.migrator.Migration" hint="creates function_attribute t
 		transaction {
 			try {
 				// drop foreign key constraints using raw SQL
-                execute(sql="ALTER TABLE function_attributes DROP CONSTRAINT IF EXISTS fk_function_attributes_function_id");
-
-				// drop function_attributes table
-                dropTable(name = 'function_attributes');
+                execute(sql="ALTER TABLE permissions DROP CONSTRAINT IF EXISTS fk_permissions_module_id");
+				
+				// drop permissions table
+                dropTable(name = 'permissions');
 			} catch (any e) {
 				local.exception = e;
 			}
