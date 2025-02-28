@@ -12,6 +12,4 @@ component extends="app.Controllers.Controller" {
     function authenticate() {
 
 	}
-
-
 }
