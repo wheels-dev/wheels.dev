@@ -1,4 +1,5 @@
 <main class="main">
+    <div id="message"></div>
     <!-- Hero Section -->
     <div class="hero-section position-relative">
         <div class="container d-flex flex-column justify-content-center w-100 align-items-center">

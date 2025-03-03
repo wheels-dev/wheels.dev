@@ -31,7 +31,7 @@
 
 			<cfset isUserAuth = find("/user/", cgi.path_info)>
 
-			<nav class="navbar <cfoutput> #isUserAuth ? "d-none" : ""# </cfoutput> sticky-top navbar-expand-lg py-2 nav-bg">
+			<!---<nav class="navbar <cfoutput> #isUserAuth ? "d-none" : ""# </cfoutput> sticky-top navbar-expand-lg py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="260">
@@ -72,14 +72,14 @@
 						</div>
 					</div>
 				</div>
-			</nav>
+			</nav>--->
 
 			<cfoutput>
 				#flashMessages()#
 				#includeContent()#
 			</cfoutput>
 
-			<footer class="bg-white <cfoutput> #isUserAuth ? "d-none" : ""# </cfoutput> pt-5 pb-3 border-top">
+			<!---<footer class="bg-white <cfoutput> #isUserAuth ? "d-none" : ""# </cfoutput> pt-5 pb-3 border-top">
 				<div class="container">
 					<div class="row gy-3 gx-5">
 						<div class="col-md-4">
@@ -206,7 +206,7 @@
 						</div>
 					</div>
 				</div>
-			</footer>
+			</footer>--->
 
 			<!-- Bootstrap JS -->
 			<script src="/javascripts/bootstrap.js"></script>
