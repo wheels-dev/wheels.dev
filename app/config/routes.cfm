@@ -17,8 +17,8 @@
 		.end()
 
 		.namespace("")
-			.get(name = "account-login", pattern = "login", to = "web.AccountController##Login")
-			.get(name = "account-authenticate", pattern = "account/authenticate", to = "web.AccountController##Authenticate")
+			.get(name = "auth-login", pattern = "login", to = "web.AuthController##Login")
+			.post(name = "auth-authenticate", pattern = "auth/authenticate", to = "web.AuthController##Authenticate")
 
 			// Routes for user authentication
 			.get(name = "login", pattern = "user/login", to = "web.AuthController##login")
