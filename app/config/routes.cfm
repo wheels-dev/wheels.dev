@@ -20,6 +20,13 @@
 			.get(name = "account-login", pattern = "login", to = "web.AccountController##Login")
 			.get(name = "account-authenticate", pattern = "account/authenticate", to = "web.AccountController##Authenticate")
 
+			// Routes for user authentication
+			.get(name = "login", pattern = "user/login", to = "web.AuthController##login")
+			.get(name = "register", pattern = "user/register", to = "web.AuthController##register")
+			.get(name = "forgot", pattern = "user/forgot-password", to = "web.AuthController##reset")
+			.get(name = "reset", pattern = "user/reset-password", to = "web.AuthController##forgot")
+			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
+
 			.get(name = "home", pattern = "home", to = "web.HomeController##Index")
 			// Route for loading features,blogs,guides with HTMX
 			.get(name = "loadFeatures", pattern = "home/loadFeatures", to = "web.HomeController##loadFeatures")
