@@ -39,6 +39,9 @@ component extends="wheels.migrator.Migration" hint="creates user table" {
     function down() {
         transaction {
             try {
+                // drop foreign key constraints using raw SQL
+                execute(sql="ALTER TABLE users DROP CONSTRAINT IF EXISTS fk_users_role_id");
+                
                 // drop users table
                 dropTable(name = 'users');
             } catch (any ex) {

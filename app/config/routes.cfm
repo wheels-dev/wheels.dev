@@ -9,9 +9,6 @@
 
 		.namespace("api")
 			.namespace("v1")
-				.get(name = "get_guides", pattern = "guides", to = "api.GuidesController##Index")
-				.get(name = "get_guide", pattern = "guides/:id", to = "api.GuidesController##Show")
-
 				.get(name = "get_blog_posts", pattern = "blog", to = "api.BlogController##Index")
 				.get(name = "get_blog_post", pattern = "blog/:id", to = "api.BlogController##Show")
 
@@ -20,22 +17,18 @@
 		.end()
 
 		.namespace("")
-			.get(name = "home", pattern = "home", to = "web.HomeController##Index")
-			// Route for loading features with HTMX
-			.get(name = "loadFeatures", pattern = "home/loadFeatures", to = "web.HomeController##loadFeatures")
-			// Route for loading blogs with HTMX
-			.get(name = "loadBlogs", pattern = "home/loadBlogs", to = "web.HomeController##loadBlogs")
-			// Route for loading guides with HTMX
-			.get(name = "loadGuides", pattern = "home/loadGuides", to = "web.HomeController##loadGuides")
-			.get(name = "guides", pattern = "guides", to = "web.GuidesController##Index")
-			.get(name = "loadingGuides", pattern = "guides/loadingGuides", to = "web.GuidesController##loadingGuides")
+			.get(name = "account-login", pattern = "login", to = "web.AccountController##Login")
+			.get(name = "account-authenticate", pattern = "account/authenticate", to = "web.AccountController##Authenticate")
 
-			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
-			.get(name = "loadVersions", pattern = "api/loadVersions", to = "web.ApiController##loadVersions")
+			.get(name = "home", pattern = "home", to = "web.HomeController##Index")
+			// Route for loading features,blogs,guides with HTMX
+			.get(name = "loadFeatures", pattern = "home/loadFeatures", to = "web.HomeController##loadFeatures")
+			.get(name = "loadBlogs", pattern = "home/loadBlogs", to = "web.HomeController##loadBlogs")
+			.get(name = "loadGuides", pattern = "home/loadGuides", to = "web.HomeController##loadGuides")
 
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
-			
+
 			// New routes for loading categories, statuses, and post types
 			.get(name = "loadCategories", pattern = "blog/loadCategories", to = "web.BlogController##loadCategories")
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
