@@ -63,57 +63,57 @@
                     </div>
 
                     <div class="mb-3">
-                    <div id="toolbar-container">
-                        <span class="ql-formats">
-                            <select class="ql-font"></select>
-                            <select class="ql-size"></select>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-bold"></button>
-                            <button class="ql-italic"></button>
-                            <button class="ql-underline"></button>
-                            <button class="ql-strike"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <select class="ql-color"></select>
-                            <select class="ql-background"></select>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-script" value="sub"></button>
-                            <button class="ql-script" value="super"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-header" value="1"></button>
-                            <button class="ql-header" value="2"></button>
-                            <button class="ql-blockquote"></button>
-                            <button class="ql-code-block"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-list" value="ordered"></button>
-                            <button class="ql-list" value="bullet"></button>
-                            <button class="ql-indent" value="-1"></button>
-                            <button class="ql-indent" value="+1"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-direction" value="rtl"></button>
-                            <select class="ql-align"></select>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-link"></button>
-                            <button class="ql-image"></button>
-                            <button class="ql-video"></button>
-                            <button class="ql-formula"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <button class="ql-clean"></button>
-                        </span>
+                        <div id="toolbar-container" class="border-bottom-0 border rounded-top">
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <select class="ql-font"></select>
+                                <select class="ql-size"></select>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                                <button class="ql-strike"></button>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <select class="ql-color"></select>
+                                <select class="ql-background"></select>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-script" value="sub"></button>
+                                <button class="ql-script" value="super"></button>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-header" value="1"></button>
+                                <button class="ql-header" value="2"></button>
+                                <button class="ql-blockquote"></button>
+                                <button class="ql-code-block"></button>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-list" value="ordered"></button>
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-indent" value="-1"></button>
+                                <button class="ql-indent" value="+1"></button>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-direction" value="rtl"></button>
+                                <select class="ql-align"></select>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-link"></button>
+                                <button class="ql-image"></button>
+                                <button class="ql-video"></button>
+                                <button class="ql-formula"></button>
+                            </span>
+                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <button class="ql-clean"></button>
+                            </span>
                         </div>
-                        <div class="form-control" id="editor" style="height: 300px;"></div>
+                        <div class="form-control border border-top-0 rounded-top-0" id="editor" style="height: 300px;"></div>
                         <input class="form-control" type="hidden" name="content" id="content">
                     </div>
 
                     <div class="text-end">
-                        <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
+                        <button type="submit" class="bg--secondary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                     </div>
                 </form>
                 <div id="message"></div>
@@ -214,11 +214,6 @@
             updateCharacterCount(textarea.id, counterId, maxChars);
             });
         });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            $('#posttypeId').select2({});
-            $('#statusId').select2({});
-            $('#categoryId').select2({});
-        });
+  
     </script>
 </main>
