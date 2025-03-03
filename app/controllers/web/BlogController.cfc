@@ -26,7 +26,7 @@ component extends="app.Controllers.Controller" {
         var blogService = new app.services.BlogService(blogModel);
         try {
             var message = blogService.saveBlog(params);
-            redirectTo(action="index", success="#message#");
+            redirectTo(action="index");
         } catch (any e) {
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save blog post.");
