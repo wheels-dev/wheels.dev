@@ -16,6 +16,8 @@ component extends="app.Models.Model" {
         // Defining the foreign key
         property(name="roleid", column="role_id", type="integer", required=false, foreignkey=true, references="Role(id)");
         
+        belongsTo(name="Role", foreignKey="roleid");
+
     }
 
     // fetch all users

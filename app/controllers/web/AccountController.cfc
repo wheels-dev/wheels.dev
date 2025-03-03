@@ -1,15 +1,11 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="login,register,authenticate", params="key", paramsTypes="integer", handler="login");
+        verifies(except="Index", params="key", paramsTypes="integer", handler="Index");
         usesLayout("/layout");
     }
 
-	function login() {
-
+	function Index() {
 	}
-	
-    function authenticate() {
 
-	}
 }
