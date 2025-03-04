@@ -87,87 +87,115 @@
 			<cfif cgi.path_info NEQ '/guides'>
 				<footer class="bg-white pt-5 pb-3 border-top">
 					<div class="container">
-						<div class="row gy-3 gx-5">
-							<div class="col-md-4">
+						<div class="row text-lg-left text-center gy-lg-0 gy-3 gx-5">
+							<div class="col-lg-4">
 								<img src="/images/wheels-logo.png" width="284" alt="">
 								<div class="mt-3">
 									<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
-									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the latest updates from
+									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the
+										latest updates from
 										Wheels.dev</p>
 								</div>
 								<div class="pt-3">
-									<input type="email" class="form-control mb-2 fs-12" placeholder="your@email.com">
-									<button class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe to
+									<input type="email" class="form-control mb-2 fs-12"
+										placeholder="your@email.com">
+									<button
+										class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe
+										to
 										newsletter</button>
 								</div>
 							</div>
-							<div class="col-md-2">
+							<div class="col-lg-2">
 								<h6 class="fw-bold fs-16 text--secondary">Guides</h6>
 								<ul class="list-unstyled">
 									<li class="mt-3"><a href="#"
 											class="text--secondary fs-14 text-decoration-none">Introduction</a>
 									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Command Line
+									<li class="mt-3"><a href="#"
+											class="text--secondary fs-14 text-decoration-none">Command Line
 											Tools</a></li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Working with
+									<li class="mt-3"><a href="#"
+											class="text--secondary fs-14 text-decoration-none">Working with
 											Wheels</a></li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Handling
+									<li class="mt-3"><a href="#"
+											class="text--secondary fs-14 text-decoration-none">Handling
 											Requests</a></li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Multiple
+									<li class="mt-3"><a href="#"
+											class="text--secondary fs-14 text-decoration-none">Multiple
 											Formats</a>
 									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Displaying
+									<li class="mt-3"><a href="#"
+											class="text--secondary fs-14 text-decoration-none">Displaying
 											Views</a>
 									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Database
+									<li class="mt-3"><a href="#"
+											class="text--secondary fs-14 text-decoration-none">Database
 											Interaction</a></li>
 								</ul>
 							</div>
-							<div class="col-md-2">
-								<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
-								<ul class="list-unstyled">
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Log in</a>
-									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Entries
-											feed</a>
-									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Comments
-											feed</a>
-									</li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">WordPress.org</a>
-									</li>
-								</ul>
-							</div>
-							<div class="col-md-2">
-								<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
-								<ul class="list-unstyled">
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Installing and
-											Using
-											PI</a></li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Developing
-											Plugins</a></li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Publishing
-											Plugins</a></li>
-								</ul>
-							</div>
-							<div class="col-md-2">
-								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
-								<ul class="list-unstyled">
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Source
-											Code</a></li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Issue
-											Tracker</a>
-									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Sponsor Us</a>
-									</li>
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Community</a>
-									</li>
-								</ul>
+							<div class="col-lg-6 row gy-lg-0 gy-3 gx-5">
+								<div class="col-lg-4">
+									<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
+									<ul class="list-unstyled">
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Log in</a>
+										</li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Entries
+												feed</a>
+										</li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Comments
+												feed</a>
+										</li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">WordPress.org</a>
+										</li>
+									</ul>
+								</div>
+								<div class="col-lg-4">
+									<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
+									<ul class="list-unstyled">
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Installing
+												and
+												Using
+												PI</a></li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Developing
+												Plugins</a></li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Publishing
+												Plugins</a></li>
+									</ul>
+								</div>
+								<div class="col-lg-4">
+									<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
+									<ul class="list-unstyled">
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Source
+												Code</a></li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Issue
+												Tracker</a>
+										</li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Sponsor
+												Us</a>
+										</li>
+										<li class="mt-3"><a href="#"
+												class="text--secondary fs-14 text-decoration-none">Community</a>
+										</li>
+									</ul>
+								</div>
+								<div class="col-12">
+									<script src='https://opencollective.com/wheels-fw/banner.js?style={"a":{"color":"var(--primary)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
+								</div>
 							</div>
 						</div>
 						<hr>
-						<div class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
+						<div
+							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
 							<div>
 								<p class="p-0 m-0 fs-12">&copy; 2025 Wheels. All rights reserved.</p>
 								<p class="fs-12">Wheels is licensed under the Apache License, Version 2.0.</p>
@@ -175,14 +203,16 @@
 							</div>
 							<div class="d-flex justify-content-center gap-3">
 								<a href="#" class="text-dark">
-									<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<svg width="25" height="24" viewBox="0 0 25 24" fill="none"
+										xmlns="http://www.w3.org/2000/svg">
 										<path
 											d="M12.2852 0.248535C10.6719 0.248535 9.07436 0.56256 7.58385 1.17268C6.09334 1.7828 4.73904 2.67707 3.59825 3.80442C1.29433 6.08121 0 9.16921 0 12.3891C0 17.7552 3.52585 22.3079 8.40307 23.9226C9.01733 24.0197 9.21389 23.6434 9.21389 23.3156V21.2638C5.8109 21.9923 5.08607 19.637 5.08607 19.637C4.52095 18.2287 3.72241 17.8523 3.72241 17.8523C2.60446 17.0996 3.80841 17.1239 3.80841 17.1239C5.03693 17.2089 5.68804 18.3744 5.68804 18.3744C6.75686 20.2197 8.56278 19.6734 9.26303 19.382C9.3736 18.5929 9.69302 18.0587 10.037 17.7552C7.30969 17.4517 4.44724 16.4076 4.44724 11.7821C4.44724 10.4345 4.91408 9.35395 5.71261 8.49197C5.58976 8.18845 5.15978 6.92584 5.83547 5.28686C5.83547 5.28686 6.86742 4.95907 9.21389 6.5252C10.1844 6.25811 11.241 6.12456 12.2852 6.12456C13.3294 6.12456 14.386 6.25811 15.3565 6.5252C17.703 4.95907 18.7349 5.28686 18.7349 5.28686C19.4106 6.92584 18.9806 8.18845 18.8578 8.49197C19.6563 9.35395 20.1231 10.4345 20.1231 11.7821C20.1231 16.4197 17.2484 17.4396 14.5088 17.7431C14.9511 18.1194 15.3565 18.86 15.3565 19.9891V23.3156C15.3565 23.6434 15.5531 24.0319 16.1796 23.9226C21.0568 22.2958 24.5704 17.7552 24.5704 12.3891C24.5704 10.7948 24.2526 9.21605 23.6352 7.7431C23.0178 6.27014 22.1129 4.93177 20.9721 3.80442C19.8313 2.67707 18.477 1.7828 16.9865 1.17268C15.496 0.56256 13.8985 0.248535 12.2852 0.248535Z"
 											fill="#0C1620" />
 									</svg>
 								</a>
 								<a href="#" class="text-dark">
-									<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+										xmlns="http://www.w3.org/2000/svg">
 										<path
 											d="M10.5201 0.248536C8.69846 0.247922 6.90798 0.721253 5.32461 1.62202C3.74124 2.52279 2.41945 3.81999 1.48913 5.38619C0.558809 6.95238 0.0519596 8.73366 0.0183855 10.555C-0.0151887 12.3764 0.425667 14.1751 1.29764 15.7745L0.0551367 20.132C0.011417 20.285 0.0102522 20.4471 0.051768 20.6007C0.0932837 20.7543 0.175908 20.8937 0.290748 21.0039C0.405588 21.114 0.548296 21.1908 0.703512 21.2259C0.858728 21.261 1.02058 21.2531 1.17164 21.203L5.26313 19.8398C6.65763 20.6456 8.21882 21.1199 9.82592 21.2258C11.433 21.3317 13.043 21.0666 14.5312 20.4508C16.0194 19.835 17.346 18.8851 18.4084 17.6745C19.4708 16.464 20.2404 15.0253 20.6578 13.4698C21.0753 11.9142 21.1292 10.2835 20.8156 8.70372C20.5019 7.12397 19.8291 5.63754 18.849 4.35943C17.869 3.08132 16.6081 2.04579 15.1638 1.33295C13.7196 0.620115 12.1307 0.249074 10.5201 0.248536ZM7.02013 8.99854C7.02013 8.76647 7.11232 8.54391 7.27641 8.37982C7.4405 8.21572 7.66306 8.12354 7.89513 8.12354H13.1451C13.3772 8.12354 13.5997 8.21572 13.7638 8.37982C13.9279 8.54391 14.0201 8.76647 14.0201 8.99854C14.0201 9.2306 13.9279 9.45316 13.7638 9.61725C13.5997 9.78135 13.3772 9.87354 13.1451 9.87354H7.89513C7.66306 9.87354 7.4405 9.78135 7.27641 9.61725C7.11232 9.45316 7.02013 9.2306 7.02013 8.99854ZM7.89513 11.6235H11.3951C11.6272 11.6235 11.8497 11.7157 12.0138 11.8798C12.1779 12.0439 12.2701 12.2665 12.2701 12.4985C12.2701 12.7306 12.1779 12.9532 12.0138 13.1173C11.8497 13.2814 11.6272 13.3735 11.3951 13.3735H7.89513C7.66306 13.3735 7.4405 13.2814 7.27641 13.1173C7.11232 12.9532 7.02013 12.7306 7.02013 12.4985C7.02013 12.2665 7.11232 12.0439 7.27641 11.8798C7.4405 11.7157 7.66306 11.6235 7.89513 11.6235Z"
 											fill="#0C1620" />
@@ -190,10 +220,12 @@
 
 								</a>
 								<a href="#" class="text-dark">
-									<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-										<mask id="mask0_129_385" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0"
-											width="25" height="24">
-											<path d="M0.845703 0.248535H24.5386V23.9414H0.845703V0.248535Z" fill="white" />
+									<svg width="25" height="24" viewBox="0 0 25 24" fill="none"
+										xmlns="http://www.w3.org/2000/svg">
+										<mask id="mask0_129_385" style="mask-type:luminance"
+											maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
+											<path d="M0.845703 0.248535H24.5386V23.9414H0.845703V0.248535Z"
+												fill="white" />
 										</mask>
 										<g mask="url(#mask0_129_385)">
 											<path
@@ -203,7 +235,8 @@
 									</svg>
 								</a>
 								<a href="#" class="text-dark">
-									<svg width="13" height="24" viewBox="0 0 13 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<svg width="13" height="24" viewBox="0 0 13 24" fill="none"
+										xmlns="http://www.w3.org/2000/svg">
 										<path
 											d="M8.71454 13.8719H11.6396L12.8096 9.13336H8.71454V6.76407C8.71454 5.54389 8.71454 4.39479 11.0546 4.39479H12.8096V0.414385C12.4282 0.363446 10.9879 0.248535 9.46686 0.248535C6.29026 0.248535 4.03447 2.21149 4.03447 5.81636V9.13336H0.524414V13.8719H4.03447V23.9414H8.71454V13.8719Z"
 											fill="#0C1620" />
