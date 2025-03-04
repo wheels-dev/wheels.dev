@@ -3,7 +3,7 @@
         <div class="row justify-content-center justify-content-lg-between">
             <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                 <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
-                <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true">
+                <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                     <input class="form-control" type="hidden" name="id" id="id" value="">
 
                     <div class="mb-3">
