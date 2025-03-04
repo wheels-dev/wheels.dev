@@ -239,3 +239,7 @@ main.main-bg {
     color: white !important;
     border-color: var(--iris) !important;
 }
+
+.opencollective-banner{
+    height: 150px;
+}
