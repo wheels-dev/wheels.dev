@@ -255,6 +255,8 @@ component output="false" extends="wheels.Global"{
 				$wheels.className = $wheels.metaData.displayName;
 			} else if (findNoCase("controllers", $wheels.metaData.fullname)){
 				$wheels.className = "controller";
+			} else if (findNoCase("models", $wheels.metaData.fullname)){
+				$wheels.className = "model";
 			} else {
 				$wheels.className = Reverse(SpanExcluding(Reverse($wheels.metaData.name), "."));
 			}
