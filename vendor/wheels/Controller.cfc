@@ -165,7 +165,11 @@ component output="false" displayName="Controller" extends="wheels.Global"{
 			local.functionName = local.method.name;
 
 			// Only add public, non-inherited methods
-			if (local.method.access eq "public") {
+			if (
+				local.method.access eq "public"
+				&& !structKeyExists(variables, local.method.name)
+				&& !structKeyExists(this, local.method.name)
+			) {
 				variables[local.functionName] = componentInstance[local.functionName];
 				this[local.functionName] = componentInstance[local.functionName];
 			}
