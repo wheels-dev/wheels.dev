@@ -3,4 +3,10 @@
 public function GetSignedInUserId(){
     return 6;
 }
+public function GetBloggerId(){
+    return 2;
+}
+public function SetActive(){
+    return 1;
+}
 </cfscript>

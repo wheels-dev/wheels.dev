@@ -62,6 +62,24 @@
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Plugins</a>
 							</li>
 						</ul>
+						<cfif StructKeyExists(session, "userId") and session.userId neq ''>
+							<cfoutput>
+							<li class="nav-item px-3">
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="##">#session.username#</a>
+							</li>
+							</cfoutput>
+							
+							<li class="nav-item px-3">
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/logout">Logout</a>
+							</li>
+						<cfelse>
+							<li class="nav-item px-3">
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/login">Login</a>
+							</li>
+							<li class="nav-item px-3">
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/register">Register</a>
+							</li>
+						</cfif>
 						<div class="d-lg-block d-none">
 							<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<rect width="40" height="39.4186" rx="10" fill="#EF3B2D" />
