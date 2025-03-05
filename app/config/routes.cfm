@@ -18,11 +18,14 @@
 
 		.namespace("")
 			.get(name = "auth-login", pattern = "login", to = "web.AuthController##Login")
+			.get(name = "auth-register", pattern = "register", to = "web.AuthController##Register")
+			.get(name = "auth-logout", pattern = "logout", to = "web.AuthController##Logout")
 			.post(name = "auth-authenticate", pattern = "auth/authenticate", to = "web.AuthController##Authenticate")
+			.post(name = "auth-store", pattern = "auth/store", to = "web.AuthController##Store")
 
 			// Routes for user authentication
-			.get(name = "login", pattern = "user/login", to = "web.AuthController##login")
-			.get(name = "register", pattern = "user/register", to = "web.AuthController##register")
+			// .get(name = "login", pattern = "user/login", to = "web.AuthController##login")
+			// .get(name = "register", pattern = "user/register", to = "web.AuthController##register")
 			.get(name = "forgot", pattern = "user/forgot-password", to = "web.AuthController##reset")
 			.get(name = "reset", pattern = "user/reset-password", to = "web.AuthController##forgot")
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")

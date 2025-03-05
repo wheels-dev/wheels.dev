@@ -9,9 +9,7 @@
                     <h1 class="fs-24 mb-0 fw-bold text--secondary">Welcome Back</h1>
                     <p class="fs-16">Please login to your account</p>
                 </div>
-                <div id="loginmessage"></div>
-
-                <form class="pt-3 px-1 needs-validation" id="loginForm" hx-target="#loginmessage" class="needs-validation" novalidate hx-validate="true" hx-post="/auth/authenticate" hx-swap="innerHTML">
+                <form class="pt-3 px-1 needs-validation" id="loginForm" novalidate hx-validate="true" hx-post="/auth/authenticate">
                     <div class="mb-3">
                         <label for="email" class="form-label fs-14 fw-medium">Email address</label>
                         <input type="email" placeholder="Enter your email address" class="form-control fs-14" id="email" name="email"
@@ -31,7 +29,7 @@
                             <a href="/user/forgot-password" class="text-primary fs-14">Forgot Password</a>
                             <p class="fs-14">
                                 Don't have an account ?
-                                <a href="/user/register" class="text-primary">Register here</a>
+                                <a href="/register" class="text-primary">Register here</a>
                             </p>
                         </div>
                     </div>
@@ -42,35 +40,6 @@
 </main>
 
 <script>
-
-    document.getElementById('loginForm').addEventListener("submit", function (event) {
-            var isValid = true;
-
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-           
-
-            // Reset validation styles
-            [email, password].forEach(field => field.classList.remove("is-invalid"));
-
-            // Validate fields
-            if (email.value.trim() === "") {
-                isValid = false;
-                email.classList.add("is-invalid");
-            }
-            if (password.value.trim() === "") {
-                isValid = false;
-                password.classList.add("is-invalid");
-            }
-            
-            // If validation fails, prevent request
-            if (!isValid) {
-                event.preventDefault();
-                alert("Please fill out all required fields.");
-                return false;
-            }
-        });
-
     (function () {
         'use strict'
         var form = document.querySelector('.needs-validation')

@@ -27,6 +27,7 @@ component output="false" {
 
 	// We turn on "sessionManagement" by default since the Flash uses it.
 	this.sessionManagement = true;
+	this.sessionTimeout = createTimeSpan(0, 0, 30, 0); // 30 minutes idle timeout
 
 	// If a plugin has a jar or class file, automatically add the mapping to this.javasettings.
 	this.wheels.pluginDir = this.appDir & "plugins";
@@ -96,6 +97,7 @@ component output="false" {
 	}
 
 	public void function onSessionStart() {
+		session.userId = "";
 		local.lockName = "reloadLock" & application.applicationName;
 
 		// Fix for shared application name (issue 359).
@@ -123,6 +125,23 @@ component output="false" {
 	}
 
 	public boolean function onRequestStart( string targetPage ) {
+		if (structKeyExists(session, "userId") && session.userId neq "") {
+			// Check if lastActivity is set
+			if (structKeyExists(session, "lastActivity")) {
+				var timeSinceLastActivity = dateDiff("n", session.lastActivity, now());
+				
+				// If idle for more than 30 minutes, log out
+				if (timeSinceLastActivity >= 30) {
+					structDelete(session, "userId");
+					structDelete(session, "lastActivity");
+					location(url="/auth/login", addtoken=false);
+					return false;
+				}
+			}
+			
+			// Update last activity timestamp
+			session.lastActivity = now();
+		}
 
 		// Added this section so that whenever the format parameter is passed in the URL and it is junit, json or txt then the content will be served without the head and body tags
 		if(structKeyExists(url, "format") && listFindNoCase("junit,json,txt", url.format))

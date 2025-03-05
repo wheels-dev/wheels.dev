@@ -1,7 +1,13 @@
 <main class="main">
-    <div id="message"></div>
     <!-- Hero Section -->
     <div class="hero-section position-relative">
+        <cfoutput>
+            <cfif structKeyExists(session, "message")>
+                <div id="message">#session.message#</div>
+                <div>Welcome #session.username#</div>
+                <cfset structDelete(session, "message")> <!-- Clear message after displaying -->
+            </cfif>
+        </cfoutput>
         <div class="container d-flex flex-column justify-content-center w-100 align-items-center">
             <h1 class="fs-64 fw-bolder text--secondary text-center position-relative">Wheels-The Fast &
                 Fun<br>CFML Framework!</h1>

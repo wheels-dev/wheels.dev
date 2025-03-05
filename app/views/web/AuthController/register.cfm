@@ -10,42 +10,42 @@
                     <p class="fs-16">Please register your account!</p>
                 </div>
 
-                <form class="pt-3 px-1 needs-validation" id="registrationForm" novalidate>
+                <form class="pt-3 px-1 needs-validation" id="registrationForm" novalidate hx-post="/auth/store" hx-validate="true">
                     <div class="mb-3">
                         <label for="userName" class="form-label fs-14 fw-medium">Username</label>
-                        <input type="text" placeholder="Enter your username" class="form-control fs-14" id="userName"
+                        <input name="userName" type="text" placeholder="Enter your username" class="form-control fs-14" id="userName"
                             aria-describedby="userNameHelp" required minlength="3" maxlength="20">
                         <div class="invalid-feedback">Username must be between 3 and 20 characters.</div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label fs-14 fw-medium">Email address</label>
-                        <input type="email" placeholder="Enter your email address" class="form-control fs-14" id="email"
+                        <input name="email" type="email" placeholder="Enter your email address" class="form-control fs-14" id="email"
                             aria-describedby="emailHelp" required>
                         <div class="invalid-feedback">Please enter a valid email address.</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label fs-14 fw-medium">Password</label>
-                        <input type="password" placeholder="Enter your password" class="form-control fs-14"
+                        <input name="password" type="password" placeholder="Enter your password" class="form-control fs-14"
                             id="password" required minlength="8">
                         <div class="invalid-feedback">Password must be at least 8 characters long.</div>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label fs-14 fw-medium">Confirm Password</label>
-                        <input type="password" placeholder="Confirm your password" class="form-control fs-14"
+                        <input name="confirmPassword" type="password" placeholder="Confirm your password" class="form-control fs-14"
                             id="confirmPassword" required>
                         <div class="invalid-feedback">Passwords must match.</div>
                     </div>
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                        <input name="termsCheck" type="checkbox" class="form-check-input" id="termsCheck" required>
                         <label class="form-check-label fs-14" for="termsCheck">Agree to Terms & Privacy Policy</label>
                         <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
                     </div>
 
                     <div class="d-flex justify-content-between flex-wrap gap-2 align-items-start">
-                        <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Login</button>
+                        <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Register</button>
                         <p class="mb-2 fs-14">
                             Have an account ?
-                            <a href="/user/login" class="text-primary">Login here</a>
+                            <a href="/login" class="text-primary">Login here</a>
                         </p>
                     </div>
                 </form>
