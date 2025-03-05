@@ -30,7 +30,7 @@
 			.get(name = "reset", pattern = "user/reset-password", to = "web.AuthController##forgot")
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
-			.get(name = "home", pattern = "home", to = "web.HomeController##Index")
+			.get(name = "home", pattern = "", to = "web.HomeController##Index")
 			// Route for loading features,blogs,guides with HTMX
 			.get(name = "loadFeatures", pattern = "home/loadFeatures", to = "web.HomeController##loadFeatures")
 			.get(name = "loadBlogs", pattern = "home/loadBlogs", to = "web.HomeController##loadBlogs")

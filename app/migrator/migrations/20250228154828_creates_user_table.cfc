@@ -5,7 +5,8 @@ component extends="wheels.migrator.Migration" hint="creates user table" {
             try {
                 // create users table
                 t = createTable(name = 'users', force=false, id=true, primaryKey='id');
-                t.string(columnNames='name', null=false, default='', limit=255);
+                t.string(columnNames='first_name', null=false, default='', limit=50);
+                t.string(columnNames='last_name', null=false, default='', limit=50);
                 t.string(columnNames='email', null=false, unique=true, limit=255);
                 t.string(columnNames='password_hash', null=false, limit=255);
                 t.string(columnNames='profile_picture', null=true, limit=255);
