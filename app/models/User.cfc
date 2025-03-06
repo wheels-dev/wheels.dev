@@ -39,7 +39,7 @@ component extends="app.Models.Model" {
         // Email Property with specific validation
         property(
             name="email", 
-            column="user_email", 
+            column="email", 
             dataType="string", 
             label="Email Address", 
             defaultValue=""
@@ -51,6 +51,15 @@ component extends="app.Models.Model" {
             column="password_hash", 
             dataType="string", 
             label="Password", 
+            select=false  // Exclude from default select statements
+        );
+        
+        // Token
+        property(
+            name="token", 
+            column="token", 
+            dataType="string", 
+            label="Token", 
             select=false  // Exclude from default select statements
         );
 
@@ -76,7 +85,7 @@ component extends="app.Models.Model" {
         // Status Property
         property(
             name="status", 
-            column="user_status", 
+            column="status", 
             dataType="boolean", 
             label="Account Status", 
             defaultValue=true
@@ -85,21 +94,21 @@ component extends="app.Models.Model" {
         // Timestamps with custom column names
         property(
             name="createdAt", 
-            column="created_timestamp", 
+            column="createdat", 
             dataType="timestamp", 
             label="Created On"
         );
 
         property(
             name="updatedAt", 
-            column="updated_timestamp", 
+            column="updatedat", 
             dataType="timestamp", 
             label="Last Updated"
         );
 
         property(
             name="deletedAt", 
-            column="deleted_timestamp", 
+            column="deletedat", 
             dataType="timestamp", 
             label="Deletion Date"
         );
