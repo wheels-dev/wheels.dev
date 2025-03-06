@@ -1,4 +1,4 @@
-name: Deploy to Docker Swarm
+name: Wheels.dev
 
 on:
   push:
@@ -6,32 +6,32 @@ on:
       - dev
 
 jobs:
-  build-and-push:
+  build-and-deploy-to-docker-swarm:
     runs-on: [self-hosted, linux, pai]
 
     steps:
       - name: Checkout Repository
+        id: Checkout-Repository
         uses: actions/checkout@v4
 
-      - name: Build and Push Docker Image
+      - name: Create .env File
+        id: Create-Env-File
         run: |
           mv .env-testing .env
+
+      - name: Install Dependencies
+        id: Install-Dependencies
+        run: |
           box install
+
+      - name: Push Docker Image
+        id: Push-Docker-Image
+        run: |
           docker build -t ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels-img .
           docker push ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels-img
-          scp docker-compose.yml ${{ secrets.SSH_USER }}@${{ secrets.SWARM_MANAGER_IP }}:/home/${{ secrets.SSH_USER }}/wheels.dev
-
-  deploy:
-    runs-on: [self-hosted, linux, wheels]
-    needs: build-and-push
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
 
       - name: Deploy to Docker Swarm
+        id: Deploy-to-Docker-Swarm
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SWARM_MANAGER_IP }} << 'EOF'
-            cd /home/${{ secrets.SSH_USER }}/wheels.dev
-            docker stack deploy -c docker-compose.yml wheels-dev
-          EOF
+          docker pull ${{ secrets.REGISTRY_IP }}:${{ secrets.PORT }}/wheels-img:dev
+          docker stack deploy -c docker-compose.yml wheels-dev
