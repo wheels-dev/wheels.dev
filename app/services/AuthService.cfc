@@ -37,15 +37,14 @@ component {
                     message = "User not found for editing.";
                 }
             } else {
-                // Check if a user with the same name and email already exists
-                var existingUser = variables.User.findFirst(
-                    where="name = '#userData.username#' AND email = '#userData.email#'"
-                );
+                // Check if a user with the same email already exists
+                var existingUser = variables.User.findFirst( "email = '#userData.email#'");
 
                 if (!isObject(existingUser)) {
                     // Create a new user
                     var newUser = variables.User.new();
-                    newUser.name = userData.username;
+                    newUser.firstName = userData.username;
+                    newUser.lastName = userData.username;
                     newUser.email = userData.email;
                     newUser.password_hash = hash(userData.password);
                     newUser.roleid = application.wo.GetBloggerId(); //blogger role

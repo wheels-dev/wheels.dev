@@ -5,7 +5,7 @@ component extends="app.Models.Model" {
         // ID Property
         property(
             name="id", 
-            column="user_id", 
+            column="id", 
             dataType="integer", 
             automaticValidations=false
         );
@@ -66,7 +66,10 @@ component extends="app.Models.Model" {
         // Profile URL Computed Property
         property(
             name="profileUrl", 
-            sql="CONCAT('/profile/', user_id)", 
+            column="profile_url", 
+            type="string", 
+            required=false, 
+            default="",
             label="Profile URL"
         );
 
