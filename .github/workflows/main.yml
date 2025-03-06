@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, linux, wheels]
+    runs-on: [self-hosted, linux, pai]
 
     steps:
       - name: Checkout Repository
