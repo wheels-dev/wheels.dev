@@ -50,24 +50,15 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				addRecord(table='post_statuses', name='Private', description='Post is only visible to specific users (e.g., admins or logged-in users).', is_active=1);
 				addRecord(table='post_statuses', name='Trash', description='Post is marked for deletion but can be restored or permanently deleted later.', is_active=1);
 
-				// blog_posts
-				addRecord(
-					table="blog_posts",
-					title="Celebrating 20 Years of CFWheels: A Look Back and a Step Forward as Wheels.dev",
-					slug="celebrating-20-years-of-cfwheels-a-look-back-and-a-step-forward-as-wheels-dev",
-					content="As we ring in the new year, we're thrilled to celebrate a monumental milestone: 20 years of CFWheels! This anniversary isn't just a celebration of two decades of innovation, growth, and community; it's also a moment to embrace the future with a new name—Wheels.dev. [...]",
-					excerpt="As we ring in the new year, we're thrilled to celebrate a monumental milestone: 20 years of CFWheels! This anniversary isn't just a celebration of two decades of innovation, growth, and community; it's also a moment to embrace the future with a new name—Wheels.dev.",
-					status_id=2,
-					category_id=2,
-					post_type_id=1,
-					created_by=1,
-					updated_by='',
-					deleted_by='',
-					published_at='',
-					is_published=0,
-					is_deleted=0,
-					is_comment_closed=0
-				);
+				// features
+				addRecord(table="features", title="A Complete Package", description="A full framework with tonnes of functionality - once you've started, you'll wonder how you ever did CFML development before!", is_active=1);
+				addRecord(table="features", title="RESTful Routing", description="Resource based routing for GET, POST, PUT, PATCH & DELETE", is_active=1);
+				addRecord(table="features", title="Database Migrations", description="Built in database migration system even across different DBMS", is_active=1);
+				addRecord(table="features", title="Automatic Documentation", description="Use our built in doc viewer which grows with your application with only minor markup required", is_active=1);
+				addRecord(table="features", title="Hybrid Development", description="Switch in and out of Wheels conventions - it's your call; Need to use a bog standard query? Go ahead!", is_active=1);
+				addRecord(table="features", title="Full Documentation", description="Lots of lovely documentation available with tutorials and a complete API reference", is_active=1);
+				addRecord(table="features", title="Stay Relevant", description="CFWheels uses industry established concepts, such as MVC and ORM. These essential principles make being a polyglot a reality!", is_active=1);
+				addRecord(table="features", title="A Helpful Community", description="Get in touch via our GitHub Discussions - we're newbie friendly and just want to help out.", is_active=1);
 
 			} catch (any e) {
 				local.exception = e;
