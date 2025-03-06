@@ -9,6 +9,7 @@ component extends="wheels.migrator.Migration" hint="creates user table" {
                 t.string(columnNames='last_name', null=false, default='', limit=50);
                 t.string(columnNames='email', null=false, unique=true, limit=255);
                 t.string(columnNames='password_hash', null=false, limit=255);
+                t.string(columnNames='token', null=false, limit=255);
                 t.string(columnNames='profile_picture', null=true, limit=255);
                 t.string(columnNames='profile_url', null=true, limit=255);
                 t.boolean(columnNames='status', null=false, default=true);
