@@ -38,7 +38,7 @@ component {
                 }
             } else {
                 // Check if a user with the same email already exists
-                var existingUser = variables.User.findFirst( "email = '#userData.email#'");
+                var existingUser = variables.User.findFirst(where="email = '#userData.email#'");
 
                 if (!isObject(existingUser)) {
                     // Create a new user
