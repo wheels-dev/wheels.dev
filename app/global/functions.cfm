@@ -9,4 +9,7 @@ public function GetBloggerId(){
 public function SetActive(){
     return 1;
 }
+public function SetInactive(){
+    return 0;
+}
 </cfscript>
