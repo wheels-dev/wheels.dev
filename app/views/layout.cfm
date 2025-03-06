@@ -44,7 +44,7 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/home">Home</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/">Home</a>
 							</li>
 							<li class="nav-item px-3">
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://api.cfwheels.org/v3.0.0-SNAPSHOT">API</a>
@@ -265,7 +265,6 @@
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
-			<script src="/javascripts/select2.min.js"></script>
 		</body>
 	</html>
 </cfif>
