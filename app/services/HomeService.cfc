@@ -40,4 +40,76 @@ component {
         ];
         return svgIcons;
     }
+
+    public struct function getGuidesContent() {
+        var allowedItems = [
+            "/guides/introduction",
+            "/guides/command-line-tools",
+            "/guides/working-with-cfwheels",
+            "/guides/handling-requests-with-controllers",
+            "/guides/displaying-views-to-users",
+            "/guides/database-interaction-through-models",
+            "/guides/plugins"
+        ];
+        
+        var guidesStruct = {};
+
+        for (var item in allowedItems) {
+            var absolutePath = "../.." & item;
+
+            // If it's a directory, get the first file only
+            if (directoryExists(absolutePath)) {
+                var fileList = directoryList(absolutePath, false, "query", "*.md");
+                if (fileList.recordcount > 0) {
+                    var firstFile = fileList.name[1];
+                    var filePath = "./.." & item & "/" & firstFile;
+                    guidesStruct[item] = readFileContent(filePath);
+                }
+            }
+        }
+
+        return guidesStruct;
+}
+
+    public array function getSpecificFiles() {
+        var allowedItems = [
+            "/guides/introduction"//,
+            "/guides/command-line-tools",
+            "/guides/working-with-cfwheels",
+            "/guides/handling-requests-with-controllers",
+            "/guides/displaying-views-to-users",
+            "/guides/database-interaction-through-models",
+            "/guides/plugins"
+        ];
+        var filesArray = [];
+
+        for (var item in allowedItems) {
+            var absolutePath = "../.." & item;
+
+            // If it's a file (contains an extension)
+            if (reFind("\.\w+$", item)) {
+                if (fileExists(absolutePath)) {
+                    arrayAppend(filesArray, item);
+                }
+            } 
+            // If it's a directory (no extension)
+            else if (directoryExists(absolutePath)) {
+                var fileList = directoryList(absolutePath, false, "query");
+                for (var i = 1; i <= fileList.recordcount; i++) {
+                    arrayAppend(filesArray, "./.." & item & "/" & fileList.name[i]);
+                }
+            }
+        }
+
+        return filesArray;
+    }
+
+    public string function readFileContent(string filePath) {
+        var absolutePath = ExpandPath(filePath);
+        if (fileExists(absolutePath)) {
+            return fileRead(absolutePath);
+        } else {
+            return "File not found: " & absolutePath;
+        }
+    }
 }

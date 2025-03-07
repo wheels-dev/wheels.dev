@@ -1,27 +1,169 @@
 component extends="app.Models.Model" {
-    function config(){
+    function config() {
         table("users");
 
-        property(name="id", column="id", type="integer", required=true, primarykey=true);
-        property(name="name", column="name", type="string", required=false, default="");
-        property(name="email", column="email", type="string", required=false, default="");
-        property(name="passwordHash", column="passwordhash", type="string", required=false, default="");
-        property(name="profilePicture", column="profile_picture", type="string", required=false, default="");
-        property(name="profileUrl", column="profile_url", type="string", required=false, default="");
-        property(name="status", column="status", type="boolean", required=false, default=true);
-        property(name="createdAt", column="createdat", type="datetime", required=false, default="");
-        property(name="updatedAt", column="updatedat", type="datetime", required=false, default="");
-        property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
+        // ID Property
+        property(
+            name="id", 
+            column="id", 
+            dataType="integer", 
+            automaticValidations=false
+        );
 
-        // Defining the foreign key
-        property(name="roleid", column="role_id", type="integer", required=false, foreignkey=true, references="Role(id)");
+        // Name Property with custom label and column mapping
+        property(
+            name="firstName", 
+            column="first_name", 
+            dataType="string", 
+            label="First Name", 
+            defaultValue="", 
+            automaticValidations=true
+        );
+
+        // Last Name Property
+        property(
+            name="lastName", 
+            column="last_name", 
+            dataType="string", 
+            label="Last Name", 
+            defaultValue=""
+        );
+
+        // Full Name Computed Property
+        property(
+            name="fullName", 
+            sql="first_name + ' ' + last_name", 
+            label="Full Name"
+        );
+
+        // Email Property with specific validation
+        property(
+            name="email", 
+            column="email", 
+            dataType="string", 
+            label="Email Address", 
+            defaultValue=""
+        );
+
+        // Password Hash Property
+        property(
+            name="passwordHash", 
+            column="password_hash", 
+            dataType="string", 
+            label="Password", 
+            select=false  // Exclude from default select statements
+        );
         
+        // Token
+        property(
+            name="token", 
+            column="token", 
+            dataType="string", 
+            label="Token", 
+            select=false  // Exclude from default select statements
+        );
+
+        // Profile Picture Property
+        property(
+            name="profilePicture", 
+            column="profile_picture", 
+            dataType="string", 
+            label="Profile Picture", 
+            defaultValue="/default-avatar.png"
+        );
+
+        // Profile URL Computed Property
+        property(
+            name="profileUrl", 
+            column="profile_url", 
+            type="string", 
+            required=false, 
+            default="",
+            label="Profile URL"
+        );
+
+        // Status Property
+        property(
+            name="status", 
+            column="status", 
+            dataType="boolean", 
+            label="Account Status", 
+            defaultValue=true
+        );
+
+        // Timestamps with custom column names
+        property(
+            name="createdAt", 
+            column="createdat", 
+            dataType="timestamp", 
+            label="Created On"
+        );
+
+        property(
+            name="updatedAt", 
+            column="updatedat", 
+            dataType="timestamp", 
+            label="Last Updated"
+        );
+
+        property(
+            name="deletedAt", 
+            column="deletedat", 
+            dataType="timestamp", 
+            label="Deletion Date"
+        );
+
+        // Role Relationship Property
+        property(
+            name="roleId", 
+            column="role_id", 
+            dataType="integer", 
+            label="User Role"
+        );
+
+        // Relationships
+        belongsTo(name="Role", foreignKey="roleId");
     }
 
-    // fetch all users
-    public function getAllUsers(){
-        var users = findAll();
+    // Fetch all users with their roles
+    public function getAll(){
+        var users = findAll(
+            include = "Role",
+            order = "createdAt DESC"
+        );
         return users;
     }
 
+    // Fetch users with custom property usage
+    public function getAllUsers(struct options = {}) {
+        // Default options
+        local.defaultOptions = {
+            page = 1,
+            perPage = 20,
+            sortBy = "createdAt",
+            sortOrder = "DESC"
+        };
+
+        // Merge provided options
+        local.mergedOptions = structAppend(local.defaultOptions, arguments.options);
+
+        // Find all users with computed full name
+        return findAll(
+            select = "*, #fullName# AS displayName",
+            order = "#local.mergedOptions.sortBy# #local.mergedOptions.sortOrder#",
+            page = local.mergedOptions.page,
+            perPage = local.mergedOptions.perPage,
+            include = "Role"
+        );
+    }
+
+    public function getUserProfile() {
+        return {
+            id = this.id,
+            fullName = this.fullName,
+            email = this.email,
+            profileUrl = this.profileUrl,
+            profilePicture = this.profilePicture
+        };
+    }
 }

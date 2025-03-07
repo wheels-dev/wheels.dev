@@ -56,7 +56,7 @@
 						<div class="collapse navbar-collapse" id="navbarSupportedContent">
 							<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/home">Home</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/">Home</a>
 								</li>
 								<li class="nav-item px-3">
 									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/api">API</a>
@@ -65,13 +65,13 @@
 									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="/blog">Blogs</a>
 								</li>
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="##">Discussions</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions">Discussions</a>
 								</li>
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="##">Issue Tracker</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Issue Tracker</a>
 								</li>
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" href="##">Plugins</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 								</li>
 							</ul>
 							<div class="d-lg-block d-none">

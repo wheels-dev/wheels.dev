@@ -17,7 +17,7 @@ component {
             options={
                 sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
                     blog_posts.createdat AS createdDate, 
-                    users.name AS authorName, 
+                    users.fullName AS authorName, 
                     categories.name AS categoryName, 
                     post_statuses.name AS statusName 
                     FROM blog_posts 
