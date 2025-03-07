@@ -51,41 +51,57 @@ component {
      * Save or update user
      * @data User data
      */
-    function save(data) {
-        // Determine if this is a new or existing user
-        var user = structKeyExists(arguments.data, "id") && arguments.data.id > 0
-            ? variables.User.findByKey(arguments.data.id)
-            : variables.User.new();
+    function saveUser(userData) {
+        try{
 
-        // Populate user properties
-        user.name = arguments.data.name;
-        user.email = arguments.data.email;
-        
-        // Handle role assignment
-        if (structKeyExists(arguments.data, "roleId")) {
-            user.roleId = arguments.data.roleId;
-        }
+            // Check if the user ID is greater than 0 (for editing an existing post)
+            if (userData.id > 0) {
+                var user = variables.User.findById(userData.id);
 
-        // Handle password update
-        if (structKeyExists(arguments.data, "password") && len(trim(arguments.data.password))) {
-            // Assuming a method exists to securely set password
-            user.setPassword(arguments.data.password);
-        }
+                if (not isNull(user)) {
+                    // Edit the existing user post
+                    user.firstname = userData.firstName;
+                    user.lastname = userData.lastName;
+                    user.email = userData.email;
+                    user.passwordHash = hash(userData.passwordHash);
+                    user.status = application.wo.SetActive();
+                    user.roleid = userData.roleid;
+                    user.updatedAt = now();
+                    user.updatedBy = application.wo.GetSignedInUserId();
+                    user.save();
+                    message = "User updated successfully.";
+                } else {
+                    message = "User not found for editing.";
+                }
+            } else {
+                // Check if user with the same email already exists
+                var existingUser = variables.User.findFirst( where="email = '#userData.email#'");
 
-        // Attempt to save
-        if (user.save()) {
-            return {
-                success = true,
-                user = user,
-                message = "User saved successfully"
-            };
-        } else {
-            return {
-                success = false,
-                errors = user.allErrors(),
-                message = "Failed to save user"
-            };
+                if (!isObject(existingUser)) {
+                    // Create a new user
+                    var newUser = variables.User.new();
+                    newUser.firstname = userData.firstName;
+                    newUser.lastname = userData.lastName;
+                    newUser.email = userData.email;
+                    newUser.passwordHash = hash(userData.passwordHash);
+                    newUser.status = application.wo.SetActive();
+                    newUser.roleid = userData.roleid;
+                    newUser.createdAt = now();
+                    newUser.updatedAt = now();
+                    newUser.createdBy = application.wo.GetSignedInUserId();
+                    newUser.save();
+
+                    message = "User created successfully.";
+                } else {
+                    message = "A user with the same email already exists.";
+                }
+            }
+            
+        }catch (any e) {
+            // Handle error
+            message = "Error: " & e.message;
         }
+        return message; 
     }
 
     /**
