@@ -125,6 +125,15 @@ component extends="app.Models.Model" {
         belongsTo(name="Role", foreignKey="roleId");
     }
 
+    // Fetch all users with their roles
+    public function getAll(){
+        var users = findAll(
+            include = "Role",
+            order = "createdAt DESC"
+        );
+        return users;
+    }
+
     // Fetch users with custom property usage
     public function getAllUsers(struct options = {}) {
         // Default options
