@@ -2,16 +2,65 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,create", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadUsers,loadRoles,addEditUser,store,delete", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
+    // read user
     function index() {
+    }
+    
+    // Function to load users for the users list
+    function loadUsers() {
         // Fetch all users with their roles
-        variables.users = model("User").findAll(
-            include = "Role",
-            order = "createdAt DESC"
-        );
+        users = model("User").getAll();
+        renderPartial(partial="partials/users");
+    }
+    
+    // Function to load roles
+    function loadRoles() {
+        // Fetch all roles
+        roles = model("Role").getAllRoles();
+        renderPartial(partial="partials/roles");
+    }
+    
+    // add or edit user
+    function addEditUser() {
+        param name="id" default=0;
+        var user;
+        if(id > 0) {
+            var userService = new app.services.UserService(model("User"));
+            user = userService.findById(params.id);
+        }else {
+            user = model("User");
+        }
+        return user;
+    }
+    
+    // save user
+    function store() {
+
+        // Save user logic here
+        try {
+            var userService = new app.services.UserService(model("User"));
+            var message = userService.saveUser(params);
+            redirectTo(action="index");
+        } catch (any e) {
+            // Handle error
+            redirectTo(action="error", errorMessage="Failed to save user.");
+        }
+    }
+
+    // Function to delete a user
+    function delete() {
+        try {
+            var userService = new app.services.UserService(model("User"));
+            var message = userService.softDelete(params.id);
+            redirectTo(action="index", success="#message#");
+        } catch (any e) {
+            // Handle error
+            redirectTo(action="index", errorMessage="Failed to delete user.");
+        }
     }
 
     function approve(userId) {
