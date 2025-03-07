@@ -54,7 +54,7 @@
                                     class="p-3 flex-grow-1 rounded-start-4 d-flex justify-content-between flex-column ">
                                     <div>
                                         <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                            <p class="text--iris fw-medium fs-12 m-0">#blogs.name#</p>
+                                            <p class="text--iris fw-medium fs-12 m-0">#blogs.fullName#</p>
                                         </div>
                                         <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
                                     </div>

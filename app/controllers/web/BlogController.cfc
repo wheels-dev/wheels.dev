@@ -21,12 +21,24 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to store a new blog
-    function store() {
+    public void function store() {
+        // var rc = event.getCollection();
+        // var prc = event.getCollection(private=true);
+
+        // var attachmentModel = model("Attachment");
+        // var attachmentService = new app.services.AttachmentService(attachmentModel);
+        // // Handle file upload
+        // if (structKeyExists(rc, "attachment") && isDefined("rc.attachment")) {
+        //     var fileInfo = attachmentService.uploadFile(rc.attachment);
+        //     rc.coverImagePath = fileInfo.filePath;
+        // }
+
+        // Save blog post logic here
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
         try {
             var message = blogService.saveBlog(params);
-            redirectTo(action="index", success="#message#");
+            redirectTo(action="index");
         } catch (any e) {
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save blog post.");
