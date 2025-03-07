@@ -53,13 +53,13 @@
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/blog">Blogs</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Discussions</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions">Discussions</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Issue Tracker</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Issue Tracker</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="#">Plugins</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
 						</ul>
 						<div class="d-lg-block d-none">

@@ -21,12 +21,16 @@
             </p>
             <div class="row g-3 justify-content-center w-100 mt-1 align-items-center">
                 <div class="col-md-auto text-center">
-                    <button class="fs-16 fw-semibold bg--primary w-200 py-1 rounded-2 text-white">
-                        Get Started
-                    </button>
+                    <a href="https://guides.cfwheels.org/cfwheels-guides/introduction/readme" class="">
+                        <button class="fs-16 fw-semibold bg--primary w-200 py-1 rounded-2 text-white">
+                            Get Started
+                        </button>
+                    </a>
                 </div>
                 <div class="col-md-auto text-center">
-                    <button class="fs-16 fw-semibold bg--secondary w-200 py-1 rounded-2 text-white">Download</button>
+                    <a href="https://github.com/cfwheels/cfwheels/releases" class="">
+                        <button class="fs-16 fw-semibold bg--secondary w-200 py-1 rounded-2 text-white">Download</button>
+                    </a>
                 </div>
             </div>
         </div>

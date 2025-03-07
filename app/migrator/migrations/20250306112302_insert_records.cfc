@@ -51,14 +51,14 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				addRecord(table='post_statuses', name='Trash', description='Post is marked for deletion but can be restored or permanently deleted later.', is_active=1);
 
 				// features
-				addRecord(table="features", title="A Complete Package", description="A full framework with tonnes of functionality - once you've started, you'll wonder how you ever did CFML development before!", is_active=1);
-				addRecord(table="features", title="RESTful Routing", description="Resource based routing for GET, POST, PUT, PATCH & DELETE", is_active=1);
-				addRecord(table="features", title="Database Migrations", description="Built in database migration system even across different DBMS", is_active=1);
-				addRecord(table="features", title="Automatic Documentation", description="Use our built in doc viewer which grows with your application with only minor markup required", is_active=1);
-				addRecord(table="features", title="Hybrid Development", description="Switch in and out of Wheels conventions - it's your call; Need to use a bog standard query? Go ahead!", is_active=1);
-				addRecord(table="features", title="Full Documentation", description="Lots of lovely documentation available with tutorials and a complete API reference", is_active=1);
-				addRecord(table="features", title="Stay Relevant", description="CFWheels uses industry established concepts, such as MVC and ORM. These essential principles make being a polyglot a reality!", is_active=1);
-				addRecord(table="features", title="A Helpful Community", description="Get in touch via our GitHub Discussions - we're newbie friendly and just want to help out.", is_active=1);
+				addRecord(table="features", title="A Complete Package", description="A full framework with tonnes of functionality - once you've started, you'll wonder how you ever did CFML development before!", is_active=1, created_by=1);
+				addRecord(table="features", title="RESTful Routing", description="Resource based routing for GET, POST, PUT, PATCH & DELETE", is_active=1, created_by=1);
+				addRecord(table="features", title="Database Migrations", description="Built in database migration system even across different DBMS", is_active=1, created_by=1);
+				addRecord(table="features", title="Automatic Documentation", description="Use our built in doc viewer which grows with your application with only minor markup required", is_active=1, created_by=1);
+				addRecord(table="features", title="Hybrid Development", description="Switch in and out of Wheels conventions - it's your call; Need to use a bog standard query? Go ahead!", is_active=1, created_by=1);
+				addRecord(table="features", title="Full Documentation", description="Lots of lovely documentation available with tutorials and a complete API reference", is_active=1, created_by=1);
+				addRecord(table="features", title="Stay Relevant", description="CFWheels uses industry established concepts, such as MVC and ORM. These essential principles make being a polyglot a reality!", is_active=1, created_by=1);
+				addRecord(table="features", title="A Helpful Community", description="Get in touch via our GitHub Discussions - we're newbie friendly and just want to help out.", is_active=1, created_by=1);
 
 			} catch (any e) {
 				local.exception = e;
