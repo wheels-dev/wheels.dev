@@ -6,9 +6,8 @@ component {
         return this;
     }    
 
-    function validateCredentials(required string email, required string password) {
-        var user = variables.User.findOne(where="email='#email#' AND password_hash='#hash(password)#'", include="Role");
-
+    function validateCredentials(required string email, required string passwordHash) {
+        var user = variables.User.findOne(where="email='#email#' AND passwordHash='#hash(passwordHash)#'", include="Role", returnAs="query");
         if (!isObject(user)) {
             return false; // User not found
         }
@@ -26,9 +25,10 @@ component {
 
                 if (not isNull(user)) {
                     // Edit the existing user
-                    user.name = userData.username;
+                    user.first_name = userData.firstname;
+                    user.last_name = userData.lastname;
                     user.email = userData.email;
-                    user.password = hash(userData.password);
+                    user.password_hash = hash(userData.passwordHash);
                     user.updatedAt = now();
                     user.updatedBy = application.wo.GetSignedInUserId();
                     user.save();
@@ -38,17 +38,20 @@ component {
                 }
             } else {
                 // Check if a user with the same email already exists
-                var existingUser = variables.User.findFirst(where="email = '#userData.email#'");
+                var existingUser = variables.User.findFirst( where="email = '#userData.email#'");
+
+                userData.token = createUUID();
 
                 if (!isObject(existingUser)) {
                     // Create a new user
                     var newUser = variables.User.new();
-                    newUser.firstName = userData.username;
-                    newUser.lastName = userData.username;
+                    newUser.first_name = userData.firstname;
+                    newUser.last_name = userData.lastname;
                     newUser.email = userData.email;
-                    newUser.password_hash = hash(userData.password);
+                    newUser.password_hash = hash(userData.passwordHash);
+                    newUser.token = userData.token;
                     newUser.roleid = application.wo.GetBloggerId(); //blogger role
-                    newUser.status = application.wo.SetActive(); //active
+                    newUser.status = application.wo.SetInactive(); //inactive
                     newUser.createdAt = now();
                     newUser.updatedAt = now();
                     newUser.createdBy = application.wo.GetSignedInUserId();
@@ -63,6 +66,34 @@ component {
         } catch (any e) {
             // Catch any errors and store the message
             message = "Error: " & e.message;
+        }
+        return message;
+    }
+
+    function sendVerificationEmail(required string email, required string token) {
+        var user = variables.User.findOne(where="email='#email#' AND token = '#token#'");
+        var verifyUrl = "https://yourwebsite.com/users/verify?token=#user.token#";
+
+        sendEmail(
+            from="service@yourwebsite.com",
+            to=user.email,
+            template="emailtemplate",
+            subject="Verify Your Email",
+            recipientName=user.name,
+            verifyUrl=verifyUrl
+        );
+        return user;
+    }
+
+    function verifyToken(required string token) {
+        var message="";
+        var user = model("User").findOne(where="token='#params.token#'");
+    
+        if (!isNull(user)) {
+            user.update(status=application.wo.SetActive(), token=""); // Activate user
+            message = "true";
+        } else {
+            message = "false";
         }
         return message;
     }

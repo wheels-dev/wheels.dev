@@ -17,9 +17,9 @@
                         <div class="invalid-feedback">Please enter a valid email address.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label fs-14 fw-medium">Password</label>
-                        <input type="password" placeholder="Enter your password" class="form-control fs-14" name="password"
-                            id="password" required minlength="8">
+                        <label for="passwordHash" class="form-label fs-14 fw-medium">Password</label>
+                        <input type="password" placeholder="Enter your password" class="form-control fs-14" name="passwordHash"
+                            id="passwordHash" required minlength="8">
                         <div class="invalid-feedback">Password must be at least 8 characters long.</div>
                     </div>
 

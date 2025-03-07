@@ -12,10 +12,16 @@
 
                 <form class="pt-3 px-1 needs-validation" id="registrationForm" novalidate hx-post="/auth/store" hx-validate="true">
                     <div class="mb-3">
-                        <label for="userName" class="form-label fs-14 fw-medium">Username</label>
-                        <input name="userName" type="text" placeholder="Enter your username" class="form-control fs-14" id="userName"
-                            aria-describedby="userNameHelp" required minlength="3" maxlength="20">
-                        <div class="invalid-feedback">Username must be between 3 and 20 characters.</div>
+                        <label for="firstName" class="form-label fs-14 fw-medium">First Name</label>
+                        <input name="firstName" type="text" placeholder="Enter your firstname" class="form-control fs-14" id="firstName"
+                            aria-describedby="firstNameHelp" required minlength="3" maxlength="20">
+                        <div class="invalid-feedback">Firstname must be between 3 and 20 characters.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label fs-14 fw-medium">Last Name</label>
+                        <input name="lastName" type="text" placeholder="Enter your lastname" class="form-control fs-14" id="lastName"
+                            aria-describedby="lastNameHelp" required minlength="3" maxlength="20">
+                        <div class="invalid-feedback">Lastname must be between 3 and 20 characters.</div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label fs-14 fw-medium">Email address</label>
@@ -24,9 +30,9 @@
                         <div class="invalid-feedback">Please enter a valid email address.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label fs-14 fw-medium">Password</label>
-                        <input name="password" type="password" placeholder="Enter your password" class="form-control fs-14"
-                            id="password" required minlength="8">
+                        <label for="passwordHash" class="form-label fs-14 fw-medium">Password</label>
+                        <input name="passwordHash" type="password" placeholder="Enter your password" class="form-control fs-14"
+                            id="passwordHash" required minlength="8">
                         <div class="invalid-feedback">Password must be at least 8 characters long.</div>
                     </div>
                     <div class="mb-3">
@@ -57,7 +63,7 @@
 <script>
     const form = document.getElementById('registrationForm');
     form.addEventListener('submit', function (event) {
-        const password = document.getElementById('password').value;
+        const password = document.getElementById('passwordHash').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
 
         if (password !== confirmPassword) {
