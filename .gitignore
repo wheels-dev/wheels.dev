@@ -20,3 +20,4 @@ settings.json
 settings.xml
 *.db
 .env
+/public/files
