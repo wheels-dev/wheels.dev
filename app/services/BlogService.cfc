@@ -43,7 +43,7 @@ component {
             try {
                 
                 // Check if the blog ID is greater than 0 (for editing an existing post)
-                if (blogData.id > 0) {
+                if (structKeyExists(blogData, "id") && blogData.id > 0) {
                     var blog = variables.Blog.findById(blogData.id);
 
                     if (not isNull(blog)) {
@@ -77,6 +77,7 @@ component {
                         newBlog.statusId = blogData.statusId;
                         newBlog.postTypeId = blogData.postTypeId;
                         newBlog.excerpt = blogData.excerpt;
+                        newBlog.coverImagePath = blogData.coverImagePath;
                         newBlog.createdAt = now();
                         newBlog.updatedAt = now();
                         newBlog.createdBy = application.wo.GetSignedInUserId();

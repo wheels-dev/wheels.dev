@@ -61,7 +61,7 @@
                                     <p class="text--lightGray fs-12 fw-medium">#dateformat(blogs.createdat, 'MMMM DD, YYYY')#</p>
                                 </div>
                                 <div class="d-lg-block d-none position-relative">
-                                    <img src="/images/blogs.jpg" class="rounded-end-4 size-320 object-fit-cover">
+                                    <img src="#blogs.coverImagePath#" class="rounded-end-4 size-320 object-fit-cover">
                                 </div>
                             </a>
                         </div>

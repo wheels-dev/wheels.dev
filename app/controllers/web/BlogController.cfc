@@ -22,22 +22,38 @@ component extends="app.Controllers.Controller" {
 
     // Function to store a new blog
     public void function store() {
-        // var rc = event.getCollection();
-        // var prc = event.getCollection(private=true);
-
-        // var attachmentModel = model("Attachment");
-        // var attachmentService = new app.services.AttachmentService(attachmentModel);
-        // // Handle file upload
-        // if (structKeyExists(rc, "attachment") && isDefined("rc.attachment")) {
-        //     var fileInfo = attachmentService.uploadFile(rc.attachment);
-        //     rc.coverImagePath = fileInfo.filePath;
-        // }
-
-        // Save blog post logic here
-        var blogModel = model("Blog"); // Get model instance
+        // Get request parameters
+        var blogModel = model("Blog"); 
         var blogService = new app.services.BlogService(blogModel);
+        // writeDump(params); abort;
+
         try {
-            var message = blogService.saveBlog(params);
+            params.coverImagePath = "";
+            var uploadPath = expandPath("/files/"); // Define the upload directory
+
+            if (!directoryExists(uploadPath)) {
+                directoryCreate(uploadPath);
+            }
+
+            // Handle file upload
+        if (structKeyExists(params, "attachment") && isDefined("params.attachment")) {
+            var uploadedFile = fileUpload(uploadPath, "attachment");
+
+            if (!structIsEmpty(uploadedFile) && structKeyExists(uploadedFile, "serverFile")) {
+                var originalFileName = uploadedFile.serverFile; // This is the uploaded file name
+                var fileExtension = listLast(originalFileName, "."); // Extract extension
+                var uniqueFileName = createUUID() & "." & fileExtension; // Generate unique name
+
+                // Rename file to unique name
+                var newFilePath = uploadPath & "/" & uniqueFileName;
+                fileMove(uploadedFile.serverDirectory & "/" & originalFileName, newFilePath);
+
+                // Store the relative file path
+                params.coverImagePath = "/files/" & uniqueFileName;
+            }
+        }
+
+            blogService.saveBlog(params);
             redirectTo(action="index");
         } catch (any e) {
             // Handle error
