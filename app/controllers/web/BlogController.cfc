@@ -37,7 +37,6 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var blogModel = model("Blog"); 
         var blogService = new app.services.BlogService(blogModel);
-        // writeDump(params); abort;
 
         try {
             params.coverImagePath = "";

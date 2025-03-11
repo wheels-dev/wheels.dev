@@ -73,7 +73,7 @@ component {
 
     public array function getSpecificFiles() {
         var allowedItems = [
-            "/guides/introduction"//,
+            "/guides/introduction",
             "/guides/command-line-tools",
             "/guides/working-with-cfwheels",
             "/guides/handling-requests-with-controllers",
