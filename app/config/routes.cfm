@@ -30,12 +30,12 @@
 			.get(name = "reset", pattern = "user/reset-password", to = "web.AuthController##forgot")
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
-			.get(name = "user", pattern = "user", to = "web.UserController##Index")
+			.get(name = "user", pattern = "admin/user", to = "web.UserController##Index")
 			.get(name = "loadUsers", pattern = "user/loadUsers", to = "web.UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "web.UserController##loadRoles")
-			.get(name = "user-addEditUser", pattern = "user/addEditUser", to = "web.UserController##addEditUser")
+			.get(name = "user-addEditUser", pattern = "admin/user/addEditUser", to = "web.UserController##addEditUser")
 			.post(name = "user-store", pattern = "user/store", to = "web.UserController##store")
-			.get(name="user-delete", pattern="user/delete/[key]", to="web.UserController##delete")
+			.get(name="user-delete", pattern="admin/user/delete", to="web.UserController##delete")
 
 			.get(name = "home", pattern = "", to = "web.HomeController##Index")
 			// Route for loading features,blogs,guides with HTMX
