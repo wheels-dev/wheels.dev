@@ -27,7 +27,7 @@ component extends="app.Controllers.Controller" {
     // add or edit user
     function addEditUser() {
         param name="id" default=0;
-        var user;
+        user;
         if(id > 0) {
             var userService = new app.services.UserService(model("User"));
             user = userService.findById(params.id);
