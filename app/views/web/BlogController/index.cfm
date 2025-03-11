@@ -49,7 +49,7 @@
                 <cfoutput>
                     <cfloop query="blogs">
                         <div class="pb-4">
-                            <a href="/blog/#id#" class="d-flex bg-white px-0 rounded-4 overflow-hidden justify-content-between">
+                            <a href="/blog/#slug#" class="d-flex bg-white px-0 rounded-4 overflow-hidden justify-content-between">
                                 <div
                                     class="p-3 flex-grow-1 rounded-start-4 d-flex justify-content-between flex-column ">
                                     <div>

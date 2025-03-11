@@ -55,6 +55,12 @@ component {
         // slug  
         var slug = rereplace(lcase(blogData.title), "[^a-z0-9- ]", "", "all");
         blogData.slug = replace(slug, " ", "-", "all");
+        
+        if(blogData.isdraft eq 1){
+            blogData.statusId = 1; // post status draft
+        } else {
+            blogData.statusId = 2; // post status under review
+        }
 
             try {
                 
@@ -140,5 +146,16 @@ component {
 
         // Return the message
         return message;
+    }
+
+    /**
+     * Check if user is logged In
+     */
+    function isUserLoggedIn() {
+        return (
+            structKeyExists(session, "USERID") && 
+            structKeyExists(session, "role") && 
+            session.role == "Blogger"
+        );
     }
 }

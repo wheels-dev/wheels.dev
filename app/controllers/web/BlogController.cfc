@@ -7,6 +7,17 @@ component extends="app.Controllers.Controller" {
         usesLayout("/layout");
     }
 
+    private function restrictAccess() {
+        // Ensure only blog editors can access these methods
+        var blogService = new app.services.BlogService(model("Blog"));
+        bloguser = blogService.isUserLoggedIn()
+        if (!bloguser) {
+            redirectTo(controller="AuthController", action="login", route="auth-login");
+            return false;
+        }
+        return true;
+    }
+
     // Function to list all blogs
     function index() {
         var blogModel = model("Blog"); // Get model instance
@@ -17,6 +28,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to show the create blog form
     function create() {
+        restrictAccess();
         renderView(layout="blogLayout");
     }
 

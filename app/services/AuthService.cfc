@@ -7,7 +7,7 @@ component {
     }    
 
     function validateCredentials(required string email, required string passwordHash) {
-        var user = variables.User.findOne(where="email='#email#' AND passwordHash='#hash(passwordHash)#'", include="Role", returnAs="query");
+        var user = variables.User.findOne(where="email='#email#' AND passwordHash='#hash(passwordHash)#'", include="Role");
         if (!isObject(user)) {
             return false; // User not found
         }
