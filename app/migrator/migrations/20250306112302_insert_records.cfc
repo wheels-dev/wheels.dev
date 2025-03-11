@@ -52,13 +52,14 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 
 				// features
 				addRecord(table="features", title="A Complete Package", description="A full framework with tonnes of functionality - once you've started, you'll wonder how you ever did CFML development before!", is_active=1, created_by=1);
-				addRecord(table="features", title="RESTful Routing", description="Resource based routing for GET, POST, PUT, PATCH & DELETE", is_active=1, created_by=1);
-				addRecord(table="features", title="Database Migrations", description="Built in database migration system even across different DBMS", is_active=1, created_by=1);
-				addRecord(table="features", title="Automatic Documentation", description="Use our built in doc viewer which grows with your application with only minor markup required", is_active=1, created_by=1);
+				addRecord(table="features", title="RESTful Routing", description="<a href='https://guides.cfwheels.org/cfwheels-guides/handling-requests-with-controllers/routing'>Resource based routing</a> for GET, POST, PUT, PATCH &amp; DELETE", is_active=1, created_by=1);
+				addRecord(table="features", title="Database Migrations", description="Built in <a href='https://guides.cfwheels.org/cfwheels-guides/database-interaction-through-models/database-migrations'>database migration system</a> even across different DBMS", is_active=1, created_by=1);
+				addRecord(table="features", title="Automatic Documentation", description="Use our <a href='https://guides.cfwheels.org/cfwheels-guides/working-with-cfwheels/documenting-your-code'>built in doc viewer</a> which grows with your application with only minor markup required", is_active=1, created_by=1);
 				addRecord(table="features", title="Hybrid Development", description="Switch in and out of Wheels conventions - it's your call; Need to use a bog standard query? Go ahead!", is_active=1, created_by=1);
-				addRecord(table="features", title="Full Documentation", description="Lots of lovely documentation available with tutorials and a complete API reference", is_active=1, created_by=1);
-				addRecord(table="features", title="Stay Relevant", description="CFWheels uses industry established concepts, such as MVC and ORM. These essential principles make being a polyglot a reality!", is_active=1, created_by=1);
-				addRecord(table="features", title="A Helpful Community", description="Get in touch via our GitHub Discussions - we're newbie friendly and just want to help out.", is_active=1, created_by=1);
+				addRecord(table="features", title="Full Documentation", description="Lots of lovely <a href='https://guides.cfwheels.org/' title='Documentation'>documentation</a> available with <a href='https://guides.cfwheels.org/cfwheels-guides/introduction/readme/beginner-tutorial-hello-world'>tutorials</a> and a <a href='https://api.cfwheels.org/''>complete API reference</a>", is_active=1, created_by=1);
+				addRecord(table="features", title="Stay Relevant", description="CFWheels uses industry established concepts, such as <a href='https://guides.cfwheels.org/cfwheels-guides/introduction/frameworks-and-cfwheels'>MVC</a> and <a href='https://guides.cfwheels.org/cfwheels-guides/database-interaction-through-models/object-relational-mapping'>ORM</a>. These essential principles make being a polyglot a reality!", is_active=1, created_by=1);
+				addRecord(table="features", title="A Helpful Community", description="Get in touch via our <a href='https://github.com/cfwheels/cfwheels/discussions'>GitHub Discussions</a> - we're newbie friendly and just want to help out.", is_active=1, created_by=1);
+				addRecord(table="features", title="Good Organization", description="Stop thinking about how to organize your code and deal with your business specific problems instead.", is_active=1, created_by=1);
 
 			} catch (any e) {
 				local.exception = e;

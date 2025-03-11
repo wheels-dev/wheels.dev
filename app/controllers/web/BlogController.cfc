@@ -68,10 +68,10 @@ component extends="app.Controllers.Controller" {
         tagService = new app.services.TagService(model("Tag"));
         attachmentService = new app.services.AttachmentService(model("Attachment"));
 
-        blog = blogService.getBlogById(params.id);
+        blog = blogService.getBlogBySlug(params.slug);
         blogs = blogModel.getAll();
-        tags = tagService.getTagsByBlogid(params.id);
-        attachments = attachmentService.getAttachmentsByBlogid(params.id);
+        tags = tagService.getTagsByBlogid(blog.id);
+        attachments = attachmentService.getAttachmentsByBlogid(blog.id);
         
     }
 
