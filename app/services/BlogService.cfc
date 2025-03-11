@@ -30,7 +30,23 @@ component {
     }
 
     function getBlogBySlug(required string slug) {
-        return variables.Blog.findOne(where="slug = #arguments.slug#");
+        // return variables.Blog.findOne(where="slug = #arguments.slug#");
+        return variables.Blog.findOne(
+            where="blog_posts.slug = '#arguments.slug#'",
+            include="User, Category, PostStatus",
+            options={
+                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                    blog_posts.createdat AS createdDate, 
+                    users.fullName AS authorName, 
+                    categories.name AS categoryName, 
+                    post_statuses.name AS statusName 
+                    FROM blog_posts 
+                    INNER JOIN users ON users.id = blog_posts.userId
+                    INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
+                    WHERE blog_posts.slug = '#arguments.slug#'"
+            }
+        );
     }
 
     function saveBlog(required struct blogData) {

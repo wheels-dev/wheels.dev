@@ -52,8 +52,8 @@
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
 			
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
-			.get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
-			// .get(name = "blog-detail", pattern = "[slug]", to = "web.BlogController##show")			
+			// .get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
+			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")			
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 		.end()
