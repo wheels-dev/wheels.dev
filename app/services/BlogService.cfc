@@ -50,75 +50,75 @@ component {
     }
 
     function saveBlog(required struct blogData) {
-        var message = "";
-
-        // slug  
+        var response = { "message": "", "blogId": 0 };
+    
+        // Generate slug
         var slug = rereplace(lcase(blogData.title), "[^a-z0-9- ]", "", "all");
         blogData.slug = replace(slug, " ", "-", "all");
         
-        if(blogData.isdraft eq 1){
-            blogData.statusId = 1; // post status draft
+        if (blogData.isdraft eq 1) {
+            blogData.statusId = 1; // Draft
         } else {
-            blogData.statusId = 2; // post status under review
+            blogData.statusId = 2; // Under Review
         }
-
-            try {
-                
-                // Check if the blog ID is greater than 0 (for editing an existing post)
-                if (structKeyExists(blogData, "id") && blogData.id > 0) {
-                    var blog = variables.Blog.findById(blogData.id);
-
-                    if (not isNull(blog)) {
-                        // Edit the existing blog post
-                        blog.title = blogData.title;
-                        blog.content = blogData.content;
-                        blog.categoryId = blogData.categoryId;
-                        blog.statusId = blogData.statusId;
-                        blog.postTypeId = blogData.postTypeId;
-                        blog.slug = blogData.slug;
-                        blog.updatedAt = now();
-                        blog.updatedBy = application.wo.GetSignedInUserId();
-                        blog.save();
-                        message = "Blog post updated successfully.";
-                    } else {
-                        message = "Blog post not found for editing.";
-                    }
+    
+        try {
+            // Check if the blog ID is greater than 0 (editing an existing post)
+            if (structKeyExists(blogData, "id") && blogData.id > 0) {
+                var blog = variables.Blog.findById(blogData.id);
+    
+                if (not isNull(blog)) {
+                    // Update the existing blog post
+                    blog.title = blogData.title;
+                    blog.content = blogData.content;
+                    blog.categoryId = blogData.categoryId;
+                    blog.statusId = blogData.statusId;
+                    blog.postTypeId = blogData.postTypeId;
+                    blog.slug = blogData.slug;
+                    blog.updatedAt = now();
+                    blog.updatedBy = application.wo.GetSignedInUserId();
+                    blog.save();
+    
+                    response.blogId = blog.id;
+                    response.message = "Blog post updated successfully.";
                 } else {
-                    // Check if a blog post with the same title and category already exists
-                    var existingBlog = variables.Blog.findFirst(
-                        where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
-                    );
-
-                    if (!isObject(existingBlog)) {
-                        // Create a new blog post
-                        var newBlog = variables.Blog.new();
-                        newBlog.title = blogData.title;
-                        newBlog.content = blogData.content;
-                        newBlog.slug = blogData.slug;
-                        newBlog.categoryId = blogData.categoryId;
-                        newBlog.statusId = blogData.statusId;
-                        newBlog.postTypeId = blogData.postTypeId;
-                        newBlog.excerpt = blogData.excerpt;
-                        newBlog.coverImagePath = blogData.coverImagePath;
-                        newBlog.createdAt = now();
-                        newBlog.updatedAt = now();
-                        newBlog.createdBy = application.wo.GetSignedInUserId();
-                        newBlog.save();
-
-                        message = "Blog post created successfully.";
-                    } else {
-                        message = "A blog post with the same title and category already exists.";
-                    }
+                    response.message = "Blog post not found for editing.";
                 }
-                
-            } catch (any e) {
-                // Catch any errors and store the message
-                message = "Error: " & e.message;
+            } else {
+                // Check if a blog post with the same title and category already exists
+                var existingBlog = variables.Blog.findFirst(
+                    where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
+                );
+    
+                if (!isObject(existingBlog)) {
+                    // Create a new blog post
+                    var newBlog = variables.Blog.new();
+                    newBlog.title = blogData.title;
+                    newBlog.content = blogData.content;
+                    newBlog.slug = blogData.slug;
+                    newBlog.categoryId = blogData.categoryId;
+                    newBlog.statusId = blogData.statusId;
+                    newBlog.postTypeId = blogData.postTypeId;
+                    newBlog.excerpt = blogData.excerpt;
+                    newBlog.coverImagePath = blogData.coverImagePath;
+                    newBlog.createdAt = now();
+                    newBlog.updatedAt = now();
+                    newBlog.createdBy = application.wo.GetSignedInUserId();
+                    newBlog.save();
+    
+                    response.blogId = newBlog.id;
+                    response.message = "Blog post created successfully.";
+                } else {
+                    response.message = "A blog post with the same title and category already exists.";
+                }
             }
-
-        // Return the message
-        return message;
+        } catch (any e) {
+            response.message = "Error: " & e.message;
+        }
+    
+        return response;
     }
+      
 
     function updateBlog(required struct blogData) {
         return saveBlog(blogData);
