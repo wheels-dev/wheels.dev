@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -20,10 +20,38 @@ component extends="app.Controllers.Controller" {
 
     // Function to list all blogs
     function index() {
+    }
+
+    // load blog list
+    function blogs() {
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
+
+        // Ensure default values if params are missing
+        param name="year" default="";
+        param name="month" default="";
+        if (!len(year) || !len(month)) {
             
-        blogs = blogModel.getAll();
+            // If no year/month is selected, show all blogs
+            blogs = blogModel.getAll();
+        } else {
+            // Fetch blogs filtered by month and year
+            blogs = blogModel.findAll(
+                // where="createdAt = '2025-02-12 06:17:34.560'",
+                where="YEAR(createdAt) = '#val(year)#' AND MONTH(createdAt) = '#val(month)#'",
+                order="createdAt DESC",
+                include="User",
+                returnAs="query"
+            );
+            // writeDump(blogs); abort;
+        }
+        renderPartial(partial="partials/blogList", locals={blogs: blogs});
+    }
+
+    // Function to load categories for the blog list
+    function Categories() {
+        categorylist = model("Category").getAll();
+        renderPartial(partial="partials/categorylist");
     }
 
     // Function to show the create blog form
@@ -64,7 +92,9 @@ component extends="app.Controllers.Controller" {
             }
         }
 
-            blogService.saveBlog(params);
+            response = blogService.saveBlog(params);
+            tagService = new app.services.TagService(model("Tag"));
+            tagService.saveTags(params, response.blogId);
             redirectTo(action="index");
         } catch (any e) {
             // Handle error
