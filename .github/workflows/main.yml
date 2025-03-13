@@ -23,7 +23,10 @@ jobs:
         id: Install-Dependencies
         run: |
           box install
-
+          
+      - name: Login to Docker Registry
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login DOCKER_HUB_IP:DOCKER_HUB_PORT -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+        
       - name: Push Docker Image
         id: Push-Docker-Image
         run: |
