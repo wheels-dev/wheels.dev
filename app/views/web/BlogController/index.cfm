@@ -3,12 +3,21 @@
     <div class="container py-5">
         <div class="row">
             <div class="col-lg-4 col-12">
-                <input type="text" placeholder="Search" class="form-control border-0 shadow-sm p-2 fs-16 bg-white"
-                    name="" id="">
+                <input type="text" placeholder="Search" class="form-control border-0 shadow-sm p-2 fs-16 bg-white" name="" id="">
+            </div>
+            <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12 d-flex justify-content-end gap-3">
+                <cfif StructKeyExists(session, "userId") and session.userId neq ''>
+                    <cfoutput>
+                        <a href="##" class="btn btn-secondary px-4">#session.username#</a>
+                        <a href="/logout" class="btn btn-primary px-4">Logout</a>
+                    </cfoutput>
+                <cfelse>
+                    <a href="/login" class="btn btn-primary px-4">Login</a>
+                    <a href="/register" class="btn btn-secondary px-4">Register</a>
+                </cfif>
             </div>
             <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
-                    <!-- px-4 fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg--iris text-white -->
                     <button onclick="handleBlogFilter('All', this)"
                         class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
                         All
@@ -45,91 +54,39 @@
         <hr class="my-4">
 
         <div class="row justify-content-center justify-content-lg-between">
-            <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1">
-                <cfoutput>
-                    <cfloop query="blogs">
-                        <div class="pb-4">
-                            <a href="/blog/#slug#" class="d-flex bg-white px-0 rounded-4 overflow-hidden justify-content-between">
-                                <div
-                                    class="p-3 flex-grow-1 rounded-start-4 d-flex justify-content-between flex-column ">
-                                    <div>
-                                        <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                            <p class="text--iris fw-medium fs-12 m-0">#blogs.fullName#</p>
-                                        </div>
-                                        <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
-                                    </div>
-                                    <p class="text--lightGray fs-12 fw-medium">#dateformat(blogs.createdat, 'MMMM DD, YYYY')#</p>
-                                </div>
-                                <div class="d-lg-block d-none position-relative">
-                                    <img src="#blogs.coverImagePath#" class="rounded-end-4 size-320 object-fit-cover">
-                                </div>
-                            </a>
-                        </div>
-                    </cfloop>
-                </cfoutput>
+            <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1"
+                hx-get="/blog/blogs" hx-trigger="load" hx-target="#blogsContainer" hx-swap="innerHTML">
             </div>
             <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
-                <div class="d-none bg-white p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto"
-                    id="Archives">
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">January 2025</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">November 2023</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">October 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">September 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">August 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">June 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">May 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">April 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">March 2022</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">November 2020</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">April 2020</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">March 2020</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">February 2020</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">October 2019</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">February 2019</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">September 2018</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">May 2018</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">March 2018</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">February 2018</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">January 2018</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">October 2017</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">September 2017</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">June 2017</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">May 2017</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">March 2016</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">December 2015</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">October 2015</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">August 2015</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">May 2015</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">February 2015</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">November 2014</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">August 2014</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">April 2013</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">May 2012</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">December 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">October 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">August 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">July 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">May 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">March 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">February 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">January 2011</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">December 2010</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">December 2009</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">December 2008</p>
+                <cfset startYear = 2008>
+                <cfset startMonth = 12>
 
+                <cfset currentYear = year(now())>
+                <cfset currentMonth = month(now())>
+
+                <cfset months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]>
+
+                <div class="d-none bg-white p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto" id="Archives">
+                    <cfoutput>
+                        <cfloop index="year" from="#currentYear#" to="#startYear#" step="-1">
+                            <cfset monthLimit = (year EQ currentYear) ? currentMonth : 12>
+                            <cfset startLimit = (year EQ startYear) ? startMonth : 1>
+
+                            <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
+                                <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris"
+                                    hx-get="/blog/blogs"
+                                    hx-trigger="click"
+                                    hx-target="##blogsContainer"
+                                    hx-swap="innerHTML"
+                                    hx-vals='{"year": "#year#", "month": "#month#"}'>
+                                    #months[month]# #year#
+                                </p>
+                            </cfloop>
+                        </cfloop>
+                    </cfoutput>
                 </div>
-                <div class="d-none bg-white p-3 text-center rounded-18" id="Categories">
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">CLI</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Community</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Contributions</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Documentation</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Events</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Inspiration</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Plugin</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Releases</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Tips & Tricks</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Tutorials</p>
-                    <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">Website</p>
+
+                <div class="d-none bg-white p-3 text-center rounded-18" id="Categories" hx-get="/blog/Categories" hx-trigger="load" hx-target="#Categories" hx-swap="innerHTML">                 
                 </div>
             </div>
         </div>

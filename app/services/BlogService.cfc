@@ -10,6 +10,27 @@ component {
         return variables.Blog.findAll();
     }
 
+    function getAllByDate(required numeric month, required numeric year){
+        return variables.Blog.findAll(
+            // where="id=1 AND title = 'test'",
+            // where="MONTH(createdAt) = 3",
+            // where="YEAR(createdAt) = '#val(year)#' AND MONTH(createdAt) = '#val(month)#'",
+            // order="createdAt DESC",
+            // include="User",
+            // returnAs="query"
+        );
+    }
+    
+    // Fetch Blogs by Category
+    function getAllByCategory(required numeric categoryId){
+        return variables.Blog.findAll(
+            where='categoryId = #val(categoryId)#',
+            order="createdAt DESC",
+            include="User",
+            returnAs="query"
+        );
+    }
+
     function getBlogById(required numeric id) {
         return variables.Blog.findOne(
             where="blog_posts.id = #arguments.id#",

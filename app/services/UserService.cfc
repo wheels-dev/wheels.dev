@@ -56,7 +56,7 @@ component {
 
             // Check if the user ID is greater than 0 (for editing an existing post)
             if (userData.id > 0) {
-                var user = findById(userData.id);
+                var user = variables.User.findByKey(userData.id);
 
                 if (not isNull(user)) {
                     // Edit the existing user post

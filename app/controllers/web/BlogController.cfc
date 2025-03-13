@@ -20,10 +20,38 @@ component extends="app.Controllers.Controller" {
 
     // Function to list all blogs
     function index() {
+    }
+
+    // load blog list
+    function blogs() {
+        
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
+
+        // Ensure default values if params are missing
+        param name="year" default="";
+        param name="month" default="";
+        param name="category_id" default="";
+        if (!len(year) && !len(month) && !len(category_id)) {
+
+            // If no year/month is selected, show all blogs
+            blogs = blogModel.getAll();
+        } else if (!len(year) || !len(month)) {
+
+            // Fetch blogs filtered by month and year
+            blogs = blogService.getAllByCategory(category_id);
+        } else {
+            // Fetch blogs filtered by month and year
+            blogs = blogService.getAllByDate(month, year);
             
-        blogs = blogModel.getAll();
+        }
+        renderPartial(partial="partials/blogList", locals={blogs: blogs});
+    }
+
+    // Function to load categories for the blog list
+    function Categories() {
+        categorylist = model("Category").getAll();
+        renderPartial(partial="partials/categorylist");
     }
 
     // Function to show the create blog form
