@@ -47,7 +47,7 @@
                     <div class="mb-3">
                         <label for="passwordHash" class="form-label fs-14 fw-medium">Password <span class="text-danger">*</span></label>
                         <input name="passwordHash" type="password" placeholder="Enter your password" class="form-control fs-14"
-                            id="passwordHash" required minlength="3">
+                            id="passwordHash" required minlength="8">
                         <div class="invalid-feedback">Password must be at least 8 characters long.</div>
                     </div>
                     <div class="mb-3">
@@ -60,20 +60,22 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Role <span class="text-danger">*</span>
                         </label>
-                        <select class="form-control fs-14" name="roleId" id="roleId" required hx-get="/user/loadRoles" hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
+                        <select class="form-control fs-14" name="roleId" id="roleId" required hx-get="/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
                             <option value="">Select Role</option>
                         </select>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input name="termsCheck" type="checkbox" class="form-check-input" id="termsCheck" required>
-                        <label class="form-check-label fs-14" for="termsCheck">Agree to Terms & Privacy Policy</label>
-                        <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
-                    </div>
+                    <cfif id eq 0>
+                        <div class="mb-3 form-check">
+                            <input name="termsCheck" type="checkbox" class="form-check-input" id="termsCheck" required>
+                            <label class="form-check-label fs-14" for="termsCheck">Agree to Terms & Privacy Policy</label>
+                            <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
+                        </div>
+                    </cfif>
 
                     <div class="d-flex justify-content-between flex-wrap gap-2 align-items-start">
                         <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Save User</button>
                         <p class="mb-2 fs-14">
-                            <a href="/user" class="text-primary">Back to User List</a>
+                            <a href="/admin/user" class="text-primary">Back to User List</a>
                         </p>
                     </div>
                 </form>

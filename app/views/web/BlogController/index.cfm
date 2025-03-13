@@ -3,12 +3,21 @@
     <div class="container py-5">
         <div class="row">
             <div class="col-lg-4 col-12">
-                <input type="text" placeholder="Search" class="form-control border-0 shadow-sm p-2 fs-16 bg-white"
-                    name="" id="">
+                <input type="text" placeholder="Search" class="form-control border-0 shadow-sm p-2 fs-16 bg-white" name="" id="">
+            </div>
+            <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12 d-flex justify-content-end gap-3">
+                <cfif StructKeyExists(session, "userId") and session.userId neq ''>
+                    <cfoutput>
+                        <a href="##" class="btn btn-secondary px-4">#session.username#</a>
+                        <a href="/logout" class="btn btn-primary px-4">Logout</a>
+                    </cfoutput>
+                <cfelse>
+                    <a href="/login" class="btn btn-primary px-4">Login</a>
+                    <a href="/register" class="btn btn-secondary px-4">Register</a>
+                </cfif>
             </div>
             <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
-                    <!--- px-4 fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg--iris text-white --->
                     <button onclick="handleBlogFilter('All', this)"
                         class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
                         All
@@ -47,28 +56,6 @@
         <div class="row justify-content-center justify-content-lg-between">
             <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1"
                 hx-get="/blog/blogs" hx-trigger="load" hx-target="#blogsContainer" hx-swap="innerHTML">
-<!---                 <cfinclude template="partial/_blogList.cfm"> --->
-                <!---<cfoutput>
-                    <cfloop query="blogs">
-                        <div class="pb-4">
-                            <a href="/blog/#slug#" class="d-flex bg-white px-0 rounded-4 overflow-hidden justify-content-between">
-                                <div
-                                    class="p-3 flex-grow-1 rounded-start-4 d-flex justify-content-between flex-column ">
-                                    <div>
-                                        <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                                            <p class="text--iris fw-medium fs-12 m-0">#blogs.fullName#</p>
-                                        </div>
-                                        <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
-                                    </div>
-                                    <p class="text--lightGray fs-12 fw-medium">#dateformat(blogs.createdat, 'MMMM DD, YYYY')#</p>
-                                </div>
-                                <div class="d-lg-block d-none position-relative">
-                                    <img src="#blogs.coverImagePath#" class="rounded-end-4 size-320 object-fit-cover">
-                                </div>
-                            </a>
-                        </div>
-                    </cfloop>
-                </cfoutput>--->
             </div>
             <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
                 <cfset startYear = 2008>
