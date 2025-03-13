@@ -24,26 +24,26 @@ component extends="app.Controllers.Controller" {
 
     // load blog list
     function blogs() {
+        
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
 
         // Ensure default values if params are missing
         param name="year" default="";
         param name="month" default="";
-        if (!len(year) || !len(month)) {
-            
+        param name="category_id" default="";
+        if (!len(year) && !len(month) && !len(category_id)) {
+
             // If no year/month is selected, show all blogs
             blogs = blogModel.getAll();
+        } else if (!len(year) || !len(month)) {
+
+            // Fetch blogs filtered by month and year
+            blogs = blogService.getAllByCategory(category_id);
         } else {
             // Fetch blogs filtered by month and year
-            blogs = blogModel.findAll(
-                // where="createdAt = '2025-02-12 06:17:34.560'",
-                where="YEAR(createdAt) = '#val(year)#' AND MONTH(createdAt) = '#val(month)#'",
-                order="createdAt DESC",
-                include="User",
-                returnAs="query"
-            );
-            // writeDump(blogs); abort;
+            blogs = blogService.getAllByDate(month, year);
+            
         }
         renderPartial(partial="partials/blogList", locals={blogs: blogs});
     }
