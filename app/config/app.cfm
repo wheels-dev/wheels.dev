@@ -14,18 +14,18 @@
   	// Set up all datasources.
   	// wheels-dev
 	this.datasources["wheels.dev"] = {
-    	class: "com.microsoft.sqlserver.jdbc.SQLServerDriver", 
-      bundleName: "org.lucee.mssql", 
-      bundleVersion: "12.6.3.jre11",
-      connectionString: "jdbc:sqlserver://localhost:1433;DATABASENAME=wheels_dev;trustServerCertificate=true;SelectMethod=direct",
-      username: "root",
-      password: "encrypted:0dd5bce6050ab7d8e9eb6ec04067660cdce83facfa6a6d51",
-      
-      // optional settings
-      connectionLimit:-1, // default:-1
-      liveTimeout:15, // default: -1; unit: minutes
-      validate:false, // default: false
-  };
+		class: "com.microsoft.sqlserver.jdbc.SQLServerDriver", 
+		bundleName: "org.lucee.mssql", 
+		bundleVersion: "#this.env.wheelsdev_bundleversion#",
+		connectionString: "jdbc:sqlserver://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#;DATABASENAME=#this.env.wheelsdev_databasename#;trustServerCertificate=true;SelectMethod=direct",
+		username: "#this.env.wheelsdev_username#",
+		password: "encrypted:#this.env.wheelsdev_password#",
+		
+		// optional settings
+		clob:#not(!this.env.wheelsdev_clob)#, // default: false
+		connectionLimit:#toNumeric(this.env.wheelsdev_connectionlimit)#, // default:-1
+		storage:#not(!this.env.wheelsdev_storage)# // default: false
+	};
 
 	// CLI-Appends-Here
 </cfscript>
