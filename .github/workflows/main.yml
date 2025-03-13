@@ -25,16 +25,16 @@ jobs:
           box install
           
       - name: Login to Docker Registry
-        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login "${{ secret.DOCKER_HUB_IP }}":"${{ secret.DOCKER_HUB_PORT}}" -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login "${{ secrets.DOCKER_HUB_IP }}":"${{ secrets.DOCKER_HUB_PORT}}" -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
         
       - name: Push Docker Image
         id: Push-Docker-Image
         run: |
-          docker build -t ${{ secret.DOCKER_HUB_IP }}:${{ secret.DOCKER_HUB_PORT}}/wheels-img .
-          docker push ${{ secret.DOCKER_HUB_IP }}:${{ secret.DOCKER_HUB_PORT}}/wheels-img
+          docker build -t ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-img .
+          docker push ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-img
 
       - name: Deploy to Docker Swarm
         id: Deploy-to-Docker-Swarm
         run: |
-          docker pull ${{ secret.DOCKER_HUB_IP }}:${{ secret.DOCKER_HUB_PORT}}/wheels-img
+          docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-img
           docker stack deploy -c docker-compose.yml wheels-dev
