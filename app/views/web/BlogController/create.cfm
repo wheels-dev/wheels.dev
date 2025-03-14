@@ -24,15 +24,6 @@
 
                     <div class="mb-3">
                         <label class="form-label mb-1 fs-14 fw-medium">
-                            Post Status <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-control fs-14" name="statusId" id="statusId" required hx-get="/blog/loadStatuses" hx-trigger="load" hx-target="#statusId" hx-swap="innerHTML">
-                            <option value="">Select Status</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
                             Post Type <span class="text-danger">*</span>
                         </label>
                         <select class="form-control fs-14" name="posttypeId" id="posttypeId" required hx-get="/blog/loadPostTypes" hx-trigger="load" hx-target="#posttypeId" hx-swap="innerHTML">
@@ -112,7 +103,11 @@
                         <input class="form-control" type="hidden" name="content" id="content">
                     </div>
 
+                    <input type="hidden" name="isDraft" id="isDraft" value="0">
                     <div class="text-end">
+                        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded fs-14" id="saveDraftBtn">
+                            Save as Draft
+                        </button>
                         <button type="submit" class="bg--secondary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                     </div>
                 </form>
@@ -135,55 +130,58 @@
             document.getElementById('content').value = quill.root.innerHTML.trim();
         }
 
+        document.getElementById("saveDraftBtn").addEventListener("click", function () {
+            document.getElementById("isDraft").value = "1"; // Set draft flag
+            document.getElementById("blogForm").requestSubmit(); // Trigger form submission
+        });
+
         document.getElementById('blogForm').addEventListener("submit", function (event) {
-            syncQuillContent(); // Ensure content is set before submit
+            syncQuillContent();
 
             var isValid = true;
-
             const title = document.getElementById('title');
             const categoryId = document.getElementById('categoryId');
-            const statusId = document.getElementById('statusId');
             const posttypeId = document.getElementById('posttypeId');
             const posttag = document.getElementById('posttag');
             const content = document.getElementById('content');
             const excerpt = document.getElementById('excerpt');
             const editor = document.getElementById("editor");
 
+            // Check if it's a draft submission
+            const isDraft = document.getElementById("isDraft").value === "1";
+
             // Reset validation styles
-            [title, categoryId, statusId, posttypeId, posttag, excerpt].forEach(field => field.classList.remove("is-invalid"));
+            [title, categoryId, posttypeId, posttag, excerpt].forEach(field => field.classList.remove("is-invalid"));
             editor.classList.remove("border-danger");
 
-            // Validate fields
-            if (title.value.trim() === "") {
-                isValid = false;
-                title.classList.add("is-invalid");
-            }
-            if (categoryId.value.trim() === "") {
-                isValid = false;
-                categoryId.classList.add("is-invalid");
-            }
-            if (statusId.value.trim() === "") {
-                isValid = false;
-                statusId.classList.add("is-invalid");
-            }
-            if (posttypeId.value.trim() === "") {
-                isValid = false;
-                posttypeId.classList.add("is-invalid");
-            }
-            if (posttag.value.trim() === "") {
-                isValid = false;
-                posttag.classList.add("is-invalid");
-            }
-            if (excerpt.value.trim() === "") {
-                isValid = false;
-                excerpt.classList.add("is-invalid");
-            }
-            if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
-                isValid = false;
-                editor.classList.add("border-danger");
+            // Validate fields only if it's NOT a draft
+            if (!isDraft) {
+                if (title.value.trim() === "") {
+                    isValid = false;
+                    title.classList.add("is-invalid");
+                }
+                if (categoryId.value.trim() === "") {
+                    isValid = false;
+                    categoryId.classList.add("is-invalid");
+                }
+                if (posttypeId.value.trim() === "") {
+                    isValid = false;
+                    posttypeId.classList.add("is-invalid");
+                }
+                if (posttag.value.trim() === "") {
+                    isValid = false;
+                    posttag.classList.add("is-invalid");
+                }
+                if (excerpt.value.trim() === "") {
+                    isValid = false;
+                    excerpt.classList.add("is-invalid");
+                }
+                if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
+                    isValid = false;
+                    editor.classList.add("border-danger");
+                }
             }
 
-            // If validation fails, prevent request
             if (!isValid) {
                 event.preventDefault();
                 alert("Please fill out all required fields.");
