@@ -37,4 +37,5 @@ jobs:
         id: Deploy-to-Docker-Swarm
         run: |
           docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-img
-          docker stack deploy -c docker-compose.yml wheels-dev
+          docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev
+
