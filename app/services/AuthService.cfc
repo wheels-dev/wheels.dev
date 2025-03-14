@@ -50,7 +50,7 @@ component {
                     newUser.email = userData.email;
                     newUser.password_hash = hash(userData.passwordHash);
                     newUser.token = userData.token;
-                    newUser.roleid = application.wo.GetBloggerId(); //blogger role
+                    newUser.roleid = application.wo.GetEditorId(); //Editor role
                     newUser.status = application.wo.SetInactive(); //inactive
                     newUser.createdAt = now();
                     newUser.updatedAt = now();

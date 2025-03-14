@@ -32,6 +32,7 @@ component extends="app.Models.Model" {
         belongsTo(name="User", foreignKey="createdBy"); 
         belongsTo(name="Category", foreignKey="categoryId"); 
         belongsTo(name="PostStatus", foreignKey="statusId");
+        belongsTo(name="PostType", foreignKey="postTypeId");
 
     }
 

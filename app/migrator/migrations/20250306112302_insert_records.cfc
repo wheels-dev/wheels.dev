@@ -5,7 +5,7 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 			try {
 				// roles
 				addRecord(table='Roles',name = "Admin");
-				addRecord(table='Roles',name = "Blogger");
+				addRecord(table='Roles',name = "Editor");
 				addRecord(table='Roles',name = "User");
 
 				// users

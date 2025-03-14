@@ -3,7 +3,7 @@
 public function GetSignedInUserId(){
     return session.USERID;
 }
-public function GetBloggerId(){
+public function GetEditorId(){
     return 2;
 }
 public function SetActive(){

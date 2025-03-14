@@ -30,6 +30,11 @@
 			.get(name = "reset", pattern = "user/reset-password", to = "web.AuthController##forgot")
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
+			// Admin Controls
+			.get(name = "admin-blog", pattern = "admin/blog", to = "web.AdminController##blog")
+			.get(name = "BlogList", pattern = "admin/BlogList", to = "web.AdminController##BlogList")
+			.post(name = "admin-blogaction", pattern = "admin/blogAction", to = "web.AdminController##blogAction")
+
 			.get(name = "user", pattern = "admin/user", to = "web.UserController##Index")
 			.get(name = "loadUsers", pattern = "user/loadUsers", to = "web.UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "web.UserController##loadRoles")
