@@ -9,8 +9,7 @@ component extends="app.Controllers.Controller" {
 
     private function restrictAccess() {
         // Ensure only blog editors can access these methods
-        var blogService = new app.services.BlogService(model("Blog"));
-        bloguser = blogService.isUserLoggedIn()
+        bloguser = isUserLoggedIn()
         if (!bloguser) {
             redirectTo(controller="AuthController", action="login", route="auth-login");
             return false;

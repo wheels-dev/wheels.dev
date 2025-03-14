@@ -10,6 +10,26 @@ component {
         return variables.Blog.findAll();
     }
 
+    function getAllBlogs() {
+        return variables.Blog.findAll(
+            include="User, Category, PostStatus, PostType",
+            order="createdAt DESC",
+            options={
+                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                    blog_posts.createdat AS createdDate, 
+                    users.fullName AS authorName, 
+                    categories.name AS categoryName, 
+                    post_statuses.name AS statusName, 
+                    post_types.name AS posttypeName 
+                    FROM blog_posts 
+                    INNER JOIN users ON users.id = blog_posts.userId
+                    INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
+                    INNER JOIN post_types ON post_types.id = post_types.postTypeId"
+            }
+        );
+    }
+
     function getAllByDate(required numeric month, required numeric year){
         return variables.Blog.findAll(
             // where="id=1 AND title = 'test'",
@@ -169,14 +189,32 @@ component {
         return message;
     }
 
-    /**
-     * Check if user is logged In
-     */
-    function isUserLoggedIn() {
-        return (
-            structKeyExists(session, "USERID") && 
-            structKeyExists(session, "role") && 
-            session.role == "Blogger"
-        );
+    function ApproveorReject(id){
+        var blog = variables.Blog.findByKey(arguments.id);
+        
+        if (!isNull(blog)) {
+            
+            blog.statusid = 8; //approved
+            //blog.statusid = 9; //declined
+            
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "blog status updated successfully"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to update blog status"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "blog not found"
+        };
     }
+
 }

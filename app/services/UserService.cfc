@@ -126,18 +126,6 @@ component {
     }
 
     /**
-     * Check if current user is an admin
-     */
-    function isCurrentUserAdmin() {
-        // Assumes session management is handled elsewhere
-        return (
-            structKeyExists(session, "user") && 
-            structKeyExists(session.user, "role") && 
-            session.user.role.name == "Administrator"
-        );
-    }
-
-    /**
      * Soft delete a user
      * @id User identifier to delete
      */
