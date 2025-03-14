@@ -9,11 +9,11 @@
                             <th>ID</th>
                             <th>Title</th>
                             <th>Slug</th>
-                            <th>Excerpt</th>
                             <th>Category</th>
                             <th>Status</th>
                             <th>Post Type</th>
                             <th>Created By</th>
+                            <th>Excerpt</th>
                             <th>Content</th>
                             <th>Actions</th>
                         </tr>
