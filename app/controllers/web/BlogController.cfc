@@ -3,20 +3,59 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
+    }
+
+    private function restrictAccess() {
+        // Ensure only blog editors can access these methods
+        bloguser = isUserLoggedIn()
+        if (!bloguser) {
+            redirectTo(controller="AuthController", action="login", route="auth-login");
+            return false;
+        }
+        return true;
     }
 
     // Function to list all blogs
     function index() {
+    }
+
+    // load blog list
+    function blogs() {
+        
         var blogModel = model("Blog"); // Get model instance
         var blogService = new app.services.BlogService(blogModel);
+
+        // Ensure default values if params are missing
+        param name="year" default="";
+        param name="month" default="";
+        param name="category_id" default="";
+        if (!len(year) && !len(month) && !len(category_id)) {
+
+            // If no year/month is selected, show all blogs
+            blogs = blogModel.getAll();
+        } else if (!len(year) || !len(month)) {
+
+            // Fetch blogs filtered by month and year
+            blogs = blogService.getAllByCategory(category_id);
+        } else {
+            // Fetch blogs filtered by month and year
+            blogs = blogService.getAllByDate(month, year);
             
-        blogs = blogModel.getAll();
+        }
+        renderPartial(partial="partials/blogList", locals={blogs: blogs});
+    }
+
+    // Function to load categories for the blog list
+    function Categories() {
+        categorylist = model("Category").getAll();
+        renderPartial(partial="partials/categorylist");
     }
 
     // Function to show the create blog form
     function create() {
+        restrictAccess();
         renderView(layout="blogLayout");
     }
 
@@ -25,7 +64,6 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var blogModel = model("Blog"); 
         var blogService = new app.services.BlogService(blogModel);
-        // writeDump(params); abort;
 
         try {
             params.coverImagePath = "";
@@ -53,7 +91,9 @@ component extends="app.Controllers.Controller" {
             }
         }
 
-            blogService.saveBlog(params);
+            response = blogService.saveBlog(params);
+            tagService = new app.services.TagService(model("Tag"));
+            tagService.saveTags(params, response.blogId);
             redirectTo(action="index");
         } catch (any e) {
             // Handle error
@@ -68,10 +108,10 @@ component extends="app.Controllers.Controller" {
         tagService = new app.services.TagService(model("Tag"));
         attachmentService = new app.services.AttachmentService(model("Attachment"));
 
-        blog = blogService.getBlogById(params.id);
+        blog = blogService.getBlogBySlug(params.slug);
         blogs = blogModel.getAll();
-        tags = tagService.getTagsByBlogid(params.id);
-        attachments = attachmentService.getAttachmentsByBlogid(params.id);
+        tags = tagService.getTagsByBlogid(blog.id);
+        attachments = attachmentService.getAttachmentsByBlogid(blog.id);
         
     }
 

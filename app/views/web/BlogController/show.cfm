@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="col-lg-5 col-12 text-lg-end text-center">
-                            <img src="#blogs.coverImagePath#" class="img-fluid size-320 mx-auto rounded-4"
+                            <img src="#blog.coverImagePath#" class="img-fluid size-320 mx-auto rounded-4"
                                 alt="blog-detail">
                         </div>
 

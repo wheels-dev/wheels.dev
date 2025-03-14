@@ -24,4 +24,28 @@ component extends="wheels.Controller" {
 		protectsFromForgery();
 	}
 
+	/**
+     * Check if user is logged In
+     */
+    function isUserLoggedIn() {
+        return (
+            structKeyExists(session, "USERID") && 
+            structKeyExists(session, "role") && 
+            (session.role == "Editor" || 
+            session.role == "Admin")
+        );
+    }
+
+	/**
+     * Check if current user is an admin
+     */
+    function isCurrentUserAdmin() {
+        // Assumes session management is handled elsewhere
+        return (
+            structKeyExists(session, "USERID") && 
+            structKeyExists(session, "role") && 
+            session.role == "Admin"
+        );
+    }
+
 }
