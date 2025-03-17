@@ -18,7 +18,7 @@ component extends="app.Controllers.Controller" {
     // }
 
     function config() {
-        verifies( except="index,dashboard,checkAdminAccess,blog,BlogList,blogAction", params="key", paramsTypes="integer", handler="dashboard");
+        verifies( except="index,dashboard,checkAdminAccess,blog,BlogList,approve,reject", params="key", paramsTypes="integer", handler="dashboard");
 
         usesLayout("/web/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -34,10 +34,20 @@ component extends="app.Controllers.Controller" {
         renderPartial(partial="partials/blogs");
     }
 
-    function blogAction() {
+    function approve() {
         try {
             var blogService = new app.services.BlogService(model("Blog"));
-            var message = blogService.ApproveorReject(params.id);
+            var message = blogService.Approve(params.id);
+            redirectTo(action="blog", success="#message#");
+        } catch (any e) {
+            // Handle error
+            redirectTo(action="blog", errorMessage="Failed to delete user.");
+        }
+    }
+    function reject() {
+        try {
+            var blogService = new app.services.BlogService(model("Blog"));
+            var message = blogService.Reject(params.id);
             redirectTo(action="blog", success="#message#");
         } catch (any e) {
             // Handle error

@@ -15,8 +15,8 @@ component {
             include="User, Category, PostStatus, PostType",
             order="createdAt DESC",
             options={
-                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
-                    blog_posts.createdat AS createdDate, 
+                sql="SELECT blog_posts.status AS blogStatus, blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                    blog_posts.createdat AS createdDate,
                     users.fullName AS authorName, 
                     categories.name AS categoryName, 
                     post_statuses.name AS statusName, 
@@ -189,24 +189,48 @@ component {
         return message;
     }
 
-    function ApproveorReject(id){
+    function Approve(id){
         var blog = variables.Blog.findByKey(arguments.id);
         
         if (!isNull(blog)) {
             
-            blog.statusid = 8; //approved
-            //blog.statusid = 9; //declined
-            
+            blog.status = "Approved"; //approved            
             if (blog.save()) {
                 return {
                     success = true,
-                    message = "blog status updated successfully"
+                    message = "blog status approved successfully"
                 };
             } else {
                 return {
                     success = false,
                     errors = blog.allErrors(),
-                    message = "Failed to update blog status"
+                    message = "Failed to approve blog status"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "blog not found"
+        };
+    }
+    function Reject(id){
+        var blog = variables.Blog.findByKey(arguments.id);
+        
+        if (!isNull(blog)) {
+            
+            blog.status = "Rejected"; //reject
+            
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "blog status rejected successfully"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to reject blog status"
                 };
             }
         }

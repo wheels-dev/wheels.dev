@@ -5,7 +5,7 @@
     <title>Admin Panel</title>
     <mta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-    <link rel="stylesheet" href="/stylesheets/admin.css">
+<!---     <link rel="stylesheet" href="/stylesheets/admin.css"> --->
     <!-- Bootstrap CSS -->
     <link href="/stylesheets/font.css" rel="stylesheet">
     <link href="/stylesheets/bootstrap.css" rel="stylesheet">
@@ -40,8 +40,8 @@
                     <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12 d-flex justify-content-end gap-3">
                         <cfif StructKeyExists(session, "userId") and session.userId neq ''>
                             <cfoutput>
-                                <a href="##" class="btn btn-secondary px-4">#session.username#</a>
-                                <a href="/logout" class="btn btn-primary px-4">Logout</a>
+                                <a href="user/profile" class="btn btn-primary px-4">#session.username#</a>
+                                <a class="btn btn-secondary px-4" href="/logout">Logout</a>
                             </cfoutput>
                         </cfif>
                     </div>
