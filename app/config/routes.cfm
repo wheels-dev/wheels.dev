@@ -19,6 +19,7 @@
 		.namespace("")
 			.get(name = "auth-login", pattern = "login", to = "web.AuthController##Login")
 			.get(name = "auth-register", pattern = "register", to = "web.AuthController##Register")
+			.get(name = "auth-verify", pattern = "verify", to = "web.AuthController##verify")
 			.get(name = "auth-logout", pattern = "logout", to = "web.AuthController##Logout")
 			.post(name = "auth-authenticate", pattern = "auth/authenticate", to = "web.AuthController##Authenticate")
 			.post(name = "auth-store", pattern = "auth/store", to = "web.AuthController##Store")
