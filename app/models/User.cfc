@@ -54,14 +54,6 @@ component extends="app.Models.Model" {
             select=false  // Exclude from default select statements
         );
         
-        // Token
-        property(
-            name="token", 
-            column="token", 
-            dataType="string", 
-            label="Token", 
-            select=false  // Exclude from default select statements
-        );
 
         // Profile Picture Property
         property(
