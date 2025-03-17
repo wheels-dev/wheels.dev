@@ -33,8 +33,10 @@
 			// Admin Controls
 			.get(name = "admin-blog", pattern = "admin/blog", to = "web.AdminController##blog")
 			.get(name = "BlogList", pattern = "admin/BlogList", to = "web.AdminController##BlogList")
-			.post(name = "admin-blogaction", pattern = "admin/blogAction", to = "web.AdminController##blogAction")
+			.post(name = "admin-approve", pattern = "admin/approve", to = "web.AdminController##approve")
+			.post(name = "admin-reject", pattern = "admin/reject", to = "web.AdminController##reject")
 
+			.get(name = "user-profile", pattern = "admin/user/profile", to = "web.UserController##profile")
 			.get(name = "user", pattern = "admin/user", to = "web.UserController##Index")
 			.get(name = "loadUsers", pattern = "user/loadUsers", to = "web.UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "web.UserController##loadRoles")
