@@ -80,6 +80,7 @@ component output="false" {
 	include "../app/config/app.cfm";
 
 	function onApplicationStart() {
+		application.env = this.env;
 		wirebox = new wirebox.system.ioc.Injector("wheels.Wirebox");
 
 		/* wheels/global object */
