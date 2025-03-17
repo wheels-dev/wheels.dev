@@ -20,7 +20,9 @@
                     <div class="row gy-4">
                         <div class="col-lg-7 col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
-                                <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>
+                                <div>
+                                    <img src="#blog.user.profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5" alt="profile-picture">
+                                </div>
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div>
                             <h1 class="fs-36 fw-bold text--secondary">
@@ -29,8 +31,14 @@
                             <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
                                 <p class="fw-medium fs-12 text--lightGray">#dateformat(blogs.createdat, 'MMMM DD,
                                     YYYY')#</p>
-                                <p class="fw-medium fs-12 text--lightGray">#blog.PostStatus.name# in
-                                    #blog.Category.name#</p>
+                                    <p class="fw-medium fs-12 text--lightGray" 
+                                    hx-push-url="/blog"
+                                    hx-get="/blog/blogs"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML"
+                                    hx-vals='{"category_id": "#blog.Category.id#"}'>
+                                    #blog.PostStatus.name# in #blog.Category.name#
+                                 </p>
                                 <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
                             </div>
                         </div>

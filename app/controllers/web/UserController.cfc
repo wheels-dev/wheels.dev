@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,loadUsers,loadRoles,addEditUser,store,delete", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadUsers,loadRoles,addEditUser,store,delete,profile", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -42,6 +42,32 @@ component extends="app.Controllers.Controller" {
 
         // Save user logic here
         try {
+
+            params.profilePicture = "";
+            var uploadPath = expandPath("/files/"); // Define the upload directory
+
+            if (!directoryExists(uploadPath)) {
+                directoryCreate(uploadPath);
+            }
+
+            // Handle file upload
+            if (structKeyExists(params, "profilePicture") && isDefined("params.profilePicture")) {
+                var uploadedFile = fileUpload(uploadPath, "profilePicture");
+
+                if (!structIsEmpty(uploadedFile) && structKeyExists(uploadedFile, "serverFile")) {
+                    var originalFileName = uploadedFile.serverFile; // This is the uploaded file name
+                    var fileExtension = listLast(originalFileName, "."); // Extract extension
+                    var uniqueFileName = createUUID() & "." & fileExtension; // Generate unique name
+
+                    // Rename file to unique name
+                    var newFilePath = uploadPath & "/" & uniqueFileName;
+                    fileMove(uploadedFile.serverDirectory & "/" & originalFileName, newFilePath);
+
+                    // Store the relative file path
+                    params.profilePicture = "/files/" & uniqueFileName;
+                }
+            }
+
             var userService = new app.services.UserService(model("User"));
             var message = userService.saveUser(params);
             redirectTo(action="index");
@@ -104,5 +130,16 @@ component extends="app.Controllers.Controller" {
             return false;
         }
         return true;
+    }
+
+    function profile(){
+        param name="id" default=0;
+        id = session.userId
+        user;
+        if(id > 0) {
+            var userService = new app.services.UserService(model("User"));
+            user = userService.findById(id);
+        }
+        return user;
     }
 }

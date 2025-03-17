@@ -11,12 +11,13 @@
         writeOutput('<td>' & blogs.fullName[i] & '</td>');
         writeOutput('<td>' & blogs.Excerpt[i] & '</td>');
         writeOutput('<td>' & blogs.content[i] & '</td>');
+        writeOutput('<td>' & blogs.status[i] & '</td>');
 
         writeOutput('<td>');
 
         // Approve Button
         writeOutput('<button 
-            hx-post="blogAction" 
+            hx-post="approve" 
             hx-vals=''{"id": "#blogId#"}''
             hx-target="##blog-' & blogId & '"
             hx-confirm="Are you sure you want to approve this blog?"
@@ -26,7 +27,7 @@
 
         // Reject Button
         writeOutput('<button 
-            hx-post="blogAction" 
+            hx-post="reject" 
             hx-vals=''{"id": "#blogId#"}''
             hx-target="##blog-' & blogId & '"
             hx-confirm="Are you sure you want to reject this blog?"
