@@ -67,6 +67,9 @@ component {
                     user.status = application.wo.SetActive();
                     user.roleid = userData.roleid;
                     user.updatedAt = now();
+                    if (structKeyExists(userData, "profilePicture") && isDefined("userData.profilePicture")) {
+                        user.profilePicture = userData.profilePicture
+                    }
                     user.save();
                     message = "User updated successfully.";
                 } else {

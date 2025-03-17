@@ -9,6 +9,7 @@ component extends="app.Models.Model" {
         property(name="slug", column="slug", type="string", required=true, default="", limit=255);
         property(name="excerpt", column="excerpt", type="string", required=true, default="", limit=500);
         property(name="coverImagePath", column="cover_image_path", type="string", required=false, default="", limit=100);
+        property(name="status", column="status", type="string", required=false, default="");
 
         property(name="isCommentClosed", column="is_comment_closed", type="boolean", required=true, default=false);
         property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
