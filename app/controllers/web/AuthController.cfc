@@ -14,7 +14,7 @@ component extends="app.Controllers.Controller" {
 
         try{
             // Validate credentials using AuthService
-            var authService = new app.services.AuthService(model("User"));
+            var authService = new app.services.AuthService(model("User"), model("UserToken"));
             user = authService.validateCredentials(params.email, params.passwordHash);
 
             if (isObject(user)) {
@@ -53,12 +53,13 @@ component extends="app.Controllers.Controller" {
         try{
             // save user logic here
             var userModel = model("User"); // Get model instance
-            var authService = new app.services.AuthService(userModel);
+            var tokenModel = model("UserToken");
+            var authService = new app.services.AuthService(userModel, tokenModel);
             var message = authService.saveUser(params);
-            
+            renderText("<p style='color:red;'>#message#</p>");
             // Fetch the user to send verification email
-            var authService = new app.services.AuthService(model("User"));
-            user = authService.sendVerificationEmail(params.email, params.token);
+            // var authService = new app.services.AuthService(model("User"));
+            // user = authService.sendVerificationEmail(params.email, params.token);
 
             <!---
             // Validate credentials using AuthService
@@ -89,27 +90,24 @@ component extends="app.Controllers.Controller" {
     function verify() {
         param name="params.token" default="";
 
-        var authService = new app.services.AuthService(model("User"));
+        var authService = new app.services.AuthService(model("User"), model("UserToken"));
         user = authService.verifyToken(params.token);
-        
-        if(structKeyExists(variable, message) and message == 'true'){
-
-            // Validate credentials using AuthService
-            var authService = new app.services.AuthService(model("User"));
-            user = authService.validateCredentials(user.email, user.passwordHash);
+        if(isObject(user)){
 
             if (isObject(user)) {
                 // Store user data in session
                 session.userID = user.id;
-                session.username = user.name;
-                session.role = user.role.name;
-                // session.permissions = user.permissions;
+                session.username = user.fullname;
+                session.role = user.roleId;
 
                 // Send HTMX Redirect Header
                 session.message = "Register and Login Successfully!"
-                header name="HX-Redirect" value="#urlFor(route='home')#";
+                redirectto(route="home");
                 return;
             }
+        }else{
+            // Handle invalid token
+            rendertext('Invalid User!');
         }
     }
 
