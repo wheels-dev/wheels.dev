@@ -21,3 +21,5 @@ settings.xml
 *.db
 .env
 /public/files
+/app/lib
+*.log

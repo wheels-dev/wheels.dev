@@ -23,7 +23,8 @@
     "installPaths":{
         "cfwheels":"vendor/wheels/",
         "wirebox":"vendor/wirebox/",
-        "testbox":"vendor/testbox/"
+        "testbox":"vendor/testbox/",
+        "semver":"app/lib/semver/"
     },
     "devDependencies":{
         "commandbox-dotenv":"*",
@@ -32,7 +33,8 @@
     },
     "dependencies":{
         "wirebox":"^7",
-        "testbox":"^5"
+        "testbox":"^5",
+        "semver":"^1.2.6"
     },
     "type":"mvc",
     "private":true,

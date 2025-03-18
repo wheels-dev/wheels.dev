@@ -17,7 +17,7 @@ public function SetInactive(){
  * Sort by Semvar
  */
 array function sortBySemVar(required array versions){
-	sv=createObject("component", "app.miscellaneous.semver.models.SemanticVersion");
+	sv=createObject("component", "app.lib.semver.models.SemanticVersion");
 	return arguments.versions.sort( function( a, b ) { return sv.compare( b, a ) } );
 }
 

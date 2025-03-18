@@ -131,7 +131,7 @@
 								<div class="col-lg-4">
 									<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 									<ul class="list-unstyled">
-										<li class="mt-3"><a href="#"
+										<li class="mt-3"><a href="/login"
 												class="text--secondary fs-14 text-decoration-none">Log in</a>
 										</li>
 										<li class="mt-3"><a href="#"
@@ -143,7 +143,7 @@
 												feed</a>
 										</li>
 										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">WordPress.org</a>
+												class="text--secondary fs-14 text-decoration-none"></a>
 										</li>
 									</ul>
 								</div>
@@ -166,18 +166,18 @@
 								<div class="col-lg-4">
 									<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
 									<ul class="list-unstyled">
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Source
+										<li class="mt-3"><a href="https://github.com/cfwheels/cfwheels/releases"
+												class="text--secondary fs-14 text-decoration-none" target="_blank">Source
 												Code</a></li>
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Issue
+										<li class="mt-3"><a href="https://github.com/cfwheels/cfwheels/issues"
+												class="text--secondary fs-14 text-decoration-none" target="_blank">Issue
 												Tracker</a>
 										</li>
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Sponsor
+										<li class="mt-3"><a href="https://opencollective.com/wheels-fw"
+												class="text--secondary fs-14 text-decoration-none" target="_blank">Sponsor
 												Us</a>
 										</li>
-										<li class="mt-3"><a href="#"
+										<li class="mt-3"><a href="/blog"
 												class="text--secondary fs-14 text-decoration-none">Community</a>
 										</li>
 									</ul>
@@ -196,7 +196,7 @@
 								<p class="fs-12">ColdFusion hosting provided by Vivio Technologies.</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
-								<a href="#" class="text-dark">
+								<a href="https://github.com/cfwheels/" class="text-dark" target="_blank">
 									<svg width="25" height="24" viewBox="0 0 25 24" fill="none"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
@@ -204,7 +204,7 @@
 											fill="#0C1620" />
 									</svg>
 								</a>
-								<a href="#" class="text-dark">
+								<a href="https://github.com/cfwheels/cfwheels/discussions" class="text-dark" target="_blank">
 									<svg width="22" height="22" viewBox="0 0 22 22" fill="none"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
@@ -213,7 +213,7 @@
 									</svg>
 
 								</a>
-								<a href="#" class="text-dark">
+								<a href="https://twitter.com/CFonWheels" class="text-dark" target="_blank">
 									<svg width="25" height="24" viewBox="0 0 25 24" fill="none"
 										xmlns="http://www.w3.org/2000/svg">
 										<mask id="mask0_129_385" style="mask-type:luminance"
@@ -228,7 +228,7 @@
 										</g>
 									</svg>
 								</a>
-								<a href="#" class="text-dark">
+								<a href="https://www.facebook.com/cfwheels" class="text-dark" target="_blank">
 									<svg width="13" height="24" viewBox="0 0 13 24" fill="none"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
