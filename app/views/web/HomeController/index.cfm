@@ -14,14 +14,14 @@
             </p>
             <div class="row g-3 justify-content-center w-100 mt-1 align-items-center">
                 <div class="col-md-auto text-center">
-                    <a href="https://guides.cfwheels.org/cfwheels-guides/introduction/readme" class="">
+                    <a href="https://guides.cfwheels.org/cfwheels-guides/introduction/readme" class="" target="_blank">
                         <button class="fs-16 fw-semibold bg--primary w-200 py-1 rounded-2 text-white">
                             Get Started
                         </button>
                     </a>
                 </div>
                 <div class="col-md-auto text-center">
-                    <a href="https://github.com/cfwheels/cfwheels/releases" class="">
+                    <a href="https://github.com/cfwheels/cfwheels/releases" class="" target="_blank">
                         <button class="fs-16 fw-semibold bg--secondary w-200 py-1 rounded-2 text-white">Download</button>
                     </a>
                 </div>
@@ -73,7 +73,9 @@
         <div class="row align-items-center gy-5">
             <div class="col-lg-6 text-center col-12">
                 <p class="fs-60 mb-3 line-height-70 fw-bold">Welcome to our community</p>
-                <button class="bg--primary fs-16 px-3 py-2 rounded text-white">Explore community</button>
+                <a href="/blog">
+                    <button class="bg--primary fs-16 px-3 py-2 rounded text-white">Explore community</button>
+                </a>
             </div>
             <div class="col-lg-6 text-center col-12">
                 <img src="/images/community.png" class="img-fluid" alt="Community" width="428" height="428">
@@ -84,18 +86,12 @@
     <!-- Top contribute -->
     <div class="container py-5 mt-5">
         <div class="text-center">
-            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contribute</p>
-            <p class="fs-22 text--secondary/70">7 individuals are supporting WHEELS.FW <br> Contribute on Open
-                Collective</p>
+            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contributors</p>
         </div>
         <div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
-            <img src="/images/person1.png" alt="" height="271" width="146">
-            <img src="/images/person2.png" class="mt-5" alt="" height="271" width="146">
-            <img src="/images/person3.png" alt="" height="271" width="146">
-            <img src="/images/person4.png" class="mt-5" alt="" height="271" width="146">
-            <img src="/images/person5.png" alt="" height="271" width="146">
-            <img src="/images/person6.png" class="mt-5" alt="" height="271" width="146">
-            <img src="/images/person7.png" alt="" height="271" width="146">
+            <a href="https://github.com/cfwheels/cfwheels/graphs/contributors" target="_blank">
+                <img src="https://contrib.rocks/image?repo=cfwheels/cfwheels" style="max-width: 100%;">
+            </a>
         </div>
     </div>
 </main>

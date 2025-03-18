@@ -68,6 +68,12 @@
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 		.end()
+			
+		.namespace("")
+			.get(name="docFunction", pattern="api/*[version]/*[slug]/.[format]", to="web.ApiController##show")
+			.get(name="docFunction", pattern="api/*[version]/*[slug]/", to="web.ApiController##show")
+			.get(name="docVersion", pattern="api/*[version]/", to="web.ApiController##index")
+		.end()
 
 		// The "wildcard" call below enables automatic mapping of "controller/action" type routes.
 		// This way you don't need to explicitly add a route every time you create a new action in a controller.

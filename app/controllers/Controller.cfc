@@ -48,4 +48,7 @@ component extends="wheels.Controller" {
         );
     }
 
+    function f_getVersions(){
+		versions=getAvailableVersions();
+	}
 }
