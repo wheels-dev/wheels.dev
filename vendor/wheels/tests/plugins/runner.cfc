@@ -28,6 +28,7 @@ component extends="wheels.tests.Test" {
 		PluginObj = $pluginObj(config);
 		previousMixins = Duplicate(application.wheels.mixins);
 		application.wheels.mixins = PluginObj.getMixins();
+		_originalViewPath = get("viewPath");
 		set(viewPath = "/wheels/tests/_assets/views");
 		c = controller("test", _params);
 		m = model("authors").new();
@@ -35,7 +36,7 @@ component extends="wheels.tests.Test" {
 	}
 
 	function teardown() {
-		set(viewPath = "views");
+		set(viewPath = _originalViewPath);
 		application.wheels.mixins = previousMixins;
 	}
 

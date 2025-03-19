@@ -3,6 +3,8 @@ param name="request.wheels.params.command";
 param name="request.wheels.params.version";
 
 executeAction = StructKeyExists(request.wheels.params, "confirm") && request.wheels.params.confirm ? true : false;
+missingMigFlag = StructKeyExists(request.wheels.params, "missingMigFlag") && request.wheels.params.missingMigFlag ? true : false;
+
 message = "";
 result = "";
 
@@ -12,7 +14,7 @@ if (executeAction) {
 	migrator = application.wheels.migrator;
 	switch (request.wheels.params.command) {
 		case "migrateTo":
-			result = migrator.migrateTo(request.wheels.params.version);
+			result = migrator.migrateTo(request.wheels.params.version, missingMigFlag);
 			break;
 		case "migrateTolatest":
 			result = migrator.migrateToLatest();
@@ -45,7 +47,7 @@ if (executeAction) {
 	<div id="result" class="scrolling content longer">
 		<cfif !executeAction>
 			<div class="ui red message">Confirmation Required: #message#</div>
-			<div class="ui red button execute" data-data-url="#urlFor(route='wheelsMigratorCommand', command=request.wheels.params.command, version=request.wheels.params.version, params="confirm=1")#">Execute</div>
+			<div class="ui red button execute" data-data-url="#urlFor(route='wheelsMigratorCommand', command=request.wheels.params.command, version=request.wheels.params.version, params="confirm=1&missingMigFlag=#missingMigFlag#")#">Execute</div>
 		<cfelse>
 			<pre><code class="sql" style="overflow-y: scroll; height:500px;">#result#</code></pre>
 		</cfif>
