@@ -2,11 +2,7 @@
     <div class="container py-5">
         <div class="row">
             <div class="col-lg-4 col-12">
-                <select class="form-control border-0 shadow-sm p-2 fs-16 bg-white" 
-                    name="versionId" id="versionId" 
-                    hx-get="/api/loadVersions" hx-trigger="load" hx-target="#versionId" hx-swap="innerHTML">
-                    <option value="">Version</option>
-                </select>
+                <cfoutput>#includePartial("partials/versions")#</cfoutput>
                 <!---<select class="form-control border-0 shadow-sm p-2 fs-16 bg-white">
                     <option value="">Version</option>
                     <option value="3.0.0-SNAPSHOT">3.0.0-SNAPSHOT</option>

@@ -1,15 +1,15 @@
-// Frontend home page
+// function documentation
 component extends="app.Controllers.Controller" {
 
     	function config() {
-		super.config();
-		verifies(only="index", get=true, params="version", paramsTypes="string", handler="missingParams");
-		filters(through="f_getVersions", only="root,index,show");
-		filters(through="isValidVersion", only="index,show");
-		filters(through="getDocsByVersion", only="index,show");
-		verifies(only="show", get=true, params="version,slug", paramsTypes="string,string", handler="missingParams");
-		provides("html,json,xml,pdf");
-	}
+            super.config();
+            verifies(only="index", get=true, params="version", paramsTypes="string", handler="missingParams");
+            filters(through="f_getVersions", only="root,index,show,loadVersions");
+            filters(through="isValidVersion", only="index,show");
+            filters(through="getDocsByVersion", only="index,show");
+            verifies(only="show", get=true, params="version,slug", paramsTypes="string,string", handler="missingParams");
+            provides("html,json,xml,pdf");
+        }
 
     // Function to load versions
     function loadVersions() {
