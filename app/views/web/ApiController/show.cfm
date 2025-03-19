@@ -1,6 +1,6 @@
 <main class="main-bg">
     <div class="container py-5">
-        <a href="/api" class="py-2 px-3 bg-white shadow-sm rounded-3">
+        <a href="/api/v3.0.0" class="py-2 px-3 bg-white shadow-sm rounded-3">
             <i class="bi bi-arrow-left"></i>
             <span class="fs-14 text--secondary">
                 Back
