@@ -10,6 +10,13 @@ try {
 	datasourceAvailable = false;
 	message = err.message;
 }
+// Get any remaining Missing Migrations
+if(currentVersion == latestVersion){
+	local.remainingMigrations = [];
+	for(local.migration in availableMigrations){
+		if(local.migration.status != "migrated") arrayAppend(local.remainingMigrations, local.migration);
+	}
+}
 </cfscript>
 <!--- cfformat-ignore-start --->
 <cfoutput>
@@ -26,8 +33,13 @@ try {
 			latestClass = currentVersion EQ latestVersion ? "disabled" : "performmigration";
 			resetClass = currentVersion EQ 0 ? "disabled" : "performmigration";
 			</cfscript>
+				<cfif structKeyExists(local, "remainingMigrations") && arrayLen(local.remainingMigrations)>
+					<div class="ui button violet performmigration"
+						data-data-url="#urlFor(route='wheelsMigratorCommand', command="migrateto", version='#local.remainingMigrations[1]["version"]#', params="missingMigFlag=1")#">Migrate Missing Migrations</div>
+				<cfelse>
 					<div class="ui button violet #latestClass#"
 						data-data-url="#urlFor(route='wheelsMigratorCommand', command="migrateto", version='#latestVersion#')#">Migrate To Latest</div>
+				</cfif>
 
 					<div class="ui button red #resetClass#"
 						data-data-url="#urlFor(route='wheelsMigratorCommand', command="migrateto", version=0)#">Reset Database</div>

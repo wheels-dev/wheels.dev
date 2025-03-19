@@ -22,8 +22,9 @@ component output="false" extends="wheels.Global"{
 	 * [category: General Functions]
 	 *
 	 * @version The Database schema version to migrate to
+	 * @missingMigFlag Flag for any available missing migrations
 	 */
-	public string function migrateTo(string version = "") {
+	public string function migrateTo(string version = "", boolean missingMigFlag = false) {
 		local.rv = "";
 		local.currentVersion = getCurrentMigrationVersion();
 		local.appKey = $appKey();
@@ -34,7 +35,7 @@ component output="false" extends="wheels.Global"{
 				DirectoryCreate(this.paths.sql);
 			}
 			local.migrations = getAvailableMigrations();
-			if (local.currentVersion > arguments.version) {
+			if (local.currentVersion > arguments.version && arguments.missingMigFlag == false) {
 				local.rv = "Migrating from #local.currentVersion# down to #arguments.version#.#Chr(13)#";
 				for (local.i = ArrayLen(local.migrations); local.i >= 1; local.i--) {
 					local.migration = local.migrations[local.i];
@@ -63,7 +64,12 @@ component output="false" extends="wheels.Global"{
 					}
 				}
 			} else {
-				local.rv = "Migrating from #local.currentVersion# up to #arguments.version#.#Chr(13)#";
+				if(arguments.missingMigFlag){
+					local.rv = "Migrating remaining migrations till #arguments.version#.#Chr(13)#";
+					$removeVersionAsMigrated(local.currentVersion);
+				} else {
+					local.rv = "Migrating from #local.currentVersion# up to #arguments.version#.#Chr(13)#";
+				}
 				for (local.migration in local.migrations) {
 					if (local.migration.version <= arguments.version && local.migration.status != "migrated") {
 						transaction {
@@ -88,6 +94,9 @@ component output="false" extends="wheels.Global"{
 						break;
 					}
 				};
+				if(arguments.missingMigFlag){
+					$setVersionAsMigrated(local.currentVersion);
+				}
 			}
 		}
 		return local.rv;

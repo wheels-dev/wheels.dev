@@ -5,18 +5,6 @@ component extends="app.Controllers.Controller" {
     property name="blogService";
     property name="roleService";
 
-    // function init() {
-    //     // Manual service initialization
-    //     variables.userModel = model("User");
-    //     variables.userService = new app.services.UserService(variables.userModel);
-
-    //     variables.blogModel = model("Blog");
-    //     variables.blogService = new app.services.BlogService(variables.blogModel);
-
-    //     variables.roleModel = model("Role");
-    //     variables.roleService = new app.services.RoleService(variables.roleModel);
-    // }
-
     function config() {
         verifies( except="index,dashboard,checkAdminAccess,blog,BlogList,approve,reject", params="key", paramsTypes="integer", handler="dashboard");
 
