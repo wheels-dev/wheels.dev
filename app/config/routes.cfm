@@ -52,7 +52,7 @@
 			.get(name = "loadGuides", pattern = "home/loadGuides", to = "web.HomeController##loadGuides")
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 
-			.get(name = "blog", pattern = "blogs", to = "web.BlogController##Index")
+			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
 
 			// New routes for loading categories, statuses, and post types
