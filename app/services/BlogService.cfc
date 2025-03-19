@@ -12,18 +12,18 @@ component {
 
     function getAllBlogs() {
         return variables.Blog.findAll(
-            include="User, Category, PostStatus, PostType",
+            include="User, PostStatus, PostType",
             order="createdAt DESC",
             options={
                 sql="SELECT blog_posts.status AS blogStatus, blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
                     blog_posts.createdat AS createdDate,
                     users.fullName AS authorName, 
-                    categories.name AS categoryName, 
+                    -- categories.name AS categoryName, 
                     post_statuses.name AS statusName, 
                     post_types.name AS posttypeName 
                     FROM blog_posts 
                     INNER JOIN users ON users.id = blog_posts.userId
-                    INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
                     INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
                     INNER JOIN post_types ON post_types.id = post_types.postTypeId"
             }
@@ -54,16 +54,16 @@ component {
     function getBlogById(required numeric id) {
         return variables.Blog.findOne(
             where="blog_posts.id = #arguments.id#",
-            include="User, Category, PostStatus",
+            include="User, PostStatus",
             options={
                 sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
                     blog_posts.createdat AS createdDate, 
                     users.fullName AS authorName, 
-                    categories.name AS categoryName, 
+                    -- categories.name AS categoryName, 
                     post_statuses.name AS statusName 
                     FROM blog_posts 
                     INNER JOIN users ON users.id = blog_posts.userId
-                    INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
                     INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
                     WHERE blog_posts.id = #arguments.id#"
             }
@@ -74,16 +74,16 @@ component {
         // return variables.Blog.findOne(where="slug = #arguments.slug#");
         return variables.Blog.findOne(
             where="blog_posts.slug = '#arguments.slug#'",
-            include="User, Category, PostStatus",
+            include="User, PostStatus",
             options={
                 sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
                     blog_posts.createdat AS createdDate, 
                     users.fullName AS authorName, 
-                    categories.name AS categoryName, 
+                    -- categories.name AS categoryName, 
                     post_statuses.name AS statusName 
                     FROM blog_posts 
                     INNER JOIN users ON users.id = blog_posts.userId
-                    INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
                     INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
                     WHERE blog_posts.slug = '#arguments.slug#'"
             }
@@ -112,7 +112,7 @@ component {
                     // Update the existing blog post
                     blog.title = blogData.title;
                     blog.content = blogData.content;
-                    blog.categoryId = blogData.categoryId;
+                    // blog.categoryId = blogData.categoryId;
                     blog.statusId = blogData.statusId;
                     blog.postTypeId = blogData.postTypeId;
                     blog.slug = blogData.slug;
@@ -126,7 +126,7 @@ component {
                     response.message = "Blog post not found for editing.";
                 }
             } else {
-                // Check if a blog post with the same title and category already exists
+                // Check if a blog post with the same title already exists
                 var existingBlog = variables.Blog.findFirst(
                     where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
                 );
@@ -137,7 +137,7 @@ component {
                     newBlog.title = blogData.title;
                     newBlog.content = blogData.content;
                     newBlog.slug = blogData.slug;
-                    newBlog.categoryId = blogData.categoryId;
+                    // newBlog.categoryId = blogData.categoryId;
                     newBlog.statusId = blogData.statusId;
                     newBlog.postTypeId = blogData.postTypeId;
                     newBlog.excerpt = blogData.excerpt;
@@ -150,7 +150,7 @@ component {
                     response.blogId = newBlog.id;
                     response.message = "Blog post created successfully.";
                 } else {
-                    response.message = "A blog post with the same title and category already exists.";
+                    response.message = "A blog post with the same title already exists.";
                 }
             }
         } catch (any e) {
