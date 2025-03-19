@@ -158,10 +158,22 @@ settings = [
 		</div>
 		#startTab(tab = 'system', active = true)#
 
-		#startTable("System")#
+		#startTable("Application")#
+		<tr>
+			<td class='four wide'>Application Name</td>
+			<td class='eight wide'>
+				#application.applicationName#
+				<cfif NOT Len($get("reloadPassword"))>
+					[<a href="?reload">Reload</a>]
+				</cfif>
+			</td>
+		</tr>
+		#endTable()#
+
+		#startTable("Server")#
 		<tr>
 			<td class='four wide'>CFML Engine</td>
-			<td class='eight wide'>#get("serverName")##get("serverVersion")#</td>
+			<td class='eight wide'>#get("serverName")# #get("serverVersion")#</td>
 		</tr>
 		<tr>
 			<td>Wheels Version</td>

@@ -1,9 +1,6 @@
 <main class="w-100 vh-100 d-flex justify-content-center align-items-center">
     <div class="row w-100 m-lg-auto m-2">
         <div class="col-lg-5 bg-white col-12 mx-auto p-3 shadow rounded-18">
-            <div class="d-flex justify-content-center align-items-center">
-                <img src="/images/wheels-logo.png" alt="Logo" width="180">
-            </div>
             <div class="mt-2">
                 <div class="border-bottom text-center pb-3">
                     <h1 class="fs-24 mb-0 fw-bold text--secondary">Forgot Password</h1>
