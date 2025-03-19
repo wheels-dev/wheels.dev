@@ -17,7 +17,7 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Post Category <span class="text-danger">*</span>
                         </label>
-                        <select class="form-control fs-14" name="categoryId" id="categoryId" required hx-get="/blog/loadCategories" hx-trigger="load" hx-target="#categoryId" hx-swap="innerHTML">
+                        <select class="form-control fs-14" name="categoryId" id="categoryId" required hx-get="/blog/loadCategories" hx-trigger="load" hx-target="#categoryId" hx-swap="innerHTML" multiple="multiple">
                             <option value="">Select Category</option>
                         </select>
                     </div>
@@ -188,6 +188,17 @@
                 return false;
             }
         });
+
+        document.addEventListener("htmx:afterSwap", function(evt) {
+            if (evt.target.id === "categoryId") {
+                $('#categoryId').select2();
+            }
+        });
+
+        $(document).ready(function() {
+            $('#categoryId').select2();
+        });
+     
 
         // Function to update character count
         function updateCharacterCount(textareaId, counterId, maxChars) {
