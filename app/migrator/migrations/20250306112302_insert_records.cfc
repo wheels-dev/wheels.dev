@@ -3,7 +3,7 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 	function up() {
 		transaction {
 			try {
-				roles
+				//roles
 				addRecord(table='Roles',name = "Admin");
 				addRecord(table='Roles',name = "Editor");
 				addRecord(table='Roles',name = "User");
