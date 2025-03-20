@@ -37,8 +37,13 @@
                                 #blog.title#
                             </h1>
                             <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
-                                <p class="fw-medium fs-12 text--lightGray">#dateformat(blogs.createdat, 'MMMM DD,
-                                    YYYY')#</p>
+                                <p class="fw-medium fs-12 text--lightGray">
+                                    <cfif blog.postcreateddate neq ''>
+                                        #dateformat(blog.postcreateddate, 'MMMM DD, YYYY')#
+                                    <cfelse>
+                                        #dateformat(blog.createdAt, 'MMMM DD, YYYY')#
+                                    </cfif>
+                                </p>
                                     <p class="fw-medium fs-12 text--lightGray" 
                                     hx-push-url="/blog"
                                     hx-get="/blog/blogs"
