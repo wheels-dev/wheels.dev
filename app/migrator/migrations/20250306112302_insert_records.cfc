@@ -3,7 +3,7 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 	function up() {
 		transaction {
 			try {
-				// roles
+				roles
 				addRecord(table='Roles',name = "Admin");
 				addRecord(table='Roles',name = "Editor");
 				addRecord(table='Roles',name = "User");
@@ -11,18 +11,18 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				// users
 				addRecord(table="users", first_name="Peter", last_name="Amiri", email="peteramiri@gmail.com", password_hash="$2a$12$EIXHgw7eV9lB1d1wFYhFvOPtk7w3KQjJ0hWT3OQyOdL5g2vJYEF6C", profile_picture='', profile_url='', status=1, role_id=1);
 
-				// categories
-				addRecord(table='categories', name='CLI', parent_id='', description='Learn about command-line tools, tips, and tricks for enhancing your development workflow using the command line.');
-				addRecord(table='categories', name='Community', parent_id='', description='Updates and stories from the community, including user spotlights, testimonials, and community-driven initiatives.');
-				addRecord(table='categories', name='Contributions', parent_id='', description='Information on contributing to open-source projects, including guidelines, best practices, and featured contributors.');
-				addRecord(table='categories', name='Documentation', parent_id='', description='Guides, updates, and tips on how to use and contribute to documentation effectively.');
-				addRecord(table='categories', name='Events', parent_id='', description='Announcements and recaps of conferences, webinars, meetups, and other events related to development and technology.');
-				addRecord(table='categories', name='Inspiration', parent_id='', description='Success stories, case studies, and creative ideas to inspire your next project or solution.');
-				addRecord(table='categories', name='Plugin', parent_id='', description='Reviews, tutorials, and updates about plugins that extend the functionality of the platform or framework.');
-				addRecord(table='categories', name='Releases', parent_id='', description='Detailed information on new releases, version updates, changelogs, and feature highlights.');
-				addRecord(table='categories', name='Tips & Tricks', parent_id='', description='Quick and effective tips to enhance productivity and solve common development challenges.');
-				addRecord(table='categories', name='Tutorials', parent_id='', description='Step-by-step guides and how-tos for beginners and advanced users alike, covering a wide range of topics.');
-				addRecord(table='categories', name='Website', parent_id='', description='News, updates, and improvements related to the website, including UI/UX enhancements and new features.');
+				// blog_categories
+				addRecord(table='blog_categories', name='CLI', parent_id='', description='Learn about command-line tools, tips, and tricks for enhancing your development workflow using the command line.');
+				addRecord(table='blog_categories', name='Community', parent_id='', description='Updates and stories from the community, including user spotlights, testimonials, and community-driven initiatives.');
+				addRecord(table='blog_categories', name='Contributions', parent_id='', description='Information on contributing to open-source projects, including guidelines, best practices, and featured contributors.');
+				addRecord(table='blog_categories', name='Documentation', parent_id='', description='Guides, updates, and tips on how to use and contribute to documentation effectively.');
+				addRecord(table='blog_categories', name='Events', parent_id='', description='Announcements and recaps of conferences, webinars, meetups, and other events related to development and technology.');
+				addRecord(table='blog_categories', name='Inspiration', parent_id='', description='Success stories, case studies, and creative ideas to inspire your next project or solution.');
+				addRecord(table='blog_categories', name='Plugin', parent_id='', description='Reviews, tutorials, and updates about plugins that extend the functionality of the platform or framework.');
+				addRecord(table='blog_categories', name='Releases', parent_id='', description='Detailed information on new releases, version updates, changelogs, and feature highlights.');
+				addRecord(table='blog_categories', name='Tips & Tricks', parent_id='', description='Quick and effective tips to enhance productivity and solve common development challenges.');
+				addRecord(table='blog_categories', name='Tutorials', parent_id='', description='Step-by-step guides and how-tos for beginners and advanced users alike, covering a wide range of topics.');
+				addRecord(table='blog_categories', name='Website', parent_id='', description='News, updates, and improvements related to the website, including UI/UX enhancements and new features.');
 
 				// post_types
 				addRecord(table='post_types', name='Standard Post', description='Regular blog post with a title, content, and optional featured image.', is_active=1);
