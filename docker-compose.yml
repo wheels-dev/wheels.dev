@@ -12,6 +12,8 @@ services:
         delay: 15s
       placement:
         constraints: []
+      labels:
+        swarm.autoscaler: 'true'
     ports:
       - "50052:60052"
     environment:
