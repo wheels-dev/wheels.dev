@@ -13,6 +13,7 @@ component extends="app.Models.Model" {
 
         // Define associations
         belongsTo(name="Blog", foreignKey="blogId"); 
+        belongsTo(name="BlogCategory", foreignKey="categoryId"); 
     }
 
     // fetch all categories
