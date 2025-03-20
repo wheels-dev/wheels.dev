@@ -11,7 +11,7 @@ component {
     }
     
     function getCategoriesByBlogid(required numeric id) {
-        return variables.Category.findAll(include="Blog", where="blogid = #arguments.id#");
+        return variables.Category.findAll(include="Blog,BlogCategory", where="blogid = #arguments.id#");
     }
 
     function saveCategories(required struct blogData, blogId) {
@@ -26,7 +26,7 @@ component {
                 // Insert new categories
                 for (var category_Id in categoryArray) {
                     var newCategory = variables.Category.new();
-                    newCategory.categoryId = categoryId;
+                    newCategory.categoryId = category_Id;
                     newCategory.blogId = blogId;
                     newCategory.createdAt = now();
                     newCategory.updatedAt = now();

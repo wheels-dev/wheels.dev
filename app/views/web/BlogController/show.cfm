@@ -1,11 +1,19 @@
 <main class="main-bg">
     <cfoutput>
         <cfset tagList="">
+        <cfset categoryList="">
             <cfloop query="tags">
                 <cfif tagList EQ "">
                     <cfset tagList=name>
                         <cfelse>
                             <cfset tagList=tagList & ", " & name>
+                </cfif>
+            </cfloop>
+            <cfloop query="categories">
+                <cfif categoryList EQ "">
+                    <cfset categoryList=name>
+                        <cfelse>
+                            <cfset categoryList=categoryList & ", " & name>
                 </cfif>
             </cfloop>
             <!-- Blog filter -->
@@ -38,7 +46,7 @@
                                     hx-swap="innerHTML"
 <!---                                     hx-vals='{"category_id": "#blog.Category.id#"}' --->
                                     >
-                                    #blog.PostStatus.name# in #blog.Category.name#
+                                    #blog.PostStatus.name# in #categoryList#
                                  </p>
                                 <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
                             </div>

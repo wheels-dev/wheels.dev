@@ -194,18 +194,7 @@
                 alert("Please fill out all required fields.");
                 return false;
             }
-        });
-
-        document.addEventListener("htmx:afterSwap", function(evt) {
-            if (evt.target.id === "categoryId") {
-                $('#categoryId').select2();
-            }
-        });
-
-        $(document).ready(function() {
-            $('#categoryId').select2();
-        });
-     
+        });     
 
         // Function to update character count
         function updateCharacterCount(textareaId, counterId, maxChars) {
