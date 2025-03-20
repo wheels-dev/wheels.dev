@@ -10,7 +10,6 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
                 t.text(columnNames='content', null=false);
                 t.string(columnNames='excerpt', null=false, default='', limit=500);
                 t.integer(columnNames='status_id', null=false);
-                t.integer(columnNames='category_id', null=false);
                 t.integer(columnNames='post_type_id', null=false);
                 t.integer(columnNames='created_by', null=false);
                 t.integer(columnNames='updated_by', null=true);
@@ -23,7 +22,6 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
                 t.create();
 
 				addForeignKey(table = "blog_posts", column = "status_id", referenceTable = "post_statuses", referenceColumn = "id");
-				addForeignKey(table = "blog_posts", column = "category_id", referenceTable = "categories", referenceColumn = "id");
 				addForeignKey(table = "blog_posts", column = "post_type_id", referenceTable = "post_types", referenceColumn = "id");
 				// addForeignKey(table = "blog_posts", column = "created_by", referenceTable = "users", referenceColumn = "id");
 				// addForeignKey(table = "blog_posts", column = "updated_by", referenceTable = "users", referenceColumn = "id");
@@ -64,7 +62,6 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
 			try {
 				// drop foreign key constraints using raw SQL
                 execute(sql="ALTER TABLE blog_posts DROP CONSTRAINT IF EXISTS fk_blog_posts_status_id");
-                execute(sql="ALTER TABLE blog_posts DROP CONSTRAINT IF EXISTS fk_blog_posts_category_id");
                 execute(sql="ALTER TABLE blog_posts DROP CONSTRAINT IF EXISTS fk_blog_posts_post_type_id");
                 execute(sql="ALTER TABLE blog_posts DROP CONSTRAINT IF EXISTS fk_blog_posts_created_by");
                 execute(sql="ALTER TABLE blog_posts DROP CONSTRAINT IF EXISTS fk_blog_posts_updated_by");
