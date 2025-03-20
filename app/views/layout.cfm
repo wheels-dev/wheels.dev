@@ -63,7 +63,7 @@
 							</li>
 						</ul>
 						<div class="d-lg-block d-none">
-							<a href="https://github.com/cfwheels" class="">
+							<a href="https://github.com/cfwheels" target="_blank">
 								<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<rect width="40" height="39.4186" rx="10" fill="#EF3B2D" />
 									<path

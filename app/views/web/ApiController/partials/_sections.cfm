@@ -8,8 +8,8 @@ if (structKeyExists(docs, "sections")) {
 
         writeOutput('
             <div class="accordion-item bg-transparent border-0">
-                <div class="accordion-header section pe-2 text-white">
-                    <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris" 
+                <div class="accordion-header section pe-2 text-white" data-section="' & sectionId & '">
+                    <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris collapsed"
                         style="background-color: rgba(179, 179, 179, 0.12);" 
                         type="button" data-bs-toggle="collapse" data-bs-target="##' & sectionId & '" 
                         aria-expanded="false" aria-controls="' & sectionId & '">
@@ -22,7 +22,12 @@ if (structKeyExists(docs, "sections")) {
 
         for (var ss = 1; ss <= arrayLen(docs.sections[s]["categories"]); ss++) {
             var categoryName = docs.sections[s]["categories"][ss];
-            writeOutput('<p class="fs-14 fw-normal cursor-pointer text--iris">' & categoryName & '</p>');
+            var categoryId = $cssClassLink(categoryName);
+            writeOutput('
+                <a href="" class="category" data-section="' & sectionId & '" data-category="' & categoryId & '">
+                    <p class="fs-14 fw-normal cursor-pointer text--iris">' & categoryName & '</p>
+                </a>
+            ');
         }
 
         writeOutput('</div>
@@ -30,6 +35,20 @@ if (structKeyExists(docs, "sections")) {
                 </div>
             </div>');
     }
+
+    // Adding "Uncategorized" section at the end
+    writeOutput('
+        <div class="accordion-item bg-transparent border-0  section" data-section="">
+            <div class="accordion-header pe-2 text-white">
+                <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris collapsed"
+                    style="background-color: rgba(179, 179, 179, 0.12);"
+                    
+                    type="button">
+                    Uncategorized
+                </button>
+            </div>
+        </div>
+    ');
 
     writeOutput('</div>'); // Closing accordion
 }
