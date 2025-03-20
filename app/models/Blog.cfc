@@ -14,6 +14,7 @@ component extends="app.Models.Model" {
         property(name="isCommentClosed", column="is_comment_closed", type="boolean", required=true, default=false);
         property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
 
+        property(name="postCreatedDate", column="post_created_date", type="datetime", required=false);
         property(name="createdAt", column="created_at", type="datetime", required=false);
         property(name="updatedAt", column="updated_at", type="datetime", required=false);
         property(name="deletedAt", column="deleted_at", type="datetime", required=false);
@@ -22,7 +23,6 @@ component extends="app.Models.Model" {
 
         // Defining the foreign key
         property(name="statusId", column="status_id", type="integer", required=true, foreignkey=true, references="PostStatus(id)");
-        property(name="categoryId", column="category_id", type="integer", required=true, foreignkey=true, references="Category(id)");
         property(name="postTypeId", column="post_type_id", type="integer", required=true, foreignkey=true, references="PostType(id)");
         property(name="createdBy", column="created_by", type="integer", required=true, foreignkey=true, references="User(id)");
         property(name="updatedBy", column="updated_by", type="integer", required=false, foreignkey=true, references="User(id)");
@@ -31,7 +31,6 @@ component extends="app.Models.Model" {
 
         // Define associations
         belongsTo(name="User", foreignKey="createdBy"); 
-        belongsTo(name="Category", foreignKey="categoryId"); 
         belongsTo(name="PostStatus", foreignKey="statusId");
         belongsTo(name="PostType", foreignKey="postTypeId");
 
