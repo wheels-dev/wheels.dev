@@ -5,8 +5,6 @@
             <div class="col-lg-4 col-12">
                 <input type="text" placeholder="Search" class="form-control border-0 shadow-sm p-2 fs-16 bg-white" name="" id="">
             </div>
-            <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12 d-flex justify-content-end gap-3">
-            </div>
             <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
                     <button onclick="handleBlogFilter('All', this)"
