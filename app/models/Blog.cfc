@@ -14,6 +14,7 @@ component extends="app.Models.Model" {
         property(name="isCommentClosed", column="is_comment_closed", type="boolean", required=true, default=false);
         property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
 
+        property(name="postCreatedDate", column="post_created_date", type="datetime", required=false);
         property(name="createdAt", column="created_at", type="datetime", required=false);
         property(name="updatedAt", column="updated_at", type="datetime", required=false);
         property(name="deletedAt", column="deleted_at", type="datetime", required=false);

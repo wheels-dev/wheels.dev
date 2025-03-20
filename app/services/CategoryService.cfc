@@ -24,9 +24,9 @@ component {
                 // variables.Category.deleteWhere(where="blog_id = #blogId#");
     
                 // Insert new categories
-                for (var categoryName in categoryArray) {
+                for (var category_Id in categoryArray) {
                     var newCategory = variables.Category.new();
-                    newCategory.name = trim(categoryName); // Trim spaces if any
+                    newCategory.categoryId = categoryId;
                     newCategory.blogId = blogId;
                     newCategory.createdAt = now();
                     newCategory.updatedAt = now();
@@ -34,7 +34,6 @@ component {
                 }
             }
         } catch (any e) {
-            writeDump(e); abort;
             local.exception = e;
         }
     }
