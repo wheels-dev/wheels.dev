@@ -145,6 +145,9 @@ component {
                     newBlog.createdAt = now();
                     newBlog.updatedAt = now();
                     newBlog.createdBy = application.wo.GetSignedInUserId();
+                    if(blogData.postCreatedDate neq " "){
+                        newBlog.postCreatedDate = blogData.postCreatedDate;
+                    }
                     newBlog.save();
     
                     response.blogId = newBlog.id;

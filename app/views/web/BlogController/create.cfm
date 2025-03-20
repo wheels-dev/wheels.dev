@@ -48,6 +48,13 @@
 
                     <div class="mb-3">
                         <label class="form-label mb-1 fs-14 fw-medium">
+                            Post Created Date
+                        </label>
+                        <input class="form-control fs-14" type="date" name="postCreatedDate" id="postCreatedDate" value="">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label mb-1 fs-14 fw-medium">
                             Cover Image
                         </label>
                         <input class="form-control fs-14" type="file" name="attachment" id="attachment" value="">
@@ -221,6 +228,20 @@
             // Attach event listener for keyup event
             textarea.addEventListener('keyup', () => {
             updateCharacterCount(textarea.id, counterId, maxChars);
+            });
+        });
+
+        document.addEventListener("htmx:afterSwap", function(evt) {
+            if (evt.target.id === "categoryId") {
+                $('#categoryId').select2({
+                    placeholder: "Select Categories"
+                });
+            }
+        });
+
+        $(document).ready(function() {
+            $('#categoryId').select2({
+                placeholder: "Select Categories"
             });
         });
   
