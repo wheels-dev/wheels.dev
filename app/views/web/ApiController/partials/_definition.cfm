@@ -87,12 +87,12 @@
     </cfif>
 
     <cfif meta.extended.hasExtended>
-<!---         <div class="md"></div> --->
 		<div style="background-color: rgba(243, 243, 243, 1); border: 2px rgba(179, 179, 179, 0.6) solid;"
 			class="p-4 rounded-18">
-			<pre class="fs-14 fw-normal m-0 p-0">#meta.extended.docs#</pre>
+			<div class="fs-14 fw-normal m-0 p-0">#meta.extended.docs#</div>
 			<div class="text-end">
-				<i class="bi bi-copy text--iris fs-5 cursor-pointer"></i>
+				<i class="bi bi-copy text--iris fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
+				<span class="text-success fs-5 fw-bold d-none">Copied!</span>
 			</div>
 		</div>
     </cfif>
