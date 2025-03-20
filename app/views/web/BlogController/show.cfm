@@ -36,7 +36,8 @@
                                     hx-get="/blog/blogs"
                                     hx-trigger="click"
                                     hx-swap="innerHTML"
-                                    hx-vals='{"category_id": "#blog.Category.id#"}'>
+<!---                                     hx-vals='{"category_id": "#blog.Category.id#"}' --->
+                                    >
                                     #blog.PostStatus.name# in #blog.Category.name#
                                  </p>
                                 <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
