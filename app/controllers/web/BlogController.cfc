@@ -38,7 +38,7 @@ component extends="app.Controllers.Controller" {
         } else if (!len(year) || !len(month)) {
 
             // Fetch blogs filtered by month and year
-            blogs = blogService.getAllByCategory(category_id);
+            // blogs = blogService.getAllByCategory(category_id);
         } else {
             // Fetch blogs filtered by month and year
             blogs = blogService.getAllByDate(month, year);
@@ -49,7 +49,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the blog list
     function Categories() {
-        categorylist = model("Category").getAll();
+        categorylist = model("BlogCategory").getAll();
         renderPartial(partial="partials/categorylist");
     }
 
@@ -94,6 +94,8 @@ component extends="app.Controllers.Controller" {
             response = blogService.saveBlog(params);
             tagService = new app.services.TagService(model("Tag"));
             tagService.saveTags(params, response.blogId);
+            categoryService = new app.services.CategoryService(model("Category"));
+            categoryService.saveCategories(params, response.blogId);
             redirectTo(action="index");
         } catch (any e) {
             // Handle error
@@ -106,11 +108,13 @@ component extends="app.Controllers.Controller" {
         blogModel = model("Blog"); // Get model instance
         blogService = new app.services.BlogService(blogModel);
         tagService = new app.services.TagService(model("Tag"));
+        categoryService = new app.services.CategoryService(model("Category"));
         attachmentService = new app.services.AttachmentService(model("Attachment"));
 
         blog = blogService.getBlogBySlug(params.slug);
         blogs = blogModel.getAll();
         tags = tagService.getTagsByBlogid(blog.id);
+        categories = categoryService.getCategoriesByBlogid(blog.id);
         attachments = attachmentService.getAttachmentsByBlogid(blog.id);
         
     }
@@ -143,7 +147,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the dropdown
     function loadCategories() {
-        categories = model("Category").getAll();
+        categories = model("BlogCategory").getAll();
         renderPartial(partial="partials/categories");
     }
 
