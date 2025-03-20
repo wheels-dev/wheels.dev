@@ -136,7 +136,9 @@
 							<div class="col-md-2">
 								<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 								<ul class="list-unstyled">
-									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Log in</a>
+									<li class="mt-3"><a href="/Login" class="text--secondary fs-14 text-decoration-none">Log in</a>
+									</li>
+									<li class="mt-3"><a href="/Register" class="text--secondary fs-14 text-decoration-none">Register</a>
 									</li>
 									<li class="mt-3"><a href="#" class="text--secondary fs-14 text-decoration-none">Entries
 											feed</a>

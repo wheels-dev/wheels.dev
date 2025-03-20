@@ -5,17 +5,6 @@
             <div class="col-lg-4 col-12">
                 <input type="text" placeholder="Search" class="form-control border-0 shadow-sm p-2 fs-16 bg-white" name="" id="">
             </div>
-            <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12 d-flex justify-content-end gap-3">
-                <cfif StructKeyExists(session, "userId") and session.userId neq ''>
-                    <cfoutput>
-                        <a href="##" class="btn btn-secondary px-4">#session.username#</a>
-                        <a href="/logout" class="btn btn-primary px-4">Logout</a>
-                    </cfoutput>
-                <cfelse>
-                    <a href="/login" class="btn btn-primary px-4">Login</a>
-                    <a href="/register" class="btn btn-secondary px-4">Register</a>
-                </cfif>
-            </div>
             <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
                     <button onclick="handleBlogFilter('All', this)"
