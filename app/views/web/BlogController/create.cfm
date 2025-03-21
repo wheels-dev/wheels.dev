@@ -147,7 +147,7 @@
             const title = document.getElementById('title');
             const categoryId = document.getElementById('categoryId');
             const posttypeId = document.getElementById('posttypeId');
-            const posttag = document.getElementById('posttag');
+            const postTags = document.getElementById('postTags');
             const content = document.getElementById('content');
             const editor = document.getElementById("editor");
 
@@ -155,7 +155,7 @@
             const isDraft = document.getElementById("isDraft").value === "1";
 
             // Reset validation styles
-            [title, categoryId, posttypeId, posttag].forEach(field => field.classList.remove("is-invalid"));
+            [title, categoryId, posttypeId, postTags].forEach(field => field.classList.remove("is-invalid"));
             editor.classList.remove("border-danger");
 
             // Validate fields only if it's NOT a draft
@@ -172,9 +172,9 @@
                     isValid = false;
                     posttypeId.classList.add("is-invalid");
                 }
-                if (posttag.value.trim() === "") {
+                if (postTags.value.trim() === "") {
                     isValid = false;
-                    posttag.classList.add("is-invalid");
+                    postTags.classList.add("is-invalid");
                 }
                 if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
                     isValid = false;
