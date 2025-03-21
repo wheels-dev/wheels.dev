@@ -237,7 +237,7 @@ component extends="app.Controllers.Controller" {
         var response = { "message": "", "blogId": 0 };
     
         // Generate slug
-        var slug = rereplace(lcase(blogData.title), "[^a-z0-9- ]", "", "all");
+        var slug = rereplace(lcase(blogData.title), "[^a-z0-9-. ]", "", "all");
         blogData.slug = replace(slug, " ", "-", "all");
         
         if (blogData.isdraft eq 1) {
@@ -395,9 +395,9 @@ component extends="app.Controllers.Controller" {
 
     function saveTags(required struct blogData, blogId) {
         try {
-            if (blogId > 0 && structKeyExists(blogData, "posttags")) {
+            if (blogId > 0 && structKeyExists(blogData, "postTags")) {
                 
-                var tagArray = listToArray(blogData.posttag, ","); // Convert posttag string into an array
+                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
     
                 // Insert new tags
                 for (var tagName in tagArray) {

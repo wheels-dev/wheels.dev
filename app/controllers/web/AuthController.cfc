@@ -101,7 +101,6 @@ component extends="app.Controllers.Controller" {
     private function saveUser(required struct userData) {        
         var message = "";
 
-        // writeDump(application); abort;
         try {
                 
             // Check if the user ID is greater than 0 (for editing an existing user)
@@ -133,7 +132,7 @@ component extends="app.Controllers.Controller" {
                     newUser.email = userData.email;
                     newUser.passwordhash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
                     newUser.roleid = GetRoleId(); //blogger role
-                    newUser.status = SetInactive(); //inactive
+                    newUser.status = SetActive(); // temporary active
 
                     if(newUser.save()){
                         // Generate a unique verification token
@@ -174,8 +173,17 @@ component extends="app.Controllers.Controller" {
         emailContent = generateVerifyEmail(verifyUrl);
         
         if (isObject(user)){
-            cfmail( to = "#user.email#", from = "#application.env.mail_from#", subject = "Verify Your Email", server="#application.env.smtp_host#", port="#application.env.smtp_port#", username="#application.env.smtp_username#", password="#application.env.smtp_password#", type="html" ) 
-            { 
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#user.email#", 
+                from = "#application.env.mail_from#", 
+                subject = "Verify Your Email", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
                 #emailContent#
             }
             return true;
