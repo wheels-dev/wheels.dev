@@ -4,6 +4,7 @@ services:
   wheels:
     image: 10.100.10.116:5000/wheels-img
     deploy:
+      mode: global
       restart_policy:
         condition: on-failure
       update_config:
@@ -11,10 +12,6 @@ services:
         delay: 15s
       placement:
         constraints: []
-      labels:
-        swarm.autoscaler: 'true'
-        swarm.autoscaler.maximum: '4'
-        swarm.autoscaler.minimum: '3'
     ports:
       - "50052:60052"
     environment:
