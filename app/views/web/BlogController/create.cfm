@@ -3,7 +3,10 @@
         <div class="row justify-content-center justify-content-lg-between">
             <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                 <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
+                <!----
                 <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
+                --->
+                <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                     <input class="form-control" type="hidden" name="id" id="id" value="">
 
                     <div class="mb-3">
@@ -146,14 +149,13 @@
             const posttypeId = document.getElementById('posttypeId');
             const posttag = document.getElementById('posttag');
             const content = document.getElementById('content');
-            const excerpt = document.getElementById('excerpt');
             const editor = document.getElementById("editor");
 
             // Check if it's a draft submission
             const isDraft = document.getElementById("isDraft").value === "1";
 
             // Reset validation styles
-            [title, categoryId, posttypeId, posttag, excerpt].forEach(field => field.classList.remove("is-invalid"));
+            [title, categoryId, posttypeId, posttag].forEach(field => field.classList.remove("is-invalid"));
             editor.classList.remove("border-danger");
 
             // Validate fields only if it's NOT a draft
@@ -173,10 +175,6 @@
                 if (posttag.value.trim() === "") {
                     isValid = false;
                     posttag.classList.add("is-invalid");
-                }
-                if (excerpt.value.trim() === "") {
-                    isValid = false;
-                    excerpt.classList.add("is-invalid");
                 }
                 if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
                     isValid = false;

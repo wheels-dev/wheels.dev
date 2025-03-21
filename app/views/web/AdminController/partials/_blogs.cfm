@@ -9,7 +9,6 @@
         writeOutput('<td>' & blogs.POSTSTATUSNAME[i] & '</td>');
         writeOutput('<td>' & blogs.POSTTYPENAME[i] & '</td>');
         writeOutput('<td>' & blogs.fullName[i] & '</td>');
-        writeOutput('<td>' & blogs.Excerpt[i] & '</td>');
         writeOutput('<td>' & blogs.content[i] & '</td>');
         writeOutput('<td>' & blogs.status[i] & '</td>');
 
