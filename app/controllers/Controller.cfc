@@ -28,7 +28,6 @@ component extends="wheels.Controller" {
      * Check if user is logged In
      */
     function isUserLoggedIn() {
-        writeDump(session); abort;
         return (
             structKeyExists(session, "USERID") && 
             structKeyExists(session, "role") && 
