@@ -28,6 +28,7 @@ component extends="wheels.Controller" {
      * Check if user is logged In
      */
     function isUserLoggedIn() {
+        writeDump(session); abort;
         return (
             structKeyExists(session, "USERID") && 
             structKeyExists(session, "role") && 
@@ -51,4 +52,20 @@ component extends="wheels.Controller" {
     function f_getVersions(){
 		versions=getAvailableVersions();
 	}
+
+    public function restrictAccess() {        
+        // Check if the user is logged in
+        if (!structKeyExists(session, "USERID") || !structKeyExists(session, "role")) {
+            redirectTo(controller="AuthController", action="login", route="auth-login");
+            return false;
+        }
+
+        // Allow only specific roles
+        if (!listFindNoCase("Editor,Admin", session.role)) {
+            // redirectTo(controller="HomeController", action="index");
+            return false;
+        }
+
+        return true;
+    }
 }

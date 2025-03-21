@@ -4,17 +4,8 @@ component extends="app.Controllers.Controller" {
     // Configuration function
     function config() {
         verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs", params="key", paramsTypes="integer", handler="index");
+        filters(through="restrictAccess", only="create,store");
         usesLayout("/layout");
-    }
-
-    private function restrictAccess() {
-        // Ensure only blog editors can access these methods
-        bloguser = isUserLoggedIn()
-        if (!bloguser) {
-            redirectTo(controller="AuthController", action="login", route="auth-login");
-            return false;
-        }
-        return true;
     }
 
     // Function to list all blogs
@@ -48,14 +39,13 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to load categories for the blog list
-    function Categories() {
+    function categories() {
         categorylist = model("BlogCategory").getAll();
         renderPartial(partial="partials/categorylist");
     }
 
     // Function to show the create blog form
     function create() {
-        restrictAccess();
         renderView(layout="blogLayout");
     }
 
@@ -92,6 +82,7 @@ component extends="app.Controllers.Controller" {
         }
 
             response = blogService.saveBlog(params);
+            writeDump(response); abort;
             tagService = new app.services.TagService(model("Tag"));
             tagService.saveTags(params, response.blogId);
             categoryService = new app.services.CategoryService(model("Category"));

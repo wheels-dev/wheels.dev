@@ -112,7 +112,6 @@ component {
                     // Update the existing blog post
                     blog.title = blogData.title;
                     blog.content = blogData.content;
-                    // blog.categoryId = blogData.categoryId;
                     blog.statusId = blogData.statusId;
                     blog.postTypeId = blogData.postTypeId;
                     blog.slug = blogData.slug;
@@ -137,10 +136,8 @@ component {
                     newBlog.title = blogData.title;
                     newBlog.content = blogData.content;
                     newBlog.slug = blogData.slug;
-                    // newBlog.categoryId = blogData.categoryId;
                     newBlog.statusId = blogData.statusId;
                     newBlog.postTypeId = blogData.postTypeId;
-                    newBlog.excerpt = blogData.excerpt;
                     newBlog.coverImagePath = blogData.coverImagePath;
                     newBlog.createdAt = now();
                     newBlog.updatedAt = now();
@@ -157,6 +154,7 @@ component {
                 }
             }
         } catch (any e) {
+            // writeDump(e); abort;
             response.message = "Error: " & e.message;
         }
     

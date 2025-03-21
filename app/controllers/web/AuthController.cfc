@@ -44,6 +44,10 @@ component extends="app.Controllers.Controller" {
     }
 
     function register() {
+        var userModel = model("User"); // Get model instance
+            var tokenModel = model("UserToken");
+            var authService = new app.services.AuthService(userModel, tokenModel);
+        authService.getDump();
 	}
 
     function store() {
@@ -57,31 +61,8 @@ component extends="app.Controllers.Controller" {
             var authService = new app.services.AuthService(userModel, tokenModel);
             var message = authService.saveUser(params);
             renderText("<p style='color:red;'>#message#</p>");
-            // Fetch the user to send verification email
-            // var authService = new app.services.AuthService(model("User"));
-            // user = authService.sendVerificationEmail(params.email, params.token);
-
-            <!---
-            // Validate credentials using AuthService
-            var authService = new app.services.AuthService(model("User"));
-            user = authService.validateCredentials(params.email, params.passwordHash);
-
-            if (isObject(user)) {
-                // Store user data in session
-                session.userID = user.id;
-                session.username = user.name;
-                session.role = user.role.name;
-                // session.permissions = user.permissions;
-
-                // Redirect to admin dashboard
-                // Send HTMX Redirect Header
-                session.message = "Register and Login Successfully!"
-                header name="HX-Redirect" value="#urlFor(route='home')#";
-                return;
-            } else {
-                renderText("<p style='color:red;'>Invalid login credentials.</p>");
-            }--->
         } catch (any e) {
+            writeDump(e); abort;
             // Handle error
             redirectTo(action="error", errorMessage="Invalid login credentials.");
         }

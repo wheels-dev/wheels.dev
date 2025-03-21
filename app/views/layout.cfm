@@ -136,7 +136,7 @@
 										<li class="mt-3"><a href="/login"
 												class="text--secondary fs-14 text-decoration-none">Log in</a>
 										</li>
-										<li class="mt-3"><a href="/Register"
+										<li class="mt-3"><a href="/register"
 												class="text--secondary fs-14 text-decoration-none">Register</a>
 										</li>
 										<li class="mt-3"><a href="#"
