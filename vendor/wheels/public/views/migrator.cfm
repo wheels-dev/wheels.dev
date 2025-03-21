@@ -11,7 +11,7 @@ try {
 	message = err.message;
 }
 // Get any remaining Missing Migrations
-if(currentVersion == latestVersion){
+if(structKeyExists(variables, "latestVersion") && currentVersion == latestVersion){
 	local.remainingMigrations = [];
 	for(local.migration in availableMigrations){
 		if(local.migration.status != "migrated") arrayAppend(local.remainingMigrations, local.migration);

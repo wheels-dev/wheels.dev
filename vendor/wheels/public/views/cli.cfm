@@ -1,6 +1,6 @@
 <!--- CLI & GUI Uses this file to talk to wheels via JSON when in maintenance/testing/development mode --->
 <cfscript>
-include "../../migrator/basefunctions.cfm";
+baseCfc = createObject("wheels.migrator.Base");
 setting showDebugOutput="no";
 migrator = application.wheels.migrator;
 try {
@@ -9,7 +9,7 @@ try {
 	data["datasource"] = application.wheels.dataSourceName;
 	data["wheelsVersion"] = application.wheels.version;
 	data["currentVersion"] = migrator.getCurrentMigrationVersion();
-	data["databaseType"] = $getDBType();
+	data["databaseType"] = baseCfc.$getDBType();
 	data["migrations"] = migrator.getAvailableMigrations();
 	data["lastVersion"] = 0;
 	data["message"] = "";
