@@ -16,7 +16,6 @@ component extends="app.Controllers.Controller" {
     function blogs() {
         
         var blogModel = model("Blog"); // Get model instance
-        var blogService = new app.services.BlogService(blogModel);
 
         // Ensure default values if params are missing
         param name="year" default="";
@@ -29,10 +28,10 @@ component extends="app.Controllers.Controller" {
         } else if (!len(year) || !len(month)) {
 
             // Fetch blogs filtered by month and year
-            // blogs = blogService.getAllByCategory(category_id);
+            // blogs = getAllByCategory(category_id);
         } else {
             // Fetch blogs filtered by month and year
-            blogs = blogService.getAllByDate(month, year);
+            blogs = getAllByDate(month, year);
             
         }
         renderPartial(partial="partials/blogList", locals={blogs: blogs});
@@ -53,8 +52,6 @@ component extends="app.Controllers.Controller" {
     public void function store() {
         // Get request parameters
         var blogModel = model("Blog"); 
-        var blogService = new app.services.BlogService(blogModel);
-
         try {
             params.coverImagePath = "";
             var uploadPath = expandPath("/files/"); // Define the upload directory
@@ -81,12 +78,9 @@ component extends="app.Controllers.Controller" {
             }
         }
 
-            response = blogService.saveBlog(params);
-            writeDump(response); abort;
-            tagService = new app.services.TagService(model("Tag"));
-            tagService.saveTags(params, response.blogId);
-            categoryService = new app.services.CategoryService(model("Category"));
-            categoryService.saveCategories(params, response.blogId);
+            response = saveBlog(params);
+            saveTags(params, response.blogId);
+            saveCategories(params, response.blogId);
             redirectTo(action="index");
         } catch (any e) {
             // Handle error
@@ -97,25 +91,20 @@ component extends="app.Controllers.Controller" {
     // Function to show a specific blog
     function show() {
         blogModel = model("Blog"); // Get model instance
-        blogService = new app.services.BlogService(blogModel);
-        tagService = new app.services.TagService(model("Tag"));
-        categoryService = new app.services.CategoryService(model("Category"));
-        attachmentService = new app.services.AttachmentService(model("Attachment"));
 
-        blog = blogService.getBlogBySlug(params.slug);
+        blog = getBlogBySlug(params.slug);
         blogs = blogModel.getAll();
-        tags = tagService.getTagsByBlogid(blog.id);
-        categories = categoryService.getCategoriesByBlogid(blog.id);
-        attachments = attachmentService.getAttachmentsByBlogid(blog.id);
+        tags = getTagsByBlogid(blog.id);
+        categories = getCategoriesByBlogid(blog.id);
+        attachments = getAttachmentsByBlogid(blog.id);
         
     }
 
     // Function to update an existing blog
     function update() {
         var blogModel = model("Blog"); // Get model instance
-        var blogService = new app.services.BlogService(blogModel);
         try {
-            var message = blogService.updateBlog(params);
+            var message = updateBlog(params);
             redirectTo(action="show", id=params.id, success="#message#");
         } catch (any e) {
             // Handle error
@@ -126,9 +115,8 @@ component extends="app.Controllers.Controller" {
     // Function to delete a blog
     function destroy() {
         var blogModel = model("Blog"); // Get model instance
-        var blogService = new app.services.BlogService(blogModel);
         try {
-            var message = blogService.deleteBlog(params.id);
+            var message = deleteBlog(params.id);
             redirectTo(action="index", success="#message#");
         } catch (any e) {
             // Handle error
@@ -157,5 +145,331 @@ component extends="app.Controllers.Controller" {
     function error() {
         // Add code to render the error page if needed
         renderPartial(partial="partials/_error");
+    }
+
+    // Business Logic
+
+    private function getAll() {
+        return model("Blog").findAll();
+    }
+
+    private function getAllBlogs() {
+        return model("Blog").findAll(
+            include="User, PostStatus, PostType",
+            order="createdAt DESC",
+            options={
+                sql="SELECT blog_posts.status AS blogStatus, blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                    blog_posts.createdat AS createdDate,
+                    users.fullName AS authorName, 
+                    -- categories.name AS categoryName, 
+                    post_statuses.name AS statusName, 
+                    post_types.name AS posttypeName 
+                    FROM blog_posts 
+                    INNER JOIN users ON users.id = blog_posts.userId
+                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
+                    INNER JOIN post_types ON post_types.id = post_types.postTypeId"
+            }
+        );
+    }
+
+    private function getAllByDate(required numeric month, required numeric year){
+        return model("Blog").findAll(
+            // where="id=1 AND title = 'test'",
+            // where="MONTH(createdAt) = 3",
+            // where="YEAR(createdAt) = '#val(year)#' AND MONTH(createdAt) = '#val(month)#'",
+            // order="createdAt DESC",
+            // include="User",
+            // returnAs="query"
+        );
+    }
+    
+    // Fetch Blogs by Category
+    private function getAllByCategory(required numeric categoryId){
+        return model("Blog").findAll(
+            where='categoryId = #val(categoryId)#',
+            order="createdAt DESC",
+            include="User",
+            returnAs="query"
+        );
+    }
+
+    private function getBlogById(required numeric id) {
+        return model("Blog").findOne(
+            where="blog_posts.id = #arguments.id#",
+            include="User, PostStatus",
+            options={
+                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                    blog_posts.createdat AS createdDate, 
+                    users.fullName AS authorName, 
+                    -- categories.name AS categoryName, 
+                    post_statuses.name AS statusName 
+                    FROM blog_posts 
+                    INNER JOIN users ON users.id = blog_posts.userId
+                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
+                    WHERE blog_posts.id = #arguments.id#"
+            }
+        );
+    }
+
+    private function getBlogBySlug(required string slug) {
+        // return model("Blog").findOne(where="slug = #arguments.slug#");
+        return model("Blog").findOne(
+            where="blog_posts.slug = '#arguments.slug#'",
+            include="User, PostStatus",
+            options={
+                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
+                    blog_posts.createdat AS createdDate, 
+                    users.fullName AS authorName, 
+                    -- categories.name AS categoryName, 
+                    post_statuses.name AS statusName 
+                    FROM blog_posts 
+                    INNER JOIN users ON users.id = blog_posts.userId
+                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
+                    WHERE blog_posts.slug = '#arguments.slug#'"
+            }
+        );
+    }
+
+    private function saveBlog(required struct blogData) {
+        var response = { "message": "", "blogId": 0 };
+    
+        // Generate slug
+        var slug = rereplace(lcase(blogData.title), "[^a-z0-9- ]", "", "all");
+        blogData.slug = replace(slug, " ", "-", "all");
+        
+        if (blogData.isdraft eq 1) {
+            blogData.statusId = 1; // Draft
+        } else {
+            blogData.statusId = 2; // Under Review
+        }
+    
+        try {
+            // Check if the blog ID is greater than 0 (editing an existing post)
+            if (structKeyExists(blogData, "id") && blogData.id > 0) {
+                var blog = model("Blog").findById(blogData.id);
+    
+                if (not isNull(blog)) {
+                    // Update the existing blog post
+                    blog.title = blogData.title;
+                    blog.content = blogData.content;
+                    blog.statusId = blogData.statusId;
+                    blog.postTypeId = blogData.postTypeId;
+                    blog.slug = blogData.slug;
+                    blog.updatedAt = now();
+                    blog.updatedBy = GetSignedInUserId();
+                    blog.save();
+    
+                    response.blogId = blog.id;
+                    response.message = "Blog post updated successfully.";
+                } else {
+                    response.message = "Blog post not found for editing.";
+                }
+            } else {
+                // Check if a blog post with the same title already exists
+                var existingBlog = model("Blog").findFirst(
+                    where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
+                );
+    
+                if (!isObject(existingBlog)) {
+                    // Create a new blog post
+                    var newBlog = model("Blog").new();
+                    newBlog.title = blogData.title;
+                    newBlog.content = blogData.content;
+                    newBlog.slug = blogData.slug;
+                    newBlog.statusId = blogData.statusId;
+                    newBlog.postTypeId = blogData.postTypeId;
+                    newBlog.coverImagePath = blogData.coverImagePath;
+                    newBlog.createdAt = now();
+                    newBlog.updatedAt = now();
+                    newBlog.createdBy = GetSignedInUserId();
+                    if(blogData.postCreatedDate neq " "){
+                        newBlog.postCreatedDate = blogData.postCreatedDate;
+                    }
+                    newBlog.save();
+    
+                    response.blogId = newBlog.id;
+                    response.message = "Blog post created successfully.";
+                } else {
+                    response.message = "A blog post with the same title already exists.";
+                }
+            }
+        } catch (any e) {
+            response.message = "Error: " & e.message;
+        }
+    
+        return response;
+    }   
+
+    private function updateBlog(required struct blogData) {
+        return saveBlog(blogData);
+    }
+
+    private function deleteBlog(required numeric id) {
+        var message = "";
+
+        try {
+            var blog = model("Blog").findById(id);
+
+            if (not isNull(blog)) {
+                blog.isDeleted = true;
+                blog.updatedAt = now();
+                blog.updatedBy = 1; // Replace with logged-in user ID
+                blog.save();
+                message = "Blog post deleted successfully.";
+            } else {
+                message = "Blog post not found for deletion.";
+            }
+        } catch (any e) {
+            // Catch any errors and store the message
+            message = "Error: " & e.message;
+        }
+
+        // Return the message
+        return message;
+    }
+
+    private function Approve(id){
+        var blog = model("Blog").findByKey(arguments.id);
+        
+        if (!isNull(blog)) {
+            
+            blog.status = "Approved"; //approved            
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "blog status approved successfully"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to approve blog status"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "blog not found"
+        };
+    }
+    
+    private function Reject(id){
+        var blog = model("Blog").findByKey(arguments.id);
+        
+        if (!isNull(blog)) {
+            
+            blog.status = "Rejected"; //reject
+            
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "blog status rejected successfully"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to reject blog status"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "blog not found"
+        };
+    }
+
+    // Tags
+    function getAllTags() {
+        return model("Tag").findAll();
+    }
+    
+    function getTagsByBlogid(required numeric id) {
+        return model("Tag").findAll(include="Blog", where="blogid = #arguments.id#");
+    }
+
+    function saveTags(required struct blogData, blogId) {
+        try {
+            if (blogId > 0 && structKeyExists(blogData, "posttags")) {
+                
+                var tagArray = listToArray(blogData.posttag, ","); // Convert posttag string into an array
+    
+                // Insert new tags
+                for (var tagName in tagArray) {
+                    var newTag = model("Tag").new();
+                    newTag.name = trim(tagName); // Trim spaces if any
+                    newTag.blogId = blogId;
+                    newTag.createdAt = now();
+                    newTag.updatedAt = now();
+                    newTag.save();
+                }
+            }
+        } catch (any e) {
+            local.exception = e;
+        }
+    }
+
+    // Categories
+
+    function getAllCategories() {
+        return model("Category").findAll();
+    }
+    
+    function getCategoriesByBlogid(required numeric id) {
+        return model("Category").findAll(include="Blog,BlogCategory", where="blogid = #arguments.id#");
+    }
+
+    function saveCategories(required struct blogData, blogId) {
+        try {
+            if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
+                
+                var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
+    
+                // Insert new categories
+                for (var category_Id in categoryArray) {
+                    var newCategory = model("Category").new();
+                    newCategory.categoryId = category_Id;
+                    newCategory.blogId = blogId;
+                    newCategory.createdAt = now();
+                    newCategory.updatedAt = now();
+                    newCategory.save();
+                }
+            }
+        } catch (any e) {
+            local.exception = e;
+        }
+    }
+
+    //Attachement
+
+    function getAllAttachments() {
+        return model("Attachment").findAll();
+    }
+    
+    function getAttachmentsByBlogid(required numeric id) {
+        return model("Attachment").findAll(include="Blog", where="blogid = #arguments.id#");
+    }
+
+    public struct function uploadFile(file) {
+        var uploadPath = expandPath("/public/files");
+        var filePath = uploadPath & file.serverFileName;
+
+        // Ensure the upload directory exists
+        if (!directoryExists(uploadPath)) {
+            directoryCreate(uploadPath);
+        }
+
+        // Move the uploaded file to the upload directory
+        fileWrite(filePath, file.fileContent);
+
+        return {
+            filePath: filePath,
+            fileName: file.serverFileName
+        };
     }
 }

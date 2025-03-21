@@ -13,7 +13,6 @@
                             <th>Status</th>
                             <th>Post Type</th>
                             <th>Created By</th>
-                            <th>Excerpt</th>
                             <th>Content</th>
                             <th>Status</th>
                             <th>Actions</th>
