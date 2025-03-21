@@ -3,7 +3,10 @@
         <div class="row justify-content-center justify-content-lg-between">
             <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                 <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
+                <!----
                 <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
+                --->
+                <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                     <input class="form-control" type="hidden" name="id" id="id" value="">
 
                     <div class="mb-3">
@@ -35,15 +38,10 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Post Tags <span class="text-danger">*</span>
                         </label>
-                        <input placeholder="Enter the Tags" class="form-control fs-14" type="text" name="posttag" id="posttag" value="" maxlength="240" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Excerpt <span class="text-danger">*</span>
-                        </label>
-                        <textarea rows="4" placeholder="Enter the Excerpt (short summary/preview)" class="form-control fs-14" type="text" name="excerpt" id="excerpt" value="" required maxlength="400"></textarea>
-                        <div id="counter1">(0/450)</div>
+                        <div class="tag-container" id="tagContainer">
+                            <input type="text" class="tag-input" id="tagInput" placeholder="Enter tags and press comma (,)">
+                        </div>
+                        <input type="hidden" name="postTags" id="hiddenTags">
                     </div>
 
                     <div class="mb-3">
@@ -149,16 +147,15 @@
             const title = document.getElementById('title');
             const categoryId = document.getElementById('categoryId');
             const posttypeId = document.getElementById('posttypeId');
-            const posttag = document.getElementById('posttag');
+            const postTags = document.getElementById('postTags');
             const content = document.getElementById('content');
-            const excerpt = document.getElementById('excerpt');
             const editor = document.getElementById("editor");
 
             // Check if it's a draft submission
             const isDraft = document.getElementById("isDraft").value === "1";
 
             // Reset validation styles
-            [title, categoryId, posttypeId, posttag, excerpt].forEach(field => field.classList.remove("is-invalid"));
+            [title, categoryId, posttypeId, postTags].forEach(field => field.classList.remove("is-invalid"));
             editor.classList.remove("border-danger");
 
             // Validate fields only if it's NOT a draft
@@ -175,13 +172,9 @@
                     isValid = false;
                     posttypeId.classList.add("is-invalid");
                 }
-                if (posttag.value.trim() === "") {
+                if (postTags.value.trim() === "") {
                     isValid = false;
-                    posttag.classList.add("is-invalid");
-                }
-                if (excerpt.value.trim() === "") {
-                    isValid = false;
-                    excerpt.classList.add("is-invalid");
+                    postTags.classList.add("is-invalid");
                 }
                 if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
                     isValid = false;
@@ -228,10 +221,55 @@
             }
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#categoryId').select2({
                 placeholder: "Select Categories"
             });
+
+            const tagContainer = document.getElementById("tagContainer");
+            const tagInput = document.getElementById("tagInput");
+            const hiddenTags = document.getElementById("hiddenTags");
+            let tags = [];
+
+            tagInput.addEventListener("keydown", function (event) {
+                if (event.key === "," || event.key === "Enter") {
+                    event.preventDefault();
+                    let tagText = tagInput.value.trim().replace(/,/g, ""); // Remove any commas
+                    if (tagText !== "" && !tags.includes(tagText)) {
+                        tags.push(tagText);
+                        addTag(tagText);
+                        updateHiddenTags();
+                        tagInput.value = "";
+                    }
+                }
+            });
+
+            function addTag(tagText) {
+                const tagElement = document.createElement("span");
+                tagElement.classList.add("tag");
+                tagElement.innerHTML = `${tagText} <span class="remove-tag">&times;</span>`;
+                
+                tagElement.querySelector(".remove-tag").addEventListener("click", function () {
+                    removeTag(tagText);
+                });
+
+                tagContainer.insertBefore(tagElement, tagInput);
+            }
+
+            function removeTag(tagText) {
+                tags = tags.filter(tag => tag !== tagText);
+                updateHiddenTags();
+                renderTags();
+            }
+
+            function renderTags() {
+                tagContainer.querySelectorAll(".tag").forEach(tag => tag.remove());
+                tags.forEach(tag => addTag(tag));
+            }
+
+            function updateHiddenTags() {
+                hiddenTags.value = tags.join(",");
+            }
         });
   
     </script>

@@ -8,7 +8,6 @@ component extends="wheels.migrator.Migration" hint="creates blog_post table" {
                 t.string(columnNames='title', null=false, default='', limit=255);
                 t.string(columnNames='slug', null=false, default='', limit=255, unique=true);
                 t.text(columnNames='content', null=false);
-                t.string(columnNames='excerpt', null=false, default='', limit=500);
                 t.integer(columnNames='status_id', null=false);
                 t.integer(columnNames='post_type_id', null=false);
                 t.integer(columnNames='created_by', null=false);

@@ -7,7 +7,6 @@ component extends="app.Models.Model" {
         property(name="title", column="title", type="string", required=true, default="", limit=255);
         property(name="content", column="content", type="text", required=true, default="");
         property(name="slug", column="slug", type="string", required=true, default="", limit=255);
-        property(name="excerpt", column="excerpt", type="string", required=true, default="", limit=500);
         property(name="coverImagePath", column="cover_image_path", type="string", required=false, default="", limit=100);
         property(name="status", column="status", type="string", required=false, default="");
 
