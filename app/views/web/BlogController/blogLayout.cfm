@@ -35,6 +35,7 @@
 			/>
 			<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+			<script src="/javascripts/jquery.min.js"></script>
 
 		</head>
 		<body>
@@ -229,7 +230,6 @@
 
 			<!-- Bootstrap JS -->
 			<script src="/javascripts/bootstrap.js"></script>
-			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
