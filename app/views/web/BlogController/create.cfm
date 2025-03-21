@@ -35,15 +35,10 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Post Tags <span class="text-danger">*</span>
                         </label>
-                        <input placeholder="Enter the Tags" class="form-control fs-14" type="text" name="posttag" id="posttag" value="" maxlength="240" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Excerpt <span class="text-danger">*</span>
-                        </label>
-                        <textarea rows="4" placeholder="Enter the Excerpt (short summary/preview)" class="form-control fs-14" type="text" name="excerpt" id="excerpt" value="" required maxlength="400"></textarea>
-                        <div id="counter1">(0/450)</div>
+                        <div class="tag-container" id="tagContainer">
+                            <input type="text" class="tag-input" id="tagInput" placeholder="Enter tags and press comma (,)">
+                        </div>
+                        <input type="hidden" name="postTags" id="hiddenTags">
                     </div>
 
                     <div class="mb-3">
@@ -228,10 +223,55 @@
             }
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#categoryId').select2({
                 placeholder: "Select Categories"
             });
+
+            const tagContainer = document.getElementById("tagContainer");
+            const tagInput = document.getElementById("tagInput");
+            const hiddenTags = document.getElementById("hiddenTags");
+            let tags = [];
+
+            tagInput.addEventListener("keydown", function (event) {
+                if (event.key === "," || event.key === "Enter") {
+                    event.preventDefault();
+                    let tagText = tagInput.value.trim().replace(/,/g, ""); // Remove any commas
+                    if (tagText !== "" && !tags.includes(tagText)) {
+                        tags.push(tagText);
+                        addTag(tagText);
+                        updateHiddenTags();
+                        tagInput.value = "";
+                    }
+                }
+            });
+
+            function addTag(tagText) {
+                const tagElement = document.createElement("span");
+                tagElement.classList.add("tag");
+                tagElement.innerHTML = `${tagText} <span class="remove-tag">&times;</span>`;
+                
+                tagElement.querySelector(".remove-tag").addEventListener("click", function () {
+                    removeTag(tagText);
+                });
+
+                tagContainer.insertBefore(tagElement, tagInput);
+            }
+
+            function removeTag(tagText) {
+                tags = tags.filter(tag => tag !== tagText);
+                updateHiddenTags();
+                renderTags();
+            }
+
+            function renderTags() {
+                tagContainer.querySelectorAll(".tag").forEach(tag => tag.remove());
+                tags.forEach(tag => addTag(tag));
+            }
+
+            function updateHiddenTags() {
+                hiddenTags.value = tags.join(",");
+            }
         });
   
     </script>
