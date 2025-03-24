@@ -215,26 +215,6 @@ component extends="app.Controllers.Controller" {
         );
     }
 
-    private function getBlogBySlug(required string slug) {
-        // return model("Blog").findOne(where="slug = #arguments.slug#");
-        return model("Blog").findOne(
-            where="blog_posts.slug = '#arguments.slug#'",
-            include="User, PostStatus",
-            options={
-                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
-                    blog_posts.createdat AS createdDate, 
-                    users.fullName AS authorName, 
-                    -- categories.name AS categoryName, 
-                    post_statuses.name AS statusName 
-                    FROM blog_posts 
-                    INNER JOIN users ON users.id = blog_posts.userId
-                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
-                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
-                    WHERE blog_posts.slug = '#arguments.slug#'"
-            }
-        );
-    }
-
     private function saveBlog(required struct blogData) {
         var response = { "message": "", "blogId": 0 };
     
@@ -333,66 +313,9 @@ component extends="app.Controllers.Controller" {
         return message;
     }
 
-    private function Approve(id){
-        var blog = model("Blog").findByKey(arguments.id);
-        
-        if (!isNull(blog)) {
-            
-            blog.status = "Approved"; //approved            
-            if (blog.save()) {
-                return {
-                    success = true,
-                    message = "blog status approved successfully"
-                };
-            } else {
-                return {
-                    success = false,
-                    errors = blog.allErrors(),
-                    message = "Failed to approve blog status"
-                };
-            }
-        }
-        
-        return {
-            success = false,
-            message = "blog not found"
-        };
-    }
-    
-    private function Reject(id){
-        var blog = model("Blog").findByKey(arguments.id);
-        
-        if (!isNull(blog)) {
-            
-            blog.status = "Rejected"; //reject
-            
-            if (blog.save()) {
-                return {
-                    success = true,
-                    message = "blog status rejected successfully"
-                };
-            } else {
-                return {
-                    success = false,
-                    errors = blog.allErrors(),
-                    message = "Failed to reject blog status"
-                };
-            }
-        }
-        
-        return {
-            success = false,
-            message = "blog not found"
-        };
-    }
-
     // Tags
     function getAllTags() {
         return model("Tag").findAll();
-    }
-    
-    function getTagsByBlogid(required numeric id) {
-        return model("Tag").findAll(include="Blog", where="blogid = #arguments.id#");
     }
 
     function saveTags(required struct blogData, blogId) {
@@ -421,10 +344,6 @@ component extends="app.Controllers.Controller" {
     function getAllCategories() {
         return model("Category").findAll();
     }
-    
-    function getCategoriesByBlogid(required numeric id) {
-        return model("Category").findAll(include="Blog,BlogCategory", where="blogid = #arguments.id#");
-    }
 
     function saveCategories(required struct blogData, blogId) {
         try {
@@ -451,10 +370,6 @@ component extends="app.Controllers.Controller" {
 
     function getAllAttachments() {
         return model("Attachment").findAll();
-    }
-    
-    function getAttachmentsByBlogid(required numeric id) {
-        return model("Attachment").findAll(include="Blog", where="blogid = #arguments.id#");
     }
 
     public struct function uploadFile(file) {

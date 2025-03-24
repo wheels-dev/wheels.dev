@@ -1,15 +1,15 @@
 // Admin Panel
 component extends="app.Controllers.Controller" {
-    // Service declarations
-    property name="userService";
-    property name="blogService";
-    property name="roleService";
 
     function config() {
-        verifies( except="index,dashboard,checkAdminAccess,blog,BlogList,approve,reject", params="key", paramsTypes="integer", handler="dashboard");
+        verifies(except="index,dashboard,checkAdminAccess,blog,BlogList,approve,reject,showBlog", params="key", paramsTypes="integer", handler="dashboard");
 
         usesLayout("/web/AdminController/layout");
         filters(through="checkAdminAccess");
+    }
+
+    function index() {
+        redirectTo(action="dashboard");
     }
 
     function blog() {
@@ -17,8 +17,7 @@ component extends="app.Controllers.Controller" {
     
     function BlogList() {
         // Fetch all blogs
-        blogService = new app.services.BlogService(model("Blog"));
-        blogs = blogService.getAllBlogs();
+        blogs = getAllBlogs();
         renderPartial(partial="partials/blogs");
     }
 
@@ -43,28 +42,34 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    function showBlog() {
+        try {
+            blogModel = model("Blog");
+            
+            // Get the blog by its slug
+            blog = getBlogBySlug(params.slug);
+            
+            // If no blog is found, throw an error to be caught
+            if (!structKeyExists(blog, "id")) {
+                throw("Blog not found");
+            }
+
+            // Get other necessary data
+            tags = getTagsByBlogid(blog.id);
+            categories = getCategoriesByBlogid(blog.id);
+            attachments = getAttachmentsByBlogid(blog.id);
+            
+        } catch (any e) {
+            // If an error occurs or blog not found, redirect to blog index
+            redirectTo(action="blog");
+            return;
+        }
+    }
+
     /**
      * Admin Dashboard
      */
     function dashboard() {
-        // Use services to fetch statistics
-        var stats = {
-            totalUsers = variables.userService.count(),
-            activeUsers = variables.userService.countActive(),
-            pendingUsers = variables.userService.countPending(),
-            totalBlogs = variables.blogService.count(),
-            publishedBlogs = variables.blogService.countPublished(),
-            pendingBlogs = variables.blogService.countPending()
-        };
-
-        // Fetch recent activities using services
-        var recentUsers = variables.userService.getRecent(5);
-        var recentBlogs = variables.blogService.getRecent(5);
-
-        // Set variables for view
-        setVariable("stats", stats);
-        setVariable("recentUsers", recentUsers);
-        setVariable("recentBlogs", recentBlogs);
     }
 
     /**
@@ -179,7 +184,6 @@ component extends="app.Controllers.Controller" {
     private function checkAdminAccess() {
         // Ensure only admin users can access these methods
         if (!isCurrentUserAdmin()) {
-            flashInsert(error="Unauthorized Access");
             redirectTo(controller="AuthController", action="login", route="auth-login");
             return false;
         }
@@ -193,5 +197,82 @@ component extends="app.Controllers.Controller" {
         return structKeyExists(URL, name) 
             ? URL[name] 
             : (structKeyExists(form, name) ? form[name] : defaultValue);
+    }
+
+    public function getAllBlogs() {
+        return model("Blog").findAll(
+            include="User, PostStatus, PostType",
+            order="createdAt DESC",
+            options={
+                sql="
+                    SELECT 
+                        blog_posts.id AS blogId, 
+                        blog_posts.status AS blogStatus, 
+                        blog_posts.title AS blogTitle, 
+                        blog_posts.content AS blogContent, 
+                        blog_posts.createdat AS createdDate,
+                        users.fullName AS authorName, 
+                        post_statuses.name AS postStatus,
+                        post_types.name AS postTypeName 
+                    FROM blog_posts 
+                    INNER JOIN users ON users.id = blog_posts.userId
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
+                    INNER JOIN post_types ON post_types.id = blog_posts.postTypeId"
+            }
+        );
+
+    }
+
+    private function Approve(id){
+        var blog = model("Blog").findByKey(arguments.id);
+        
+        if (!isNull(blog)) {
+            
+            blog.status = "Approved"; //approved            
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "blog status approved successfully"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to approve blog status"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "blog not found"
+        };
+    }
+    
+    private function Reject(id){
+        var blog = model("Blog").findByKey(arguments.id);
+        
+        if (!isNull(blog)) {
+            
+            blog.status = "Rejected"; //reject
+            
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "blog status rejected successfully"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to reject blog status"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "blog not found"
+        };
     }
 }
