@@ -90,15 +90,30 @@ component extends="app.Controllers.Controller" {
 
     // Function to show a specific blog
     function show() {
-        blogModel = model("Blog"); // Get model instance
+        try {
+            blogModel = model("Blog");
+            
+            // Get the blog by its slug
+            blog = getBlogBySlug(params.slug);
+            
+            // If no blog is found, throw an error to be caught
+            if (!structKeyExists(blog, "id")) {
+                throw("Blog not found");
+            }
 
-        blog = getBlogBySlug(params.slug);
-        blogs = blogModel.getAll();
-        tags = getTagsByBlogid(blog.id);
-        categories = getCategoriesByBlogid(blog.id);
-        attachments = getAttachmentsByBlogid(blog.id);
-        
+            // Get other necessary data
+            blogs = blogModel.getAll();
+            tags = getTagsByBlogid(blog.id);
+            categories = getCategoriesByBlogid(blog.id);
+            attachments = getAttachmentsByBlogid(blog.id);
+            
+        } catch (any e) {
+            // If an error occurs or blog not found, redirect to blog index
+            redirectTo(action="index");
+            return;
+        }
     }
+
 
     // Function to update an existing blog
     function update() {
@@ -156,20 +171,7 @@ component extends="app.Controllers.Controller" {
     private function getAllBlogs() {
         return model("Blog").findAll(
             include="User, PostStatus, PostType",
-            order="createdAt DESC",
-            options={
-                sql="SELECT blog_posts.status AS blogStatus, blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
-                    blog_posts.createdat AS createdDate,
-                    users.fullName AS authorName, 
-                    -- categories.name AS categoryName, 
-                    post_statuses.name AS statusName, 
-                    post_types.name AS posttypeName 
-                    FROM blog_posts 
-                    INNER JOIN users ON users.id = blog_posts.userId
-                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
-                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
-                    INNER JOIN post_types ON post_types.id = post_types.postTypeId"
-            }
+            order="createdAt DESC"
         );
     }
 
@@ -237,8 +239,8 @@ component extends="app.Controllers.Controller" {
         var response = { "message": "", "blogId": 0 };
     
         // Generate slug
-        var slug = rereplace(lcase(blogData.title), "[^a-z0-9-. ]", "", "all");
-        blogData.slug = replace(slug, " ", "-", "all");
+        var slug = rereplace(lcase(blogData.title), "[^a-z0-9 ]", "-", "all");
+        blogData.slug = replace(slug,  "\s+", "-", "all");
         
         if (blogData.isdraft eq 1) {
             blogData.statusId = 1; // Draft

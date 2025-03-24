@@ -4,12 +4,12 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 		transaction {
 			try {
 				//roles
-				addRecord(table='Roles',name = "Admin");
-				addRecord(table='Roles',name = "Editor");
-				addRecord(table='Roles',name = "User");
+				addRecord(table='Roles',name = "admin");
+				addRecord(table='Roles',name = "editor");
+				addRecord(table='Roles',name = "user");
 
 				// users
-				addRecord(table="users", first_name="Peter", last_name="Amiri", email="peteramiri@gmail.com", password_hash="$2a$12$EIXHgw7eV9lB1d1wFYhFvOPtk7w3KQjJ0hWT3OQyOdL5g2vJYEF6C", profile_picture='', profile_url='', status=1, role_id=1);
+				addRecord(table="users", first_name="Peter", last_name="Amiri", email="peteramiri@gmail.com", password_hash="$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu", profile_picture='', profile_url='', status=1, role_id=1);
 
 				// blog_categories
 				addRecord(table='blog_categories', name='CLI', parent_id='', description='Learn about command-line tools, tips, and tricks for enhancing your development workflow using the command line.');
