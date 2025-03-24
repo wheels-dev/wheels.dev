@@ -74,7 +74,7 @@
                                 <textarea placeholder="Add a comment"
                                     class="bg-transparent fs-16 outline-none resize-none border-0 flex-grow-1"></textarea>
                                 <button
-                                    class="bg--iris fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Post</button>
+                                    class="bg--iris fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0" hx-post="/blog/comment">Post</button>
                             </div>
                         </div>
 

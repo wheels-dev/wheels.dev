@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store");
         usesLayout("/layout");
     }
@@ -473,5 +473,19 @@ component extends="app.Controllers.Controller" {
             filePath: filePath,
             fileName: file.serverFileName
         };
+    }
+
+    // Function to store comment
+    public void function comment() {
+        // Get request parameters
+        var commentModel = model("Comment"); 
+        try {
+
+            response = saveComment(params);
+            redirectTo(action="index");
+        } catch (any e) {
+            // Handle error
+            redirectTo(action="error", errorMessage="Failed to save comment.");
+        }
     }
 }
