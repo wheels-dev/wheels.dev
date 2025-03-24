@@ -1,5 +1,5 @@
 <html lang="en">
-<head>+
+<head>
     <cfoutput>#csrfMetaTags()#</cfoutput>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
@@ -34,7 +34,7 @@
                         <a href="/admin/user">Users</a>
                     </li>
                     <li class="nav-item px-3">
-                        <a href="/admin/blogs" hx-get="/admin/blogs" hx-target="#content" hx-push-url="true">Blogs</a>
+                        <a href="/admin/blogs" hx-get="/admin/blogs" hx-target="#content" hx-push-url="true">Blog</a>
                     </li>
 
                     <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12 d-flex justify-content-end gap-3">
@@ -51,11 +51,6 @@
             </div>
         </div>
     </nav>
-    <!---     <nav> 
-        <a href="/admin/dashboard" hx-get="/admin/dashboard" hx-target="#content" hx-push-url="true">Dashboard</a>
-        <a href="/admin/users" hx-get="/admin/users" hx-target="#content" hx-push-url="true">Users</a>
-        <a href="/admin/blogs" hx-get="/admin/blogs" hx-target="#content" hx-push-url="true">Blogs</a>
-    </nav>--->
     <main id="content">
         <!-- Content will be dynamically loaded here -->
         <cfoutput>
