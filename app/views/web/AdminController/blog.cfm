@@ -18,7 +18,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="blogs-container" hx-get="/admin/BlogList" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
+                    <tbody id="blogs-container" hx-get="/admin/blog/list" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
                         <!--- Load Blog List thorugh partial view --->
                     </tbody>
                 </table>
