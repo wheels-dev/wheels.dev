@@ -1,7 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="login,register,authenticate,logout,register,store,error,verify", params="key", paramsTypes="integer", handler="login");
+        verifies(except="login,authenticate,logout,register,store,error,verify", params="key", paramsTypes="integer", handler="login");
         usesLayout("/layout");
     }
 
@@ -19,8 +19,8 @@ component extends="app.Controllers.Controller" {
             if (isObject(user)) {
                 // Store user data in session
                 session.userID = user.id;
-                session.username = user.firstName;
-                session.role = user.role.name;
+                session.username = user.fullname;
+                session.role = user.roleId;
                 // session.permissions = user.permissions;
 
                 // Redirect to admin dashboard
@@ -38,20 +38,22 @@ component extends="app.Controllers.Controller" {
 	}
 
     function logout() {
-        StructDelete(session, "userId");
+        StructClear(session);
         redirectTo(action="login");
     }
 
     function register() {}
 
     function store() {
-        param name="params.email" default="";
-        param name="params.passwordHash" default="";
-        
         try{
             // save user logic
             var message = saveUser(params);
-            renderText("<p style='color:red;'>#message#</p>");
+            if(findNoCase('success', '#message#'))
+            {
+                renderText("<p style='color:green;'>#message#</p>");
+            } else {
+                renderText("<p style='color:red;'>#message#</p>");
+            }
         } catch (any e) {
             // writeDump(e); abort;
             // Handle error
@@ -102,62 +104,42 @@ component extends="app.Controllers.Controller" {
         var message = "";
 
         try {
-                
-            // Check if the user ID is greater than 0 (for editing an existing user)
-            if (StructKeyExists(userData, "id") and userData.id > 0) {
-                var user = model("User").findById(userData.id);
+            // Check if a user with the same email already exists
+            var existingUser = model("User").findFirst( where="email = '#userData.email#'");
 
-                if (not isNull(user)) {
-                    // Edit the existing user
-                    user.first_name = userData.firstname;
-                    user.last_name = userData.lastname;
-                    user.email = userData.email;
-                    user.password_hash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
-                    user.updatedAt = now();
-                    user.updatedBy = GetSignedInUserId();
-                    user.save();
-                    message = "User updated successfully.";
-                } else {
-                    message = "User not found for editing.";
-                }
-            } else {
-                // Check if a user with the same email already exists
-                var existingUser = model("User").findFirst( where="email = '#userData.email#'");
+            if (!isObject(existingUser)) {
+                // Create a new user
+                var newUser = model("User").new();
+                newUser.firstname = userData.firstname;
+                newUser.lastname = userData.lastname;
+                newUser.email = userData.email;
+                newUser.passwordhash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                newUser.roleid = GetUserRoleId(); // user role
+                newUser.status = SetInactive(); // set inactive
 
-                if (!isObject(existingUser)) {
-                    // Create a new user
-                    var newUser = model("User").new();
-                    newUser.firstname = userData.firstname;
-                    newUser.lastname = userData.lastname;
-                    newUser.email = userData.email;
-                    newUser.passwordhash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
-                    newUser.roleid = GetRoleId(); //blogger role
-                    newUser.status = SetActive(); // temporary active
+                if(newUser.save()){
+                    // Generate a unique verification token
+                    var verificationToken = Hash(createUUID());
 
-                    if(newUser.save()){
-                        // Generate a unique verification token
-                        var verificationToken = Hash(createUUID());
+                    // Save token to the user_tokens table
+                    var newToken = model("UserToken").new();
+                    newToken.token = verificationToken;
+                    newToken.user_id = newUser.id;
+                    newToken.status = 0; // Not verified
+                    newToken.save();
 
-                        // Save token to the user_tokens table
-                        var newToken = model("UserToken").new();
-                        newToken.token = verificationToken;
-                        newToken.user_id = newUser.id;
-                        newToken.status = 0; // Not verified
-                        newToken.save();
-
-                        // Send verification email
-                        if(sendVerificationEmail(newUser.email, verificationToken)){
-                            message = "User created successfully. Please check your email to verify your account.";
-                        }else{
-                            message = "Error sending verification email.";
-                        }
+                    // Send verification email
+                    if(sendVerificationEmail(newUser.email, verificationToken)){
+                        message = "User created successfully. Please check your email to verify your account.";
                     }else{
-                        message = "Error! user not created.";
+                        message = "Error sending verification email.";
                     }
-
-                } else {
-                    message = "A user with the same name and email already exists.";
+                }else{
+                    message = "Error! user not created.";
                 }
+
+            } else {
+                message = "A user with the same email already exists.";
             }
             
         } catch (any e) {
@@ -184,7 +166,7 @@ component extends="app.Controllers.Controller" {
                 password = "#application.env.smtp_password#", 
                 type = "html"
             ) { 
-                #emailContent#
+                writeOutput(emailContent);
             }
             return true;
         }
