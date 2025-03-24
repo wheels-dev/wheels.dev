@@ -1,38 +1,53 @@
-<cfscript>
-    for (var i = 1; i <= blogs.recordCount; i++) {
-        var blogId = blogs.id[i]; // Store ID in a variable to reuse
-        writeOutput('<tr id="blog-' & blogId & '">');
-        writeOutput('<td>' & blogId & '</td>');
-        writeOutput('<td>' & blogs.title[i] & '</td>');
-        writeOutput('<td>' & blogs.slug[i] & '</td>');
-        writeOutput('<td>' & blogs.name[i] & '</td>');
-        writeOutput('<td>' & blogs.POSTSTATUSNAME[i] & '</td>');
-        writeOutput('<td>' & blogs.POSTTYPENAME[i] & '</td>');
-        writeOutput('<td>' & blogs.fullName[i] & '</td>');
-        writeOutput('<td>' & blogs.content[i] & '</td>');
-        writeOutput('<td>' & blogs.status[i] & '</td>');
+<cfoutput>
+    <cfscript>
+        // writeDump(blogs); abort;
+    </cfscript>
 
-        writeOutput('<td>');
+        <cfloop from="1" to="#blogs.recordCount#" index="i">
+            <cfset blogId = blogs.id[i]>
+            <cfset truncatedContent = left(blogs.content[i], 100) & "...">
 
-        // Approve Button
-        writeOutput('<button 
-            hx-post="approve" 
-            hx-vals=''{"id": "#blogId#"}''
-            hx-target="##blog-' & blogId & '"
-            hx-confirm="Are you sure you want to approve this blog?"
-        >Approve</button>');
+            <tr id="blog-#blogId#">
+                <td>#blogId#</td>
+                <td>#blogs.title[i]#</td>
+                <td>#blogs.slug[i]#</td>
+                <td>#blogs.name[i]#</td>
+                <td>#blogs.NAME[i]#</td>
+                <td>#blogs.POSTTYPENAME[i]#</td>
+                <td>#blogs.fullName[i]#</td>
+                
+                <!-- Truncated content with "View More" link -->
+                <td>#truncatedContent#</td>
+                
+                <td>
+                    <!-- Approve Button -->
+                    <button 
+                        hx-post="approve" 
+                        hx-vals='{"id": "#blogId#"}'
+                        hx-target="##blog-#blogId#"
+                        hx-confirm="Are you sure you want to approve this blog?"
+                        class="fw-semibold bg--iris py-1 rounded-2 text-white"
+                    >Approve</button>
 
-        writeOutput('&nbsp;&nbsp; | &nbsp;&nbsp;');
+                    &nbsp;&nbsp; | &nbsp;&nbsp;
 
-        // Reject Button
-        writeOutput('<button 
-            hx-post="reject" 
-            hx-vals=''{"id": "#blogId#"}''
-            hx-target="##blog-' & blogId & '"
-            hx-confirm="Are you sure you want to reject this blog?"
-        >Reject</button>');
-
-        writeOutput('</td>');
-        writeOutput('</tr>');
-    }
-</cfscript>
+                    <!-- Reject Button -->
+                    <button 
+                        class="fw-semibold bg--primary py-1 rounded-2 text-white"
+                        hx-post="reject" 
+                        hx-vals='{"id": "#blogId#"}'
+                        hx-target="##blog-#blogId#"
+                        hx-confirm="Are you sure you want to reject this blog?"
+                    >Reject</button>
+                </td>
+                <td>
+                    <a href="blog/#blogs.slug[i]#">
+                        <button class="fw-semibold bg--secondary py-1 rounded-2 text-white">
+                            View More
+                        </button>
+                    </a>
+                </td>
+            </tr>
+        </cfloop>
+    </table>
+</cfoutput>
