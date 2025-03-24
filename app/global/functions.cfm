@@ -3,8 +3,8 @@
 public function GetSignedInUserId(){
     return session.USERID;
 }
-public function GetRoleId(){
-    return 2;
+public function GetUserRoleId(){
+    return 3;
 }
 public function SetActive(){
     return 1;

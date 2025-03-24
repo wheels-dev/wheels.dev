@@ -7,6 +7,10 @@
             </div>
             <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
+
+                    <cfif StructKeyExists(session, "userId") and session.userId neq ''>
+                        <a href="/blog/create" class="btn btn-primary px-4 col-4">Create Blog</a>
+                    </cfif>
                     <button onclick="handleBlogFilter('All', this)"
                         class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
                         All
