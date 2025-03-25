@@ -71,22 +71,8 @@ component extends="wheels.Controller" {
     // Shared business logic across multiple controllers
     public function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
-            include="User, PostStatus",
-            options={
-                sql="
-                    SELECT 
-                        blog_posts.id AS blogId, 
-                        blog_posts.title AS blogTitle, 
-                        blog_posts.content AS blogContent, 
-                        blog_posts.createdat AS createdDate, 
-                        users.fullName AS authorName, 
-                        post_statuses.name AS statusName
-                    FROM blog_posts 
-                    INNER JOIN users ON users.id = blog_posts.userId
-                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
-                    WHERE blog_posts.slug = :slug",
-                params={ slug: arguments.slug }
-            }
+            where="blog_posts.slug = '#arguments.slug#'",
+            include="User, PostStatus"
         );
     }
 

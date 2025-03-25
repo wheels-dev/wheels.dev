@@ -102,7 +102,6 @@ component extends="app.Controllers.Controller" {
             }
 
             // Get other necessary data
-            blogs = blogModel.getAll();
             tags = getTagsByBlogid(blog.id);
             categories = getCategoriesByBlogid(blog.id);
             attachments = getAttachmentsByBlogid(blog.id);
@@ -170,8 +169,9 @@ component extends="app.Controllers.Controller" {
 
     private function getAllBlogs() {
         return model("Blog").findAll(
+            where='statusid <> 1',
             include="User, PostStatus, PostType",
-            order="createdAt DESC"
+            order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
         );
     }
 
@@ -219,8 +219,10 @@ component extends="app.Controllers.Controller" {
         var response = { "message": "", "blogId": 0 };
     
         // Generate slug
-        var slug = rereplace(lcase(blogData.title), "[^a-z0-9 ]", "-", "all");
-        blogData.slug = replace(slug,  "\s+", "-", "all");
+        var slug = rereplace(lcase(blogData.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
+        slug = rereplace(slug, "-+", "-", "all");
+        blogData.slug = slug;
+
         
         if (blogData.isdraft eq 1) {
             blogData.statusId = 1; // Draft
