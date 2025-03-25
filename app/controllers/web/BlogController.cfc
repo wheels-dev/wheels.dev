@@ -24,7 +24,7 @@ component extends="app.Controllers.Controller" {
         if (!len(year) && !len(month) && !len(category_id)) {
 
             // If no year/month is selected, show all blogs
-            blogs = blogModel.getAll();
+            blogs = getAllBlogs();
         } else if (!len(year) || !len(month)) {
 
             // Fetch blogs filtered by month and year
