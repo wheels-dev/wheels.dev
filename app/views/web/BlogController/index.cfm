@@ -48,7 +48,7 @@
 
         <div class="row justify-content-center justify-content-lg-between">
             <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1"
-                hx-get="/blog/blogs" hx-trigger="load" hx-target="#blogsContainer" hx-swap="innerHTML">
+                hx-get="/blog/list" hx-trigger="load" hx-target="#blogsContainer" hx-swap="innerHTML">
             </div>
             <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
                 <cfset startYear = 2008>
@@ -67,7 +67,7 @@
 
                             <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
                                 <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris"
-                                    hx-get="/blog/blogs"
+                                    hx-get="/blog/list"
                                     hx-trigger="click"
                                     hx-target="##blogsContainer"
                                     hx-swap="innerHTML"
