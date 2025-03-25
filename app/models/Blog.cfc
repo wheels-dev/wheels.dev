@@ -37,7 +37,7 @@ component extends="app.Models.Model" {
 
     // Fetch all latest blog posts with corresponding users
     public function getAll() {
-        var blogs = findAll(where='statusid <> 1', include="User", order = "COALESCE(post_created_date, this.createdAt) DESC");
+        var blogs = findAll(where='statusid <> 1', include="User", order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
         return blogs;
     }
 }
