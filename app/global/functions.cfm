@@ -12,6 +12,9 @@ public function SetActive(){
 public function SetInactive(){
     return 0;
 }
+public function Published(){
+    return 1;
+}
 
 /**
  * Sort by Semvar
