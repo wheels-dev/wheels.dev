@@ -106,7 +106,8 @@ component extends="app.Controllers.Controller" {
             tags = getTagsByBlogid(blog.id);
             categories = getCategoriesByBlogid(blog.id);
             attachments = getAttachmentsByBlogid(blog.id);
-            
+            comments = getAllCommentsByBlogid(blog.id); 
+
         } catch (any e) {
             // If an error occurs or blog not found, redirect to blog index
             redirectTo(action="index");
@@ -371,6 +372,11 @@ component extends="app.Controllers.Controller" {
     function getAllAttachments() {
         return model("Attachment").findAll();
     }
+    
+    function getAllCommentsByBlogid(required numeric id) {
+        var comments = model("Comment").findAll(include="User", where='isPublished = 1 AND blogid = #arguments.id#');
+        return comments;
+    }
 
     public struct function uploadFile(file) {
         var uploadPath = expandPath("/public/files");
@@ -395,12 +401,58 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var commentModel = model("Comment"); 
         try {
-
-            response = saveComment(params);
-            redirectTo(action="index");
+            if(StructKeyExists(session, "userId") and session.userId <> '') {
+                response = saveComment(params);
+                redirectTo(action="index"); 
+            } else {
+                redirectTo(controller="AuthController", action="login", route="auth-login");
+            }
         } catch (any e) {
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save comment.");
         }
     }
+
+    private function saveComment(required struct commentData) {
+        var response = { "message": "", "commentId": 0 };
+    
+        try {
+            // Check if the commentParentId is greater than 0 (saving reply against a comment)
+            if (structKeyExists(commentData, "commentParentId") && commentData.commentParentId > 0) {
+                
+                // Create a new comment(reply)
+                var newComment = model("Comment").new();
+                newComment.content = commentData.content;
+                newComment.commentParentId = commentData.commentParentId;
+                newComment.blogId = commentData.blogId;
+                newComment.publishedAt = now();
+                newComment.createdAt = now();
+                newComment.updatedAt = now();
+                newComment.authorId = GetSignedInUserId();
+                newComment.isPublished = Published();
+                newComment.save();
+
+                response.commentId = newComment.id;
+                response.message = "comment created successfully.";
+            } else {
+                // Create a new comment
+                var newComment = model("Comment").new();
+                newComment.content = commentData.content;
+                newComment.blogId = commentData.blogId;
+                newComment.publishedAt = now();
+                newComment.createdAt = now();
+                newComment.updatedAt = now();
+                newComment.authorId = GetSignedInUserId();
+                newComment.isPublished = Published();
+                newComment.save();
+
+                response.commentId = newComment.id;
+                response.message = "comment created successfully.";
+            }
+        } catch (any e) {
+            response.message = "Error: " & e.message;
+        }
+    
+        return response;
+    }  
 }
