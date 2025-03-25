@@ -60,13 +60,14 @@
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
 			.get(name = "Categories", pattern = "blog/Categories", to = "web.BlogController##Categories")
-			.get(name = "blogs", pattern = "blog/blogs", to = "web.BlogController##blogs")
+			.get(name = "blogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
 			// .get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")			
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
+			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
 		.end()
 			
 		.namespace("")
