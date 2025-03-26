@@ -82,7 +82,7 @@ component extends="wheels.Controller" {
 
 
     function getCategoriesByBlogid(required numeric id) {
-        return model("Category").findAll(where = "blogId = #arguments.id#", include = "Blog,BlogCategory");
+        return model("Category").findAll(where = "blogId = #arguments.id#", include = "Blog");
     }
 
     function getAttachmentsByBlogid(required numeric id) {
