@@ -32,6 +32,8 @@ component extends="app.Models.Model" {
         belongsTo(name="User", foreignKey="createdBy"); 
         belongsTo(name="PostStatus", foreignKey="statusId");
         belongsTo(name="PostType", foreignKey="postTypeId");
+        hasmany(name="category", foreignKey="blogId"); 
+        hasmany(name="tag", foreignKey="blogId"); 
 
     }
 
