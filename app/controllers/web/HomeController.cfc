@@ -19,7 +19,6 @@ component extends="app.Controllers.Controller" {
             features = getAllFeatures(); // Get feature list
             renderPartial(partial="partials/features"); // Return a partial view for HTMX
         } catch (any e) {
-            writeDump(e);
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load features.");
         }

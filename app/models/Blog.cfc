@@ -14,9 +14,9 @@ component extends="app.Models.Model" {
         property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
 
         property(name="postCreatedDate", column="post_created_date", type="datetime", required=false);
-        property(name="createdAt", column="created_at", type="datetime", required=false);
-        property(name="updatedAt", column="updated_at", type="datetime", required=false);
-        property(name="deletedAt", column="deleted_at", type="datetime", required=false);
+        property(name="createdAt", column="createdat", type="datetime", required=false);
+        property(name="updatedAt", column="updatedat", type="datetime", required=false);
+        property(name="deletedAt", column="deletedat", type="datetime", required=false);
         property(name="publishedAt", column="published_at", type="datetime", required=false);
 
 
@@ -39,5 +39,12 @@ component extends="app.Models.Model" {
     public function getAll() {
         var blogs = findAll(where='statusid <> 1', include="User", order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
         return blogs;
+    }
+
+    /**
+     * Computed property to get the correct post date.
+     */
+    public function getDisplayDate() {
+        return this.postCreatedDate ?: this.createdAt;
     }
 }
