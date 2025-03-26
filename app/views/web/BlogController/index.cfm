@@ -11,7 +11,8 @@
                     <cfif StructKeyExists(session, "userId") and session.userId neq ''>
                         <a href="/blog/create" class="btn btn-primary px-4 col-4">Create Blog</a>
                     </cfif>
-                    <button onclick="handleBlogFilter('All', this)"
+                    <button 
+                        hx-trigger="click" hx-swap="innerHTML" hx-get="/blog/list" hx-target="#blogsContainer" 
                         class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
                         All
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -47,11 +48,18 @@
         <hr class="my-4">
 
         <div class="row justify-content-center justify-content-lg-between">
-            <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1"
-                hx-get="/blog/list" hx-trigger="load" hx-target="#blogsContainer" hx-swap="innerHTML">
-            </div>
+            <cfoutput>
+                <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1"
+                <cfif isDefined("params.filterType") and isDefined("params.filterValue")>
+                    hx-get="/blog/list/#params.filterType#/#params.filterValue#"
+                <cfelse>
+                    hx-get="/blog/list"
+                </cfif>
+                    hx-trigger="load" hx-target="##blogsContainer" hx-swap="innerHTML">
+                </div>
+            </cfoutput>
             <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
-                <cfset startYear = 2008>
+                <cfset startYear = 2000>
                 <cfset startMonth = 12>
 
                 <cfset currentYear = year(now())>
@@ -67,11 +75,10 @@
 
                             <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
                                 <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris"
-                                    hx-get="/blog/list"
+                                    hx-get="/blog/monthyear/#NumberFormat(month, '00')##year#"
                                     hx-trigger="click"
                                     hx-target="##blogsContainer"
-                                    hx-swap="innerHTML"
-                                    hx-vals='{"year": "#year#", "month": "#month#"}'>
+                                    hx-swap="innerHTML">
                                     #months[month]# #year#
                                 </p>
                             </cfloop>
