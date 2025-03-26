@@ -53,6 +53,8 @@
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
+			.get(name = "blogCategory", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
+			
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
 
 			// New routes for loading categories, statuses, and post types
@@ -60,7 +62,8 @@
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
 			.get(name = "Categories", pattern = "blog/Categories", to = "web.BlogController##Categories")
-			.get(name = "blogs", pattern = "blog/list", to = "web.BlogController##blogs")
+			.get(name = "blogs", pattern = "blog/list/[filterType]/[filterValue]", to = "web.BlogController##blogs")
+			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
 			// .get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")

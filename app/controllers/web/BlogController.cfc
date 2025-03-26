@@ -14,25 +14,16 @@ component extends="app.Controllers.Controller" {
 
     // load blog list
     function blogs() {
-        
         var blogModel = model("Blog"); // Get model instance
 
-        // Ensure default values if params are missing
-        param name="year" default="";
-        param name="month" default="";
-        param name="category_id" default="";
-        if (!len(year) && !len(month) && !len(category_id)) {
-
-            // If no year/month is selected, show all blogs
-            blogs = getAllBlogs();
-        } else if (!len(year) || !len(month)) {
-
-            // Fetch blogs filtered by month and year
-            // blogs = getAllByCategory(category_id);
+        if(isDefined("params.filterType") and params.filterType == 'category') {
+                blogs = getAllByCategory(params.filterValue);
+        } else if(isDefined("params.filterType") and params.filterType == 'tag') {
+                blogs = getAllByTag(params.filterValue);
+        } else if(isDefined("params.filterType") and params.filterType == 'monthyear') {
+                blogs = getAllByMonthYear(params.filterValue);
         } else {
-            // Fetch blogs filtered by month and year
-            blogs = getAllByDate(month, year);
-            
+            blogs = getAllBlogs();
         }
         renderPartial(partial="partials/blogList", locals={blogs: blogs});
     }
@@ -176,23 +167,42 @@ component extends="app.Controllers.Controller" {
         );
     }
 
-    private function getAllByDate(required numeric month, required numeric year){
+    private function getAllByMonthYear(required numeric monthyear){    
+        // Convert monthyear to string for easier manipulation
+        var strMonthYear = LCase(trim(monthyear));
+
+        // Extract month (first 2 digits) and year (remaining digits)
+        var month = Left(strMonthYear, 2);
+        var year = Right(strMonthYear, Len(strMonthYear) - 2);
+
+        // Create start and end date for the selected month
+        var startdate = "#year#-#NumberFormat(month, '00')#-01 00:00:00";
+        var  enddate = "#year#-#NumberFormat(month, '00')#-#DaysInMonth('#year#-#NumberFormat(month, '00')#-01')# 23:59:59";
+
         return model("Blog").findAll(
-            // where="id=1 AND title = 'test'",
-            // where="MONTH(createdAt) = 3",
-            // where="YEAR(createdAt) = '#val(year)#' AND MONTH(createdAt) = '#val(month)#'",
-            // order="createdAt DESC",
-            // include="User",
-            // returnAs="query"
+            where="blog_posts.createdAt BETWEEN '#startdate#' AND '#enddate#'",
+            order="createdAt DESC",
+            include="User",
+            returnAs="query"
         );
     }
     
     // Fetch Blogs by Category
-    private function getAllByCategory(required numeric categoryId){
+    private function getAllByCategory(required string category){
         return model("Blog").findAll(
-            where='categoryId = #val(categoryId)#',
+            where="categoryName = '#category#'",
             order="createdAt DESC",
-            include="User",
+            include="User,category",
+            returnAs="query"
+        );
+    }
+    
+    // Fetch Blogs by Tag
+    private function getAllByTag(required string tag){
+        return model("Blog").findAll(
+            where="name = '#tag#'",
+            order="createdAt DESC",
+            include="User,tag",
             returnAs="query"
         );
     }
@@ -357,7 +367,7 @@ component extends="app.Controllers.Controller" {
                 // Insert new categories
                 for (var category_Id in categoryArray) {
                     var newCategory = model("Category").new();
-                    newCategory.categoryId = category_Id;
+                    newCategory.categoryName = category_Id;
                     newCategory.blogId = blogId;
                     newCategory.createdAt = now();
                     newCategory.updatedAt = now();
