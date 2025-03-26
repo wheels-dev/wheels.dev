@@ -1,21 +1,7 @@
 <main class="main-bg">
     <cfoutput>
-        <cfset tagList="">
-        <cfset categoryList="">
-            <cfloop query="tags">
-                <cfif tagList EQ "">
-                    <cfset tagList=name>
-                        <cfelse>
-                            <cfset tagList=tagList & ", " & name>
-                </cfif>
-            </cfloop>
-            <cfloop query="categories">
-                <cfif categoryList EQ "">
-                    <cfset categoryList=name>
-                        <cfelse>
-                            <cfset categoryList=categoryList & ", " & name>
-                </cfif>
-            </cfloop>
+        
+            
             <!-- Blog filter -->
             <div class="container pt-4 pb-5">
                 <a href="/blog" class="py-2 px-3 bg-white shadow-sm rounded-3">
@@ -38,21 +24,20 @@
                             </h1>
                             <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
                                 <p class="fw-medium fs-12 text--lightGray">
-                                    <cfif blog.postcreateddate neq ''>
-                                        #dateformat(blog.postcreateddate, 'MMMM DD, YYYY')#
-                                    <cfelse>
-                                        #dateformat(blog.createdAt, 'MMMM DD, YYYY')#
-                                    </cfif>
+                                    #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
                                 </p>
-                                    <p class="fw-medium fs-12 text--lightGray" 
-                                    hx-push-url="/blog"
-                                    hx-get="/blog/list"
-                                    hx-trigger="click"
-                                    hx-swap="innerHTML"
-                                    >
-                                    #blog.PostStatus.name# in #categoryList#
+                                <p class="fw-medium fs-12 text--lightGray">#blog.PostStatus.name# in
+                                    <cfoutput query="categories">
+                                        <strong hx-get="/blog/category/#URLEncodedFormat(categoryName)#" hx-target="body" hx-swap="outerHTML">#categoryName#</strong>
+                                        <cfif currentrow LT recordcount>,</cfif>
+                                    </cfoutput>
                                  </p>
-                                <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
+                                <p class="fw-medium fs-12 text--lightGray">Tags: 
+                                    <cfoutput query="tags">
+                                        <strong hx-get="/blog/tag/#URLEncodedFormat(name)#" hx-target="body" hx-swap="outerHTML">#name#</strong>
+                                        <cfif currentrow LT recordcount>,</cfif>
+                                    </cfoutput>
+                                    </p>
                             </div>
                         </div>
                         <div class="col-lg-5 col-12 text-lg-end text-center">
