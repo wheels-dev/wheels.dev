@@ -10,11 +10,9 @@
         writeOutput('<td>' & users.email[i] & '</td>');
         writeOutput('<td>' & statusText & '</td>'); // Show "Active" or "Inactive"
         writeOutput('<td>' & users.name[i] & '</td>');
-        // writeOutput('<td>' & '<a href="user/addEditUser?id=#users.id[i]#">Edit</a> | 
-        //     <a href="user/delete?id=#users.id[i]#">Delete</a>' & '</td></tr>');
 
         writeOutput('<td>' & 
-            '<a href="user/addEditUser?id=#users.id[i]#">Edit</a> | 
+            '<a href="user/addUser?id=#users.id[i]#">Edit</a> | 
             <a href="user/delete?id=#users.id[i]#" 
             onclick="return confirmDelete(#users.id[i]#);">Delete</a>' & '</td></tr>');
     }

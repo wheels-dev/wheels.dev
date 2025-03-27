@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,loadUsers,loadRoles,addEditUser,store,delete,profile", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -25,7 +25,7 @@ component extends="app.Controllers.Controller" {
     }
     
     // add or edit user
-    function addEditUser() {
+    function adUser() {
         param name="id" default=0;
         user;
         if(id > 0) {

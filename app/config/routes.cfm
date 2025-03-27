@@ -39,9 +39,9 @@
 
 			.get(name = "user-profile", pattern = "admin/user/profile", to = "web.UserController##profile")
 			.get(name = "user", pattern = "admin/user", to = "web.UserController##Index")
-			.get(name = "loadUsers", pattern = "user/loadUsers", to = "web.UserController##loadUsers")
+			.get(name = "loadUsers", pattern = "user/list", to = "web.UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "web.UserController##loadRoles")
-			.get(name = "user-addEditUser", pattern = "admin/user/addEditUser", to = "web.UserController##addEditUser")
+			.get(name = "user-add", pattern = "admin/user/add", to = "web.UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "web.UserController##store")
 			.get(name="user-delete", pattern="admin/user/delete", to="web.UserController##delete")
 
@@ -53,6 +53,7 @@
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
+			.get(name = "blog", pattern = "blog/edit/[id]", to = "web.BlogController##Edit")
 			.get(name = "blogCategory", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
 			
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
@@ -66,7 +67,6 @@
 			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
-			// .get(name = "blog-detail", pattern = "blog/[id]", to = "web.BlogController##show")
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")			
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
