@@ -70,12 +70,22 @@
                                 <div class="position-relative"> 
                                     <cfif commentParentId eq '' or commentParentId eq 0>                              
                                         <div class="d-flex align-items-start gap-3">                                   
-                                            <div>
+                                            <div class="flex-shrink-0">
                                                 <img src="#profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
                                             </div>                                   
-                                            <div class="p-3 rounded-4 bg-light">
+                                            <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                 <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                <!-- Reply Form (Hidden by Default) -->
+                                                <div class="reply-form mt-3" id="reply-form-#Id#" style="display: none;">
+                                                    <form hx-target="body" hx-swap="outerHTML" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
+                                                        <input type="hidden" name="blogId" value="#blog.Id#">
+                                                        <input type="hidden" name="commentParentId" value="#Id#">
+                                                        <textarea required placeholder="Write a reply..." name="content"
+                                                            class="bg-transparent fs-14 outline-none resize-none border-1 p-2 form-control w-100"></textarea>
+                                                        <button type="submit" class="bg--iris fs-14 text-white px-3 py-2 rounded-2 mt-2">Reply</button>
+                                                    </form>
+                                                </div>
                                                 <div class="d-flex justify-content-end align-items-center gap-4">
                                                     <div class="d-flex cursor-pointer align-items-center gap-2">
                                                         <!---<p class="fs-14 text--iris mb-0">Reply</p> --->
@@ -91,27 +101,17 @@
                                                     <div class="d-flex cursor-pointer align-items-center gap-2">
                                                         <p class="fs-14 text--iris mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
                                                     </div>
-                                                     <!-- Reply Form (Hidden by Default) -->
-                                                    <div class="reply-form mt-3" id="reply-form-#Id#" style="display: none;">
-                                                        <form hx-target="body" hx-swap="outerHTML" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
-                                                            <input type="hidden" name="blogId" value="#blog.Id#">
-                                                            <input type="hidden" name="commentParentId" value="#Id#">
-                                                            <textarea required placeholder="Write a reply..." name="content"
-                                                                class="bg-transparent fs-16 outline-none resize-none border-1 p-2 w-100"></textarea>
-                                                            <button type="submit" class="bg--iris fs-14 text-white px-3 py-2 rounded-2 mt-2">Reply</button>
-                                                        </form>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </cfif>
                                     
                                     <cfif commentParentId neq '' and commentParentId neq 0>
-                                        <div class="d-flex pt-5 align-items-start gap-3 position-relative" style="margin-left: 70px;">
-                                            <div>
+                                        <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
+                                            <div class="flex-shrink-0">
                                                 <img src="#profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
                                             </div>  
-                                            <div class="p-3 rounded-4 bg-light">
+                                            <div class="p-3 flex-grow-1 rounded-4 bg-light">
                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                 <p class="fs-14 fw-normal text-dark">#content#</p>
                                             </div>
