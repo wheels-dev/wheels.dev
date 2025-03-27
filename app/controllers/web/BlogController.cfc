@@ -215,11 +215,9 @@ component extends="app.Controllers.Controller" {
                 sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
                     blog_posts.createdat AS createdDate, 
                     users.fullName AS authorName, 
-                    -- categories.name AS categoryName, 
                     post_statuses.name AS statusName 
                     FROM blog_posts 
                     INNER JOIN users ON users.id = blog_posts.userId
-                    -- INNER JOIN categories ON categories.id = blog_posts.categoryId
                     INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
                     WHERE blog_posts.id = #arguments.id#"
             }
@@ -296,7 +294,72 @@ component extends="app.Controllers.Controller" {
         }
     
         return response;
-    }   
+    }  
+
+    /**
+    * Saves a new blog post
+    */
+    private function saveNewBlog(required struct blogData) {
+        var response = { "message": "", "blogId": 0 };
+
+        // Check for duplicate title
+        var existingBlog = model("Blog").findOne(
+            where="title = #blogData.title# AND slug = #blogData.slug#"
+        );
+
+        if (!isObject(existingBlog)) {
+            var newBlog = model("Blog").new();
+            newBlog.title = blogData.title;
+            newBlog.content = blogData.content;
+            newBlog.slug = blogData.slug;
+            newBlog.statusId = blogData.statusId;
+            newBlog.postTypeId = blogData.postTypeId;
+            newBlog.coverImagePath = blogData.coverImagePath;
+            newBlog.createdAt = now();
+            newBlog.updatedAt = now();
+            newBlog.createdBy = GetSignedInUserId();
+            
+            if (len(trim(blogData.postCreatedDate))) {
+                newBlog.postCreatedDate = blogData.postCreatedDate;
+            }
+
+            newBlog.save();
+            response.blogId = newBlog.id;
+            response.message = "Blog post created successfully.";
+        } else {
+            response.message = "A blog post with the same title already exists.";
+        }
+
+        return response;
+    }
+
+    /**
+    * Updates an existing blog post
+    */
+    private function updateBlog(required struct blogData) {
+        var response = { "message": "", "blogId": 0 };
+
+        var blog = model("Blog").findById(blogData.id);
+
+        if (!isNull(blog)) {
+            // Update the existing blog post
+            blog.title = blogData.title;
+            blog.content = blogData.content;
+            blog.statusId = blogData.statusId;
+            blog.postTypeId = blogData.postTypeId;
+            blog.slug = blogData.slug;
+            blog.updatedAt = now();
+            blog.updatedBy = GetSignedInUserId();
+            blog.save();
+
+            response.blogId = blog.id;
+            response.message = "Blog post updated successfully.";
+        } else {
+            response.message = "Blog post not found for editing.";
+        }
+
+        return response;
+    } 
 
     private function updateBlog(required struct blogData) {
         return saveBlog(blogData);

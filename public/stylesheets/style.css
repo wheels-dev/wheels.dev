@@ -271,3 +271,16 @@ main.main-bg {
     flex-grow: 1;
     padding: 5px;
 }
+
+.select2-container--bootstrap-5 .selection .select2-selection--multiple .select2-selection__rendered{
+    display: flex !important;
+}
+
+.select2-container--bootstrap-5 .selection .select2-selection--multiple .select2-selection__rendered li{
+    font-size: 14px !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown .select2-results .select2-results__options li{
+    font-size: 14px !important;
+    margin-bottom: 5px !important;
+}

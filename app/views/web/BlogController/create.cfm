@@ -1,122 +1,122 @@
 <main class="main-blog">
     <div class="container py-5">
         <div class="row justify-content-center justify-content-lg-between">
-            <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
-                <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
-                <!----
-                <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
-                --->
-                <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
-                    <input class="form-control" type="hidden" name="id" id="id" value="">
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Title <span class="text-danger">*</span>
-                        </label>
-                        <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" maxlength="240" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Post Category <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-control fs-14" name="categoryId" id="categoryId" required hx-get="/blog/loadCategories" hx-trigger="load" hx-target="#categoryId" hx-swap="innerHTML" multiple="multiple">
-                            <option value="">Select Category</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Post Type <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-control fs-14" name="posttypeId" id="posttypeId" required hx-get="/blog/loadPostTypes" hx-trigger="load" hx-target="#posttypeId" hx-swap="innerHTML">
-                            <option value="">Select Post Type</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Post Tags <span class="text-danger">*</span>
-                        </label>
-                        <div class="tag-container" id="tagContainer">
-                            <input type="text" class="tag-input" id="tagInput" placeholder="Enter tags and press comma (,)">
+            <div class="col-lg-8 col-12">
+                <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
+                    <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
+                    <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
+                        <input class="form-control" type="hidden" name="id" id="id" value="">
+    
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Title <span class="text-danger">*</span>
+                            </label>
+                            <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" maxlength="240" required>
                         </div>
-                        <input type="hidden" name="postTags" id="hiddenTags">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Post Created Date
-                        </label>
-                        <input class="form-control fs-14" type="date" name="postCreatedDate" id="postCreatedDate" value="">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fs-14 fw-medium">
-                            Cover Image
-                        </label>
-                        <input class="form-control fs-14" type="file" name="attachment" id="attachment" value="">
-                    </div>
-
-                    <div class="mb-3">
-                        <div id="toolbar-container" class="border-bottom-0 border rounded-top">
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <select class="ql-font"></select>
-                                <select class="ql-size"></select>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-bold"></button>
-                                <button class="ql-italic"></button>
-                                <button class="ql-underline"></button>
-                                <button class="ql-strike"></button>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <select class="ql-color"></select>
-                                <select class="ql-background"></select>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-script" value="sub"></button>
-                                <button class="ql-script" value="super"></button>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-header" value="1"></button>
-                                <button class="ql-header" value="2"></button>
-                                <button class="ql-blockquote"></button>
-                                <button class="ql-code-block"></button>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-list" value="ordered"></button>
-                                <button class="ql-list" value="bullet"></button>
-                                <button class="ql-indent" value="-1"></button>
-                                <button class="ql-indent" value="+1"></button>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-direction" value="rtl"></button>
-                                <select class="ql-align"></select>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-link"></button>
-                                <button class="ql-image"></button>
-                                <button class="ql-video"></button>
-                                <button class="ql-formula"></button>
-                            </span>
-                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                <button class="ql-clean"></button>
-                            </span>
+    
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Post Category <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select fs-14" name="categoryId" id="categoryId" required hx-get="/blog/loadCategories" hx-trigger="load" hx-target="#categoryId" hx-swap="innerHTML" multiple="multiple">
+                                <option value="">Select Category</option>
+                            </select>
                         </div>
-                        <div class="form-control border border-top-0 rounded-top-0" id="editor" style="height: 300px;"></div>
-                        <input class="form-control" type="hidden" name="content" id="content">
-                    </div>
-
-                    <input type="hidden" name="isDraft" id="isDraft" value="0">
-                    <div class="text-end">
-                        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded fs-14" id="saveDraftBtn">
-                            Save as Draft
-                        </button>
-                        <button type="submit" class="bg--secondary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
-                    </div>
-                </form>
-                <div id="message"></div>
+    
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Post Type <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control fs-14" name="posttypeId" id="posttypeId" required hx-get="/blog/loadPostTypes" hx-trigger="load" hx-target="#posttypeId" hx-swap="innerHTML">
+                                <option value="">Select Post Type</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Post Tags <span class="text-danger">*</span>
+                            </label>
+                            <div class="d-flex flex-wrap gap-1" id="tagContainer">
+                                <input type="text" class="fs-14 form-control" id="tagInput" placeholder="Enter tags and press comma (,)">
+                            </div>
+                            <input type="hidden" name="postTags" id="hiddenTags">
+                        </div>
+    
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Post Created Date
+                            </label>
+                            <input class="form-control fs-14" type="date" name="postCreatedDate" id="postCreatedDate" value="">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Cover Image
+                            </label>
+                            <input class="form-control fs-14" type="file" name="attachment" id="attachment" value="">
+                        </div>
+    
+                        <div class="mb-3">
+                            <div id="toolbar-container" class="border-bottom-0 border rounded-top">
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <select class="ql-size"></select>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <button class="ql-header" value="1"></button>
+                                    <button class="ql-header" value="2"></button>
+                                    <button class="ql-header" value="3"></button>
+                                    <button class="ql-blockquote"></button>
+                                    <button class="ql-code-block"></button>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                    <button class="ql-indent" value="-1"></button>
+                                    <button class="ql-indent" value="+1"></button>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <button class="ql-direction" value="rtl"></button>
+                                    <select class="ql-align"></select>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <button class="ql-link"></button>
+                                    <button class="ql-image"></button>
+                                    <button class="ql-video"></button>
+                                    <button class="ql-formula"></button>
+                                </span>
+                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                    <button class="ql-clean"></button>
+                                </span>
+                            </div>
+                            <div class="form-control border border-top-0 rounded-top-0" id="editor" style="height: 300px;"></div>
+                            <input class="form-control" type="hidden" name="content" id="content">
+                        </div>
+    
+                        <input type="hidden" name="isDraft" id="isDraft" value="0">
+                        <div class="text-end">
+                            <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded fs-14" id="saveDraftBtn">
+                                Save as Draft
+                            </button>
+                            <button type="submit" class="bg--secondary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
+                        </div>
+                    </form>
+                    <div id="message"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12">
+                <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
+                    <h1 class="text-center fs-24 fw-bold">Blog Preview</h1>
+                </div>
             </div>
         </div>
     </div>
@@ -216,14 +216,18 @@
         document.addEventListener("htmx:afterSwap", function(evt) {
             if (evt.target.id === "categoryId") {
                 $('#categoryId').select2({
-                    placeholder: "Select Categories"
+                    placeholder: "Select Categories",
+                    theme: "bootstrap-5",
+                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : '100%',
                 });
             }
         });
 
         $(document).ready(function () {
             $('#categoryId').select2({
-                placeholder: "Select Categories"
+                    placeholder: "Select Categories",
+                    theme: "bootstrap-5",
+                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : '100%',
             });
 
             const tagContainer = document.getElementById("tagContainer");
