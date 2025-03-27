@@ -20,11 +20,9 @@ component extends="app.Controllers.Controller" {
                 // Store user data in session
                 session.userID = user.id;
                 session.username = user.fullname;
-                session.role = user.roleId;
-                // session.permissions = user.permissions;
+                session.role = user.role.name;
 
-                // Redirect to admin dashboard
-                // Send HTMX Redirect Header
+                // Redirect to admin dashboard - send HTMX Redirect Header
                 session.message = "Login Successfully!"
                 header name="HX-Redirect" value="#urlFor(route='home')#";
                 return;
@@ -71,7 +69,7 @@ component extends="app.Controllers.Controller" {
                 // Store user data in session
                 session.userID = user.id;
                 session.username = user.fullname;
-                session.role = user.roleId;
+                session.role = user.role.name;
 
                 // Send HTMX Redirect Header
                 session.message = "Register and Login Successfully!"

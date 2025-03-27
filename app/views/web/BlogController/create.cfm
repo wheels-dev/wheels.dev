@@ -4,9 +4,6 @@
             <div class="col-lg-8 col-12">
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
-                    <!----
-                    <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
-                    --->
                     <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                         <input class="form-control" type="hidden" name="id" id="id" value="">
     
@@ -62,7 +59,6 @@
                         <div class="mb-3">
                             <div id="toolbar-container" class="border-bottom-0 border rounded-top">
                                 <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                    <select class="ql-font"></select>
                                     <select class="ql-size"></select>
                                 </span>
                                 <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
@@ -76,12 +72,9 @@
                                     <select class="ql-background"></select>
                                 </span>
                                 <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
-                                    <button class="ql-script" value="sub"></button>
-                                    <button class="ql-script" value="super"></button>
-                                </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
                                     <button class="ql-header" value="1"></button>
                                     <button class="ql-header" value="2"></button>
+                                    <button class="ql-header" value="3"></button>
                                     <button class="ql-blockquote"></button>
                                     <button class="ql-code-block"></button>
                                 </span>
