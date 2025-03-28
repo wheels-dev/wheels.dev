@@ -11,7 +11,7 @@
                             <label class="form-label mb-1 fs-14 fw-medium">
                                 Title <span class="text-danger">*</span>
                             </label>
-                            <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" maxlength="240" required>
+                            <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" maxlength="159" required>
                         </div>
     
                         <div class="mb-3">
@@ -219,6 +219,7 @@
                     placeholder: "Select Categories",
                     theme: "bootstrap-5",
                     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : '100%',
+                    maximumSelectionLength: 5 // Limit to 5 categories
                 });
             }
         });
@@ -228,6 +229,7 @@
                     placeholder: "Select Categories",
                     theme: "bootstrap-5",
                     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : '100%',
+                    maximumSelectionLength: 5 // Limit to 5 categories
             });
 
             const tagContainer = document.getElementById("tagContainer");
@@ -236,7 +238,7 @@
             let tags = [];
 
             tagInput.addEventListener("keydown", function (event) {
-                if (event.key === "," || event.key === "Enter") {
+                if ((event.key === "," || event.key === "Enter") && tags.length < 5) {
                     event.preventDefault();
                     let tagText = tagInput.value.trim().replace(/,/g, ""); // Remove any commas
                     if (tagText !== "" && !tags.includes(tagText)) {
@@ -245,6 +247,8 @@
                         updateHiddenTags();
                         tagInput.value = "";
                     }
+                } else if (tags.length >= 5) {
+                    event.preventDefault();
                 }
             });
 
