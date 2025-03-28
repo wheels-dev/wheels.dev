@@ -25,6 +25,10 @@
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
+			<script src="/javascripts/quill.min.js"></script>
+			<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 		</head>
 		<body>			

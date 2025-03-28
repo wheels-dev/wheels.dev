@@ -478,7 +478,8 @@ component extends="app.Controllers.Controller" {
         try {
             if(StructKeyExists(session, "userId") and session.userId <> '') {
                 response = saveComment(params);
-                redirectTo(action="index"); 
+                blog = getBlogById(response.blogId);
+                redirectTo(action="show", slug="#blog.slug#", success="#response.message#");
             } else {
                 redirectTo(controller="AuthController", action="login", route="auth-login");
             }
@@ -489,7 +490,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function saveComment(required struct commentData) {
-        var response = { "message": "", "commentId": 0 };
+        var response = { "message": "", "blogId": 0 };
     
         try {
             // Check if the commentParentId is greater than 0 (saving reply against a comment)
@@ -507,7 +508,7 @@ component extends="app.Controllers.Controller" {
                 newComment.isPublished = Published();
                 newComment.save();
 
-                response.commentId = newComment.id;
+                response.blogId = newComment.blogId;
                 response.message = "comment created successfully.";
             } else {
                 // Create a new comment
@@ -521,7 +522,7 @@ component extends="app.Controllers.Controller" {
                 newComment.isPublished = Published();
                 newComment.save();
 
-                response.commentId = newComment.id;
+                response.blogId = newComment.blogId;
                 response.message = "comment created successfully.";
             }
         } catch (any e) {
