@@ -6,7 +6,17 @@
                     <h1 class="fs-24 mb-0 fw-bold text--secondary">Welcome Back</h1>
                     <p class="fs-16">Please login to your account</p>
                 </div>
-                <form class="pt-3 px-1 needs-validation" id="loginForm" novalidate hx-validate="true" hx-post="/auth/authenticate">
+                <form  
+                    hx-boost="true"  
+                    class="pt-3 px-1 needs-validation"  
+                    id="loginForm"  
+                    novalidate  
+                    hx-validate="true"  
+                    hx-post="/auth/authenticate"  
+                    hx-target="body"  
+                    hx-swap="outerHTML"
+                    hx-push-url="true">
+
                     <div class="mb-3">
                         <label for="email" class="form-label fs-14 fw-medium">Email address</label>
                         <input type="email" placeholder="Enter your email address" class="form-control fs-14" id="email" name="email"

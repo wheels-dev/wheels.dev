@@ -54,6 +54,7 @@ component extends="wheels.Controller" {
 
     public function restrictAccess() {        
         // Check if the user is logged in
+        saveRedirectUrl(cgi.path_info);
         if (!structKeyExists(session, "USERID") || !structKeyExists(session, "role")) {
             redirectTo(controller="AuthController", action="login", route="auth-login");
             return false;
@@ -87,5 +88,9 @@ component extends="wheels.Controller" {
 
     function getAttachmentsByBlogid(required numeric id) {
       return model("Attachment").findAllByBlogId("#arguments.id#")
+    }
+
+    function saveRedirectUrl(url) {
+        session.redirectAfterLogin = arguments.url;
     }
 }
