@@ -1,7 +1,7 @@
 <cfscript>
     param name="versions" default=[];
    writeOutput('
-      <select name="versioncontrol" id="versioncontrol" class="form-control border-0 shadow-sm p-2 fs-16 bg-white">');
+      <select name="versioncontrol" id="versioncontrol" class="select-arrow form-control border-0 shadow-sm p-2 fs-16 bg-white">');
 
     for (var v = 1; v <= arrayLen(versions); v++) {
         var versionValue = versions[v];
