@@ -9,7 +9,7 @@
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
 
                     <cfif StructKeyExists(session, "userId") and session.userId neq ''>
-                        <a href="/blog/create" class="btn btn-primary px-4 col-4">Create Blog</a>
+                        <a href="/blog/create" class="bg--iris text-white text-center py-2 fs-16 rounded-3 col-4">Create Blog</a>
                     </cfif>
                     <button 
                         hx-trigger="click" hx-swap="innerHTML" hx-get="/blog/list" hx-target="#blogsContainer" 

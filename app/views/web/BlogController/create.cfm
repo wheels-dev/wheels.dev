@@ -3,7 +3,7 @@
         <div class="row justify-content-center justify-content-lg-between">
             <div class="col-lg-8 col-12">
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
-                    <h1 class="text-center fs-24 fw-bold">Create Blog Post</h1>
+                    <h1 class="text-center fs-24 fw-bold">Create</h1>
                     <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                         <input class="form-control" type="hidden" name="id" id="id" value="">
     
@@ -36,8 +36,8 @@
                             <label class="form-label mb-1 fs-14 fw-medium">
                                 Post Tags <span class="text-danger">*</span>
                             </label>
-                            <div class="d-flex flex-wrap gap-1" id="tagContainer">
-                                <input type="text" class="fs-14 form-control" id="tagInput" placeholder="Enter tags and press comma (,)">
+                            <div class="d-flex form-control p-0 flex-wrap gap-1" id="tagContainer">
+                                <input type="text" onblur="document.getElementById('tagContainer').classList.remove('parent-focus'); this.classList.remove('shadow-none');" onfocus="document.getElementById('tagContainer').classList.add('parent-focus'); this.classList.add('shadow-none');" class="fs-14 border-0 form-control" id="tagInput" placeholder="Enter tags and press comma (,)">
                             </div>
                             <input type="hidden" name="postTags" id="hiddenTags">
                         </div>
@@ -115,7 +115,7 @@
             </div>
             <div class="col-lg-4 col-12">
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
-                    <h1 class="text-center fs-24 fw-bold">Blog Preview</h1>
+                    <h1 class="text-center fs-24 fw-bold">Preview</h1>
                 </div>
             </div>
         </div>
@@ -250,8 +250,8 @@
 
             function addTag(tagText) {
                 const tagElement = document.createElement("span");
-                tagElement.classList.add("tag");
-                tagElement.innerHTML = `${tagText} <span class="remove-tag">&times;</span>`;
+                tagElement.classList.add("tag","cursor-pointer");
+                tagElement.innerHTML = `${tagText} <span class="remove-tag"></span>`;
                 
                 tagElement.querySelector(".remove-tag").addEventListener("click", function () {
                     removeTag(tagText);
