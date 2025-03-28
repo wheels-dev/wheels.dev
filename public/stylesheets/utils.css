@@ -208,3 +208,13 @@
     margin-top: calc(0.75rem /* 12px */ * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(0.75rem /* 12px */ * var(--tw-space-y-reverse));
 }
+/* select */
+.select-arrow{
+    -webkit-appearance: none;
+    appearance: none;
+    -moz-appearance: none;
+    background-image: url('https://www.svgrepo.com/show/80156/down-arrow.svg');
+    background-repeat: no-repeat;
+    background-size: 14px 14px;
+    background-position: calc(100% - 16px);
+}
