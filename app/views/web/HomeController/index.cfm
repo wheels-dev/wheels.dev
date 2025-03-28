@@ -22,7 +22,8 @@
                 </div>
                 <div class="col-md-auto text-center">
                     <a href="https://github.com/cfwheels/cfwheels/releases" class="" target="_blank">
-                        <button class="fs-16 fw-semibold bg--secondary w-200 py-1 rounded-2 text-white">Download</button>
+                        <button
+                            class="fs-16 fw-semibold bg--secondary w-200 py-1 rounded-2 text-white">Download</button>
                     </a>
                 </div>
             </div>
@@ -45,7 +46,8 @@
 
     <!-- Cards -->
     <div class="container pb-5">
-        <div class="row g-5" id="features-container" hx-get="/home/loadFeatures" hx-trigger="load" hx-target="#features-container" hx-swap="innerHTML">
+        <div class="row g-5" id="features-container" hx-get="/home/loadFeatures" hx-trigger="load"
+            hx-target="#features-container" hx-swap="innerHTML">
             <!-- Features will be loaded here via HTMX -->
         </div>
     </div>
@@ -54,7 +56,8 @@
     <div class="pt-5 blog-main">
         <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
         <div class="swiper py-5 blogSwiper h-max">
-            <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
+            <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load"
+                hx-target="#blogs-container" hx-swap="innerHTML">
                 <!-- Blogs will be loaded here via HTMX -->
             </div>
         </div>
@@ -63,7 +66,8 @@
     <!-- our guide  -->
     <div class="gudie-main py-5">
         <h1 class="text-center text-white fs-60 fw-bold">Our Guide</h1>
-        <div class="container mt-5" id="guides-container" hx-get="/home/loadGuides" hx-trigger="load" hx-target="#guides-container" hx-swap="innerHTML">
+        <div class="container mt-5" id="guides-container" hx-get="/home/loadGuides" hx-trigger="load"
+            hx-target="#guides-container" hx-swap="innerHTML">
             <!-- Guides will be loaded here via HTMX -->
         </div>
     </div>
@@ -92,6 +96,107 @@
             <a href="https://github.com/cfwheels/cfwheels/graphs/contributors" target="_blank">
                 <img src="https://contrib.rocks/image?repo=cfwheels/cfwheels" style="max-width: 100%;">
             </a>
+        </div>
+    </div>
+
+    <div class="d-none">
+        <div class="text-center">
+            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contributors</p>
+        </div>
+        <div class="swiper contributorsSwiper">
+            <div class="swiper-wrapper">
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+                <div class="p-5 swiper-slide mt-5">
+                    <img src="/images/contribute.png" width="150" height="207" alt="">
+                </div>
+
+            </div>
         </div>
     </div>
 </main>
