@@ -6,6 +6,9 @@ component extends="app.Controllers.Controller" {
     }
 
 	function login() {
+        if (structKeyExists(session, "USERID") && structKeyExists(session, "role")) {
+            redirectTo(controller="HomeController", action="index", route="home");
+        }
 	}
 	
     function authenticate() {
@@ -23,6 +26,7 @@ component extends="app.Controllers.Controller" {
                 session.role = user.role.name;
 
                 // Redirect to admin dashboard - send HTMX Redirect Header
+                handleLoginSuccess();
                 session.message = "Login Successfully!"
                 header name="HX-Redirect" value="#urlFor(route='home')#";
                 return;
@@ -35,9 +39,19 @@ component extends="app.Controllers.Controller" {
         }
 	}
 
+    private function handleLoginSuccess() {
+        var redirectUrl = session.keyExists("redirectAfterLogin") ? session.redirectAfterLogin : urlFor(route="home");
+        
+        // Clear the session variable after use
+        structDelete(session, "redirectAfterLogin");
+
+        // Redirect to the intended page or default to dashboard
+        redirectTo(url=redirectUrl);
+    }
+
     function logout() {
         StructClear(session);
-        redirectTo(action="login");
+        redirectTo(route="home");
     }
 
     function register() {}

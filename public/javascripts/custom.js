@@ -20,6 +20,32 @@ var swiper = new Swiper(".blogSwiper", {
     },
 });
 
+var contributorsSwiper = new Swiper(".contributorsSwiper", {
+    freeMode: true,
+    slidesPerView: 7,
+    initialSlide: 0,
+    loop: true,
+    speed: 2000,
+    autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+    },
+    breakpoints: {
+        640: {
+            slidesPerView: 1,
+            spaceBetween: 10,
+        },
+        768: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+        },
+        1024: {
+            slidesPerView: 7,
+            spaceBetween: 30,
+        },
+    },
+});
+
 const handleBlogFilter = (type, button) => {
     const blogsContainer = document.getElementById('blogsContainer');
     const filtersContainer = document.getElementById('filtersContainer');

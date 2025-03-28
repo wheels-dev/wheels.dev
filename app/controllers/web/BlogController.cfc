@@ -4,7 +4,7 @@ component extends="app.Controllers.Controller" {
     // Configuration function
     function config() {
         verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment", params="key", paramsTypes="integer", handler="index");
-        filters(through="restrictAccess", only="create,store");
+        filters(through="restrictAccess", only="create,store,comment");
         usesLayout("/layout");
     }
 
@@ -36,6 +36,8 @@ component extends="app.Controllers.Controller" {
 
     // Function to show the create blog form
     function create() {
+        // writeDump(cgi.path_info & "?" & cgi.query_string); abort;
+        saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
         renderView(layout="blogLayout");
     }
 
@@ -474,14 +476,9 @@ component extends="app.Controllers.Controller" {
     // Function to store comment
     public void function comment() {
         // Get request parameters
-        var commentModel = model("Comment"); 
+        var commentModel = model("Comment");
         try {
-            if(StructKeyExists(session, "userId") and session.userId <> '') {
-                response = saveComment(params);
-                redirectTo(action="index"); 
-            } else {
-                redirectTo(controller="AuthController", action="login", route="auth-login");
-            }
+            response = saveComment(params);
         } catch (any e) {
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save comment.");
@@ -489,7 +486,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function saveComment(required struct commentData) {
-        var response = { "message": "", "commentId": 0 };
+        var response = { "message": "", "blogId": 0 };
     
         try {
             // Check if the commentParentId is greater than 0 (saving reply against a comment)
@@ -507,7 +504,7 @@ component extends="app.Controllers.Controller" {
                 newComment.isPublished = Published();
                 newComment.save();
 
-                response.commentId = newComment.id;
+                response.blogId = newComment.blogId;
                 response.message = "comment created successfully.";
             } else {
                 // Create a new comment
@@ -521,7 +518,7 @@ component extends="app.Controllers.Controller" {
                 newComment.isPublished = Published();
                 newComment.save();
 
-                response.commentId = newComment.id;
+                response.blogId = newComment.blogId;
                 response.message = "comment created successfully.";
             }
         } catch (any e) {

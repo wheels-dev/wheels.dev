@@ -23,15 +23,23 @@
 			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+			<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+			<script src="/javascripts/quill.min.js"></script>
+			<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 		</head>
 		<body>			
 
 			<cfset isUserAuth = find("/user/", cgi.path_info)>
 
-			<nav class="navbar <cfoutput> #isUserAuth ? "d-none" : ""# </cfoutput> sticky-top navbar-expand-lg py-2 nav-bg">
+			<nav class="navbar<cfoutput>#isUserAuth ? " d-none" : ""#</cfoutput> sticky-top navbar-expand-lg py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="200">
@@ -279,7 +287,8 @@
 			<script src="/javascripts/bootstrap.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
-			<script src="/javascripts/custom.js"></script>
+			<link href="/stylesheets/select2.min.css" rel="stylesheet">
+			<script src="/javascripts/select2.min.js"></script>
 		</body>
 	</html>
 </cfif>

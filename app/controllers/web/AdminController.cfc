@@ -23,8 +23,7 @@ component extends="app.Controllers.Controller" {
 
     function approve() {
         try {
-            var blogService = new app.services.BlogService(model("Blog"));
-            var message = blogService.Approve(params.id);
+            var message = Approve(params.id);
             redirectTo(action="blog", success="#message#");
         } catch (any e) {
             // Handle error
@@ -33,8 +32,7 @@ component extends="app.Controllers.Controller" {
     }
     function reject() {
         try {
-            var blogService = new app.services.BlogService(model("Blog"));
-            var message = blogService.Reject(params.id);
+            var message = Reject(params.id);
             redirectTo(action="blog", success="#message#");
         } catch (any e) {
             // Handle error
@@ -184,6 +182,9 @@ component extends="app.Controllers.Controller" {
     private function checkAdminAccess() {
         // Ensure only admin users can access these methods
         if (!isCurrentUserAdmin()) {
+            // Save the current URL in session
+            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
+            // Redirect to login page
             redirectTo(controller="AuthController", action="login", route="auth-login");
             return false;
         }

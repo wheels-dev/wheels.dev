@@ -6,9 +6,6 @@ component extends="app.Controllers.Controller" {
         usesLayout("/layout");
     }
 
-    /**
-     * View all Rules
-     **/
     function index() {
         // Add code to render the home page if needed
     }
