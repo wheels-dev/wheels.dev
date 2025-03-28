@@ -1,7 +1,5 @@
 <main class="main-bg">
     <cfoutput>
-        
-            
             <!-- Blog filter -->
             <div class="container pt-4 pb-5">
                 <a href="/blog" class="py-2 px-3 bg-white shadow-sm rounded-3">
@@ -51,16 +49,64 @@
                     </div>
 
                     <div class="border-top pt-3">
-                        <form hx-target="body" hx-swap="outerHTML" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true" >
+                        <form hx-target="body" hx-swap="outerHTML" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                             <div class="d-flex gap-3 align-items-center">
                                 <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>
-                                <div style="background-color: ##F3F3F3; border-color: ##B4B7C9"
-                                    class="border-2 px-3 py-2 flex-grow-1 rounded-4 border-2 gap-2 d-flex justify-content-between align-items-center">
+                                    <div style="background-color: ##F3F3F3; border-color: ##B4B7C9"
+                                        class="border-2 px-3 py-2 flex-grow-1 rounded-4 border-2 gap-2 d-flex justify-content-between align-items-center">
                                         <input class="form-control" type="hidden" name="blogId" id="blogId" value="#blog.Id#">
-                                        <textarea required placeholder="Add a comment" name="content"
-                                            class="bg-transparent fs-16 outline-none resize-none border-0 flex-grow-1"></textarea>
-                                        <button type="submit" 
-                                            class="bg--iris fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Post</button>
+                                        <div class="editor-wrapper">
+                                            <div class="toolbar-container toolbar1">
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <select class="ql-font"></select>
+                                                <select class="ql-size"></select>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-bold"></button>
+                                                <button class="ql-italic"></button>
+                                                <button class="ql-underline"></button>
+                                                <button class="ql-strike"></button>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <select class="ql-color"></select>
+                                                <select class="ql-background"></select>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-script" value="sub"></button>
+                                                <button class="ql-script" value="super"></button>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-header" value="1"></button>
+                                                <button class="ql-header" value="2"></button>
+                                                <button class="ql-blockquote"></button>
+                                                <button class="ql-code-block"></button>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-list" value="ordered"></button>
+                                                <button class="ql-list" value="bullet"></button>
+                                                <button class="ql-indent" value="-1"></button>
+                                                <button class="ql-indent" value="+1"></button>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-direction" value="rtl"></button>
+                                                <select class="ql-align"></select>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-link"></button>
+                                                <button class="ql-image"></button>
+                                                <button class="ql-video"></button>
+                                                <button class="ql-formula"></button>
+                                            </span>
+                                            <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                <button class="ql-clean"></button>
+                                            </span>
+                                        </div>
+                                        <div class="editor editor1 form-control border border-top-0 rounded-top-0" id="editor" style="height: 300px;"></div>
+                                        <input required class="form-control" type="hidden" name="content" id="content">
+                                        <br>
+                                        <button type="submit" class="bg--iris fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Post</button>
+                                    </div>
+
                                 </div>
                             </div>
                         </form>
@@ -70,25 +116,14 @@
                                 <div class="position-relative"> 
                                     <cfif commentParentId eq '' or commentParentId eq 0>                              
                                         <div class="d-flex align-items-start gap-3">                                   
-                                            <div class="flex-shrink-0">
+                                            <div>
                                                 <img src="#profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
                                             </div>                                   
                                             <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                 <p class="fs-14 fw-normal text-dark">#content#</p>
-                                                <!-- Reply Form (Hidden by Default) -->
-                                                <div class="reply-form mt-3" id="reply-form-#Id#" style="display: none;">
-                                                    <form hx-target="body" hx-swap="outerHTML" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
-                                                        <input type="hidden" name="blogId" value="#blog.Id#">
-                                                        <input type="hidden" name="commentParentId" value="#Id#">
-                                                        <textarea required placeholder="Write a reply..." name="content"
-                                                            class="bg-transparent fs-14 outline-none resize-none border-1 p-2 form-control w-100"></textarea>
-                                                        <button type="submit" class="bg--iris fs-14 text-white px-3 py-2 rounded-2 mt-2">Reply</button>
-                                                    </form>
-                                                </div>
                                                 <div class="d-flex justify-content-end align-items-center gap-4">
                                                     <div class="d-flex cursor-pointer align-items-center gap-2">
-                                                        <!---<p class="fs-14 text--iris mb-0">Reply</p> --->
                                                         <p class="fs-14 text--iris mb-0 reply-btn" data-commentid="#Id#" data-blogid="#blog.Id#">Reply</p>
 
                                                         <svg width="18" height="14" viewBox="0 0 18 14" fill="none" 
@@ -101,17 +136,74 @@
                                                     <div class="d-flex cursor-pointer align-items-center gap-2">
                                                         <p class="fs-14 text--iris mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
                                                     </div>
+                                                     <!-- Reply Form (Hidden by Default) -->
+                                                    <div class="reply-form mt-3" id="reply-form-#Id#" style="display:none;width:100%;">
+                                                        <form hx-target="body" hx-swap="outerHTML" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
+                                                            <input type="hidden" name="blogId" value="#blog.Id#">
+                                                            <input type="hidden" name="commentParentId" value="#Id#">
+                                                            <div class="editor-wrapper">
+                                                                <div class="toolbar-container toolbar2">
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <select class="ql-font"></select>
+                                                                    <select class="ql-size"></select>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-bold"></button>
+                                                                    <button class="ql-italic"></button>
+                                                                    <button class="ql-underline"></button>
+                                                                    <button class="ql-strike"></button>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <select class="ql-color"></select>
+                                                                    <select class="ql-background"></select>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-script" value="sub"></button>
+                                                                    <button class="ql-script" value="super"></button>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-header" value="1"></button>
+                                                                    <button class="ql-header" value="2"></button>
+                                                                    <button class="ql-blockquote"></button>
+                                                                    <button class="ql-code-block"></button>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-list" value="ordered"></button>
+                                                                    <button class="ql-list" value="bullet"></button>
+                                                                    <button class="ql-indent" value="-1"></button>
+                                                                    <button class="ql-indent" value="+1"></button>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-direction" value="rtl"></button>
+                                                                    <select class="ql-align"></select>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-link"></button>
+                                                                    <button class="ql-image"></button>
+                                                                    <button class="ql-video"></button>
+                                                                    <button class="ql-formula"></button>
+                                                                </span>
+                                                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                                                    <button class="ql-clean"></button>
+                                                                </span>
+                                                            </div>
+                                                            <div class="editor editor2 form-control border border-top-0 rounded-top-0" id="editor" style="height: 300px;"></div>
+                                                            <input required class="form-control" type="hidden" name="content" id="content">
+                                                            <br>
+                                                            <button type="submit" class="bg--iris fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Post</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </cfif>
                                     
                                     <cfif commentParentId neq '' and commentParentId neq 0>
-                                        <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
-                                            <div class="flex-shrink-0">
+                                        <div class="d-flex pt-5 align-items-start gap-3 position-relative" style="margin-left: 70px;">
+                                            <div>
                                                 <img src="#profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
                                             </div>  
-                                            <div class="p-3 flex-grow-1 rounded-4 bg-light">
+                                            <div class="p-3 rounded-4 bg-light">
                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                 <p class="fs-14 fw-normal text-dark">#content#</p>
                                             </div>
@@ -133,22 +225,51 @@
             </div>
         </div>
     </div>
-            
-    
 </main>
 
 <script>
-    (function () {
-        'use strict'
-        var form = document.querySelector('.needs-validation')
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
+
+    document.querySelectorAll('.editor-wrapper').forEach((wrapper) => {
+        const toolbar = wrapper.querySelector('.toolbar-container');
+        const editor = wrapper.querySelector('.editor');
+
+        const quill = new Quill(editor, {
+            modules: {
+                syntax: true,
+                toolbar: toolbar,
+            },
+            placeholder: 'Add a comment...',
+            theme: 'snow',
+        });
+
+        // Store the Quill instance on the editor element for later use
+        editor.quillInstance = quill;
+    });
+
+    // Handle form submission
+    document.querySelectorAll("#commentForm, .replyCommentForm").forEach(form => {
+        form.addEventListener("submit", function (event) {
+            const contentField = form.querySelector('input[name="content"]');
+            const editor = form.querySelector(".editor");
+            const quill = editor ? Quill.find(editor) : null;
+
+            if (quill) {
+                contentField.value = quill.root.innerHTML.trim();
+                document.getElementById("content").value = quill.root.innerHTML.trim();
             }
-            form.classList.add('was-validated')
-        }, false)
-    })()
+            
+            if (!document.getElementById("content").value || document.getElementById("content").value === "<p><br></p>") {
+                // form.addEventListener("htmx:beforeRequest", function (event) {
+                    event.preventDefault();
+                    editor?.classList.add("border-danger");
+                    alert("Please enter a comment before submitting.");
+                    return false;
+                // });
+            } else {
+                return true;
+            }
+        });
+    });
 
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".reply-btn").forEach(button => {
@@ -157,29 +278,8 @@
                 let replyForm = document.getElementById("reply-form-" + commentId);
 
                 // Toggle the reply form
-                if (replyForm.style.display === "none") {
-                    replyForm.style.display = "block";
-                } else {
-                    replyForm.style.display = "none";
-                }
+                replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
             });
         });
-        
-
-        // Client-side validation for both forms
-        document.querySelectorAll("form").forEach(form => {
-            form.addEventListener("submit", function (event) {
-                let textarea = form.querySelector("textarea");
-                if (!textarea.value.trim()) {
-                    event.preventDefault();
-                    textarea.classList.add("border-danger");
-                    alert("Comment content is required!");
-                } else {
-                    textarea.classList.remove("border-danger");
-                }
-            });
-        });
-    
     });
-    
 </script>
