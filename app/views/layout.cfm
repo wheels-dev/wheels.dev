@@ -287,6 +287,7 @@
 			<script src="/javascripts/bootstrap.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
+			<script src="/javascripts/custom.js"></script>
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<script src="/javascripts/select2.min.js"></script>
 		</body>
