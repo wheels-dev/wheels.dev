@@ -475,13 +475,22 @@ component extends="app.Controllers.Controller" {
 
     // Function to store comment
     public void function comment() {
-        // Get request parameters
         var commentModel = model("Comment");
         try {
-            response = saveComment(params);
+            blog = getBlogById(params.blogId);
+            if (params.content.trim() == "" || params.content.trim() == "<p><br></p>") {
+                // Set error message in the Flash
+                flashInsert(error="Please enter a comment before submitting.");
+            } else {
+                response = saveComment(params);
+                // Set success message in the Flash
+                flashInsert(success=response.message);
+            }
+            redirectTo(action="show", slug=blog.slug);
         } catch (any e) {
             // Handle error
-            redirectTo(action="error", errorMessage="Failed to save comment.");
+            flashInsert(error="Failed to save comment.");
+            redirectTo(action="error");
         }
     }
 
