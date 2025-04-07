@@ -27,13 +27,12 @@
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
-			<script src="/javascripts/quill.min.js"></script>
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 			<script src="/javascripts/quill.min.js"></script>
 			<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-
+			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
 		</head>
 		<body>			
 
@@ -287,8 +286,10 @@
 			<script src="/javascripts/bootstrap.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
+			<script src="/javascripts/custom.js"></script>
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<script src="/javascripts/select2.min.js"></script>
+			<script src="/javascripts/notifier.min.js"></script>
 		</body>
 	</html>
 </cfif>
