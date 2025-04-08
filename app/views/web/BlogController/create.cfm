@@ -4,7 +4,7 @@
             <div class="col-lg-8 col-12">
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <h1 class="text-center fs-24 fw-bold">Create</h1>
-                    <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
+                    <form id="blogForm" hx-post="/blog/store" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                         <input class="form-control" type="hidden" name="id" id="id" value="">
     
                         <div class="mb-3">
@@ -39,7 +39,7 @@
                             <div class="d-flex form-control p-0 flex-wrap gap-1" id="tagContainer">
                                 <input type="text" onblur="document.getElementById('tagContainer').classList.remove('parent-focus'); this.classList.remove('shadow-none');" onfocus="document.getElementById('tagContainer').classList.add('parent-focus'); this.classList.add('shadow-none');" class="fs-14 border-0 form-control" id="tagInput" placeholder="Enter tags and press comma (,)">
                             </div>
-                            <input type="hidden" name="postTags" id="hiddenTags">
+                            <input type="hidden" name="postTags" id="postTags">
                         </div>
     
                         <div class="mb-3">
@@ -189,30 +189,6 @@
             }
         });     
 
-        // Function to update character count
-        function updateCharacterCount(textareaId, counterId, maxChars) {
-            const textarea = document.getElementById(textareaId);
-            const counter = document.getElementById(counterId);
-            const currentChars = textarea.value.length;
-            
-            counter.textContent = `(${currentChars}/${maxChars})`;
-        }
-        
-        // Attach event listeners to textarea fields
-        const textareas = document.querySelectorAll('textarea');
-        textareas.forEach((textarea, index) => {
-            const counterId = `counter${index + 1}`;
-            const maxChars = 450; // Adjust as needed
-            
-            // Initial character count update
-            updateCharacterCount(textarea.id, counterId, maxChars);
-            
-            // Attach event listener for keyup event
-            textarea.addEventListener('keyup', () => {
-            updateCharacterCount(textarea.id, counterId, maxChars);
-            });
-        });
-
         document.addEventListener("htmx:afterSwap", function(evt) {
             if (evt.target.id === "categoryId") {
                 $('#categoryId').select2({
@@ -234,7 +210,7 @@
 
             const tagContainer = document.getElementById("tagContainer");
             const tagInput = document.getElementById("tagInput");
-            const hiddenTags = document.getElementById("hiddenTags");
+            const postTags = document.getElementById("postTags");
             let tags = [];
 
             tagInput.addEventListener("keydown", function (event) {
@@ -276,7 +252,7 @@
             }
 
             function updateHiddenTags() {
-                hiddenTags.value = tags.join(",");
+                postTags.value = tags.join(",");
             }
         });
   
