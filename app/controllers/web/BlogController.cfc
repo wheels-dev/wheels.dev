@@ -479,12 +479,8 @@ component extends="app.Controllers.Controller" {
         try {
             blog = getBlogById(params.blogId);
             if (params.content.trim() == "" || params.content.trim() == "<p><br></p>") {
-                // Set error message in the Flash
-                flashInsert(error="Please enter a comment before submitting.");
             } else {
                 response = saveComment(params);
-                // Set success message in the Flash
-                flashInsert(success=response.message);
             }
             redirectTo(action="show", slug=blog.slug);
         } catch (any e) {
