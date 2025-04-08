@@ -204,14 +204,13 @@
                 document.getElementById("content").value = quill.root.innerHTML.trim();
             }
             
-            if (!document.getElementById("content").value || document.getElementById("content").value === "<p><br></p>") {
-                // form.addEventListener("htmx:beforeRequest", function (event) {
-                    event.preventDefault();
-                    editor?.classList.add("border-danger");
-                    alert("Please enter a comment before submitting.");
-                    return false;
-                // });
+            if (document.getElementById("content").value.trim() === "" || document.getElementById("content").value.trim() === "<p><br></p>") { // 
+                event.preventDefault();
+                editor?.classList.add("border-danger");
+                notifier.show("Error!", 'Please enter a comment before submitting.', "", "/images/high_priority-48.png", 0);
+                return false;
             } else {
+                notifier.show("Success!", 'Comment created successfully.', "", "/images/ok-48.png", 0);
                 return true;
             }
         });
