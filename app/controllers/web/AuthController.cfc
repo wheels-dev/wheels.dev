@@ -190,7 +190,7 @@ component extends="app.Controllers.Controller" {
         var token = model("UserToken").findOne(where="token='#token#'");
 
         if (isObject(token)) {
-            var user = model("User").findByKey(token.user_id);
+            var user = model("User").findByKey(include="Role", key='#token.user_id#');
             if(isObject(user)){
                 user.update(status=SetActive()); // Activate user
                 return user;

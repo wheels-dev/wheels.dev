@@ -89,22 +89,16 @@ $(document).ready(function(){
 
   // Write on keyup event of keyword input element
   $("#doc-search").keyup(function(){
-    // When value of the input is not blank
-    if( $(this).val() != "")
-    {
-    	$("#searchclear").show();
-      // Show only matching TR, hide rest of them
-      $("#functionlist a").hide();
-      $("#functionlist a:contains-ci('" + $(this).val() + "')").show();
-		updateFunctionCount();
-    }
-    else
-    {
-      // When there is no input or clean again, show everything back
-    	$("#searchclear").hide();
-        $("#functionlist a").show();
-        updateFunctionCount();
-    }
+	  var val = $(this).val().toLowerCase();
+	  $('#functionlist .functionlink').each(function(){
+		  var text = $(this).text().toLowerCase();
+		  if(text.indexOf(val) != -1){
+			  $(this).show();
+			  updateFunctionCount();
+		  }else{
+			  $(this).hide();
+		  }
+	  })
   });
 
 
