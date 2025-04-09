@@ -35,12 +35,6 @@
             <div class="col-md-auto">
                 <img src="/images/google.png" class="img-fluid" width="151">
             </div>
-            <div class="col-md-auto">
-                <img src="/images/github.png" class="img-fluid" width="174">
-            </div>
-            <div class="col-md-auto">
-                <img src="/images/google.png" class="img-fluid" width="151">
-            </div>
         </div>
     </div>
 
