@@ -2,8 +2,8 @@
 writeOutput('<label>Quick Search</label>
 <div class="form-group">
   <div class="btn-group">
-    <input name="doc-search" id="doc-search" placeholder="Type to filter..." type="search" class="form-control">
-    <i id="searchclear" class="fa fa-times-circle"></i>
+    <input name="doc-search" id="doc-search" placeholder="Type to filter..." type="text" class="form-control">
+    <i id="searchclear" class="bi bi-x fs-18"></i>
   </div>
 </div>
 <p id="functionlistoutput">
