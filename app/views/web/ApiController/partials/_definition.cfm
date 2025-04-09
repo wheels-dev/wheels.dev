@@ -1,6 +1,6 @@
 <cfoutput>
 <cfset meta = docs.functions[func]>
-<div id="#lcase(meta.name)#" class="p-3 <cfif func gt 1>mt-3</cfif> rounded-18 bg-white"
+<div id="#lcase(meta.name)#" class="p-3 functiondefinition <cfif func gt 1>mt-3</cfif> rounded-18 bg-white"
     data-section="#meta.tags.sectionClass#"
     data-category="#meta.tags.categoryClass#"
     data-function="#lcase(meta.slug)#">
@@ -24,23 +24,23 @@
 
     <div class="d-flex api-filter-buttons align-items-center my-3 gap-2 flex-wrap">
         <cfif len(meta.tags.section)>
-            <button class="text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+            <button class="filtersection btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 ">
                 <i class="bi bi-tags"></i> #meta.tags.section#
             </button>
         </cfif>
         <cfif len(meta.tags.category)>
-            <button class="text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+            <button class="filtercategory btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 ">
                 <i class="bi bi-tags"></i> #meta.tags.category#
             </button>
         </cfif>
         <cfif structKeyExists(meta, "returnType") && len(meta.returnType)>
-            <button class="text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+            <button class=" btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 ">
                 <i class="bi bi-arrow-return-left"></i> #meta.returnType#
             </button>
         </cfif>
         <cfif structKeyExists(meta, "availableIn") && arrayLen(meta.availableIn)>
             <cfloop from="1" to="#arrayLen(meta.availableIn)#" index="a">
-                <button class="text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+                <button class=" btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 ">
                     <i class="bi bi-lightning-charge-fill"></i> #meta.availableIn[a]#
                 </button>
             </cfloop>

@@ -287,6 +287,7 @@
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
+			<script src="/javascripts/infinite-scroll.pkgd.min.js"></script>
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<script src="/javascripts/select2.min.js"></script>
 			<script src="/javascripts/notifier.min.js"></script>

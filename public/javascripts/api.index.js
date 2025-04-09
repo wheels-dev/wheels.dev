@@ -82,24 +82,33 @@ $(document).ready(function(){
 	}
 
 	$("#searchclear").click(function(){
+		$("#searchclear").hide();
 	    $("#doc-search").val('');
-	      $("#functionlist a").show();
-	      updateFunctionCount();
+		$("#functionlist a").show();
+		updateFunctionCount();
 	});
 
-  // Write on keyup event of keyword input element
-  $("#doc-search").keyup(function(){
-	  var val = $(this).val().toLowerCase();
-	  $('#functionlist .functionlink').each(function(){
-		  var text = $(this).text().toLowerCase();
-		  if(text.indexOf(val) != -1){
-			  $(this).show();
-			  updateFunctionCount();
-		  }else{
-			  $(this).hide();
-		  }
-	  })
-  });
+	// Write on keyup event of keyword input element
+	$("#doc-search").keyup(function(){
+		var val = $(this).val().toLowerCase();
+		if( $(this).val() != "")
+		{
+			$('#functionlist .functionlink').each(function(){
+				var text = $(this).text().toLowerCase();
+				if(text.indexOf(val) != -1){
+					$("#searchclear").show();
+					$(this).show();
+				}else{
+					$(this).hide();
+				}
+			})
+			updateFunctionCount();
+		}else{
+			$("#searchclear").hide();
+			$("#functionlist a").show();
+			updateFunctionCount();
+		}
+	});
 
 
 });

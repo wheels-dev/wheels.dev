@@ -311,3 +311,12 @@ main.main-bg {
     outline: 0;
     box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
 }
+
+#searchclear {
+    cursor: pointer;
+    position: absolute; /* or relative depending on your layout */
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
