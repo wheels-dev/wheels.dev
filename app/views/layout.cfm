@@ -1,5 +1,6 @@
 <!--- Place HTML here that should be used as the default layout of your application. --->
 <!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
+<cfset isBlog = find("/blog", cgi.path_info)>
 <cfif application.contentOnly>
 	<cfoutput>
 		#flashMessages()#
@@ -12,7 +13,15 @@
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Wheels.dev</title>
+			<title><cfoutput>#isBlog ? "CFWheels - Blog" : "CFWheels - an open source CFML framework inspired by Ruby on Rails"#</cfoutput></title>
+			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
+			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">		
+			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
+			<meta name="description" content="Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
+			<meta property="og:title" content="ColdFusion on Wheels">
+			<meta property="og:description" content="Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
+			<meta property="og:url" content="https://wheels.dev/">
+			<meta property="og:site_name" content="CFWheels">
 			<!-- Bootstrap CSS -->
 			<link href="/stylesheets/font.css" rel="stylesheet">
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
@@ -22,17 +31,23 @@
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
 			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
-			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-			<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-			<script src="/javascripts/htmx.min.js"></script>
-			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-			<script src="/javascripts/quill.min.js"></script>
-			<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+			<link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
+			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
+
+			<script src="/javascripts/htmx.min.js"></script>
+			<script src="/javascripts/highlighter.min.js"></script>
+			<script src="/javascripts/quill.min.js"></script>
+
+			<script>
+				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+				ga('create', 'UA-3914949-1', 'auto');
+				ga('send', 'pageview');
+			</script>
 		</head>
 		<body>			
 
@@ -65,22 +80,25 @@
 							<li class="nav-item px-3">
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Issue Tracker</a>
 							</li>
-							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
-							</li>
 							<cfif StructKeyExists(session, "userId") and session.userId neq ''>
-							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="#">
-									<cfoutput>
-										#session.username#
-									</cfoutput>
-								</a>
-							</li>
-							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="/logout">
-									Logout
-								</a>
-							</li>
+								<li class="nav-item px-3">
+									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="#">
+										<cfoutput>
+											#session.username#
+										</cfoutput>
+									</a>
+								</li>
+								<li class="nav-item px-3">
+									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/logout">
+										Logout
+									</a>
+								</li>
+								<cfelse>
+								<li class="nav-item px-3">
+									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/login">
+										Login
+									</a>
+								</li>
 							</cfif>
 						</ul>
 						<div class="d-lg-block d-none">
@@ -231,9 +249,7 @@
 						<div
 							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
 							<div>
-								<p class="p-0 m-0 fs-12">&copy; 2025 Wheels. All rights reserved.</p>
-								<p class="fs-12">Wheels is licensed under the Apache License, Version 2.0.</p>
-								<p class="fs-12">ColdFusion hosting provided by Vivio Technologies.</p>
+								<p class="p-0 m-0 fs-12">&copy; 2025 Wheels. All rights are reserved.</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
 								<a href="https://github.com/cfwheels/" class="text-dark" target="_blank">
