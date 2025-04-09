@@ -4,6 +4,7 @@ $(document).ready(function(){
 
 	$("#searchclear").hide();
 
+	let infiniteScrollEnabled = true;
 	// Version switcher
 	$("#versioncontrol").on("change", function(e){
 		var version=$(this).val();
@@ -16,11 +17,13 @@ $(document).ready(function(){
 	});
 
 	$(".section").on("click", function(e){
+		infiniteScrollEnabled = false;
 		filterBySection($(this).data("section"));
 		updateFunctionCount();
 		e.preventDefault();
 	});
 	$(".category").on("click", function(e){
+		infiniteScrollEnabled = false;
 		filterByCategory($(this).data("section"), $(this).data("category"));
 		updateFunctionCount();
 		e.preventDefault();
@@ -34,6 +37,7 @@ $(document).ready(function(){
 	});
 
 	$(".functionlink").on("click", function(e){
+		infiniteScrollEnabled = false;
 		filterByFunctionName($(this).data("function"));
 		$(".functionlink").removeClass("active");
 		$(this).addClass("active");
@@ -42,12 +46,14 @@ $(document).ready(function(){
 	});
 
 	$(".filtersection").on("click", function(e){
+		infiniteScrollEnabled = false;
 		filterBySection($(this).closest(".functiondefinition").data("section"));
 		updateFunctionCount();
 		e.preventDefault();
 	});
 
 	$(".filtercategory").on("click", function(e){
+		infiniteScrollEnabled = false;
 		var parent=$(this).closest(".functiondefinition");
 		filterByCategory(parent.data("section"),parent.data("category"));
 		updateFunctionCount();
@@ -110,6 +116,47 @@ $(document).ready(function(){
 		}
 	});
 
+	let items = $('.functiondefinition');
+	let itemsPerPage = 5;
+	let currentIndex = 0;
+  
+	// Hide all items initially
+	if (!window.location.hash) {
+		items.hide();
+	}
+	if (window.location.hash) {
+		infiniteScrollEnabled = false;
+	}
+	// Function to show next set of items
+	function showNextItems() {
+		let nextItems = items.slice(currentIndex, currentIndex + itemsPerPage);
+		nextItems.fadeIn(); 
+		currentIndex += itemsPerPage;
+	
+		if (currentIndex >= items.length) {
+			$(window).off('scroll', onScroll); // All items shown, stop scroll
+		}
+	}
+  
+	// Scroll handler
+	function onScroll() {
+		if (!infiniteScrollEnabled) return;
+		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
+			$('#loader').show();
+			setTimeout(() => {
+			showNextItems();
+			$('#loader').hide();
+			}, 1000); // Simulate a brief delay
+		}
+	}
+  
+	// Initial load
+	if (!window.location.hash) {
+		showNextItems();
+	}
+  
+	// Attach scroll event
+	$(window).on('scroll', onScroll);
 
 });
 // jQuery expression for case-insensitive filter

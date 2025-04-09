@@ -54,6 +54,11 @@
             </div>
         </div>
     </div>
+    <div class="d-flex mb-5 justify-content-center">
+        <div id="loader" style="display:none; width: 4rem; height: 4rem;" class="spinner-border text-danger" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 </main>
 <script src="/javascripts/jquery.min.js"></script>
 <script src="/javascripts/api.index.js"></script>
