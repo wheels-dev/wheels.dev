@@ -250,7 +250,7 @@
 							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
 							<div>
 								<p class="p-0 m-0 fs-12">
-										&copy; 2005-2025 Wheels. All rights are reserved.<br>
+										&copy; 2005-2025 wheels.dev. All rights are reserved.<br>
 										Wheels is licensed under the Apache License, Version 2.0.
 								</p>
 							</div>
