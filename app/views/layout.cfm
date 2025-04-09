@@ -249,7 +249,10 @@
 						<div
 							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
 							<div>
-								<p class="p-0 m-0 fs-12">&copy; 2025 Wheels. All rights are reserved.</p>
+								<p class="p-0 m-0 fs-12">
+										&copy; 2005-2025 Wheels. All rights are reserved.<br>
+										Wheels is licensed under the Apache License, Version 2.0.
+								</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
 								<a href="https://github.com/cfwheels/" class="text-dark" target="_blank">
