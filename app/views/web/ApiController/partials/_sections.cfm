@@ -1,6 +1,6 @@
 <cfscript>
 if (structKeyExists(docs, "sections")) {
-    writeOutput('<div class="accordion" id="guidesAccordion">');
+    writeOutput('<div class="accordion space-y-3" id="guidesAccordion">');
 
     for (var s = 1; s <= arrayLen(docs.sections); s++) {
         var sectionName = docs.sections[s]["name"];
