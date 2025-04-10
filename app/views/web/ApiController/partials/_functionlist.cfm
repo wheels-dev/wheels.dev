@@ -1,8 +1,8 @@
 <cfscript>
 writeOutput('<label>Quick Search</label>
 <div class="form-group">
-  <div class="btn-group">
-    <input name="doc-search" id="doc-search" placeholder="Type to filter..." type="text" class="form-control">
+  <div class="btn-group w-100">
+    <input name="doc-search" id="doc-search" placeholder="Type to filter..." type="text" class="form-control w-100 fs-14">
     <i id="searchclear" class="bi bi-x fs-18"></i>
   </div>
 </div>

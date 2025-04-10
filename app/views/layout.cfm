@@ -1,6 +1,28 @@
 <!--- Place HTML here that should be used as the default layout of your application. --->
 <!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
-<cfset isBlog = find("/blog", cgi.path_info)>
+
+<cfset pathInfo = trim(cgi.path_info)>
+<cfset isBlog = find("/blog", pathInfo)>
+<cfset isApi = find("/api", pathInfo)>
+<cfset pageTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
+
+<cfif isBlog>
+	<cfset blogPath = listLast(pathInfo, "/")>
+    <cfif blogPath EQ "blog">
+        <cfset pageTitle = "Blogs | CFWheels">
+    <cfelse>
+        <cfset blogSlug = listLast(pathInfo, "/")>
+        <cfset blogTitle = replace(blogSlug, "-", " ", "all")>
+        <cfset blogTitle = reReplace(blogTitle, "\b([a-z])", "\u\1", "all")>
+        <cfset pageTitle = blogTitle & " | CFWheels">
+    </cfif>
+</cfif>
+
+<cfif isApi>
+	<cfset apiPath = listLast(pathInfo, "/")>
+	<cfset pageTitle = apiPath & " | CFWheels API ">
+</cfif>
+
 <cfif application.contentOnly>
 	<cfoutput>
 		#flashMessages()#
@@ -13,7 +35,7 @@
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title><cfoutput>#isBlog ? "CFWheels - Blog" : "CFWheels - an open source CFML framework inspired by Ruby on Rails"#</cfoutput></title>
+			<title><cfoutput>#pageTitle#</cfoutput></title>
 			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
 			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">		
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
@@ -78,7 +100,7 @@
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions">Discussions</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Issue Tracker</a>
+								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
 							<cfif StructKeyExists(session, "userId") and session.userId neq ''>
 								<li class="nav-item px-3">
