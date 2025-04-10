@@ -119,6 +119,7 @@ $(document).ready(function(){
 	let items = $('.functiondefinition');
 	let itemsPerPage = 5;
 	let currentIndex = 0;
+	let loading = false;
   
 	// Hide all items initially
 	if (!window.location.hash) {
@@ -136,12 +137,15 @@ $(document).ready(function(){
 		if (currentIndex >= items.length) {
 			$(window).off('scroll', onScroll); // All items shown, stop scroll
 		}
+		loading = false;
 	}
   
 	// Scroll handler
 	function onScroll() {
 		if (!infiniteScrollEnabled) return;
-		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
+		if (loading) return;
+		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
+			loading = true;
 			$('#loader').show();
 			setTimeout(() => {
 			showNextItems();
