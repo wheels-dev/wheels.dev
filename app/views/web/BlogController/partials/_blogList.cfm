@@ -18,7 +18,9 @@
                     </p>
                 </div>
                 <div class="d-lg-block d-none position-relative">
-                    <img src="#blogs.coverImagePath#" class="rounded-end-4 size-320 object-fit-cover">
+                    <div class="default-blog rounded-end-4">
+                        <div class="blog-title-overlay">#blogs.title#</div>
+                    </div>
                 </div>
             </a>
         </div>
