@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -129,7 +129,72 @@ component extends="app.Controllers.Controller" {
         }
         return user;
     }
+    // Change Password Form
+    function changePassword(){}
 
+    // update user passwrod
+    function updatePassword(){
+        if(!structKeyExists(params, "passwordHash")){
+            renderText("Please enter password!");
+            return;
+        }
+
+        if(!structKeyExists(params, "confirmPassword")){
+            renderText("Please enter confirm password!");
+            renderText
+        }
+
+        if(params.passwordHash != params.confirmPassword){
+            renderText("Password and confirm password do not match!");
+            return;
+        }
+
+        var hashedPassword = application.WHEELS.plugins.bcrypt.bCryptHashPW(params.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+        var updateUserPassword = model("User").updateAll(
+                passwordHash = "#hashedPassword#",
+                where = "id = '#session.userId#'"
+            );
+        renderText("Password updated successfully!");
+        return;
+    }
+
+    // user profile pic form
+    function updateProfilePic(){}
+
+    // update user profile pic
+    function uploadProfilePic(){
+
+        var uploadPath = expandPath("/images");
+
+        if (structKeyExists(form, "profilePic")) {
+            try {
+                // Ensure directory exists
+                if (!directoryExists(uploadPath)) {
+                directoryCreate(uploadPath);
+                }
+
+                // Accept only image files
+                var uploadedFile = fileUpload(
+                destination = uploadPath,
+                nameConflict = "makeUnique",
+                fileField = form.profilePic,
+                accept = "image/*"
+                );
+
+                var savedFileName = uploadedFile.serverFile;
+                model("User").updateAll(profilePicture = "#savedFileName#", where = "id = '#session.userId#'");
+                session.profilePic = savedFileName;
+                renderText("Profile picture uploaded successfully!");
+                return;
+            } catch (any e) {
+                renderText("Error uploading file: #e.message#");
+                return;
+            }
+        } else {
+            renderText("Please select a profile picture to upload!");
+            return;
+        }
+    }
     // Business Logic
 
     /**

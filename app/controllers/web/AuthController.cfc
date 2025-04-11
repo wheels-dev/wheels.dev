@@ -24,7 +24,7 @@ component extends="app.Controllers.Controller" {
                 session.userID = user.id;
                 session.username = user.fullname;
                 session.role = user.role.name;
-
+                session.profilePic = user.profilePicture;
                 // Redirect to admin dashboard - send HTMX Redirect Header
                 handleLoginSuccess();
                 session.message = "Login Successfully!"
