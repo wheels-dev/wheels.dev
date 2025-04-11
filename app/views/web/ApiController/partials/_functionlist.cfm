@@ -11,11 +11,24 @@ writeOutput('<label>Quick Search</label>
 
 for (var func = 1; func <= arrayLen(docs.functions); func++) {
     var meta = docs.functions[func];
-    writeOutput('<a href="" class="functionlink" data-section="#meta.tags.sectionClass#" data-category="#meta.tags.categoryClass#" data-function="#lcase(meta.slug)#">
-	<p class="fs-14 cursor-pointer fw-normal text--iris">#meta.name#()</p>
-	</a>');
+    var functionSlug = lcase(meta.slug);
+    writeOutput("<a 
+    href='javascript:void(0)' 
+    class='functionlink' 
+    data-section='#meta.tags.sectionClass#' 
+    data-category='#meta.tags.categoryClass#' 
+    data-function='#functionSlug#'
+    data-slug='#functionSlug#'
+    data-version='#params.version#'
+    hx-get='/api/#params.version#/function'
+    hx-include='this'
+    hx-target='##main'
+    hx-swap='innerHTML'
+  >
+    <input type='hidden' name='slug' value='#functionSlug#'>
+    <input type='hidden' name='version' value='#params.version#'>
+    <p class='fs-14 cursor-pointer fw-normal text--iris'>#meta.name#()</p>
+  </a>");
 }
-
-writeOutput('</p>');
 
 </cfscript>

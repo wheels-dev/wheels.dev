@@ -1,5 +1,5 @@
 <cfoutput>
-<cfset meta = docs.functions[func]>
+<cfset meta = docsChunk[func]>
 <div id="#lcase(meta.name)#" class="p-3 functiondefinition <cfif func gt 1>mt-3</cfif> rounded-18 bg-white"
     data-section="#meta.tags.sectionClass#"
     data-category="#meta.tags.categoryClass#"
@@ -24,12 +24,20 @@
 
     <div class="d-flex api-filter-buttons align-items-center my-3 gap-2 flex-wrap">
         <cfif len(meta.tags.section)>
-            <button class="filtersection btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 ">
+            <button class="filtersection btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 " hx-get="/api/#params.version#/functions/section"
+                        hx-include="this"
+                        hx-vals='{"section": "#meta.tags.sectionClass#"}'
+                        hx-target="##main"
+                        hx-swap="innerHTML">
                 <i class="bi bi-tags"></i> #meta.tags.section#
             </button>
         </cfif>
         <cfif len(meta.tags.category)>
-            <button class="filtercategory btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 ">
+            <button class="filtercategory btn btn-light text--lightGray border rounded-4 fs-14 fw-normal px-3 py-2 " hx-get="/api/#params.version#/functions/sectionCategory"
+                hx-include="this"
+                hx-vals='{"section": "#meta.tags.sectionClass#", "category": "#meta.tags.categoryClass#"}'
+                hx-target="##main"
+                hx-swap="innerHTML">
                 <i class="bi bi-tags"></i> #meta.tags.category#
             </button>
         </cfif>
