@@ -60,6 +60,7 @@
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/highlighter.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
+			<script src="/javascripts/bootstrap.js"></script>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -73,9 +74,7 @@
 		</head>
 		<body>			
 
-			<cfset isUserAuth = find("/user/", cgi.path_info)>
-
-			<nav class="navbar<cfoutput>#isUserAuth ? " d-none" : ""#</cfoutput> sticky-top navbar-expand-lg py-2 nav-bg">
+			<nav class="navbar sticky-top navbar-expand-lg py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="200">
@@ -103,17 +102,24 @@
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
 							<cfif StructKeyExists(session, "userId") and session.userId neq ''>
-								<li class="nav-item px-3">
-									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="#">
+								<li class="nav-item dropdown px-3">
+									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
+											<cfset session.profilePic = "avatar-rounded.webp">
+										</cfif>
 										<cfoutput>
-											#session.username#
+											#imageTag(source = '#session.profilePic#', alt="user profile pic", height="40", width="40", class="rounded-circle")#
 										</cfoutput>
 									</a>
-								</li>
-								<li class="nav-item px-3">
-									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/logout">
-										Logout
-									</a>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
+										<!-- Profile (expandable section) -->
+										<li class="dropdown-item-text fw-bold">Profile</li>
+										<li><a class="dropdown-item ps-4" href="/user/change-password">Change Password</a></li>
+										<li><a class="dropdown-item ps-4" href="/user/update-profile-pic">Update Profile Pic</a></li>
+
+										<li><hr class="dropdown-divider"></li>
+										<li><a class="dropdown-item" href="/logout">Logout</a></li>
+									</ul>
 								</li>
 								<cfelse>
 								<li class="nav-item px-3">
@@ -323,8 +329,7 @@
 				</div>
 			</footer>
 
-			<!-- Bootstrap JS -->
-			<script src="/javascripts/bootstrap.js"></script>
+			
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
