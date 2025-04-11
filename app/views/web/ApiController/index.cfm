@@ -35,9 +35,16 @@
         <div class="row justify-content-center justify-content-lg-between">
             <div class="mt-lg-0 mt-3 col-lg-9 col-12" id="main">
                   <cfoutput>
-                    <cfloop from="1" to="#arraylen(docs.functions)#" index="func">
+                    <cfloop from="1" to="#arraylen(docsChunk)#" index="func">
                         #includePartial("partials/definition")#
                     </cfloop>
+                    <div
+                        hx-get="/api/#currentVersion#/functions" 
+                        hx-vals='{"start": "#startIndex + 4#", "limit": "#limitCount#", "version": "#currentVersion#"}' 
+                        hx-trigger="revealed" 
+                        hx-swap="afterend"
+                        class="load-more-trigger mt-3">
+                    </div>
                 </cfoutput> 
             </div>
             <div id="functionsContainer" class="col-lg-3 col-12 order-lg-0 order-first">
