@@ -13,8 +13,23 @@
                         <div class="col-lg-7 col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
-                                    <img src="#blog.user.profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5" alt="profile-picture">
+                                    <cfif structKeyExists(blog.user, "profilePicture") AND len(trim(blog.user.profilePicture))>
+                                        <img 
+                                            src="#blog.user.profilePicture#" 
+                                            style="width:3rem; height:3rem" 
+                                            class="bg-body-secondary rounded-5" 
+                                            alt="profile-picture"
+                                        >
+                                    <cfelse>
+                                        <img 
+                                            src="/images/avatar-rounded.webp" 
+                                            style="width:3rem; height:3rem" 
+                                            class="bg-body-secondary rounded-5" 
+                                            alt="default-profile-picture"
+                                        >
+                                    </cfif>
                                 </div>
+
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div>
                             <h1 class="fs-36 fw-bold text--secondary">
@@ -38,10 +53,13 @@
                                     </p>
                             </div>
                         </div>
-                        <div class="col-lg-5 col-12 text-lg-end text-center">
-                            <img src="#blog.coverImagePath#" class="img-fluid size-320 mx-auto rounded-4"
-                                alt="blog-detail">
-                        </div>
+<!---                   <div class="col-lg-5 col-12 text-lg-end text-center"> 
+                            <div class="default-blog default-blog-single">
+                                <div class="blog-title-overlay">
+                                    #blog.title#
+                                </div>
+                            </div>
+                        </div>--->
 
                         <div class="col-12">
                             #blog.content#
