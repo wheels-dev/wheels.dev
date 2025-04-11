@@ -10,10 +10,17 @@ if (structKeyExists(docs, "sections")) {
             <div class="accordion-item bg-transparent border-0">
                 <div class="accordion-header section pe-2 text-white" data-section="' & sectionId & '">
                     <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris collapsed"
-                        style="background-color: rgba(179, 179, 179, 0.12);" 
+                        style="background-color: rgba(179, 179, 179, 0.12);"
+                        type="button"
+                        data-section="#sectionId#"
                         type="button" data-bs-toggle="collapse" data-bs-target="##' & sectionId & '" 
-                        aria-expanded="false" aria-controls="' & sectionId & '">
-                        ' & sectionName & '
+                        aria-expanded="false" aria-controls="' & sectionId & '"
+                        hx-get="/api/#params.version#/functions/section"
+                        hx-include="this"
+                        hx-target="##main"
+                        hx-swap="innerHTML">
+                        <input type="hidden" name="section" value="#sectionId#">
+                        #sectionName#
                     </button>
                 </div>
                 <div id="' & sectionId & '" class="accordion-collapse collapse" data-bs-parent="##guidesAccordion">
@@ -24,8 +31,14 @@ if (structKeyExists(docs, "sections")) {
             var categoryName = docs.sections[s]["categories"][ss];
             var categoryId = $cssClassLink(categoryName);
             writeOutput('
-                <a href="" class="category" data-section="' & sectionId & '" data-category="' & categoryId & '">
-                    <p class="fs-14 fw-normal cursor-pointer text--iris">' & categoryName & '</p>
+                <a href="javascript:void(0)" class="category" data-section="' & sectionId & '" data-category="' & categoryId & '"
+                hx-get="/api/#params.version#/functions/sectionCategory"
+                hx-include="this"
+                hx-target="##main"
+                hx-swap="innerHTML">
+                <input type="hidden" name="section" value="#sectionId#">
+                <input type="hidden" name="category" value="#categoryId#">
+                <p class="fs-14 fw-normal cursor-pointer text--iris">#categoryName#</p>
                 </a>
             ');
         }

@@ -4,7 +4,6 @@ $(document).ready(function(){
 
 	$("#searchclear").hide();
 
-	let infiniteScrollEnabled = true;
 	// Version switcher
 	$("#versioncontrol").on("change", function(e){
 		var version=$(this).val();
@@ -17,13 +16,11 @@ $(document).ready(function(){
 	});
 
 	$(".section").on("click", function(e){
-		infiniteScrollEnabled = false;
 		filterBySection($(this).data("section"));
 		updateFunctionCount();
 		e.preventDefault();
 	});
 	$(".category").on("click", function(e){
-		infiniteScrollEnabled = false;
 		filterByCategory($(this).data("section"), $(this).data("category"));
 		updateFunctionCount();
 		e.preventDefault();
@@ -37,7 +34,6 @@ $(document).ready(function(){
 	});
 
 	$(".functionlink").on("click", function(e){
-		infiniteScrollEnabled = false;
 		filterByFunctionName($(this).data("function"));
 		$(".functionlink").removeClass("active");
 		$(this).addClass("active");
@@ -46,14 +42,12 @@ $(document).ready(function(){
 	});
 
 	$(".filtersection").on("click", function(e){
-		infiniteScrollEnabled = false;
 		filterBySection($(this).closest(".functiondefinition").data("section"));
 		updateFunctionCount();
 		e.preventDefault();
 	});
 
 	$(".filtercategory").on("click", function(e){
-		infiniteScrollEnabled = false;
 		var parent=$(this).closest(".functiondefinition");
 		filterByCategory(parent.data("section"),parent.data("category"));
 		updateFunctionCount();
@@ -64,7 +58,6 @@ $(document).ready(function(){
 		$("#main").find(".functiondefinition").hide().end()
 				   .find("[data-function='" + name + "']").show().end()
 				   .find("#" + name).show();
-		window.location.hash="#" + name;
 	}
 	function filterByCategory(section, category){
 		$("#functionlist").find(".functionlink").hide().end()
@@ -115,52 +108,6 @@ $(document).ready(function(){
 			updateFunctionCount();
 		}
 	});
-
-	let items = $('.functiondefinition');
-	let itemsPerPage = 5;
-	let currentIndex = 0;
-	let loading = false;
-  
-	// Hide all items initially
-	if (!window.location.hash) {
-		items.hide();
-	}
-	if (window.location.hash) {
-		infiniteScrollEnabled = false;
-	}
-	// Function to show next set of items
-	function showNextItems() {
-		let nextItems = items.slice(currentIndex, currentIndex + itemsPerPage);
-		nextItems.fadeIn(); 
-		currentIndex += itemsPerPage;
-	
-		if (currentIndex >= items.length) {
-			$(window).off('scroll', onScroll); // All items shown, stop scroll
-		}
-		loading = false;
-	}
-  
-	// Scroll handler
-	function onScroll() {
-		if (!infiniteScrollEnabled) return;
-		if (loading) return;
-		if ($(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
-			loading = true;
-			$('#loader').show();
-			setTimeout(() => {
-			showNextItems();
-			$('#loader').hide();
-			}, 1000); // Simulate a brief delay
-		}
-	}
-  
-	// Initial load
-	if (!window.location.hash) {
-		showNextItems();
-	}
-  
-	// Attach scroll event
-	$(window).on('scroll', onScroll);
 
 });
 // jQuery expression for case-insensitive filter
@@ -224,3 +171,22 @@ function copyToClipboard(element) {
         console.error("Failed to copy text: ", err);
     });
 }
+document.addEventListener("htmx:beforeRequest", function(evt) {
+	document.getElementById("loader").style.display = "block";
+});
+
+document.addEventListener("htmx:afterRequest", function(evt) {
+	document.getElementById("loader").style.display = "none";
+});
+
+document.addEventListener("htmx:responseError", function(evt) {
+	document.getElementById("loader").style.display = "none";
+});
+
+document.body.addEventListener("htmx:afterSwap", function(evt) {
+	// Only scroll when full content is swapped (not for infinite scroll)
+	if (evt.detail.target.id === "main") {
+		// Scroll to top of the page
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	}
+});

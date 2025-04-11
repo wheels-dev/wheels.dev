@@ -79,6 +79,10 @@
 		.end()
 			
 		.namespace("")
+			.get(name="loadMoreFunctions", pattern="api/*[version]/functions", to="web.ApiController##loadMoreFunctions")
+			.get(name="loadFunctionBySlug", pattern="api/*[version]/function", to="web.ApiController##loadFunctionBySlug")
+			.get(name="loadFunctionsBySection", pattern="api/*[version]/functions/section", to="web.ApiController##loadFunctionsBySection")
+			.get(name="loadFunctionsBySectionAndCategory", pattern="api/*[version]/functions/sectionCategory", to="web.ApiController##loadFunctionsBySectionAndCategory")
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/.[format]", to="web.ApiController##show")
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/", to="web.ApiController##show")
 			.get(name="docVersion", pattern="api/*[version]/", to="web.ApiController##index")
