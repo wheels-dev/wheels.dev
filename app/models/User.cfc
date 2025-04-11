@@ -61,7 +61,7 @@ component extends="app.Models.Model" {
             column="profile_picture", 
             dataType="string", 
             label="Profile Picture", 
-            defaultValue="/default-avatar.png"
+            defaultValue="/images/avatar-rounded.webp"
         );
 
         // Profile URL Computed Property

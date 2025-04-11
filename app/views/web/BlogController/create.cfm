@@ -48,13 +48,6 @@
                             </label>
                             <input class="form-control fs-14" type="date" name="postCreatedDate" id="postCreatedDate" value="">
                         </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label mb-1 fs-14 fw-medium">
-                                Cover Image
-                            </label>
-                            <input class="form-control fs-14" type="file" name="attachment" id="attachment" value="">
-                        </div>
     
                         <div class="mb-3">
                             <div id="toolbar-container" class="border-bottom-0 border rounded-top">
