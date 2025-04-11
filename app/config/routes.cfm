@@ -71,6 +71,11 @@
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
+
+			.get(name = "user-changePassword", pattern = "user/change-password", to = "web.userController##changePassword")
+			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "web.userController##updatePassword")
+			.get(name = "user-update-profile-pic", pattern = "user/update-profile-pic", to = "web.userController##updateProfilePic")
+			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "web.userController##uploadProfilePic")
 		.end()
 			
 		.namespace("")
