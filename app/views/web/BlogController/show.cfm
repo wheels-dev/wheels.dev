@@ -10,7 +10,7 @@
                 </a>
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <div class="row gy-4 pb-3">
-                        <div class="col-lg-7 col-12 d-flex flex-column">
+                        <div class="col-lg-12 col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
                                     <cfif structKeyExists(blog.user, "profilePicture") AND len(trim(blog.user.profilePicture))>
@@ -35,31 +35,57 @@
                             <h1 class="fs-36 fw-bold text--secondary">
                                 #blog.title#
                             </h1>
-                            <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
-                                <p class="fw-medium fs-12 text--lightGray">
-                                    #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
-                                </p>
-                                <p class="fw-medium fs-12 text--lightGray">#blog.PostStatus.name# in
-                                    <cfoutput query="categories">
-                                        <strong hx-get="/blog/category/#URLEncodedFormat(categoryName)#" hx-target="body" hx-swap="outerHTML">#categoryName#</strong>
-                                        <cfif currentrow LT recordcount>,</cfif>
-                                    </cfoutput>
-                                 </p>
-                                <p class="fw-medium fs-12 text--lightGray">Tags: 
-                                    <cfoutput query="tags">
-                                        <strong hx-get="/blog/tag/#URLEncodedFormat(name)#" hx-target="body" hx-swap="outerHTML">#name#</strong>
-                                        <cfif currentrow LT recordcount>,</cfif>
-                                    </cfoutput>
+                            <cfif categories.recordCount GT 0 OR tags.recordCount GT 0>
+                                <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
+                                    <!-- Blog date -->
+                                    <p class="fw-medium fs-12 text--lightGray mb-0">
+                                        #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
                                     </p>
-                            </div>
+
+                                    <!-- Post status + Categories -->
+                                    <cfif categories.recordCount GT 0>
+                                        <p class="fw-medium fs-12 text--lightGray mb-0">
+                                            #blog.PostStatus.name# in 
+                                            <cfoutput query="categories">
+                                                <strong 
+                                                    class="text--iris"
+                                                    style="cursor: pointer;"
+                                                    hx-get="/blog/list/category/#REReplace(name, '\.', '-', 'all')#"
+                                                    hx-target="body" 
+                                                    hx-swap="outerHTML" 
+                                                    hx-push-url="true"
+                                                >#name#</strong><cfif currentrow LT recordcount>, </cfif>
+                                            </cfoutput>
+                                        </p>
+                                    </cfif>
+
+                                    <!-- Tags -->
+                                    <cfif tags.recordCount GT 0>
+                                        <p class="fw-medium fs-12 text--lightGray mb-0">
+                                            Tags: 
+                                            <cfoutput query="tags">
+                                                <strong 
+                                                    class="text--iris"
+                                                    style="cursor: pointer;"
+                                                    hx-get="/blog/list/tag/#REReplace(name, '\.', '-', 'all')#" 
+                                                    hx-target="body"
+                                                    hx-push-url="true"
+                                                    hx-swap="outerHTML"
+                                                >#name#</strong><cfif currentrow LT recordcount>, </cfif>
+                                            </cfoutput>
+                                        </p>
+                                    </cfif>
+                                </div>
+                            </cfif>
+
                         </div>
-<!---                   <div class="col-lg-5 col-12 text-lg-end text-center"> 
+                        <!--- <div class="col-lg-5 col-12 text-lg-end text-center"> 
                             <div class="default-blog default-blog-single">
                                 <div class="blog-title-overlay">
                                     #blog.title#
                                 </div>
                             </div>
-                        </div>--->
+                        </div> --->
 
                         <div class="col-12">
                             #blog.content#

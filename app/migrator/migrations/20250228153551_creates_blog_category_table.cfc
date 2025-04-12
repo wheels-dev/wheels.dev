@@ -4,7 +4,7 @@ component extends="wheels.migrator.Migration" hint="creates category table" {
             var local = {};
             try {
                 // create categories table
-                var t = createTable(name='categories', force=false, id=true, primaryKey='id');
+                var t = createTable(name='blog_categories', force=false, id=true, primaryKey='id');
                 t.string(columnNames='category_id', null=false, default='', limit=255);
                 t.timestamps();
                 t.create();
@@ -27,7 +27,7 @@ component extends="wheels.migrator.Migration" hint="creates category table" {
             var local = {};
             try {
                 // drop categories table
-                dropTable(name='categories');
+                dropTable(name='blog_categories');
                 transaction action="commit";
             } catch (any e) {
                 local.exception = e;
