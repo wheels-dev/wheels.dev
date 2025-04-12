@@ -9,34 +9,68 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to list all blogs
-    function index() {
+    public void function index() {
+        // Detect HTMX request
+        // var isHtmx = structKeyExists(getHttpRequestData().headers, "HX-Request");
+
+        // Detect filters via category/tag or year/month
+        var isFiltered = (
+            structKeyExists(params, "year") && structKeyExists(params, "month")
+        );
+
+        // If filtered or HTMX, just call the blogs partial and return
+        if (isFiltered) {
+            blogs();
+            return;
+        }
+
+        // Otherwise, allow default layout-wrapped view to render (index.cfm)
     }
 
-    // load blog list
-    function blogs() {
-        var blogModel = model("Blog"); // Get model instance
 
-        if(isDefined("params.filterType") and params.filterType == 'category') {
-                blogs = getAllByCategory(params.filterValue);
-        } else if(isDefined("params.filterType") and params.filterType == 'tag') {
+    public void function blogs() {
+        var blogModel = model("Blog"); // Load model
+
+        // --- Filter by category or tag ---
+        if (structKeyExists(params, "filterType") && structKeyExists(params, "filterValue")) {
+        // Normalize value (e.g. convert "design-ui" to "design.ui")
+        params.filterValue = replace(params.filterValue, "-", ".", "all");
+
+        switch (lcase(params.filterType)) {
+            case "category":
+                blogs = getBlogsByCategory(params.filterValue);
+                break;
+            case "tag":
                 blogs = getAllByTag(params.filterValue);
-        } else if(isDefined("params.filterType") and params.filterType == 'monthyear') {
-                blogs = getAllByMonthYear(params.filterValue);
+                break;
+            default:
+                blogs = getAllBlogs(); // fallback in case of unknown filterType
+        }
+
+        // --- Filter by archive year/month ---
+        } else if (structKeyExists(params, "year") && structKeyExists(params, "month")) {
+        if (isNumeric(params.year) && isNumeric(params.month)) {
+            blogs = getBlogsByMonthYear(params.year, params.month);
+        } else {
+            blogs = getAllBlogs(); // fallback in case of invalid input
+        }
+
+        // --- Default blog listing ---
         } else {
             blogs = getAllBlogs();
         }
-        renderPartial(partial="partials/blogList", locals={blogs: blogs});
+
+        renderPartial(partial="partials/blogList");
     }
 
     // Function to load categories for the blog list
     function categories() {
-        categorylist = model("BlogCategory").getAll();
+        categorylist = model("Category").getAll();
         renderPartial(partial="partials/categorylist");
     }
 
     // Function to show the create blog form
     function create() {
-        // writeDump(cgi.path_info & "?" & cgi.query_string); abort;
         saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
         renderView(layout="blogLayout");
     }
@@ -134,7 +168,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the dropdown
     function loadCategories() {
-        categories = model("BlogCategory").getAll();
+        categories = model("Category").getAll();
         renderPartial(partial="partials/categories");
     }
 
@@ -169,32 +203,39 @@ component extends="app.Controllers.Controller" {
         );
     }
 
-    private function getAllByMonthYear(required numeric monthyear){    
-        // Convert monthyear to string for easier manipulation
-        var strMonthYear = LCase(trim(monthyear));
-
-        // Extract month (first 2 digits) and year (remaining digits)
-        var month = Left(strMonthYear, 2);
-        var year = Right(strMonthYear, Len(strMonthYear) - 2);
-
+    private function getBlogsByMonthYear(required numeric year, required string month) {
         // Create start and end date for the selected month
         var startdate = "#year#-#NumberFormat(month, '00')#-01 00:00:00";
-        var  enddate = "#year#-#NumberFormat(month, '00')#-#DaysInMonth('#year#-#NumberFormat(month, '00')#-01')# 23:59:59";
+        var enddate = "#year#-#NumberFormat(month, '00')#-#DaysInMonth('#year#-#NumberFormat(month, '00')#-01')# 23:59:59";
 
         return model("Blog").findAll(
-            where="blog_posts.createdAt BETWEEN '#startdate#' AND '#enddate#'",
-            order="createdAt DESC",
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#'",
+            order="createdat DESC",
             include="User",
             returnAs="query"
         );
     }
     
     // Fetch Blogs by Category
-    private function getAllByCategory(required string category){
+    public function getBlogsByCategory(required string categoryName) {
+        // Get category ID from name
+        var category = model("Category").findOne(where="name = '#arguments.categoryName#'");
+        if (!isObject(category)) return [];
+
+        // Get all blog-category mappings with that category
+        var blogCategoryQuery = model("BlogCategory")
+            .findAll(where="categoryId = #category.id#", returnAs="query");
+
+        if (blogCategoryQuery.recordCount == 0) return [];
+
+        // Extract blogIds
+        var blogIds = blogCategoryQuery.columnData("blogId");
+
+        // Get blog posts with matching IDs
         return model("Blog").findAll(
-            where="categoryName = '#category#'",
+            where="id IN (#arrayToList(blogIds)#)",
             order="createdAt DESC",
-            include="User,category",
+            include="User,BlogCategory",
             returnAs="query"
         );
     }
@@ -431,7 +472,7 @@ component extends="app.Controllers.Controller" {
     
                 // Insert new categories
                 for (var category_Id in categoryArray) {
-                    var newCategory = model("Category").new();
+                    var newCategory = model("BlogCategory").new();
                     newCategory.categoryName = category_Id;
                     newCategory.blogId = blogId;
                     newCategory.createdAt = now();
