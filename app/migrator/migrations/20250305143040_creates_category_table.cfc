@@ -1,10 +1,10 @@
-component extends="wheels.migrator.Migration" hint="creates blog_category table" {
+component extends="wheels.migrator.Migration" hint="creates category table" {
 
 	function up() {
 		transaction {
 			try {
-				// create blog_categories table
-                t = createTable(name = 'blog_categories', force=false, id=true, primaryKey='id');
+				// create categories table
+                t = createTable(name = 'categories', force=false, id=true, primaryKey='id');
                 t.string(columnNames='name', null=false, default='', limit=255);
                 t.string(columnNames='description', null=true, default='', limit=500);
 				t.integer(columnNames='parent_id', null=true);
@@ -27,8 +27,8 @@ component extends="wheels.migrator.Migration" hint="creates blog_category table"
 	function down() {
 		transaction {
 			try {
-				// drop blog_categories table
-                dropTable(name = 'blog_categories');
+				// drop categories table
+                dropTable(name = 'categories');
 			} catch (any e) {
 				local.exception = e;
 			}

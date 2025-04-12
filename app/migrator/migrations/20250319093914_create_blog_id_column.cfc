@@ -16,16 +16,16 @@
     EXAMPLE:
 			addColumn(table='members', columnType='string', columnName='status', limit=50);
 */
-component extends="wheels.migrator.Migration" hint="create_blog_id_column" {
+component extends="wheels.migrator.Migration" hint="create_blog_id_column_in_blog_categories" {
 
 	function up() {
 		transaction {
 			try {
-				addColumn(table = 'categories', columnType = 'integer', columnName = 'blog_id', default = '', null = true);
+				addColumn(table = 'blog_categories', columnType = 'integer', columnName = 'blog_id', default = '', null = true);
 
 				// add foreign key constraint
                 addForeignKey(
-                    table='categories',
+                    table='blog_categories',
                     column='blog_id',
                     referenceTable='blog_posts',
                     referenceColumn='id'
@@ -48,9 +48,9 @@ component extends="wheels.migrator.Migration" hint="create_blog_id_column" {
 		transaction {
 			try {
 				// drop foreign key constraints using raw SQL
-                execute(sql="ALTER TABLE categories DROP CONSTRAINT IF EXISTS fk_categories_blog_id");
+                execute(sql="ALTER TABLE blog_categories DROP CONSTRAINT IF EXISTS fk_categories_blog_id");
 
-				removeColumn(table = 'categories', columnName = 'blog_id');
+				removeColumn(table = 'blog_categories', columnName = 'blog_id');
 			} catch (any e) {
 				local.exception = e;
 			}

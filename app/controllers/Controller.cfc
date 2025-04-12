@@ -73,7 +73,7 @@ component extends="wheels.Controller" {
     public function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
             where="blog_posts.slug = '#arguments.slug#'",
-            include="User, PostStatus"
+            include="User,PostStatus"
         );
     }
 
@@ -83,7 +83,10 @@ component extends="wheels.Controller" {
 
 
     function getCategoriesByBlogid(required numeric id) {
-        return model("Category").findAll(where = "blogId = #arguments.id#", include = "Blog");
+        return model("BlogCategory").findAll(
+            where = "blogId = #arguments.id#",
+            include = "Blog,Category"
+        );
     }
 
     function getAttachmentsByBlogid(required numeric id) {

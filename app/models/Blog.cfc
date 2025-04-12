@@ -26,13 +26,12 @@ component extends="app.Models.Model" {
         property(name="createdBy", column="created_by", type="integer", required=true, foreignkey=true, references="User(id)");
         property(name="updatedBy", column="updated_by", type="integer", required=false, foreignkey=true, references="User(id)");
         property(name="deletedBy", column="deleted_by", type="integer", required=false, foreignkey=true, references="User(id)");
-        property(name="tagId", column="blog_id", type="integer", required=false, foreignkey=true, references="Tag(id)");
 
         // Define associations
         belongsTo(name="User", foreignKey="createdBy"); 
         belongsTo(name="PostStatus", foreignKey="statusId");
         belongsTo(name="PostType", foreignKey="postTypeId");
-        hasmany(name="category", foreignKey="blogId"); 
+        hasMany(name="BlogCategory", foreignKey="blogId");
         hasmany(name="tag", foreignKey="blogId"); 
 
     }
