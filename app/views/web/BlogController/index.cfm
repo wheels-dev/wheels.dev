@@ -46,27 +46,20 @@
             </div>
         </div>
         <hr class="my-4">
-
+        <div class="d-flex mb-5 justify-content-center">
+            <div id="loader-wrapper" style="width: 4rem; height: 4rem;" class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
         <div class="row justify-content-center justify-content-lg-between">
             <cfoutput>
-                <!-- Detect if filtering via route (e.g. blog/year/month or blog/category/tag) -->
-                <cfset isFiltered = structKeyExists(params, "year") or structKeyExists(params, "filterType")>
-
-                <!-- wrapper that triggers the HTMX call -->
-                <cfif NOT isFiltered>
-                    <div 
-                        id="hxLoader"
-                        hx-get="/blog/list"
-                        hx-trigger="load"
-                        hx-target="##blogsContainer"
-                        hx-swap="innerHTML">
-                    </div>
+                <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1"
+                <cfif isDefined("params.filterType") and isDefined("params.filterValue")>
+                    hx-get="/blog/list/#params.filterType#/#params.filterValue#"
+                <cfelse>
+                    hx-get="/blog/list"
                 </cfif>
-
-                <!-- blog list container -->
-                <div 
-                    id="blogsContainer" 
-                    class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-2 row-cols-1">
+                    hx-trigger="load" hx-target="##blogsContainer" hx-swap="innerHTML">
                 </div>
             </cfoutput>
             <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
@@ -79,22 +72,21 @@
                 <cfset months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]>
 
                 <div class="d-none bg-white p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto" id="Archives">
-                    <!-- Archives Button -->
                     <cfoutput>
-                            <cfloop index="year" from="#currentYear#" to="#startYear#" step="-1">
-                                <cfset monthLimit = (year EQ currentYear) ? currentMonth : 12>
-                                <cfset startLimit = (year EQ startYear) ? startMonth : 1>
+                        <cfloop index="year" from="#currentYear#" to="#startYear#" step="-1">
+                            <cfset monthLimit = (year EQ currentYear) ? currentMonth : 12>
+                            <cfset startLimit = (year EQ startYear) ? startMonth : 1>
 
-                                <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
-                                    <p
-                                        hx-get="/blog/#year#/#NumberFormat(month, '00')#" 
-                                        hx-target="##blogsContainer" 
-                                        hx-swap="innerHTML"
-                                        class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">
-                                        #months[month]# #year#
-                                    </p>
-                                </cfloop>
+                            <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
+                                <p class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris"
+                                    hx-get="/blog/monthyear/#NumberFormat(month, '00')##year#"
+                                    hx-trigger="click"
+                                    hx-target="##blogsContainer"
+                                    hx-swap="innerHTML">
+                                    #months[month]# #year#
+                                </p>
                             </cfloop>
+                        </cfloop>
                     </cfoutput>
                 </div>
 
@@ -109,3 +101,8 @@
         </div>
     </div>
 </main>
+<script>
+  window.addEventListener('load', function () {
+    document.getElementById('loader-wrapper').style.display = 'none';
+  });
+</script>

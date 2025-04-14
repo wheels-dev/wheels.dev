@@ -126,6 +126,8 @@ component extends="app.Controllers.Controller" {
 	function loadFunctionsBySection() {
 		param name="params.version" default="";
 		param name="params.section" default="";
+		param name="params.start" default="0";
+		param name="params.limit" default="5";
 		
 		docs = getDocJSON(params.version);
 		if (structIsEmpty(docs)) {
@@ -140,15 +142,28 @@ component extends="app.Controllers.Controller" {
 				arrayAppend(docsChunk, docs.functions[f]);
 			}
 		}
+		startIndex = val(params.start) + 1;
+		limitCount = val(params.limit);
+		endIndex = min(startIndex + limitCount - 1, arrayLen(docsChunk));
 
-		request.disablePagination = true;
-		renderPartial(partial="partials/moredefinition");
+		if (startIndex GT arrayLen(docsChunk)) {
+			docsChunk = [];
+		} else {
+			docsChunk = arraySlice(docsChunk, startIndex, endIndex - startIndex + 1);
+		}
+
+		startIndex = startIndex;
+		limitCount = limitCount;
+		renderPartial(partial="partials/sectiondefinition");
 	}
 
 	function loadFunctionsBySectionAndCategory() {
 		param name="params.version" default="";
 		param name="params.section" default="";
 		param name="params.category" default="";
+		param name="params.category" default="";
+		param name="params.start" default="0";
+		param name="params.limit" default="5";
 
 		docs = getDocJSON(params.version);
 		if (structIsEmpty(docs)) {
@@ -166,8 +181,23 @@ component extends="app.Controllers.Controller" {
 				arrayAppend(docsChunk, docs.functions[f]);
 			}
 		}
+
+		startIndex = val(params.start) + 1;
+		limitCount = val(params.limit);
+		endIndex = min(startIndex + limitCount - 1, arrayLen(docsChunk));
+
+		if (startIndex GT arrayLen(docsChunk)) {
+			docsChunk = [];
+		} else {
+			docsChunk = arraySlice(docsChunk, startIndex, endIndex - startIndex + 1);
+		}
+
+		request.docsChunk = docsChunk;
+		request.startIndex = startIndex;
+		request.limitCount = limitCount;
+
 		request.disablePagination = true;
-		renderPartial(partial="partials/moredefinition");
+		renderPartial(partial="partials/categorydefinition");
 	}
 
 	/**
