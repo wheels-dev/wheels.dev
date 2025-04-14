@@ -10,7 +10,7 @@
 		.namespace("api")
 			.namespace("v1")
 				.get(name = "get_blog_posts", pattern = "blog", to = "api.BlogController##Index")
-				.get(name = "get_blog_post", pattern = "blog/:id", to = "api.BlogController##Show")
+				.get(name = "get_blog_post", pattern = "blog/[:id]", to = "api.BlogController##Show")
 
 				.get(name = "get_downloads", pattern = "downloads", to = "api.DownloadsController##Index")
 			.end()
