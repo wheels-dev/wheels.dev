@@ -51,16 +51,14 @@ if (structKeyExists(docs, "sections")) {
 
     // Adding "Uncategorized" section at the end
     writeOutput('
-        <div class="accordion-item bg-transparent border-0  section" data-section="">
-            <div class="accordion-header pe-2 text-white">
                 <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris collapsed"
                     style="background-color: rgba(179, 179, 179, 0.12);"
                     
-                    type="button">
+                    type="button"
+                    hx-get="/api/#params.version#/functions/section" hx-include="this" hx-target="##main" hx-swap="innerHTML">
+                    <input type="hidden" name="section" value="">
                     Uncategorized
                 </button>
-            </div>
-        </div>
     ');
 
     writeOutput('</div>'); // Closing accordion
