@@ -19,14 +19,14 @@ services:
       - HEALTHCHECK_URI=http://127.0.0.1:60052/
     networks:
       - wheels-net
-      - redis-ha-net
+      - redis_ha_redis-ha-net
     volumes:
       - wheels-data:/data
 
 networks:
   wheels-net:
     driver: overlay
-  redis-ha-net:
+  redis_ha_redis-ha-net:
     external: true
 
 volumes:
