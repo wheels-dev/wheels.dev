@@ -5,17 +5,43 @@
 <cfset isBlog = find("/blog", pathInfo)>
 <cfset isApi = find("/api", pathInfo)>
 <cfset pageTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
+<cfset ogTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
+<cfset metaDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
+<cfset ogDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
 
 <cfif isBlog>
-	<cfset blogPath = listLast(pathInfo, "/")>
-    <cfif blogPath EQ "blog">
-        <cfset pageTitle = "Blogs | CFWheels">
+    <cfset blogSlug = listLast(pathInfo, "/")>
+    
+    <!--- Fetch the blog post by slug --->
+    <cfset post = model("Blog").findOne(where="slug = '#blogSlug#'")>
+
+    <cfif structKeyExists(post, "id")>
+		<cfset pageTitle = post.title & " | CFWheels">
+		
+		<!-- Generate meta description from content -->
+		<cfset firstP = reFind("<p[^>]*>(.*?)</p>", post.content, 1, true)>
+		<cfif arrayLen(firstP.pos) GT 1>
+			<cfset metaDescription = mid(post.content, firstP.pos[2], firstP.len[2])>
+		<cfelse>
+			<cfset cleanContent = reReplace(post.content, "<[^>]*>", "", "all")>
+			<cfset metaDescription = left(trim(cleanContent), 160)>
+		</cfif>
+
+		<cfset ogTitle = post.title>
+		<cfset ogDescription = metaDescription>
+<!--- 		<cfset ogImage = ''> --->
     <cfelse>
-        <cfset blogSlug = listLast(pathInfo, "/")>
-        <cfset blogTitle = replace(blogSlug, "-", " ", "all")>
-        <cfset blogTitle = reReplace(blogTitle, "\b([a-z])", "\u\1", "all")>
-        <cfset pageTitle = blogTitle & " | CFWheels">
+        <!-- fallback -->
+        <cfset pageTitle = "Blog | CFWheels">
+        <cfset metaDescription = "Explore our latest blogs on CFWheels.">
+        <cfset ogTitle = pageTitle>
+        <cfset ogDescription = metaDescription>
     </cfif>
+</cfif>
+
+<cfif isApi>
+    <cfset apiPath = listLast(pathInfo, "/")>
+    <cfset pageTitle = apiPath & " | CFWheels API ">
 </cfif>
 
 <cfif isApi>
@@ -39,8 +65,14 @@
 			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
 			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">		
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
-			<meta name="description" content="Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
-			<meta property="og:title" content="ColdFusion on Wheels">
+			<cfoutput>
+			<meta name="description" content="#metaDescription#">
+			<meta property="og:title" content="#ogTitle#">
+			<meta property="og:description" content="#ogDescription#">
+			<cfif isDefined("ogImage")>
+				<meta property="og:image" content="#ogImage#">
+			</cfif>
+			</cfoutput>
 			<meta property="og:description" content="Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
 			<meta property="og:url" content="https://wheels.dev/">
 			<meta property="og:site_name" content="CFWheels">
