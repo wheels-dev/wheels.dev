@@ -242,7 +242,7 @@
 											</li>		
 										</cfif>
 										
-										<li class="mt-3"><a href="#"
+										<li class="mt-3"><a href="/blog/feed"
 												class="text--secondary fs-14 text-decoration-none">Entries
 												feed</a>
 										</li>
