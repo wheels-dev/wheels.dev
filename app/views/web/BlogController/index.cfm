@@ -12,8 +12,8 @@
                         <a href="/blog/create" class="bg--iris text-white text-center py-2 fs-16 rounded-3 col-4">Create Blog</a>
                     </cfif>
                     <button 
-                        hx-trigger="click" hx-swap="innerHTML" hx-get="/blog/list" hx-target="#blogsContainer" 
-                        class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        hx-trigger="click" onclick="handleBlogFilter('Archives', this)" hx-swap="innerHTML" hx-get="/blog/list" hx-target="#blogsContainer" 
+                        class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--primary bg-transparent text--secondary">
                         All
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -23,7 +23,7 @@
                         </svg>
                     </button>
                     <button onclick="handleBlogFilter('Archives', this)"
-                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--primary bg-transparent text--secondary">
                         Archives
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +33,7 @@
                         </svg>
                     </button>
                     <button onclick="handleBlogFilter('Categories', this)"
-                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--primary bg-transparent text--secondary">
                         Categories
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -94,7 +94,7 @@
                                         hx-get="/blog/#year#/#NumberFormat(month, '00')#" 
                                         hx-target="##blogsContainer" 
                                         hx-swap="innerHTML"
-                                        class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--iris">
+                                        class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--primary">
                                         #months[month]# #year#
                                     </p>
                                 </cfloop>

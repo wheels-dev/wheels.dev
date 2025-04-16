@@ -8,7 +8,7 @@
                 <div class="d-flex api flex-wrap align-items-center justify-content-end gap-3">
                     <button
                         onclick="handleApiSection('All', this)"
-                        class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--primary bg-transparent text--secondary">
                         A-Z Functions<small>(<span class="functioncount"><cfoutput>#arraylen(docs.functions)#</cfoutput></span>)</small>
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -18,7 +18,7 @@
                     </button>
                     <button
                         onclick="handleApiSection('Sections', this)"
-                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--iris bg-transparent text--secondary">
+                        class="px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--primary bg-transparent text--secondary">
                         Sections
                         <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
