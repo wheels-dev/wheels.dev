@@ -14,12 +14,7 @@
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
                                     <cfif structKeyExists(blog.user, "profilePicture") AND len(trim(blog.user.profilePicture))>
-                                        <img 
-                                            src="#blog.user.profilePicture#" 
-                                            style="width:3rem; height:3rem" 
-                                            class="bg-body-secondary rounded-5" 
-                                            alt="profile-picture"
-                                        >
+                                        <cfoutput>#imageTag(source = '#blog.user.profilePicture#', alt="wheels.dev-user-profile-picture", height="50", width="50", class="bg-body-secondary rounded-5")#</cfoutput>
                                     <cfelse>
                                         <img 
                                             src="/images/avatar-rounded.webp" 
