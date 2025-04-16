@@ -15,23 +15,13 @@
     <!--- Fetch the blog post by slug --->
     <cfset post = model("Blog").findOne(where="slug = '#blogSlug#'")>
 
-    <cfif structKeyExists(post, "id")>
-		<cfset pageTitle = post.title & " | CFWheels">
-		
-		<!-- Generate meta description from content -->
-		<cfset firstP = reFind("<p[^>]*>(.*?)</p>", post.content, 1, true)>
-		<cfif arrayLen(firstP.pos) GT 1>
-			<cfset metaDescription = mid(post.content, firstP.pos[2], firstP.len[2])>
-		<cfelse>
-			<cfset cleanContent = reReplace(post.content, "<[^>]*>", "", "all")>
-			<cfset metaDescription = left(trim(cleanContent), 160)>
-		</cfif>
+    <cfif isStruct(post) && structKeyExists(post, "id")>
+		<cfset metaDescription = this.generateMetaDescription(post.content)>
 
 		<cfset ogTitle = post.title>
 		<cfset ogDescription = metaDescription>
-<!--- 		<cfset ogImage = ''> --->
+		<cfset ogImage = ''>
     <cfelse>
-        <!-- fallback -->
         <cfset pageTitle = "Blog | CFWheels">
         <cfset metaDescription = "Explore our latest blogs on CFWheels.">
         <cfset ogTitle = pageTitle>
@@ -137,7 +127,7 @@
 								<li class="nav-item dropdown px-3">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
-											<cfset session.profilePic = "avatar-rounded.webp">
+											<cfset session.profilePic = "/images/avatar-rounded.webp">
 										</cfif>
 										<cfoutput>
 											#imageTag(source = '#session.profilePic#', alt="user profile pic", height="40", width="40", class="rounded-circle")#
