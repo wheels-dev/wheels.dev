@@ -45,7 +45,7 @@
                                                 <strong 
                                                     class="text--primary"
                                                     style="cursor: pointer;"
-                                                    hx-get="/blog/list/category/#REReplace(name, '\.', '-', 'all')#"
+                                                    hx-get="#urlFor(route="blogsFilter", filterType="category", filterValue="#REReplace(name, '\.', '-', 'all')#")#"
                                                     hx-target="body" 
                                                     hx-swap="outerHTML" 
                                                     hx-push-url="true"
@@ -62,7 +62,7 @@
                                                 <strong 
                                                     class="text--primary"
                                                     style="cursor: pointer;"
-                                                    hx-get="/blog/list/tag/#REReplace(name, '\.', '-', 'all')#" 
+                                                    hx-get="#urlFor(route="blogsFilter", filterType="tag", filterValue="#REReplace(name, '\.', '-', 'all')#")#" 
                                                     hx-target="body"
                                                     hx-push-url="true"
                                                     hx-swap="outerHTML"

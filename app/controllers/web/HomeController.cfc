@@ -25,7 +25,7 @@ component extends="app.Controllers.Controller" {
     function loadBlogs() {
         var blogModel = model("Blog"); // Get Blog model instance
         try {
-            blogs = blogModel.getAll(); // Get blog list
+            blogs = blogModel.getTenLatest(); // Get blog list
             renderPartial(partial="partials/blogs"); // Return a partial view for HTMX
         } catch (any e) {
             // Handle error

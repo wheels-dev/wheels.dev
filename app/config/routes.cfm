@@ -62,8 +62,9 @@
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
 			.get(name = "Categories", pattern = "blog/Categories", to = "web.BlogController##Categories")
-			.get(name = "blogArchive", pattern = "blog/[year]/[month]", to = "web.BlogController##Index")
-			.get(name = "blogs", pattern = "blog/list/[filterType]/[filterValue]", to = "web.BlogController##Index")
+			// .get(name = "blogsCategory", pattern = "blog/[category]/[slug]", to = "web.BlogController##Index")
+			.get(name = "blogsFilter", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
+			.get(name = "blogs", pattern = "blog/list/[filterType]/[filterValue]", to = "web.BlogController##blogs")
 			.get(name = "blogFeed", pattern = "blog/feed", to = "web.BlogController##feed")
 			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
