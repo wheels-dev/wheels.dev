@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment");
         usesLayout("/layout");
     }
@@ -187,6 +187,14 @@ component extends="app.Controllers.Controller" {
     function error() {
         // Add code to render the error page if needed
         renderPartial(partial="partials/_error");
+    }
+
+    public function feed() {
+        // Fetch all blogs
+        blogPosts = model("Blog").findAll(include="User", order="createdAt DESC", limit=20);
+        
+        // Render the feed view
+        renderPartial(partial="partials/feed");
     }
 
     // Business Logic
