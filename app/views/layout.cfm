@@ -127,7 +127,7 @@
 								<li class="nav-item dropdown px-3">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
-											<cfset session.profilePic = "/images/avatar-rounded.webp">
+											<cfset session.profilePic = "avatar-rounded.webp">
 										</cfif>
 										<cfoutput>
 											#imageTag(source = '#session.profilePic#', alt="user profile pic", height="40", width="40", class="rounded-circle")#
