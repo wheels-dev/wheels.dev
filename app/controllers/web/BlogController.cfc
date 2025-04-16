@@ -9,58 +9,46 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to list all blogs
-    public void function index() {
-        // Detect HTMX request
-        // var isHtmx = structKeyExists(getHttpRequestData().headers, "HX-Request");
-
-        // Detect filters via category/tag or year/month
-        var isFiltered = (
-            structKeyExists(params, "year") && structKeyExists(params, "month")
-        );
-
-        // If filtered or HTMX, just call the blogs partial and return
-        if (isFiltered) {
-            blogs();
-            return;
-        }
-
-        // Otherwise, allow default layout-wrapped view to render (index.cfm)
-    }
+    public void function index() {}
 
 
     public void function blogs() {
-        var blogModel = model("Blog"); // Load model
+        try {
+            var blogModel = model("Blog"); // Load model
 
-        // --- Filter by category or tag ---
-        if (structKeyExists(params, "filterType") && structKeyExists(params, "filterValue")) {
-        // Normalize value (e.g. convert "design-ui" to "design.ui")
-        params.filterValue = replace(params.filterValue, "-", ".", "all");
+            // --- Filter by category or tag ---
+            if (structKeyExists(params, "filterType") && structKeyExists(params, "filterValue")) {
+                // Normalize value (e.g., convert "design-ui" to "design.ui")
+                params.filterValue = replace(params.filterValue, "-", ".", "all");
 
-        switch (lcase(params.filterType)) {
-            case "category":
-                blogs = getBlogsByCategory(params.filterValue);
-                break;
-            case "tag":
-                blogs = getAllByTag(params.filterValue);
-                break;
-            default:
-                blogs = getAllBlogs(); // fallback in case of unknown filterType
+                // If filterType is a year and filterValue is a month (numeric), handle as archive
+                if (isNumeric(params.filterType) && isNumeric(params.filterValue)) {
+                    blogs = getBlogsByMonthYear(params.filterType, params.filterValue);
+                } else {
+                    switch (lcase(params.filterType)) {
+                        case "category":
+                            blogs = getBlogsByCategory(params.filterValue);
+                            break;
+                        case "tag":
+                            blogs = getAllByTag(params.filterValue);
+                            break;
+                        default:
+                            blogs = getAllBlogs(); // fallback in case of unknown filterType
+                    }
+                }
+            } else {
+                blogs = getAllBlogs(); // default listing
+            }
+
+            renderPartial(partial="partials/blogList");
+        } catch (any e) {
+            // Log or handle error gracefully
+            // logError("Error in blogs(): #e.message# | #e.detail#");
+
+            // Optionally show fallback
+            blogs = getAllBlogs(); // fallback content
+            renderPartial(partial="partials/blogList");
         }
-
-        // --- Filter by archive year/month ---
-        } else if (structKeyExists(params, "year") && structKeyExists(params, "month")) {
-        if (isNumeric(params.year) && isNumeric(params.month)) {
-            blogs = getBlogsByMonthYear(params.year, params.month);
-        } else {
-            blogs = getAllBlogs(); // fallback in case of invalid input
-        }
-
-        // --- Default blog listing ---
-        } else {
-            blogs = getAllBlogs();
-        }
-
-        renderPartial(partial="partials/blogList");
     }
 
     // Function to load categories for the blog list
