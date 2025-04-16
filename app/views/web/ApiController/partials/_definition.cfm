@@ -60,7 +60,7 @@
     <cfif isArray(meta.parameters) && arrayLen(meta.parameters)>
         <div class="mt-4 overflow-x-auto no-scrollbar">
             <table class="table table-responsive">
-                <thead class="table--iris">
+                <thead class="table--primary">
                     <tr>
                         <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Name</th>
                         <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Type</th>
@@ -99,7 +99,7 @@
 			class="p-4 rounded-18">
 			<div class="fs-14 fw-normal m-0 p-0">#meta.extended.docs#</div>
 			<div class="text-end">
-				<i class="bi bi-copy text--iris fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
+				<i class="bi bi-copy text--primary fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
 				<span class="text-success fs-5 fw-bold d-none">Copied!</span>
 			</div>
 		</div>

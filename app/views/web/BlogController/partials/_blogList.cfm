@@ -4,8 +4,8 @@
             <a href="/blog/#slug#" class="d-flex bg-white px-0 rounded-4 overflow-hidden justify-content-between">
                 <div class="p-3 flex-grow-1 rounded-start-4 d-flex justify-content-between flex-column">
                     <div>
-                        <div class="border--iris w-max border-2 rounded-4 px-3 py-2">
-                            <p class="text--iris fw-medium fs-12 m-0">#blogs.firstname# #blogs.lastname#</p>
+                        <div class="border--primary w-max border-2 rounded-4 px-3 py-2">
+                            <p class="text--primary fw-medium fs-12 m-0">#blogs.firstname# #blogs.lastname#</p>
                         </div>
                         <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
                     </div>
