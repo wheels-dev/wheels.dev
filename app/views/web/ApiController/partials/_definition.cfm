@@ -99,7 +99,7 @@
 			class="p-4 rounded-18">
 			<div class="fs-14 fw-normal m-0 p-0">#meta.extended.docs#</div>
 			<div class="text-end">
-				<i class="bi bi-copy text--iris fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
+				<i class="bi bi-copy text--primary fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
 				<span class="text-success fs-5 fw-bold d-none">Copied!</span>
 			</div>
 		</div>

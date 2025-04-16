@@ -58,7 +58,7 @@
                 </div>
                 <div class="mt-4 overflow-x-auto no-scrollbar">
                     <table class="table table-responsive">
-                        <thead class="table--iris">
+                        <thead class="table--primary">
                             <tr>
                                 <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Name</th>
                                 <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Type</th>
