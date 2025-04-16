@@ -96,4 +96,61 @@ component extends="wheels.Controller" {
     function saveRedirectUrl(url) {
         session.redirectAfterLogin = arguments.url;
     }
+
+    public string function generateMetaDescription(required string htmlContent) {
+        // Remove headings and non-paragraph wrappers
+        var contentWithoutHeadings = reReplaceNoCase(arguments.htmlContent, "<h[1-6][^>]*>.*?</h[1-6]>", "", "all");
+        
+        // Extract only paragraph blocks
+        var paragraphMatches = reMatchNoCase("<p[^>]*>(.*?)</p>", contentWithoutHeadings);
+        var cleanText = "";
+        
+        for (var para in paragraphMatches) {
+            // Strip inner tags from paragraph content
+            var plainPara = trim(reReplace(para, "<[^>]*>", "", "all"));
+            
+            // Skip if the paragraph is too short or looks like a heading
+            if (len(plainPara) GTE 40) {
+                cleanText = plainPara;
+                break;
+            }
+        }
+
+        // Fallback: use stripped full content if no usable paragraph found
+        if (cleanText == "") {
+            cleanText = trim(reReplace(arguments.htmlContent, "<[^>]*>", "", "all"));
+        }
+
+        // Extract up to 2 sentences, avoiding decimals like 3.0 or 2.5
+        var pattern = "[^.!?]+[.!?]";
+        var pos = 1;
+        var meta = "";
+        var sentences = [];
+
+        while (pos LTE len(cleanText)) {
+            var found = reFind(pattern, cleanText, pos, true);
+            if (!found.len[1]) break;
+
+            var sentence = trim(mid(cleanText, found.pos[1], found.len[1]));
+
+            // Skip sentence if it contains decimal numbers (e.g., 3.0)
+            if (!reFind("\d+\.\d+", sentence)) {
+                arrayAppend(sentences, sentence);
+            }
+
+            pos += found.len[1];
+
+            // Stop after 2 sentences or if length looks good
+            if (arrayLen(sentences) >= 2 || len(arrayToList(sentences, " ")) >= 160) break;
+        }
+
+        meta = arrayToList(sentences, " ");
+
+        // Final fallback if no valid sentences
+        if (len(meta) == 0) {
+            meta = left(cleanText, 160);
+        }
+
+        return left(meta, 160);
+    }
 }
