@@ -43,7 +43,7 @@
                                             #blog.PostStatus.name# in 
                                             <cfoutput query="categories">
                                                 <strong 
-                                                    class="text--iris"
+                                                    class="text--primary"
                                                     style="cursor: pointer;"
                                                     hx-get="/blog/list/category/#REReplace(name, '\.', '-', 'all')#"
                                                     hx-target="body" 
@@ -60,7 +60,7 @@
                                             Tags: 
                                             <cfoutput query="tags">
                                                 <strong 
-                                                    class="text--iris"
+                                                    class="text--primary"
                                                     style="cursor: pointer;"
                                                     hx-get="/blog/list/tag/#REReplace(name, '\.', '-', 'all')#" 
                                                     hx-target="body"
