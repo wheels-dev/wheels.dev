@@ -41,6 +41,11 @@ component extends="app.Models.Model" {
         var blogs = findAll(where='statusid <> 1', include="User", order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
         return blogs;
     }
+    
+    public function getTenLatest() {
+        var blogs = findAll(where='statusid <> 1', include="User",maxRows=10, order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
+        return blogs;
+    }
 
     /**
      * Computed property to get the correct post date.

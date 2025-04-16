@@ -54,19 +54,19 @@
         <div class="row justify-content-center justify-content-lg-between">
             <cfoutput>
                 <!-- Detect if filtering via route (e.g. blog/year/month or blog/category/tag) -->
-                <cfset isFiltered = structKeyExists(params, "year") or structKeyExists(params, "filterType")>
-
+                 <cfif isDefined("params.filterType") and isDefined("params.filterValue")>
+                    <cfset blogUrl = "/blog/list/#params.filterType#/#params.filterValue#">
+                <cfelse>
+                    <cfset blogUrl = "/blog/list">
+                </cfif>
                 <!-- wrapper that triggers the HTMX call -->
-                <cfif NOT isFiltered>
                     <div 
                         id="hxLoader"
-                        hx-get="/blog/list"
+                        hx-get="#blogUrl#"
                         hx-trigger="load"
                         hx-target="##blogsContainer"
                         hx-swap="innerHTML">
                     </div>
-                </cfif>
-
                 <!-- blog list container -->
                 <div 
                     id="blogsContainer" 
@@ -91,7 +91,7 @@
 
                                 <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
                                     <p
-                                        hx-get="/blog/#year#/#NumberFormat(month, '00')#" 
+                                        hx-get="/blog/list/#year#/#NumberFormat(month, '00')#" 
                                         hx-target="##blogsContainer" 
                                         hx-swap="innerHTML"
                                         class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--primary">
@@ -114,7 +114,16 @@
     </div>
 </main>
 <script>
-  window.addEventListener('load', function () {
-    document.getElementById('loader-wrapper').style.display = 'none';
+  document.addEventListener("htmx:beforeRequest", function(evt) {
+    document.getElementById("loader-wrapper").style.display = "block";
+  });
+
+  document.addEventListener("htmx:afterSwap", function(evt) {
+    document.getElementById("loader-wrapper").style.display = "none";
+  });
+
+  // Also hide it if request fails
+  document.addEventListener("htmx:responseError", function(evt) {
+    document.getElementById("loader-wrapper").style.display = "none";
   });
 </script>
