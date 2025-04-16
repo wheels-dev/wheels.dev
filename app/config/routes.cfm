@@ -64,6 +64,7 @@
 			.get(name = "Categories", pattern = "blog/Categories", to = "web.BlogController##Categories")
 			.get(name = "blogArchive", pattern = "blog/[year]/[month]", to = "web.BlogController##Index")
 			.get(name = "blogs", pattern = "blog/list/[filterType]/[filterValue]", to = "web.BlogController##Index")
+			.get(name = "blogFeed", pattern = "blog/feed", to = "web.BlogController##feed")
 			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
