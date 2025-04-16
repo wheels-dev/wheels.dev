@@ -9,8 +9,7 @@ if (structKeyExists(docs, "sections")) {
         writeOutput('
             <div class="accordion-item bg-transparent border-0">
                 <div class="accordion-header section pe-2 text-white" data-section="' & sectionId & '">
-                    <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris collapsed"
-                        style="background-color: rgba(179, 179, 179, 0.12);"
+                    <button class="accordion-button fs-14 fw-normal shadow-none bg--primary/10 p-2 rounded-3 text--primary collapsed"
                         type="button"
                         data-section="#sectionId#"
                         type="button" data-bs-toggle="collapse" data-bs-target="##' & sectionId & '" 
@@ -38,7 +37,7 @@ if (structKeyExists(docs, "sections")) {
                 hx-swap="innerHTML">
                 <input type="hidden" name="section" value="#sectionId#">
                 <input type="hidden" name="category" value="#categoryId#">
-                <p class="fs-14 fw-normal cursor-pointer text--iris">#categoryName#</p>
+                <p class="fs-14 fw-normal cursor-pointer text--primary">#categoryName#</p>
                 </a>
             ');
         }
@@ -51,8 +50,7 @@ if (structKeyExists(docs, "sections")) {
 
     // Adding "Uncategorized" section at the end
     writeOutput('
-                <button class="accordion-button fs-14 fw-normal shadow-none p-2 rounded-3 text--iris collapsed"
-                    style="background-color: rgba(179, 179, 179, 0.12);"
+                <button class="accordion-button fs-14 fw-normal shadow-none bg--primary/10 p-2 rounded-3 text--primary collapsed"
                     
                     type="button"
                     hx-get="/api/#params.version#/functions/section" hx-include="this" hx-target="##main" hx-swap="innerHTML">

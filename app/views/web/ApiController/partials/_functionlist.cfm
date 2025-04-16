@@ -8,7 +8,7 @@ writeOutput('<label>Quick Search</label>
 </div>
 <p id="functionlistoutput">
   <a href="" class="docreset" hx-get="/api/#currentVersion#/functions" hx-trigger="click" hx-target="##main"hx-swap="innerHTML"
-                        class="load-more-trigger mt-3"><i class="fa fa-eye"></i><p class="fs-14 cursor-pointer fw-normal text--iris">All</p></a>');
+                        class="load-more-trigger mt-3"><i class="fa fa-eye"></i><p class="fs-14 cursor-pointer fw-normal text--primary">All</p></a>');
 
 for (var func = 1; func <= arrayLen(docs.functions); func++) {
     var meta = docs.functions[func];
@@ -28,7 +28,7 @@ for (var func = 1; func <= arrayLen(docs.functions); func++) {
   >
     <input type='hidden' name='slug' value='#functionSlug#'>
     <input type='hidden' name='version' value='#params.version#'>
-    <p class='fs-14 cursor-pointer fw-normal text--iris'>#meta.name#()</p>
+    <p class='fs-14 cursor-pointer fw-normal text--primary'>#meta.name#()</p>
   </a>");
 }
 
