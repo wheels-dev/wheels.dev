@@ -44,7 +44,7 @@
     
                         <div class="mb-3">
                             <label class="form-label mb-1 fs-14 fw-medium">
-                                Post Created Date
+                                Post Create Date
                             </label>
                             <input class="form-control fs-14" type="date" name="postCreatedDate" id="postCreatedDate" value="">
                         </div>
@@ -107,8 +107,14 @@
                 </div>
             </div>
             <div class="col-lg-4 col-12">
-                <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
-                    <h1 class="text-center fs-24 fw-bold">Preview</h1>
+                <h4 class="mb-3">Live Preview</h4>
+                <div id="previewContent" class="p-3 border rounded bg-white">
+                    <h2 id="previewTitle" class="fs-20 fw-bold mb-3 text-primary"></h2>
+                    <div id="previewMeta" class="mb-3">
+                        <div id="previewCategories" class="mb-1"></div>
+                        <div id="previewTags"></div>
+                    </div>
+                    <div id="previewBody" class="border p-3 rounded bg-light"></div>
                 </div>
             </div>
         </div>
@@ -247,7 +253,43 @@
             function updateHiddenTags() {
                 postTags.value = tags.join(",");
             }
+            
+            // Live preview logic
+            function updatePreview() {
+                // Title
+                const title = document.getElementById("title").value;
+                document.getElementById("previewTitle").innerText = title;
+
+                // Content
+                document.getElementById("previewBody").innerHTML = quill.root.innerHTML.trim();
+
+                // Categories
+                const categorySelect = document.getElementById("categoryId");
+                const selectedCategories = Array.from(categorySelect.selectedOptions).map(opt => opt.text);
+                const previewCategories = document.getElementById("previewCategories");
+                previewCategories.innerHTML = '';
+                selectedCategories.forEach(cat => {
+                    const badge = document.createElement("span");
+                    badge.className = "badge bg-primary me-1 mb-1";
+                    badge.textContent = cat;
+                    previewCategories.appendChild(badge);
+                });
+
+                // Tags
+                const previewTags = document.getElementById("previewTags");
+                previewTags.innerHTML = '';
+                tags.forEach(tag => {
+                    const badge = document.createElement("span");
+                    badge.className = "badge bg-secondary me-1 mb-1";
+                    badge.textContent = tag;
+                    previewTags.appendChild(badge);
+                });
+            }
+
+            // Event listeners
+            document.getElementById("title").addEventListener("input", updatePreview);
+            document.getElementById("categoryId").addEventListener("change", updatePreview);
+            quill.on('text-change', updatePreview);
         });
-  
     </script>
 </main>

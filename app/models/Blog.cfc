@@ -51,6 +51,10 @@ component extends="app.Models.Model" {
      * Computed property to get the correct post date.
      */
     public function getDisplayDate() {
-        return this.postCreatedDate ?: this.createdAt;
+        if (NOT isEmpty(this.postCreatedDate)) {
+            return this.postCreatedDate;
+        } else {
+            return this.createdAt;
+        }
     }
 }
