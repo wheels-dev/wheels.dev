@@ -53,7 +53,7 @@
 			.get(name = "api_docs", pattern = "api", to = "web.ApiController##Index")
 
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
-			.get(name = "blog", pattern = "blog/edit/[id]", to = "web.BlogController##Edit")
+			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "web.BlogController##Edit")
 			
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
 

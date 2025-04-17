@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment");
         usesLayout("/layout");
     }
@@ -60,7 +60,6 @@ component extends="app.Controllers.Controller" {
     // Function to show the create blog form
     function create() {
         saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
-        renderView(layout="blogLayout");
     }
 
     // Function to store a new blog
@@ -96,7 +95,7 @@ component extends="app.Controllers.Controller" {
             response = saveBlog(params);
             saveTags(params, response.blogId);
             saveCategories(params, response.blogId);
-            redirectTo(action="index");
+            redirectTo(route="blog");
         } catch (any e) {
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save blog post.");
@@ -469,7 +468,7 @@ component extends="app.Controllers.Controller" {
                 // Insert new categories
                 for (var category_Id in categoryArray) {
                     var newCategory = model("BlogCategory").new();
-                    newCategory.categoryName = category_Id;
+                    newCategory.categoryId = category_Id;
                     newCategory.blogId = blogId;
                     newCategory.createdAt = now();
                     newCategory.updatedAt = now();
