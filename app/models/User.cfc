@@ -54,7 +54,6 @@ component extends="app.Models.Model" {
             select=false  // Exclude from default select statements
         );
         
-
         // Profile Picture Property
         property(
             name="profilePicture", 
@@ -81,6 +80,15 @@ component extends="app.Models.Model" {
             dataType="boolean", 
             label="Account Status", 
             defaultValue=true
+        );
+
+        // Has Testimonial Property
+        property(
+            name="hasTestimonial",
+            column="has_testimonial",
+            dataType="boolean",
+            label="Has Submitted Testimonial",
+            defaultValue=false
         );
 
         // Timestamps with custom column names
@@ -115,6 +123,9 @@ component extends="app.Models.Model" {
 
         // Relationships
         belongsTo(name="Role", foreignKey="roleId");
+        
+        // Testimonial Relationship - One user has one testimonial
+        hasOne(name="Testimonial", foreignKey="userId");
     }
 
     // Fetch all users with their roles
@@ -155,7 +166,20 @@ component extends="app.Models.Model" {
             fullName = this.fullName,
             email = this.email,
             profileUrl = this.profileUrl,
-            profilePicture = this.profilePicture
+            profilePicture = this.profilePicture,
+            hasTestimonial = this.hasTestimonial
         };
+    }
+    
+    // Check if user has submitted a testimonial
+    public function hasSubmittedTestimonial() {
+        testimonial = model("Testimonial").findOne(where="userId=#this.id#");
+        return IsObject(testimonial);
+    }
+    
+    // Update testimonial status after submission
+    public function markTestimonialSubmitted() {
+        this.hasTestimonial = true;
+        return this.save(validate=false);
     }
 }
