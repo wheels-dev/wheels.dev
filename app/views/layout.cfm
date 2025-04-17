@@ -79,6 +79,7 @@
 			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
 
+			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/highlighter.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
@@ -291,7 +292,7 @@
 									</ul>
 								</div>
 								<div class="col-12">
-									<script src='https://opencollective.com/wheels-fw/banner.js?style={"a":{"color":"var(--primary)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
+									<script src='https://opencollective.com/wheels-dev/banner.js?style={"a":{"color":"rgb(191, 40, 33)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
 								</div>
 							</div>
 						</div>
@@ -352,7 +353,6 @@
 			</footer>
 
 			
-			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
 			<script src="/javascripts/infinite-scroll.pkgd.min.js"></script>
