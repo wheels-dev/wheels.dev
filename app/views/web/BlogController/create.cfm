@@ -149,12 +149,15 @@
             const postTags = document.getElementById('postTags');
             const content = document.getElementById('content');
             const editor = document.getElementById("editor");
+            const tagInput = document.getElementById("tagInput");
+            const toolbar = document.getElementById('toolbar-container');
 
             // Check if it's a draft submission
             const isDraft = document.getElementById("isDraft").value === "1";
 
             // Reset validation styles
-            [title, categoryId, posttypeId, postTags].forEach(field => field.classList.remove("is-invalid"));
+            [title, categoryId, posttypeId, tagInput].forEach(field => field.classList.remove("is-invalid"));
+            toolbar.classList.remove("border-danger");
             editor.classList.remove("border-danger");
 
             // Validate fields only if it's NOT a draft
@@ -173,17 +176,19 @@
                 }
                 if (postTags.value.trim() === "") {
                     isValid = false;
-                    postTags.classList.add("is-invalid");
+                    tagInput.classList.add("is-invalid");
+                    tagInput.classList.remove("border-0");
                 }
                 if (content.value.trim() === "<p><br></p>" || content.value.trim() === "") {
                     isValid = false;
+                    toolbar.classList.add("border-danger");
                     editor.classList.add("border-danger");
                 }
             }
 
             if (!isValid) {
                 event.preventDefault();
-                alert("Please fill out all required fields.");
+                notifier.show('Error!', 'Please fill out all required fields.', '', 'images/high_priority-48.png', 4000);
                 return false;
             }
         });     
