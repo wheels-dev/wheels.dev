@@ -19,6 +19,11 @@ component extends="app.Models.Model" {
         property(name="deletedAt", column="deletedat", type="datetime", required=false);
         property(name="publishedAt", column="published_at", type="datetime", required=false);
 
+        property(
+            name="postDate", 
+            sql="COALESCE(post_created_date, blog_posts.createdat)", 
+            label="Created At"
+        );
 
         // Defining the foreign key
         property(name="statusId", column="status_id", type="integer", required=true, foreignkey=true, references="PostStatus(id)");
@@ -42,8 +47,13 @@ component extends="app.Models.Model" {
         return blogs;
     }
     
-    public function getTenLatest() {
-        var blogs = findAll(where='statusid <> 1', include="User",maxRows=10, order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
+    // Fetch all latest blog posts with corresponding users
+    public function getAll() {
+        var blogs = findAll(
+            where='statusid <> 1', 
+            include="User", 
+            order="COALESCE(post_created_date, blog_posts.createdAt) DESC"
+        );
         return blogs;
     }
 
