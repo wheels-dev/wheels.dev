@@ -78,6 +78,15 @@
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "web.userController##updatePassword")
 			.get(name = "user-update-profile-pic", pattern = "user/update-profile-pic", to = "web.userController##updateProfilePic")
 			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "web.userController##uploadProfilePic")
+		
+			// Testimonial-specific routes
+			.get(name="check_testimonial", pattern="testimonials/check", to="testimonials##check")
+			.get(name="approve_testimonial", pattern="testimonials/approve/[key]", to="testimonials##approve")
+			.get(name="feature_testimonial", pattern="testimonials/feature/[key]", to="testimonials##feature")
+			.get(name="delete_testimonial", pattern="testimonials/delete/[key]", to="testimonials##delete")
+
+			// routes for testimonials
+			.resources("testimonials")
 		.end()
 			
 		.namespace("")

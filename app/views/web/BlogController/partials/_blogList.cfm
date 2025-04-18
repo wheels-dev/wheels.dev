@@ -10,11 +10,7 @@
                         <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
                     </div>
                     <p class="text--lightGray fs-12 fw-medium">
-                        <cfif blogs.postcreateddate neq ''>
-                            #dateformat(blogs.postcreateddate, 'MMMM DD, YYYY')#
-                        <cfelse>
-                            #dateformat(blogs.createdAt, 'MMMM DD, YYYY')#
-                        </cfif>
+                            #dateformat(blogs.postDate, 'MMMM DD, YYYY')#
                     </p>
                 </div>
                 <div class="d-lg-block d-none position-relative">
