@@ -46,8 +46,8 @@ component extends="app.Controllers.Controller" {
             // Check if user already has a testimonial
             user = model("User").findByKey(GetSignedInUserId());
             if (user.hasSubmittedTestimonial()) {
-                flashInsert(info="You have already submitted a testimonial. You can edit it below.");
-                redirectTo(action="edit");
+                // flashInsert(info="You have already submitted a testimonial. You can edit it below.");
+                // redirectTo(action="edit");
                 return;
             }
             
@@ -568,11 +568,11 @@ component extends="app.Controllers.Controller" {
     }
     
     /**
-     * Helper method to check if request is AJAX
-     */
-    private function isHtmx() {
-        return StructKeyExists(cgi, "HTTP_X_REQUESTED_WITH") && 
-               cgi.HTTP_X_REQUESTED_WITH == "XMLHttpRequest";
+    * Helper method to check if the request was initiated by HTMX.
+    */
+    private boolean function isHtmx() {
+        // HTMX requests include the HX-Request header set to "true"
+        return StructKeyExists(cgi, "HTTP_HX_REQUEST") && cgi.HTTP_HX_REQUEST == "true";
     }
     
     /**

@@ -40,13 +40,28 @@ component extends="app.Controllers.Controller" {
 	}
 
     private function handleLoginSuccess() {
-        var redirectUrl = session.keyExists("redirectAfterLogin") ? session.redirectAfterLogin : urlFor(route="home");
-        
-        // Clear the session variable after use
-        structDelete(session, "redirectAfterLogin");
+        try {
+            
+            // Get the full user object (assuming session.user might just have the ID)
+            var redirectUrl = session.keyExists("redirectAfterLogin") ? session.redirectAfterLogin : urlFor(route="home");
+            
+            // Clear the session variable after use
+            structDelete(session, "redirectAfterLogin");
 
-        // Redirect to the intended page or default to dashboard
-        redirectTo(url=redirectUrl);
+            var userToCheck = model("User").findByKey(session.userID);
+
+            // Check if the user has submitted a testimonial
+            if (IsObject(userToCheck) && !userToCheck.hasSubmittedTestimonial()) {
+                // Set a flag in the flash scope.
+                // Flash scope persists only for the next request, which is perfect for this.
+                session.promptForTestimonial = true;
+            }
+            // Redirect to the intended page or default to dashboard
+            redirectTo(url=redirectUrl);
+        } catch (any e) {
+            // Log the error, but don't prevent login
+        }
+        redirectTo(route="home");
     }
 
     function logout() {
