@@ -20,29 +20,30 @@ var swiper = new Swiper(".blogSwiper", {
     },
 });
 
-var contributorsSwiper = new Swiper(".contributorsSwiper", {
+var contributorsSwiperThumb = new Swiper(".contributorsSwiperThumb", {
+    spaceBetween: 0,
+    slidesPerView: 8,
     freeMode: true,
-    slidesPerView: 7,
-    initialSlide: 0,
-    loop: true,
-    speed: 2000,
-    autoplay: {
-        delay: 0,
-        disableOnInteraction: false,
+    watchSlidesProgress: true,
+        navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
     },
-    breakpoints: {
-        640: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-        },
-        768: {
-            slidesPerView: 2,
-            spaceBetween: 20,
-        },
-        1024: {
-            slidesPerView: 7,
-            spaceBetween: 30,
-        },
+});
+
+var contributorsSwiper = new Swiper(".contributorsSwiper", {
+    spaceBetween: 30,
+    thumbs: {
+        swiper: contributorsSwiperThumb,
+    },
+});
+
+var contributorsSwiper = new Swiper(".testimonialsSwiper", {
+    spaceBetween: 30,
+    
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
     },
 });
 
