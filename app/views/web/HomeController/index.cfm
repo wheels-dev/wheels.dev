@@ -1,6 +1,6 @@
 <main class="main">
     <!-- Hero Section -->
-    <div class="hero-section position-relative">
+    <div class="hero-section home-section position-relative">
         <div class="container d-flex flex-column justify-content-center w-100 align-items-center">
             <h1 class="fs-64 fw-bolder text--secondary text-center position-relative">Wheels-The Fast &
                 Fun<br>CFML Framework!</h1>
@@ -15,7 +15,7 @@
             <div class="row g-3 justify-content-center w-100 mt-1 align-items-center">
                 <div class="col-md-auto text-center">
                     <a href="https://guides.cfwheels.org/cfwheels-guides/introduction/readme" class="" target="_blank">
-                        <button class="fs-16 fw-semibold bg--primary w-200 py-1 rounded-2 text-white">
+                        <button class="fs-16 fw-semibold bg--primary w-200 py-2 rounded-4 text-white">
                             Get Started
                         </button>
                     </a>
@@ -23,7 +23,7 @@
                 <div class="col-md-auto text-center">
                     <a href="https://github.com/cfwheels/cfwheels/releases" class="" target="_blank">
                         <button
-                            class="fs-16 fw-semibold bg--secondary w-200 py-1 rounded-2 text-white">Download</button>
+                            class="fs-16 fw-semibold bg--success w-200 py-2 rounded-4 text--secondary">Download</button>
                     </a>
                 </div>
             </div>
