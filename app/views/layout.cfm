@@ -352,6 +352,82 @@
 				</div>
 			</footer>
 
+			<div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="testimonialPromptModalLabel">Share Your Experience!</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p>We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
+
+						<!--- HTMX Target Area --->
+						<div id="testimonial-form-container"
+							hx-get="<cfoutput>#urlFor(route='newWeb.testimonial')#</cfoutput>"
+							hx-target="this"
+							hx-swap="innerHTML">
+							<!--- Optional: Loading indicator --->
+							<div class="text-center p-3">
+								<div class="spinner-border text-primary" role="status">
+									<span class="visually-hidden">Loading form...</span>
+								</div>
+								<p class="mt-2">Loading form...</p>
+							</div>
+							<!--- The form content from TestimonialController::new will be loaded here --->
+						</div>
+
+					</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+							<!--- The submit button will be part of the loaded form --->
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<script>
+				document.addEventListener('htmx:load', function() { 
+					var shouldPromptForTestimonial = <cfoutput>#session.keyExists("promptForTestimonial") ? 'true' : 'false'#</cfoutput>;
+					var clearFlagUrl = "<cfoutput>#session.delete('promptForTestimonial')#</cfoutput>";
+
+					if (shouldPromptForTestimonial) {
+						var testimonialModalElement = document.getElementById('testimonialPromptModal');
+
+						if (testimonialModalElement) {
+							// Get the Bootstrap Modal instance
+							var testimonialModal = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
+
+							testimonialModalElement.addEventListener('shown.bs.modal', function () {
+
+								var formContainer = testimonialModalElement.querySelector('#testimonial-form-container');
+								if (formContainer) {
+									// Check if content is already loaded (e.g., if modal was opened, closed, reopened quickly)
+									// Simple check: see if it still contains the spinner/loading text
+									var isLoadingIndicatorPresent = formContainer.querySelector('.spinner-border');
+
+									if(isLoadingIndicatorPresent) {
+										console.log('Form container found, processing HTMX.'); // Debug log
+										// Manually process the container with HTMX to trigger the hx-get
+										htmx.process(formContainer);
+									} else {
+										console.log('Form container already has content, skipping HTMX process.'); // Debug log
+									}
+								} else {
+									console.error('Form container #testimonial-form-container not found inside modal.');
+								}
+
+							}, { once: true }); // Use { once: true } so this listener only fires ONCE per modal instance show
+
+							//Show the modal
+							testimonialModal.show();
+
+						} else {
+							console.error("Testimonial prompt modal element not found.");
+						}
+					}
+				});
+			</script>
 			
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
