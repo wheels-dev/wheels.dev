@@ -80,13 +80,13 @@
 			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "web.userController##uploadProfilePic")
 		
 			// Testimonial-specific routes
-			.get(name="check_testimonial", pattern="testimonials/check", to="testimonials##check")
-			.get(name="approve_testimonial", pattern="testimonials/approve/[key]", to="testimonials##approve")
-			.get(name="feature_testimonial", pattern="testimonials/feature/[key]", to="testimonials##feature")
-			.get(name="delete_testimonial", pattern="testimonials/delete/[key]", to="testimonials##delete")
+			.get(name="check_testimonial", pattern="testimonials/check", to="web.testimonials##check")
+			.get(name="approve_testimonial", pattern="testimonials/approve/[key]", to="web.testimonials##approve")
+			.get(name="feature_testimonial", pattern="testimonials/feature/[key]", to="web.testimonials##feature")
+			.get(name="delete_testimonial", pattern="testimonials/delete/[key]", to="web.testimonials##delete")
 
 			// routes for testimonials
-			.resources("testimonials")
+			.resources("web.testimonial")
 		.end()
 			
 		.namespace("")
