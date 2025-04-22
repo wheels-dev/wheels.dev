@@ -73,6 +73,7 @@
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
+			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 
 			.get(name = "user-changePassword", pattern = "user/change-password", to = "web.userController##changePassword")
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "web.userController##updatePassword")

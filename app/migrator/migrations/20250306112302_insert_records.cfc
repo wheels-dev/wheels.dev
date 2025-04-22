@@ -9,7 +9,7 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				addRecord(table='Roles',name = "user");
 
 				// users
-				addRecord(table="users", first_name="Peter", last_name="Amiri", email="petera@pai.com", password_hash="$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu", profile_picture='/images/avatar-rounded.webp', profile_url='', status=1, role_id=1);
+				addRecord(table="users", first_name="Peter", last_name="Amiri", email="petera@pai.com", password_hash="$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu", profile_picture='avatar-rounded.webp', profile_url='', status=1, role_id=1);
 
 				// categories
 				addRecord(table='categories', name='CLI', parent_id='', description='Learn about command-line tools, tips, and tricks for enhancing your development workflow using the command line.');

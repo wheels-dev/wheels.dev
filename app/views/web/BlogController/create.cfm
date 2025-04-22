@@ -11,7 +11,8 @@
                             <label class="form-label mb-1 fs-14 fw-medium">
                                 Title <span class="text-danger">*</span>
                             </label>
-                            <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" maxlength="159" required>
+                            <input placeholder="Enter the title" class="form-control fs-14" type="text" name="title" id="title" value="" maxlength="159" required hx-post="/blog/check-title" hx-trigger="blur" hx-target="#title-message" hx-swap="innerHTML">
+                            <small id="title-message" class="text-muted mt-1 d-block fs-13"></small>
                         </div>
     
                         <div class="mb-3">
