@@ -2,9 +2,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,BlogList,approve,reject,showBlog", params="key", paramsTypes="integer", handler="dashboard");
+        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog", params="key", paramsTypes="integer", handler="dashboard");
 
-        usesLayout(template="/web/AdminController/layout", except="BlogList");
+        usesLayout(template="/web/AdminController/layout");
         filters(through="checkAdminAccess");
     }
 
@@ -13,30 +13,25 @@ component extends="app.Controllers.Controller" {
     }
 
     function blog() {
-    }
-    
-    function BlogList() {
-        // Fetch all blogs
         blogs = getAllBlogs();
-        renderPartial(partial="partials/blogs");
     }
 
     function approve() {
         try {
-            var message = Approve(params.id);
-            redirectTo(action="blog", success="#message#");
+            var message = blogApproval(params.id);
+            header name="HX-Redirect" value="#urlFor(route='admin-blog')#";
         } catch (any e) {
             // Handle error
-            redirectTo(action="blog", errorMessage="Failed to delete user.");
+            renderText("Failed to approve blog.");
         }
     }
     function reject() {
         try {
-            var message = Reject(params.id);
-            redirectTo(action="blog", success="#message#");
+            var message = blogReject(params.id);
+            header name="HX-Redirect" value="#urlFor(route='admin-blog')#";
         } catch (any e) {
             // Handle error
-            redirectTo(action="blog", errorMessage="Failed to delete user.");
+            renderText("Failed to reject blog.");
         }
     }
 
@@ -224,8 +219,8 @@ component extends="app.Controllers.Controller" {
 
     }
 
-    private function Approve(id){
-        var blog = model("Blog").findByKey(arguments.id);
+    private function blogApproval(id){
+        var blog = model("Blog").findByKey(id);
         
         if (!isNull(blog)) {
             
@@ -250,8 +245,8 @@ component extends="app.Controllers.Controller" {
         };
     }
     
-    private function Reject(id){
-        var blog = model("Blog").findByKey(arguments.id);
+    private function blogReject(id){
+        var blog = model("Blog").findByKey(id);
         
         if (!isNull(blog)) {
             
