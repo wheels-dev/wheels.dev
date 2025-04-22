@@ -5,15 +5,15 @@
             <cfloop query="tags">
                 <cfif tagList EQ "">
                     <cfset tagList=name>
-                        <cfelse>
-                            <cfset tagList=tagList & ", " & name>
+                <cfelse>
+                    <cfset tagList=tagList & ", " & name>
                 </cfif>
             </cfloop>
             <cfloop query="categories">
                 <cfif categoryList EQ "">
                     <cfset categoryList=name>
-                        <cfelse>
-                            <cfset categoryList=categoryList & ", " & name>
+                <cfelse>
+                    <cfset categoryList=categoryList & ", " & name>
                 </cfif>
             </cfloop>
             <!-- Blog filter -->
@@ -31,7 +31,7 @@
                         <div class="col-lg-7 col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
-                                    <img src="#blog.user.profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5" alt="profile-picture">
+                                    #imageTag(source="#blog.user.profilePicture#", style="width:3rem; height:3rem", class="bg-body-secondary rounded-5", alt="profile-picture")#
                                 </div>
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div>
@@ -59,8 +59,7 @@
                             </div>
                         </div>
                         <div class="col-lg-5 col-12 text-lg-end text-center">
-                            <img src="#blog.coverImagePath#" class="img-fluid size-320 mx-auto rounded-4"
-                                alt="blog-detail">
+                            <img src="#blog.coverImagePath#" class="img-fluid size-320 mx-auto rounded-4" alt="blog-cover-picture">
                         </div>
 
                         <div class="col-12">
