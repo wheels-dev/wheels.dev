@@ -4,7 +4,7 @@ component extends="app.Controllers.Controller" {
     function config() {
         verifies(except="index,dashboard,checkAdminAccess,blog,BlogList,approve,reject,showBlog", params="key", paramsTypes="integer", handler="dashboard");
 
-        usesLayout("/web/AdminController/layout");
+        usesLayout(template="/web/AdminController/layout", except="BlogList");
         filters(through="checkAdminAccess");
     }
 
