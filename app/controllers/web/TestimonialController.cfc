@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
     
     // Configuration function
     function config() {
-        verifies(except="index,publicList,new,create,edit,update,check,error", params="key", paramsTypes="integer", handler="error");
+        verifies(except="index,publicList,new,create,edit,update,check,error,clearPromptFlag", params="key", paramsTypes="integer", handler="error");
         // Apply filters for security
         filters(through="restrictAccess", only="new,create,edit,update,check");
         filters(through="requireAdmin", only="index,approve,feature,delete");
@@ -623,5 +623,22 @@ component extends="app.Controllers.Controller" {
             }
         }
         return true;
+    }
+
+    /**
+    * Endpoint to clear the promptForTestimonial session flag.
+    */
+    function clearPromptFlag() {
+        try {
+            if (session.keyExists("promptForTestimonial")) {
+                session.delete("promptForTestimonial");
+            }
+            // Return a success response
+            renderWith(data={"success"=true});
+        } catch (any e) {
+            // Log error;
+            // Return an error response
+            renderWith(data={"success"=false, "message"="Error clearing flag."}, status=500);
+        }
     }
 }
