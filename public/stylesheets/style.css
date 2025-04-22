@@ -63,6 +63,12 @@ main.main .home-section{
     background-repeat: no-repeat
 }
 
+.main-login{
+    background-image: url("../images/homeBg.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat
+}
+
 main.main-bg {
     background-image: url("../images/main-bg.png");
     background-size: 100% 100%;
