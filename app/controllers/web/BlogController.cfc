@@ -134,9 +134,9 @@ component extends="app.Controllers.Controller" {
             if(structKeyExists(form, "title")){
                 var blogModel = model("Blog").findAll(where="title='#form.title#'");
                 if(blogModel.recordCount != 0){
-                    renderText('<p class="text-danger">Blog title already exist!</p>');
+                    renderText('<span class="text-danger">A blog already exist with this title!</span><input type="hidden" id="titleExists" value="1">');
                 }else{
-                    renderText("");
+                    renderText('<input type="hidden" id="titleExists" value="0">');
                 }
             }
         }catch (any e) {

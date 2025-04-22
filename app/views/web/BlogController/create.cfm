@@ -161,6 +161,13 @@
             toolbar.classList.remove("border-danger");
             editor.classList.remove("border-danger");
 
+            // Title uniqueness check
+            const titleExists = document.getElementById('titleExists');
+            if (titleExists && titleExists.value === "1") {
+                isValid = false;
+                title.classList.add("is-invalid");
+            }
+            
             // Validate fields only if it's NOT a draft
             if (!isDraft) {
                 if (title.value.trim() === "") {
