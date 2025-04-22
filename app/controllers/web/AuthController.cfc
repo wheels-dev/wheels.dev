@@ -55,6 +55,7 @@ component extends="app.Controllers.Controller" {
                 // Set a flag in the flash scope.
                 // Flash scope persists only for the next request, which is perfect for this.
                 session.promptForTestimonial = true;
+                cfheader(name="HX-Trigger" value="showTestimonialModal");
             }
             // Redirect to the intended page or default to dashboard
             redirectTo(url=redirectUrl);

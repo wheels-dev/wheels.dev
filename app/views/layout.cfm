@@ -386,49 +386,69 @@
 				</div>
 			</div>
 
-			<script>
-				document.addEventListener('htmx:load', function() { 
-					var shouldPromptForTestimonial = <cfoutput>#session.keyExists("promptForTestimonial") ? 'true' : 'false'#</cfoutput>;
-					var clearFlagUrl = "<cfoutput>#session.delete('promptForTestimonial')#</cfoutput>";
+			<cfoutput>
+				<cfif session.keyExists("promptForTestimonial")>
+					<!--- This div triggers the clearing of the session flag --->
+					<div id="clear-prompt-trigger"
+						hx-post="#urlFor(route='clear_testimonial_prompt')#"
+						hx-trigger="load delay:50ms" <!--- Trigger on load --->
+						hx-swap="none" <!--- No HTML swap needed --->
+						style="display: none;">
+					</div>
 
-					if (shouldPromptForTestimonial) {
+					<script>
+						// This script block only renders if the session flag exists.
+
+						// Get modal element immediately
 						var testimonialModalElement = document.getElementById('testimonialPromptModal');
+						var testimonialModalInstance = null;
+						// Flag to ensure the 'shown.bs.modal' listener is attached only once
+						let formLoadListenerAttached = false;
 
 						if (testimonialModalElement) {
-							// Get the Bootstrap Modal instance
-							var testimonialModal = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
+							// Get or create the Bootstrap modal instance right away
+							testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
 
-							testimonialModalElement.addEventListener('shown.bs.modal', function () {
-
-								var formContainer = testimonialModalElement.querySelector('#testimonial-form-container');
-								if (formContainer) {
-									// Check if content is already loaded (e.g., if modal was opened, closed, reopened quickly)
-									// Simple check: see if it still contains the spinner/loading text
-									var isLoadingIndicatorPresent = formContainer.querySelector('.spinner-border');
-
-									if(isLoadingIndicatorPresent) {
-										console.log('Form container found, processing HTMX.'); // Debug log
-										// Manually process the container with HTMX to trigger the hx-get
-										htmx.process(formContainer);
-									} else {
-										console.log('Form container already has content, skipping HTMX process.'); // Debug log
-									}
+							document.body.addEventListener('showTestimonialModal', function handleShowTrigger() {
+								console.log('Received showTestimonialModal trigger from backend.');
+								if (testimonialModalInstance) {
+									testimonialModalInstance.show();
 								} else {
-									console.error('Form container #testimonial-form-container not found inside modal.');
+									var currentModalInstance = bootstrap.Modal.getInstance(testimonialModalElement);
+									if (currentModalInstance) {
+										currentModalInstance.show();
+									} else {
+										console.error("Modal instance not found when trying to show via HX-Trigger.");
+									}
 								}
+							}, { once: true });
 
-							}, { once: true }); // Use { once: true } so this listener only fires ONCE per modal instance show
-
-							//Show the modal
-							testimonialModal.show();
-
+							if (!formLoadListenerAttached && testimonialModalInstance) {
+								testimonialModalElement.addEventListener('shown.bs.modal', function handleModalShown() {
+									var formContainer = testimonialModalElement.querySelector('##testimonial-form-container');
+									if (formContainer) {
+										var isLoadingIndicatorPresent = formContainer.querySelector('.spinner-border');
+										if (isLoadingIndicatorPresent || formContainer.innerHTML.trim() === '') {
+											console.log('Modal shown, processing HTMX for form container.');
+											htmx.process(formContainer); // Trigger the hx-get on the container
+										} else {
+											console.log('Modal shown, form container already has content.');
+										}
+									} else {
+										console.error('Form container ##testimonial-form-container not found inside modal.');
+									}
+								});
+								formLoadListenerAttached = true; // Mark that this listener has been attached.
+								console.log('Attached shown.bs.modal listener.');
+							}
 						} else {
-							console.error("Testimonial prompt modal element not found.");
+							console.error("Testimonial prompt modal element not found when initializing script.");
 						}
-					}
-				});
-			</script>
-			
+					</script>
+
+				</cfif>
+			</cfoutput>
+
 			<script src="/javascripts/swiper.js"></script>
 			<script src="/javascripts/custom.js"></script>
 			<script src="/javascripts/infinite-scroll.pkgd.min.js"></script>

@@ -46,6 +46,14 @@
     width: 200px
 }
 
+.max-w-450{
+    max-width: 450px;
+}
+
+.max-w-570{
+    max-width: 570px;
+}
+
 .h-max {
     height: max-content
 }
@@ -228,4 +236,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap
+}
+
+.input-autofill:-webkit-autofill,
+.input-autofill:-webkit-autofill:hover, 
+.input-autofill:-webkit-autofill:focus, 
+.input-autofill:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px var(--input) inset !important;
 }

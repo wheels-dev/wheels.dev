@@ -73,6 +73,7 @@
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
+			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 
 			.get(name = "user-changePassword", pattern = "user/change-password", to = "web.userController##changePassword")
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "web.userController##updatePassword")
@@ -80,10 +81,12 @@
 			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "web.userController##uploadProfilePic")
 		
 			// Testimonial-specific routes
-			.get(name="check_testimonial", pattern="testimonials/check", to="web.testimonials##check")
-			.get(name="approve_testimonial", pattern="testimonials/approve/[key]", to="web.testimonials##approve")
-			.get(name="feature_testimonial", pattern="testimonials/feature/[key]", to="web.testimonials##feature")
-			.get(name="delete_testimonial", pattern="testimonials/delete/[key]", to="web.testimonials##delete")
+			.get(name="check_testimonial", pattern="testimonial/check", to="web.testimonials##check")
+			.get(name="approve_testimonial", pattern="testimonial/approve/[key]", to="web.testimonials##approve")
+			.get(name="feature_testimonial", pattern="testimonial/feature/[key]", to="web.testimonials##feature")
+			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
+			
+			.post(name="clear_testimonial_prompt", pattern="testimonial/clear-prompt", to="web.Testimonial##clearPromptFlag") // Use POST to indicate an action
 
 			// routes for testimonials
 			.resources("web.testimonial")
