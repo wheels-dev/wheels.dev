@@ -4,6 +4,9 @@
 <cfset pathInfo = trim(cgi.path_info)>
 <cfset isBlog = find("/blog", pathInfo)>
 <cfset isApi = find("/api", pathInfo)>
+<cfset isLogin = find("/login", pathInfo)>
+<cfset isRegister = find("/register", pathInfo)>
+<cfset isAuthPage = (isLogin OR isRegister)>
 <cfset pageTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset ogTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset metaDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
@@ -97,7 +100,7 @@
 		</head>
 		<body>			
 
-			<nav class="navbar sticky-top navbar-expand-lg py-2 nav-bg">
+			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top navbar-expand-lg py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="200">
@@ -171,7 +174,7 @@
 				#includeContent()#
 			</cfoutput>
 
-			<footer class="bg-white pt-5 pb-3 border-top">
+			<footer class="bg-white <cfif isAuthPage>d-none</cfif> pt-5 pb-3 border-top">
 					<div class="container">
 						<div class="row text-lg-left text-center gy-lg-0 gy-3 gx-5">
 							<div class="col-lg-4">
