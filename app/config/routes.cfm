@@ -33,7 +33,7 @@
 			.get(name = "admin-index", pattern = "admin", to = "web.AdminController##index")
 			.get(name = "admin-blog", pattern = "admin/blog", to = "web.AdminController##blog")
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "web.AdminController##showBlog")
-			.get(name = "BlogList", pattern = "admin/blog/list", to = "web.AdminController##BlogList")
+			.get(name = "blog-List", pattern = "admin/blog/list", to = "web.AdminController##blogList")
 			.post(name = "admin-approve", pattern = "admin/approve", to = "web.AdminController##approve")
 			.post(name = "admin-reject", pattern = "admin/reject", to = "web.AdminController##reject")
 
