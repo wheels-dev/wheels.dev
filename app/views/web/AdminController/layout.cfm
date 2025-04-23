@@ -4,17 +4,40 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <mta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-<!---     <link rel="stylesheet" href="/stylesheets/admin.css"> --->
     <!-- Bootstrap CSS -->
     <link href="/stylesheets/font.css" rel="stylesheet">
     <link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link href="/stylesheets/bootstrap.css" rel="stylesheet">
     <link href="/stylesheets/color.css" rel="stylesheet">
     <link href="/stylesheets/style.css" rel="stylesheet">
     <link href="/stylesheets/utils.css" rel="stylesheet">
     <link href="/stylesheets/dataTables.min.css" rel="stylesheet">
-
+    <script src="/javascripts/htmx.min.js"></script>
+    <cfoutput>
+        #stylesheetLinkTag(source="simplebar.min.css")#
+        #stylesheetLinkTag(source="theme-rtl.min.css", id="style-rtl")# 
+        #stylesheetLinkTag(source="theme.min.css", id="style-default")#
+        #stylesheetLinkTag(source="user-rtl.min.css", id="user-style-rtl")#
+        #stylesheetLinkTag(source="user.min.css", id="user-style-default")#
+        #javascriptIncludeTag(source="simplebar.min.js")#
+        #javascriptIncludeTag(source="config.js")#
+    </cfoutput>
+    <script>
+        var phoenixIsRTL = window.config.config.phoenixIsRTL;
+        if (phoenixIsRTL) {
+            var linkDefault = document.getElementById('style-default');
+            var userLinkDefault = document.getElementById('user-style-default');
+            linkDefault.setAttribute('disabled', true);
+            userLinkDefault.setAttribute('disabled', true);
+            document.querySelector('html').setAttribute('dir', 'rtl');
+        } else {
+            var linkRTL = document.getElementById('style-rtl');
+            var userLinkRTL = document.getElementById('user-style-rtl');
+            linkRTL.setAttribute('disabled', true);
+            userLinkRTL.setAttribute('disabled', true);
+        }
+    </script>
     <!-- Bootstrap JS -->
     <script src="/javascripts/bootstrap.js"></script>
     <script src="/javascripts/jquery.min.js"></script>
@@ -22,227 +45,163 @@
 </head>
 <body>
     <cfset isUserAuth = find("/user/", cgi.path_info)>
-    <nav class="navbar <cfoutput> #isUserAuth ? "d-none" : ""# </cfoutput> sticky-top navbar-expand-lg py-2 nav-bg">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <img src="/images/wheels-logo.png" alt="Bootstrap" width="260">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item px-3">
-                        <a href="/admin/dashboard">Dashboard</a>
-                    </li>
-                    <li class="nav-item px-3">
-                        <a href="/admin/user">Users</a>
-                    </li>
-                    <li class="nav-item px-3">
-                        <a href="/admin/blog">Blog</a>
-                    </li>
-                    <cfif StructKeyExists(session, "userId") and session.userId neq ''>
-                        <cfoutput>
-                            <li class="nav-item px-3">
-                                <a href="user/profile">#session.username#</a>
-                            </li>
-                            <li class="nav-item px-3">
-                                <a href="/logout">Logout</a>
-                            </li>
-                        </cfoutput>
+    <main class="main" id="top">
+        <nav class="navbar navbar-vertical navbar-expand-lg">
+            <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
+                <!-- scrollbar removed-->
+                <div class="navbar-vertical-content">
+                    <ul class="navbar-nav flex-column" id="navbarVerticalNav">
+                        <li class="nav-item">
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/dashboard" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-bar-chart-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Dashboard</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/user" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-people-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Users</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/blog" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-chat-left-text-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Blogs</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="navbar-vertical-footer">
+                <button class="btn navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center"><span class="uil uil-left-arrow-to-left fs-14"></span><span class="uil uil-arrow-from-right fs-14"></span><span class="navbar-vertical-footer-text ms-2 fs-14">Collapsed View</span></button>
+            </div>
+        </nav>
+        <nav class="navbar navbar-top fixed-top navbar-expand" id="topNavSlim">
+            <div class="collapse navbar-collapse justify-content-between">
+                <div class="navbar-logo">
+                    <button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
+                    <a class="navbar-brand me-1 me-sm-3" href="/admin">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center">
+                                <cfoutput>
+                                    #imageTag(source = 'wheels-logo.png', alt="wheels-logo", width="200", height="60")#
+                                </cfoutput>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <ul class="navbar-nav navbar-nav-icons flex-row">
+                    <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
+                        <cfset session.profilePic = "avatar-rounded.webp">
                     </cfif>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                            <div class="avatar avatar-l ">
+                                <cfoutput>
+                                    #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                </cfoutput>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border" aria-labelledby="navbarDropdownUser">
+                            <div class="card position-relative border-0">
+                            <div class="card-body p-0">
+                                <div class="text-center pt-4 pb-3">
+                                <div class="avatar avatar-xl ">
+                                    <cfoutput>
+                                        #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                    </cfoutput>
+                                </div>
+                                <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>
+                                </div>
+                                <div class="mb-3 mx-3">
+                                <input class="form-control form-control-sm" id="statusUpdateInput" type="text" placeholder="Update your status" />
+                                </div>
+                            </div>
+                            <div class="overflow-auto scrollbar" style="height: 3rem;">
+                                <ul class="nav d-flex flex-column mb-2 pb-1">
+                                <li class="nav-item"><a class="nav-link px-3 d-block" href="/admin"><span class="me-2 text-body align-bottom" height="16px" width="16px" data-feather="pie-chart"></span>Dashboard</a></li>
+                                </ul>
+                            </div>
+                            <div class="card-footer p-0 border-top border-translucent">
+                                <div class="px-3 my-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="/logout"> <span class="me-2" data-feather="log-out"> </span>Sign out</a></div>
+                                <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a class="text-body-quaternary me-1" href="javascript:void(0)">Privacy policy</a>&bull;<a class="text-body-quaternary mx-1" href="javascript:void(0)">Terms</a>&bull;<a class="text-body-quaternary ms-1" href="javascript:void(0)">Cookies</a></div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 </ul>
             </div>
-        </div>
-    </nav>
-    <main id="content">
+        </nav>        
         <!-- Content will be dynamically loaded here -->
         <cfoutput>
-            #flashMessages()#
-            #includeContent()#
-        </cfoutput>
-    </main>
-    <footer class="bg-white pt-5 pb-3 border-top">
-            <div class="container">
-                <div class="row text-lg-left text-center gy-lg-0 gy-3 gx-5">
-                    <div class="col-lg-4">
-                        <img src="/images/wheels-logo.png" width="284" alt="">
-                        <div class="mt-3">
-                            <p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
-                            <p class="fs-12 fw-semibold">Enter your email to stay up to date with the
-                                latest updates from
-                                Wheels.dev</p>
-                        </div>
-                        <div class="pt-3">
-                            <input type="email" class="form-control mb-2 fs-12"
-                                placeholder="your@email.com">
-                            <button
-                                class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe
-                                to
-                                newsletter</button>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <h6 class="fw-bold fs-16 text--secondary">Guides</h6>
-                        <ul class="list-unstyled">
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Introduction</a>
-                            </li>
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Command Line
-                                    Tools</a></li>
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Working with
-                                    Wheels</a></li>
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Handling
-                                    Requests</a></li>
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Multiple
-                                    Formats</a>
-                            </li>
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Displaying
-                                    Views</a>
-                            </li>
-                            <li class="mt-3"><a href="#"
-                                    class="text--secondary fs-14 text-decoration-none">Database
-                                    Interaction</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-6 row gy-lg-0 gy-3 gx-5">
-                        <div class="col-lg-4">
-                            <h6 class="fw-bold fs-16 text--secondary">Meta</h6>
-                            <ul class="list-unstyled">
-                                <cfif StructKeyExists(session, "userId") and session.userId neq ''>
-                                    <li class="mt-3">
-                                        <a href="#" class="text--secondary fs-14 text-decoration-none">
-                                            <cfoutput>
-                                                #session.username#
-                                            </cfoutput>
-                                        </a>
-                                    </li>
-                                    <li class="mt-3"><a href="/logout"
-                                            class="text--secondary fs-14 text-decoration-none">Logout</a>
-                                    </li>	
-                                <cfelse>
-                                    <li class="mt-3"><a href="/login"
-                                        class="text--secondary fs-14 text-decoration-none">Login</a>
-                                    </li>
-                                    <li class="mt-3"><a href="/register"
-                                            class="text--secondary fs-14 text-decoration-none">Register</a>
-                                    </li>		
-                                </cfif>
-                                
-                                <li class="mt-3"><a href="/blog/feed"
-                                        class="text--secondary fs-14 text-decoration-none">Entries
-                                        feed</a>
-                                </li>
-                                <li class="mt-3"><a href="#"
-                                        class="text--secondary fs-14 text-decoration-none">Comments
-                                        feed</a>
-                                </li>
-                                <li class="mt-3"><a href="#"
-                                        class="text--secondary fs-14 text-decoration-none"></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4">
-                            <h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
-                            <ul class="list-unstyled">
-                                <li class="mt-3"><a href="#"
-                                        class="text--secondary fs-14 text-decoration-none">Installing
-                                        and
-                                        Using
-                                        PI</a></li>
-                                <li class="mt-3"><a href="#"
-                                        class="text--secondary fs-14 text-decoration-none">Developing
-                                        Plugins</a></li>
-                                <li class="mt-3"><a href="#"
-                                        class="text--secondary fs-14 text-decoration-none">Publishing
-                                        Plugins</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4">
-                            <h6 class="fw-bold fs-16 text--secondary">External Links</h6>
-                            <ul class="list-unstyled">
-                                <li class="mt-3"><a href="https://github.com/cfwheels/cfwheels/releases"
-                                        class="text--secondary fs-14 text-decoration-none" target="_blank">Source
-                                        Code</a></li>
-                                <li class="mt-3"><a href="https://github.com/cfwheels/cfwheels/issues"
-                                        class="text--secondary fs-14 text-decoration-none" target="_blank">Issue
-                                        Tracker</a>
-                                </li>
-                                <li class="mt-3"><a href="https://opencollective.com/wheels-fw"
-                                        class="text--secondary fs-14 text-decoration-none" target="_blank">Sponsor
-                                        Us</a>
-                                </li>
-                                <li class="mt-3"><a href="/blog"
-                                        class="text--secondary fs-14 text-decoration-none">Community</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-12">
-                            <script src='https://opencollective.com/wheels-dev/banner.js?style={"a":{"color":"rgb(191, 40, 33)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div
-                    class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                    <div>
-                        <p class="p-0 m-0 fs-12">
-                                &copy; 2005-2025 wheels.dev. All rights are reserved.<br>
-                                Wheels is licensed under the Apache License, Version 2.0.
-                        </p>
-                    </div>
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="https://github.com/cfwheels/" class="text-dark" target="_blank">
-                            <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12.2852 0.248535C10.6719 0.248535 9.07436 0.56256 7.58385 1.17268C6.09334 1.7828 4.73904 2.67707 3.59825 3.80442C1.29433 6.08121 0 9.16921 0 12.3891C0 17.7552 3.52585 22.3079 8.40307 23.9226C9.01733 24.0197 9.21389 23.6434 9.21389 23.3156V21.2638C5.8109 21.9923 5.08607 19.637 5.08607 19.637C4.52095 18.2287 3.72241 17.8523 3.72241 17.8523C2.60446 17.0996 3.80841 17.1239 3.80841 17.1239C5.03693 17.2089 5.68804 18.3744 5.68804 18.3744C6.75686 20.2197 8.56278 19.6734 9.26303 19.382C9.3736 18.5929 9.69302 18.0587 10.037 17.7552C7.30969 17.4517 4.44724 16.4076 4.44724 11.7821C4.44724 10.4345 4.91408 9.35395 5.71261 8.49197C5.58976 8.18845 5.15978 6.92584 5.83547 5.28686C5.83547 5.28686 6.86742 4.95907 9.21389 6.5252C10.1844 6.25811 11.241 6.12456 12.2852 6.12456C13.3294 6.12456 14.386 6.25811 15.3565 6.5252C17.703 4.95907 18.7349 5.28686 18.7349 5.28686C19.4106 6.92584 18.9806 8.18845 18.8578 8.49197C19.6563 9.35395 20.1231 10.4345 20.1231 11.7821C20.1231 16.4197 17.2484 17.4396 14.5088 17.7431C14.9511 18.1194 15.3565 18.86 15.3565 19.9891V23.3156C15.3565 23.6434 15.5531 24.0319 16.1796 23.9226C21.0568 22.2958 24.5704 17.7552 24.5704 12.3891C24.5704 10.7948 24.2526 9.21605 23.6352 7.7431C23.0178 6.27014 22.1129 4.93177 20.9721 3.80442C19.8313 2.67707 18.477 1.7828 16.9865 1.17268C15.496 0.56256 13.8985 0.248535 12.2852 0.248535Z"
-                                    fill="#0C1620" />
-                            </svg>
-                        </a>
-                        <a href="https://github.com/cfwheels/cfwheels/discussions" class="text-dark" target="_blank">
-                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M10.5201 0.248536C8.69846 0.247922 6.90798 0.721253 5.32461 1.62202C3.74124 2.52279 2.41945 3.81999 1.48913 5.38619C0.558809 6.95238 0.0519596 8.73366 0.0183855 10.555C-0.0151887 12.3764 0.425667 14.1751 1.29764 15.7745L0.0551367 20.132C0.011417 20.285 0.0102522 20.4471 0.051768 20.6007C0.0932837 20.7543 0.175908 20.8937 0.290748 21.0039C0.405588 21.114 0.548296 21.1908 0.703512 21.2259C0.858728 21.261 1.02058 21.2531 1.17164 21.203L5.26313 19.8398C6.65763 20.6456 8.21882 21.1199 9.82592 21.2258C11.433 21.3317 13.043 21.0666 14.5312 20.4508C16.0194 19.835 17.346 18.8851 18.4084 17.6745C19.4708 16.464 20.2404 15.0253 20.6578 13.4698C21.0753 11.9142 21.1292 10.2835 20.8156 8.70372C20.5019 7.12397 19.8291 5.63754 18.849 4.35943C17.869 3.08132 16.6081 2.04579 15.1638 1.33295C13.7196 0.620115 12.1307 0.249074 10.5201 0.248536ZM7.02013 8.99854C7.02013 8.76647 7.11232 8.54391 7.27641 8.37982C7.4405 8.21572 7.66306 8.12354 7.89513 8.12354H13.1451C13.3772 8.12354 13.5997 8.21572 13.7638 8.37982C13.9279 8.54391 14.0201 8.76647 14.0201 8.99854C14.0201 9.2306 13.9279 9.45316 13.7638 9.61725C13.5997 9.78135 13.3772 9.87354 13.1451 9.87354H7.89513C7.66306 9.87354 7.4405 9.78135 7.27641 9.61725C7.11232 9.45316 7.02013 9.2306 7.02013 8.99854ZM7.89513 11.6235H11.3951C11.6272 11.6235 11.8497 11.7157 12.0138 11.8798C12.1779 12.0439 12.2701 12.2665 12.2701 12.4985C12.2701 12.7306 12.1779 12.9532 12.0138 13.1173C11.8497 13.2814 11.6272 13.3735 11.3951 13.3735H7.89513C7.66306 13.3735 7.4405 13.2814 7.27641 13.1173C7.11232 12.9532 7.02013 12.7306 7.02013 12.4985C7.02013 12.2665 7.11232 12.0439 7.27641 11.8798C7.4405 11.7157 7.66306 11.6235 7.89513 11.6235Z"
-                                    fill="#0C1620" />
-                            </svg>
-
-                        </a>
-                        <a href="https://twitter.com/CFonWheels" class="text-dark" target="_blank">
-                            <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <mask id="mask0_129_385" style="mask-type:luminance"
-                                    maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
-                                    <path d="M0.845703 0.248535H24.5386V23.9414H0.845703V0.248535Z"
-                                        fill="white" />
-                                </mask>
-                                <g mask="url(#mask0_129_385)">
-                                    <path
-                                        d="M19.5038 1.35693H23.1373L15.2002 10.4516L24.5386 22.8295H17.2276L11.4973 15.3239L4.94795 22.8295H1.3111L9.79992 13.0985L0.845703 1.35863H8.3428L13.5146 8.21772L19.5038 1.35693ZM18.2261 20.6497H20.24L7.24278 3.42329H5.08334L18.2261 20.6497Z"
-                                        fill="#0C1620" />
-                                </g>
-                            </svg>
-                        </a>
-                        <a href="https://www.facebook.com/cfwheels" class="text-dark" target="_blank">
-                            <svg width="13" height="24" viewBox="0 0 13 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M8.71454 13.8719H11.6396L12.8096 9.13336H8.71454V6.76407C8.71454 5.54389 8.71454 4.39479 11.0546 4.39479H12.8096V0.414385C12.4282 0.363446 10.9879 0.248535 9.46686 0.248535C6.29026 0.248535 4.03447 2.21149 4.03447 5.81636V9.13336H0.524414V13.8719H4.03447V23.9414H8.71454V13.8719Z"
-                                    fill="#0C1620" />
-                            </svg>
-                        </a>
-                    </div>
+            <div class="content">
+				<div class="mb-9">
+                    #flashMessages()#
+                    #includeContent()#
                 </div>
             </div>
-        </div>
-    </footer>
+        </cfoutput>
+    <script>
+        var navbarTopStyle = window.config.config.phoenixNavbarTopStyle;
+        var navbarTop = document.querySelector('.navbar-top');
+        if (navbarTopStyle === 'darker') {
+        navbarTop.setAttribute('data-navbar-appearance', 'darker');
+        }
+
+        var navbarVerticalStyle = window.config.config.phoenixNavbarVerticalStyle;
+        var navbarVertical = document.querySelector('.navbar-vertical');
+        if (navbarVertical && navbarVerticalStyle === 'darker') {
+        navbarVertical.setAttribute('data-navbar-appearance', 'darker');
+        }
+    </script>
+    </main>
+    <script>
+        function updateActiveNavLink() {
+            var currentUrl = window.location.pathname;
+            var navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+            var allParents = document.querySelectorAll(".parent");
+            var allToggles = document.querySelectorAll(".nav-link.dropdown-indicator");
+
+            // Remove 'active' class from all links, 'show' class from all parents, and reset aria-expanded
+            navLinks.forEach(link => link.classList.remove("active"));
+            allParents.forEach(parent => parent.classList.remove("show"));
+            allToggles.forEach(toggle => toggle.setAttribute("aria-expanded", "false"));
+
+            navLinks.forEach(function (link) {
+                if (link.getAttribute("href") === currentUrl) {
+                    link.classList.add("active");
+
+                    // Find the closest parent and add 'show' class
+                    var parent = link.closest(".parent");
+                    if (parent) {
+                        parent.classList.add("show");
+                        
+                        // Traverse up to find all parent toggles and mark them expanded
+                        var parentToggle = parent.closest(".parent-wrapper").previousElementSibling;
+                        while (parentToggle) {
+                            if (parentToggle.classList.contains("nav-link")) {
+                                parentToggle.setAttribute("aria-expanded", "true");
+                            }
+                            parentToggle = parentToggle.closest(".parent-wrapper")?.previousElementSibling;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Run on page load
+        document.addEventListener("DOMContentLoaded", updateActiveNavLink);
+
+        // Run after any HTMX request completes
+        document.addEventListener("htmx:afterSettle", updateActiveNavLink);
+    </script>
+    <cfoutput>
+        #javascriptIncludeTag(source="anchor.min.js")#
+        #javascriptIncludeTag(source="all.min.js")#
+        #javascriptIncludeTag(source="lodash.min.js")#
+        #javascriptIncludeTag(source="phoenix.js")#
+    </cfoutput>
 </body>
 </html>
