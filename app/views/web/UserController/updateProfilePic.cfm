@@ -1,11 +1,9 @@
-<main class="w-100 vh-100 d-flex justify-content-center align-items-center">
+<main class="w-100 vh-100 d-flex justify-content-center align-items-center main-login position-relative">
     <div class="row w-100 m-lg-auto m-2">
-        <div class="col-lg-5 bg-white col-12 mx-auto p-3 shadow rounded-18">
+        <div class="col-lg-5 bg-white col-12 mx-auto p-3 rounded-18">
             <div class="mt-2">
-                <div class="border-bottom text-center pb-3">
-                    <h1 class="fs-24 mb-0 fw-bold text--secondary">Welcome to Wheels</h1>
-                    <p class="fs-16">Change Profile Picture</p>
-                </div>
+                <h1 class="fs-24 mb-0 fw-bold text--secondary">Change Profile Picture</h1>
+
                 <div class="text-center pb-3 my-4">
                     <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
                         <cfset session.profilePic = "avatar-rounded.webp">
@@ -21,8 +19,8 @@
                         <div id="fileError" class="text-danger fs-14 mt-1"></div>
                     </div>
 
-                    <div class="d-flex flex-wrap gap-2 align-items-start">
-                        <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Save</button>
+                    <div class="d-flex flex-wrap justify-content-center gap-2 align-items-start">
+                        <button type="submit" class="bg--primary text-white px-3 py-2 rounded fs-14">Save</button>
                         <button type="button" class="bg--default text-dark px-3 py-2 rounded fs-14" onclick="history.back()">Cancel</button>
                     </div>
                 </form>
