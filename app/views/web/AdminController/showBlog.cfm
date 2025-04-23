@@ -58,9 +58,6 @@
                                 <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
                             </div>
                         </div>
-                        <div class="col-lg-5 col-12 text-lg-end text-center">
-                            <img src="#blog.coverImagePath#" class="img-fluid size-320 mx-auto rounded-4" alt="blog-cover-picture">
-                        </div>
 
                         <div class="col-12">
                             #blog.content#
