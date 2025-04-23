@@ -81,12 +81,21 @@
 			<link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
 			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
-
+			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
+			
 			<script src="/javascripts/jquery.min.js"></script>
+			<script src="/javascripts/dataTables.min.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/highlighter.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
 			<script src="/javascripts/bootstrap.js"></script>
+			<script src="/javascripts/config.js"></script>
+			<cfoutput>
+				#javascriptIncludeTag(source="anchor.min.js")#
+				#javascriptIncludeTag(source="all.min.js")#
+				#javascriptIncludeTag(source="lodash.min.js")#
+				#javascriptIncludeTag(source="phoenix.js")#
+			</cfoutput>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
