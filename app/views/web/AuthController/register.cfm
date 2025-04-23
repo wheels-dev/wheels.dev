@@ -1,7 +1,4 @@
 <main class="w-100 vh-100 position-relative">
-    <div class="pt-3 ps-5 position-absolute top-0 start-0">
-        <img src="/images/wheels-logo.png" width="200" alt="Logo">
-    </div>
     <div class="row w-100 h-100 m-lg-auto">
         <div class="col-lg-6 bg-white col-12">
             <div class="flex-column d-flex py-4 justify-content-center h-100 gap-3 align-items-center">
@@ -138,8 +135,7 @@
                             </div>
                             <div class="invalid-feedback">Passwords must match.</div>
                         </div>
-
-                        <div class="mb-3 form-check">
+                        <div class="form-check">
                             <input name="termsCheck" type="checkbox" class="form-check-input form-check-input-primary"
                                 id="termsCheck" required>
                             <label class="form-check-label text--secondary fs-14" for="termsCheck">Agree to Terms &
@@ -147,7 +143,11 @@
                                 Policy</label>
                             <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
                         </div>
-
+                        <div class="mb-3 form-check">
+                            <input name="newsletter" type="checkbox" class="form-check-input form-check-input-primary"
+                                id="newsletter">
+                            <label class="form-check-label text--secondary fs-14" for="newsletter">Subscribe Newsletter</label>
+                        </div>
                         <!--- <div class="mb-3">
                             <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
                             <div class="invalid-feedback d-block" id="captchaError" style="display: none;">Please complete the CAPTCHA.</div>
