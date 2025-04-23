@@ -43,7 +43,11 @@ component extends="app.Controllers.Controller" {
         try {
             
             // Get the full user object (assuming session.user might just have the ID)
-            var redirectUrl = session.keyExists("redirectAfterLogin") ? session.redirectAfterLogin : urlFor(route="home");
+            if(user.role.name == 'admin'){
+                var redirectUrl = urlFor(route="admin-blog");
+            }else{
+                var redirectUrl = session.keyExists("redirectAfterLogin") ? session.redirectAfterLogin : urlFor(route="home");
+            }
             
             // Clear the session variable after use
             structDelete(session, "redirectAfterLogin");

@@ -52,6 +52,7 @@ component extends="app.Models.Model" {
         var blogs = findAll(
             where='statusid <> 1', 
             include="User", 
+            maxRows=10,
             order="COALESCE(post_created_date, blog_posts.createdAt) DESC"
         );
         return blogs;

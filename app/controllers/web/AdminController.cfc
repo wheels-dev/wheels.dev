@@ -14,6 +14,7 @@ component extends="app.Controllers.Controller" {
 
     function blog() {
         blogs = getAllBlogs();
+        
     }
 
     function approve() {
