@@ -2,8 +2,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic", params="key", paramsTypes="integer", handler="index");
-        usesLayout("/layout");
+        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess", params="key", paramsTypes="integer", handler="index");
+        usesLayout("/web/AdminController/layout");
+        filters(through="checkAdminAccess");
     }
 
     // read user
@@ -41,37 +42,12 @@ component extends="app.Controllers.Controller" {
 
         // Save user logic here
         try {
-
-            params.profilePicture = "";
-            var uploadPath = expandPath("/files/"); // Define the upload directory
-
-            if (!directoryExists(uploadPath)) {
-                directoryCreate(uploadPath);
-            }
-
-            // Handle file upload
-            if (structKeyExists(params, "profilePicture") && isDefined("params.profilePicture")) {
-                var uploadedFile = fileUpload(uploadPath, "profilePicture");
-
-                if (!structIsEmpty(uploadedFile) && structKeyExists(uploadedFile, "serverFile")) {
-                    var originalFileName = uploadedFile.serverFile; // This is the uploaded file name
-                    var fileExtension = listLast(originalFileName, "."); // Extract extension
-                    var uniqueFileName = createUUID() & "." & fileExtension; // Generate unique name
-
-                    // Rename file to unique name
-                    var newFilePath = uploadPath & "/" & uniqueFileName;
-                    fileMove(uploadedFile.serverDirectory & "/" & originalFileName, newFilePath);
-
-                    // Store the relative file path
-                    params.profilePicture = "/files/" & uniqueFileName;
-                }
-            }
-
             var message = saveUser(params);
-            redirectTo(action="index");
+
+            redirectTo(route="user", success="User successfully added!");
         } catch (any e) {
             // Handle error
-            redirectTo(action="error", errorMessage="Failed to save user.");
+            redirectTo(action="error", error="Failed to save user.");
         }
     }
 
@@ -197,6 +173,18 @@ component extends="app.Controllers.Controller" {
     }
     // Business Logic
 
+    private function checkAdminAccess() {
+        // Ensure only admin users can access these methods
+        if (!isCurrentUserAdmin()) {
+            // Save the current URL in session
+            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
+            // Redirect to login page
+            redirectTo(controller="AuthController", action="login", route="auth-login");
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Count total number of users
      */
@@ -254,7 +242,7 @@ component extends="app.Controllers.Controller" {
                     user.firstname = userData.firstName;
                     user.lastname = userData.lastName;
                     user.email = userData.email;
-                    user.passwordHash = hash(userData.passwordHash);
+                    user.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
                     user.status = application.wo.SetActive();
                     user.roleid = userData.roleid;
                     user.updatedAt = now();
@@ -276,7 +264,7 @@ component extends="app.Controllers.Controller" {
                     newUser.firstname = userData.firstName;
                     newUser.lastname = userData.lastName;
                     newUser.email = userData.email;
-                    newUser.passwordHash = hash(userData.passwordHash);
+                    newUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
                     newUser.status = application.wo.SetActive();
                     newUser.roleid = userData.roleid;
                     newUser.createdAt = now();
