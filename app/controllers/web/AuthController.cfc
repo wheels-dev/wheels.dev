@@ -69,7 +69,7 @@ component extends="app.Controllers.Controller" {
         try {
             // Determine redirect URL based on role or saved URL
             if (isObject(user.role) && user.role.name == 'Admin') { // Use 'Admin' consistently
-                redirectUrl = urlFor(route="admin-blog");
+                redirectUrl = urlFor(route="admin-dashboard"); // Admin dashboard route
             } else if (session.keyExists("redirectAfterLogin")) {
                 redirectUrl = session.redirectAfterLogin;
                 structDelete(session, "redirectAfterLogin"); // Clear after use
@@ -176,6 +176,9 @@ component extends="app.Controllers.Controller" {
                 newUser.passwordhash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
                 newUser.roleid = GetUserRoleId(); // user role
                 newUser.status = SetInactive(); // set inactive
+                if(structKeyExists(userData, "newsletter")){
+                newUser.newsletter = true;
+                }
 
                 if(newUser.save()){
                     // Generate a unique verification token

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <mta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
+	<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="/stylesheets/font.css" rel="stylesheet">
     <link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
@@ -53,10 +55,12 @@
                     <ul class="navbar-nav flex-column" id="navbarVerticalNav">
                         <li class="nav-item">
                             <div class="nav-item-wrapper mb-3">
-                                <a class="nav-link label-1" href="/admin/dashboard" role="button" data-bs-toggle="" aria-expanded="false">
+                            <cfoutput>
+                                <a class="nav-link label-1" href="#urlFor(route='admin-dashboard')#" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-bar-chart-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Dashboard</span></span>
                                     </div>
                                 </a>
+                            </cfoutput>
                             </div>
                             <div class="nav-item-wrapper mb-3">
                                 <a class="nav-link label-1" href="/admin/user" role="button" data-bs-toggle="" aria-expanded="false">
@@ -67,6 +71,18 @@
                             <div class="nav-item-wrapper mb-3">
                                 <a class="nav-link label-1" href="/admin/blog" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-chat-left-text-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Blogs</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/testimonials" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-person-lines-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Testimonials</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-globe fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Back to site</span></span>
                                     </div>
                                 </a>
                             </div>
@@ -138,7 +154,18 @@
         <cfoutput>
             <div class="content">
 				<div class="mb-9">
-                    #flashMessages()#
+                    <cfif flashKeyExists("error")>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            #flash("error")#
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </cfif>	
+                    <cfif flashKeyExists("success")>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            #flash("success")#
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </cfif>
                     #includeContent()#
                 </div>
             </div>

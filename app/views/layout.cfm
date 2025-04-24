@@ -136,6 +136,11 @@
 							<li class="nav-item px-3">
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
+							<cfif isCurrentUserAdmin()>
+								<li class="nav-item px-3">
+									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/admin">Dashboard</a>
+								</li>
+							</cfif>
 							<cfif StructKeyExists(session, "userId") and session.userId neq ''>
 								<li class="nav-item dropdown px-3">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">

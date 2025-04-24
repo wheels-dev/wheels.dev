@@ -124,6 +124,14 @@ component extends="app.Models.Model" {
             label="Last Updated"
         );
         
+        property(
+            name="status", 
+            column="status", 
+            dataType="string", 
+            label="Approval Status",
+            defaultValue="Pending"
+        );
+
         // Relationships
         belongsTo(name="User", foreignKey="userId");
         
