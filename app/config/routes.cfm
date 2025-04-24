@@ -30,7 +30,7 @@
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
 			// Admin Controls
-			.get(name = "admin-index", pattern = "admin", to = "web.AdminController##index")
+			// .get(name = "admin-index", pattern = "admin", to = "web.AdminController##index")
 			.get(name = "admin-blog", pattern = "admin/blog", to = "web.AdminController##blog")
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "web.AdminController##showBlog")
 			.get(name = "blog-List", pattern = "admin/blog/list", to = "web.AdminController##blogList")
@@ -85,9 +85,14 @@
 			.get(name="approve_testimonial", pattern="testimonial/approve/[key]", to="web.testimonials##approve")
 			.get(name="feature_testimonial", pattern="testimonial/feature/[key]", to="web.testimonials##feature")
 			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
+			.get(name="admin-testimonials", pattern="admin/testimonials", to="web.adminTestimonialController##testimonials")
+			.get(name = "admin-view-testimonials", pattern = "admin/testimonials/view/[id]", to = "web.adminTestimonialController##testimonialDetails")
+			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "web.adminTestimonialController##approve")
+			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "web.adminTestimonialController##reject")
 			
 			.post(name="clear_testimonial_prompt", pattern="testimonial/clear-prompt", to="web.Testimonial##clearPromptFlag") // Use POST to indicate an action
 
+			.get(name="admin-dashboard", pattern="admin", to="web.dashboardController##dashboard")
 			// routes for testimonials
 			.resources("web.testimonial")
 		.end()
