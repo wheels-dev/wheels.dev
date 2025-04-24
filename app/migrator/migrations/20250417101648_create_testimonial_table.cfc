@@ -25,6 +25,7 @@ component extends="wheels.migrator.Migration" hint="creates testimonials table a
                 t.string(columnNames='website_url', null=true, limit=255);
                 t.boolean(columnNames='is_featured', null=false, default=false);
                 t.boolean(columnNames='is_approved', null=false, default=false);
+                t.string(columnNames='status', null=false, default="Pending", limit=10);
                 t.timestamps();
                 t.create();
                 
