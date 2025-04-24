@@ -576,27 +576,6 @@ component extends="app.Controllers.Controller" {
     }
     
     /**
-     * Before filter: Check if user is logged in
-     */
-    private function restrictAccess() {
-        if (!StructKeyExists(session, "user") || !StructKeyExists(session.user, "id")) {
-            if (isHtmx()) {
-                renderWith(data={
-                    "success"=false, 
-                    "message"="You must be logged in to access this feature."
-                }, status=401);
-                return false;
-            } else {
-                saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
-                flashInsert(error="You must be logged in to access this page.");
-                redirectTo(route="login");
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    /**
      * Before filter: Check if user is an admin
      */
     private function requireAdmin() {

@@ -7,8 +7,9 @@
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Login</h1>
                 <p class="fs-16 text--secondary fw-medium pt-2">Please login to your account</p>
-                <form hx-boost="true" class="pt-4 needs-validation" id="loginForm" novalidate hx-validate="true"
-                    hx-post="/auth/authenticate" hx-target="body" hx-swap="outerHTML" hx-push-url="true">
+
+                <form hx-boost="true" class="pt-4 needs-validation" id="loginForm" novalidate
+                    hx-post="/auth/authenticate" hx-swap="none">
 
                     <div class="mb-3">
                         <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
@@ -28,7 +29,8 @@
                                 class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="email"
                                 name="email" required>
                         </div>
-                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                        <div class="invalid-feedback" data-field-error="email">Please enter a valid email address.</div>
+                        <div class="invalid-feedback" data-empty-error="email">Email field cannot be empty!</div>
                     </div>
                     <div class="mb-3">
                         <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
@@ -53,7 +55,8 @@
                                 class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="passwordHash"
                                 name="passwordHash" required minlength="8">
                         </div>
-                        <div class="invalid-feedback">Password must be at least 8 characters long.</div>
+                        <div class="invalid-feedback" data-field-error="passwordHash">Password must be at least 8 characters long.</div>
+                        <div class="invalid-feedback" data-empty-error="passwordHash">Password field cannot be empty!</div>
                     </div>
 
                     <div class="space-y-3">
@@ -67,7 +70,14 @@
                         <div class="text-center">
                             <p class="fs-14 text--secondary fw-medium">
                                 Don't have an account ?
-                                <a href="/register" class="text--primary">Register here</a>
+                                <a href="/register"
+                                    class="text--primary"
+                                    hx-get="/register"
+                                    hx-target="body"
+                                    hx-swap="outerHTML"
+                                    hx-push-url="true">
+                                    Register here
+                                </a>
                             </p>
                         </div>
                     </div>
@@ -85,55 +95,131 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('loginForm');
+        const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('passwordHash');
+        const loginButton = loginForm.querySelector('button[type="submit"]');
 
-        form.addEventListener('submit', function (e) {
-            let hasErrors = false;
-
-            clearErrors();
-
-            const emailValue = emailInput.value.trim();
-            if (!validateEmail(emailValue)) {
-                showError(emailInput, 'Please enter a valid email address.');
-                hasErrors = true;
-            }
-
-            const passwordValue = passwordInput.value.trim();
-            if (passwordValue.length < 8) {
-                showError(passwordInput, 'Password must be at least 8 characters long.');
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                e.preventDefault();
-            }
-        });
-
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email.toLowerCase());
+        // Function to clear previous Bootstrap validation messages and styles
+        function clearBootstrapValidationStyles() {
+            loginForm.classList.remove('was-validated');
+            const errorMessages = loginForm.querySelectorAll('.invalid-feedback');
+            errorMessages.forEach(function(el) {
+                el.style.display = 'none'; // Hide Bootstrap messages
+            });
+            emailInput.classList.remove('is-invalid');
+            passwordInput.classList.remove('is-invalid');
         }
 
-        function showError(input, message) {
-            const errorDiv = input.closest('.mb-3').querySelector('.invalid-feedback');
-            input.classList.add('is-invalid');
+        function showBootstrapValidationError(inputElement) {
+            inputElement.classList.add('is-invalid');
+            const errorSelector = `.invalid-feedback[data-field-error="${inputElement.name}"]`;
+            const errorDiv = inputElement.closest('.mb-3').querySelector(errorSelector);
             if (errorDiv) {
-                errorDiv.textContent = message;
                 errorDiv.style.display = 'block';
             }
         }
 
-        function clearErrors() {
-            [emailInput, passwordInput].forEach(input => {
-                input.classList.remove('is-invalid');
-                const errorDiv = input.closest('.mb-3').querySelector('.invalid-feedback');
-                if (errorDiv) {
-                    errorDiv.textContent = '';
-                    errorDiv.style.display = 'none';
+        loginForm.addEventListener('htmx:beforeRequest', function(event) {
+            const requestPath = event.detail.requestConfig.path;
+            const formAction = loginForm.getAttribute('hx-post'); // Get the target URL from the form
+
+            if (requestPath !== formAction) {
+                return; // Exit validation if the target isn't the login endpoint
+            }
+
+            clearBootstrapValidationStyles(); // Clear old Bootstrap styles first
+            let formIsValid = true;
+            let notificationShown = false; // Track if a notifier message was shown
+
+            // Validate Email
+            const emailValue = emailInput.value.trim();
+            if (emailValue === '') {
+                notifier.show('Required', 'Email field cannot be empty!', 'warning', '', 4000);
+                emailInput.classList.add('is-invalid');
+                formIsValid = false;
+                notificationShown = true;
+            } else if (!emailInput.checkValidity()) { // Check built-in validation (required, email format)
+                showBootstrapValidationError(emailInput);
+                formIsValid = false;
+            }
+
+            // Validate Password
+            const passwordValue = passwordInput.value.trim();
+            if (passwordValue === '') {
+                // Only show password empty notification if email wasn't already empty
+                if (!notificationShown) {
+                    notifier.show('Required', 'Password field cannot be empty!', 'warning', '', 4000);
+                    notificationShown = true;
                 }
-            });
-        }
+                passwordInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else if (!passwordInput.checkValidity()) { // Check built-in validation (required, minlength)
+                showBootstrapValidationError(passwordInput); // Use Bootstrap for length error
+                formIsValid = false;
+            }
+
+            // Prevent HTMX Request If Invalid
+            if (!formIsValid) {
+                event.preventDefault();
+
+                if (!notificationShown) {
+                    loginForm.classList.add('was-validated');
+                }
+            }
+        });
+
+        // HTMX Request Handling (After Request is Sent and Response Received)
+        loginForm.addEventListener('htmx:afterRequest', function (event) {
+            const xhr = event.detail.xhr;
+            const target = event.detail.target;
+
+            const requestPath = event.detail.requestConfig.path;
+            const formAction = loginForm.getAttribute('hx-post'); // Get the target URL from the form
+
+            if (requestPath !== formAction) {
+                return; // Exit validation if the target isn't the login endpoint
+            }
+
+            clearBootstrapValidationStyles();
+
+            try {
+                if (xhr.responseText && xhr.responseText.trim() !== '') {
+                    const response = JSON.parse(xhr.responseText);
+
+                    if (event.detail.successful) {
+                        if (response.success) {
+                            notifier.show('Success!', response.message || 'Login successful!', 'success', '', 4000);
+                            if (response.redirectUrl) {
+                                setTimeout(() => {
+                                    window.location.href = response.redirectUrl;
+                                }, 100); // Delay allows user to see notification
+                            }
+                        } else {
+                            // Server returned 2xx but indicated logical failure (e.g., bad password)
+                            notifier.show('Login Failed', response.message || 'Invalid credentials.', 'warning', '', 4000);
+                            passwordInput.value = ''; // Clear password
+                        }
+                    } else { // HTTP 4xx or 5xx status
+                        notifier.show('Login Failed', response.message || 'Invalid credentials or server error.', 'danger', '', 4000);
+                        passwordInput.value = '';
+                    }
+                } else {
+                    // Handle empty response from server
+                    notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
+                    passwordInput.value = '';
+                }
+
+            } catch (e) {
+                let errorMsg = 'An unexpected error occurred. Please try again.';
+                if (xhr.responseText && xhr.responseText.trim() !== '') {
+                    errorMsg = 'Error processing server response. Please try again.';
+                } else if (xhr.status === 0) {
+                    errorMsg = 'Network error or request cancelled. Please check connection.';
+                }
+                notifier.show('Error', errorMsg, 'danger', '', 4000);
+                passwordInput.value = '';
+            }
+        });
     });
 </script>
