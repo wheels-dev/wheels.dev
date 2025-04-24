@@ -121,6 +121,13 @@ component extends="app.Models.Model" {
             label="User Role"
         );
 
+        property(
+            name="newsletter", 
+            column="newsletter_subscription", 
+            dataType="integer", 
+            label="news letter subbscription",
+            defaultValue=false
+        );
         // Relationships
         belongsTo(name="Role", foreignKey="roleId");
         
