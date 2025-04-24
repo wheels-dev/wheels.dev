@@ -3,8 +3,9 @@ component extends="app.Controllers.Controller" {
 
     function config() {
         verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess", params="key", paramsTypes="integer", handler="index");
-        usesLayout("/web/AdminController/layout");
-        filters(through="checkAdminAccess");
+        usesLayout(template="/web/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
+        filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
+        filters(through="checkUserAccess", only="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
     }
 
     // read user
@@ -44,7 +45,7 @@ component extends="app.Controllers.Controller" {
         try {
             var message = saveUser(params);
 
-            redirectTo(route="user", success="User successfully added!");
+            redirectTo(route="user", success="#message#");
         } catch (any e) {
             // Handle error
             redirectTo(action="error", error="Failed to save user.");
@@ -176,6 +177,18 @@ component extends="app.Controllers.Controller" {
     private function checkAdminAccess() {
         // Ensure only admin users can access these methods
         if (!isCurrentUserAdmin()) {
+            // Save the current URL in session
+            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
+            // Redirect to login page
+            redirectTo(controller="AuthController", action="login", route="auth-login");
+            return false;
+        }
+        return true;
+    }
+
+    private function checkUserAccess() {
+        // Ensure only admin users can access these methods
+        if (!(structKeyExists(session, "USERID") && structKeyExists(session, "role"))) {
             // Save the current URL in session
             saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
             // Redirect to login page
