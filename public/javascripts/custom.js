@@ -47,59 +47,65 @@ var contributorsSwiper = new Swiper(".testimonialsSwiper", {
     },
 });
 
-const handleBlogFilter = (type, button) => {
-    const blogsContainer = document.getElementById('blogsContainer');
-    const filtersContainer = document.getElementById('filtersContainer');
-    const archives = document.getElementById('Archives');
-    const categories = document.getElementById('Categories');
+if (typeof handleBlogFilter === 'undefined') {
+    const handleBlogFilter = (type, button) => {
+        const blogsContainer = document.getElementById('blogsContainer');
+        const filtersContainer = document.getElementById('filtersContainer');
+        const archives = document.getElementById('Archives');
+        const categories = document.getElementById('Categories');
 
-    blogsContainer.classList.remove('col-lg-12', 'col-lg-10');
-    blogsContainer.classList.add(type === 'All' ? 'col-lg-12' : 'col-lg-10');
-    filtersContainer.classList.remove('d-none');
+        blogsContainer.classList.remove('col-lg-12', 'col-lg-10');
+        blogsContainer.classList.add(type === 'All' ? 'col-lg-12' : 'col-lg-10');
+        filtersContainer.classList.remove('d-none');
 
-    const buttons = document.querySelectorAll('.filter-button');
-    buttons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-    button.classList.add('active');
+        const buttons = document.querySelectorAll('.filter-button');
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
 
-    Array.from(filtersContainer.children).forEach(child => child.classList.add('d-none'));
+        Array.from(filtersContainer.children).forEach(child => child.classList.add('d-none'));
 
-    if (type === 'All') {
-        filtersContainer.classList.add('d-none');
-    } else if (type === 'Archives') {
-        archives.classList.remove('d-none');
-        categories.classList.add('d-none');
-    } else {
-        archives.classList.add('d-none');
-        document.getElementById(type).classList.remove('d-none');
+        if (type === 'All') {
+            filtersContainer.classList.add('d-none');
+        } else if (type === 'Archives') {
+            archives.classList.remove('d-none');
+            categories.classList.add('d-none');
+        } else {
+            archives.classList.add('d-none');
+            document.getElementById(type).classList.remove('d-none');
+        }
     }
 }
 
-const handleApiSection = (type, button) => {
+if (typeof handleApiSection === 'undefined') {
+    const handleApiSection = (type, button) => {
 
-    const sectionContainer = document.getElementById('sectionContainer');
-    const functionsContainer = document.getElementById('functionsContainer');
+        const sectionContainer = document.getElementById('sectionContainer');
+        const functionsContainer = document.getElementById('functionsContainer');
 
-    const buttons = document.querySelectorAll('.filter-button');
-    buttons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-    button.classList.add('active');
+        const buttons = document.querySelectorAll('.filter-button');
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
 
-    if(type === "All"){
-        sectionContainer.classList.add("d-none");
-        functionsContainer.classList.remove("d-none");
-    }else{
-        sectionContainer.classList.remove("d-none");
-        functionsContainer.classList.add("d-none");
+        if(type === "All"){
+            sectionContainer.classList.add("d-none");
+            functionsContainer.classList.remove("d-none");
+        }else{
+            sectionContainer.classList.remove("d-none");
+            functionsContainer.classList.add("d-none");
+        }
     }
 }
 
-const handleApiFilters = (button) => {
-    const buttonContainer = document.querySelectorAll('.api-filter-buttons button');
-    buttonContainer.forEach(btn => {
-       btn.classList.remove('active');
-    });
-    button.classList.add('active');
+if (typeof handleApiFilters === 'undefined') {
+    const handleApiFilters = (button) => {
+        const buttonContainer = document.querySelectorAll('.api-filter-buttons button');
+        buttonContainer.forEach(btn => {
+        btn.classList.remove('active');
+        });
+        button.classList.add('active');
+    }
 }

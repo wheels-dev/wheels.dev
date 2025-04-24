@@ -5,19 +5,21 @@ component extends="app.Controllers.Controller" {
         usesLayout("/layout");
     }
 
-	function login() {
-        if (structKeyExists(session, "USERID") && structKeyExists(session, "role")) {
+    function login() {
+        // If already logged in, redirect
+        if (structKeyExists(session, "userID") && structKeyExists(session, "role")) {
             redirectTo(controller="HomeController", action="index", route="home");
+            return;
         }
-	}
-	
+    }
+
     function authenticate() {
         param name="params.email" default="";
         param name="params.passwordHash" default="";
 
-        try{
-            // Validate credentials using AuthService
-            user = validateCredentials(params.email, params.passwordHash);
+        try {
+            // Validate credentials
+            var user = validateCredentials(params.email, params.passwordHash);
 
             if (isObject(user)) {
                 // Store user data in session
@@ -25,48 +27,74 @@ component extends="app.Controllers.Controller" {
                 session.username = user.fullname;
                 session.role = user.role.name;
                 session.profilePic = user.profilePicture;
-                // Redirect to admin dashboard - send HTMX Redirect Header
-                handleLoginSuccess();
-                session.message = "Login Successfully!"
-                header name="HX-Redirect" value="#urlFor(route='home')#";
-                return;
+
+                // Get success data
+                var successData = handleLoginSuccess(user); // Pass user object
+
+                // Return JSON success response
+                data={
+                    "success" = true,
+                    "message" = "Login Successful!",
+                    "redirectUrl" = successData.redirectUrl
+                };
+                renderWith(data=data, hideDebugInformation=true, layout='/responseLayout');
+                return; 
+
             } else {
-                renderText("<p style='color:red;'>Invalid login credentials.</p>");
+                // Return JSON error response with 401 status code
+                data={
+                    "success" = false,
+                    "message" = "Invalid login credentials."
+                };
+                renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
+                return;
             }
         } catch (any e) {
-            // Handle error
-            redirectTo(action="error", errorMessage="Invalid login credentials.");
-        }
-	}
+            // Log the actual error
 
-    private function handleLoginSuccess() {
+            // Return a generic JSON error response with 500 status code
+            data={
+                "success" = false,
+                "message" = "An unexpected error occurred during login. Please try again."
+            };
+            renderWith(data=data, hideDebugInformation=true, status=500 ,layout='/responseLayout'); // Internal Server Error status
+            return;
+        }
+    }
+
+    private struct function handleLoginSuccess(required User user) {
+        var redirectUrl = "";
+        var triggerJson = ""; // Store potential trigger JSON string
+
         try {
-            
-            // Get the full user object (assuming session.user might just have the ID)
-            if(user.role.name == 'admin'){
-                var redirectUrl = urlFor(route="admin-blog");
-            }else{
-                var redirectUrl = session.keyExists("redirectAfterLogin") ? session.redirectAfterLogin : urlFor(route="home");
+            // Determine redirect URL based on role or saved URL
+            if (isObject(user.role) && user.role.name == 'Admin') { // Use 'Admin' consistently
+                redirectUrl = urlFor(route="admin-blog");
+            } else if (session.keyExists("redirectAfterLogin")) {
+                redirectUrl = session.redirectAfterLogin;
+                structDelete(session, "redirectAfterLogin"); // Clear after use
+            } else {
+                redirectUrl = urlFor(route="home"); // Default redirect
             }
-            
-            // Clear the session variable after use
-            structDelete(session, "redirectAfterLogin");
 
-            var userToCheck = model("User").findByKey(session.userID);
-
-            // Check if the user has submitted a testimonial
-            if (IsObject(userToCheck) && !userToCheck.hasSubmittedTestimonial()) {
-                // Set a flag in the flash scope.
-                // Flash scope persists only for the next request, which is perfect for this.
-                session.promptForTestimonial = true;
-                cfheader(name="HX-Trigger" value="showTestimonialModal");
+            // Check if the user has submitted a testimonial (non-admin only)
+            if (isObject(user.role) && user.role.name != 'Admin' && !user.hasSubmittedTestimonial()) {
+                session.promptForTestimonial = true; // Still set session flag for layout script
+                // Set HX-Trigger header - HTMX will process this even with JSON response
+                header(name="HX-Trigger", value='{"showTestimonialModal": {}}');
             }
-            // Redirect to the intended page or default to dashboard
-            redirectTo(url=redirectUrl);
+
         } catch (any e) {
-            // Log the error, but don't prevent login
+            // Log the error
+
+            // Fallback to home redirect if error occurs
+            redirectUrl = urlFor(route="home");
         }
-        redirectTo(route="home");
+
+        // Return the calculated redirect URL and any trigger info
+        return {
+            redirectUrl = redirectUrl
+        };
     }
 
     function logout() {
