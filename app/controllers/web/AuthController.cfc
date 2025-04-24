@@ -190,7 +190,7 @@ component extends="app.Controllers.Controller" {
 
                     // Send verification email
                     if(sendVerificationEmail(newUser.email, verificationToken)){
-                        message = "User created successfully. Please check your email to verify your account.";
+                        message = "Sign Up successfull. Please check your email to verify your account.";
                     }else{
                         message = "Error sending verification email.";
                     }
