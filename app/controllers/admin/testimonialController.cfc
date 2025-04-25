@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
     function config() {
         verifies(except="testimonials,testimonialDetails,delete,approve,reject,checkAdminAccess", params="key", paramsTypes="integer");
         usesLayout(template="/layout", except="testimonials,store,delete,approve,reject,checkAdminAccess");
-        usesLayout(template="/web/AdminController/layout", except="approve,reject");
+        usesLayout(template="/admin/AdminController/layout", except="approve,reject");
         filters(through="checkAdminAccess");
     }
 
@@ -36,17 +36,6 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    private function checkAdminAccess() {
-        // Ensure only admin users can access these methods
-        if (!isCurrentUserAdmin()) {
-            // Save the current URL in session
-            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
-            // Redirect to login page
-            redirectTo(controller="AuthController", action="login", route="auth-login");
-            return false;
-        }
-        return true;
-    }
 
     private function testimonialApproval(id){
         var Testimonial = model("Testimonial").findByKey(id);

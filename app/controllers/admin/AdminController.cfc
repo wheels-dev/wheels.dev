@@ -2,9 +2,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog", params="key", paramsTypes="integer", handler="dashboard");
+        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog", params="key", paramsTypes="integer");
 
-        usesLayout(template="/web/AdminController/layout");
+        usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
     }
 
@@ -63,7 +63,128 @@ component extends="app.Controllers.Controller" {
     /**
      * Admin Dashboard
      */
-    function dashboard() {
+    function dashboard(){
+        totalBlogs = model("blog").count();
+        totalTestimonials = model("testimonial").count();
+        totalNewUser = model("user").count(where="createdat >= '#dateFormat(now(), "yyyy-mm-dd")#'");
+        totalUser = model("user").count();
+        activeUsers = model("user").count(where="status = 'true'"); 
+
+        sevenDaysAgo = dateAdd("d", -7, now());
+        last_seven_days_user = model("user").findAll(
+        where="createdat >= '#sevenDaysAgo#'",
+        order="createdat DESC");
+
+        last_7Days_Users = queryExecute("
+            WITH DateSeries AS (
+                SELECT FORMAT(DATEADD(DAY, number, :startDate), 'yyyy-MM-dd') AS day
+                FROM master.dbo.spt_values 
+                WHERE type = 'P' AND number BETWEEN 0 AND 6
+            )
+            SELECT 
+                ds.day, 
+                COUNT(u.createdat) AS usercount
+            FROM DateSeries ds
+            LEFT JOIN users u 
+                ON FORMAT(u.createdat, 'yyyy-MM-dd') = ds.day 
+                AND u.deletedat IS NULL
+            GROUP BY ds.day
+            ORDER BY ds.day ASC
+        ", 
+        {
+            startDate: dateFormat(now() - 6, "yyyy-MM-dd")
+        }, 
+        {datasource="wheels.dev"}
+        );
+
+        userChartData = []; // Save chart data from query
+
+        for (i = 1; i <= last_7Days_Users.recordCount; i++) {
+            arrayAppend(userChartData, { 
+                "day": last_7Days_Users.day[i], 
+                "usercount": last_7Days_Users.usercount[i] 
+            });
+        }
+        userJsonData = serializeJSON(userChartData);
+
+        distinctCategories = model("BlogCategory").findAll(select="categoryId", DISTINCT=true);
+        totalCategories = distinctCategories.recordcount;
+
+        totalBlogs = model("blog").count();
+        totalApprovedBlogs = model("blog").count(where="status = 'Approved'");
+        rejectedBlogs = model("blog").count(where="status = 'Rejected'");
+        waitingforApprovalBlogs = model("blog").count(where="status = ''");
+
+
+        last_7Days_Blogs = queryExecute("
+            WITH DateSeries AS (
+                SELECT FORMAT(DATEADD(DAY, number, :startDate), 'yyyy-MM-dd') AS day
+                FROM master.dbo.spt_values 
+                WHERE type = 'P' AND number BETWEEN 0 AND 6
+            )
+            SELECT 
+                ds.day, 
+                COUNT(b.createdat) AS blogcount
+            FROM DateSeries ds
+            LEFT JOIN blog_posts b 
+                ON FORMAT(b.createdat, 'yyyy-MM-dd') = ds.day 
+                AND b.deletedat IS NULL
+            GROUP BY ds.day
+            ORDER BY ds.day ASC
+        ", 
+        {
+            startDate: dateFormat(now() - 6, "yyyy-MM-dd")
+        }, 
+        {datasource="wheels.dev"} // Replace with your actual datasource name
+        );
+
+        // Prepare data for chart
+        blogChartData = [];
+        for (i = 1; i <= last_7Days_Blogs.recordCount; i++) {
+            arrayAppend(blogChartData, { 
+                "day": last_7Days_Blogs.day[i], 
+                "blogcount": last_7Days_Blogs.blogcount[i] 
+            });
+        }
+        blogJsonData = serializeJSON(blogChartData);
+
+        totalComments = model("comment").count();
+        totalPublishComments = model("comment").count(where="isPublished ='true'");
+        totalUnPublishComments = model("comment").count(where="isPublished ='false'");
+
+        last_7Days_Comments = queryExecute("
+            WITH DateSeries AS (
+                SELECT FORMAT(DATEADD(DAY, number, :startDate), 'yyyy-MM-dd') AS day
+                FROM master.dbo.spt_values 
+                WHERE type = 'P' AND number BETWEEN 0 AND 6
+            )
+            SELECT 
+                ds.day, 
+                COUNT(c.published_at) AS commentcount
+            FROM DateSeries ds
+            LEFT JOIN comments c 
+                ON FORMAT(c.published_at, 'yyyy-MM-dd') = ds.day 
+                AND c.deletedat IS NULL
+                AND c.is_published = 1
+            GROUP BY ds.day
+            ORDER BY ds.day ASC
+        ", 
+        {
+            startDate: dateFormat(now() - 6, "yyyy-MM-dd")
+        }, 
+        {datasource="wheels.dev"} // Replace this with your actual datasource or remove if using app.cfm connection string
+        );
+
+        // Prepare data for chart
+        commentChartData = [];
+        for (i = 1; i <= last_7Days_Comments.recordCount; i++) {
+            arrayAppend(commentChartData, { 
+                "day": last_7Days_Comments.day[i], 
+                "commentcount": last_7Days_Comments.commentcount[i] 
+            });
+        }
+        commentJsonData = serializeJSON(commentChartData);
+
     }
 
     /**
@@ -172,20 +293,6 @@ component extends="app.Controllers.Controller" {
         redirectTo(action="blogs");
     }
 
-    /**
-     * Internal Authorization Check
-     */
-    private function checkAdminAccess() {
-        // Ensure only admin users can access these methods
-        if (!isCurrentUserAdmin()) {
-            // Save the current URL in session
-            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
-            // Redirect to login page
-            redirectTo(controller="AuthController", action="login", route="auth-login");
-            return false;
-        }
-        return true;
-    }
 
     /**
      * Utility method for consistent parameter handling

@@ -22,6 +22,7 @@
         #stylesheetLinkTag(source="theme.min.css", id="style-default")#
         #stylesheetLinkTag(source="user-rtl.min.css", id="user-style-rtl")#
         #stylesheetLinkTag(source="user.min.css", id="user-style-default")#
+        #javascriptIncludeTag(source="echarts.min.js")#
         #javascriptIncludeTag(source="simplebar.min.js")#
         #javascriptIncludeTag(source="config.js")#
     </cfoutput>
@@ -41,7 +42,7 @@
         }
     </script>
     <!-- Bootstrap JS -->
-    <script src="/javascripts/bootstrap.js"></script>
+    <script src="/javascripts/bootstrap.js" type="text/javascript"></script>
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/dataTables.min.js"></script>
 </head>
@@ -75,14 +76,8 @@
                                 </a>
                             </div>
                             <div class="nav-item-wrapper mb-3">
-                                <a class="nav-link label-1" href="/admin/testimonials" role="button" data-bs-toggle="" aria-expanded="false">
+                                <a class="nav-link label-1" href="/admin/testimonial" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-person-lines-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Testimonials</span></span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="nav-item-wrapper mb-3">
-                                <a class="nav-link label-1" href="/" role="button" data-bs-toggle="" aria-expanded="false">
-                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-globe fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Back to site</span></span>
                                     </div>
                                 </a>
                             </div>
@@ -102,52 +97,57 @@
                         <div class="d-flex align-items-center">
                             <div class="d-flex align-items-center">
                                 <cfoutput>
-                                    #imageTag(source = 'wheels-logo.png', alt="wheels-logo", width="200", height="60")#
+                                    #imageTag(source = 'wheels-logo.png', alt="wheels-logo", width="200", height="30")#
                                 </cfoutput>
                             </div>
                         </div>
                     </a>
                 </div>
-                <ul class="navbar-nav navbar-nav-icons flex-row">
-                    <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
-                        <cfset session.profilePic = "avatar-rounded.webp">
-                    </cfif>
-                    <div class="nav-item dropdown">
-                        <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
-                            <div class="avatar avatar-l ">
-                                <cfoutput>
-                                    #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
-                                </cfoutput>
-                            </div>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border" aria-labelledby="navbarDropdownUser">
-                            <div class="card position-relative border-0">
-                            <div class="card-body p-0">
-                                <div class="text-center pt-4 pb-3">
-                                <div class="avatar avatar-xl ">
+                <div class="d-flex align-items-center gap-5">
+                    <a class="nav-link label-1 fs-24 mt-1" href="/" role="button" data-bs-toggle="" aria-expanded="false">
+                        Back to Wheels
+                    </a>
+                    <ul class="navbar-nav navbar-nav-icons flex-row">
+                        <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
+                            <cfset session.profilePic = "avatar-rounded.webp">
+                        </cfif>
+                        <div class="nav-item dropdown">
+                            <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                <div class="avatar avatar-l ">
                                     <cfoutput>
                                         #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
                                     </cfoutput>
                                 </div>
-                                <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border" aria-labelledby="navbarDropdownUser">
+                                <div class="card position-relative border-0">
+                                <div class="card-body p-0">
+                                    <div class="text-center pt-4 pb-3">
+                                    <div class="avatar avatar-xl ">
+                                        <cfoutput>
+                                            #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                        </cfoutput>
+                                    </div>
+                                    <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>
+                                    </div>
+                                    <div class="mb-3 mx-3">
+                                    <input class="form-control form-control-sm" id="statusUpdateInput" type="text" placeholder="Update your status" />
+                                    </div>
                                 </div>
-                                <div class="mb-3 mx-3">
-                                <input class="form-control form-control-sm" id="statusUpdateInput" type="text" placeholder="Update your status" />
+                                <div class="overflow-auto scrollbar" style="height: 3rem;">
+                                    <ul class="nav d-flex flex-column mb-2 pb-1">
+                                    <li class="nav-item"><a class="nav-link px-3 d-block" href="/admin"><span class="me-2 text-body align-bottom" height="16px" width="16px" data-feather="pie-chart"></span>Dashboard</a></li>
+                                    </ul>
                                 </div>
-                            </div>
-                            <div class="overflow-auto scrollbar" style="height: 3rem;">
-                                <ul class="nav d-flex flex-column mb-2 pb-1">
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="/admin"><span class="me-2 text-body align-bottom" height="16px" width="16px" data-feather="pie-chart"></span>Dashboard</a></li>
-                                </ul>
-                            </div>
-                            <div class="card-footer p-0 border-top border-translucent">
-                                <div class="px-3 my-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="/logout"> <span class="me-2" data-feather="log-out"> </span>Sign out</a></div>
-                                <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a class="text-body-quaternary me-1" href="javascript:void(0)">Privacy policy</a>&bull;<a class="text-body-quaternary mx-1" href="javascript:void(0)">Terms</a>&bull;<a class="text-body-quaternary ms-1" href="javascript:void(0)">Cookies</a></div>
-                            </div>
+                                <div class="card-footer p-0 border-top border-translucent">
+                                    <div class="px-3 my-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="/logout"> <span class="me-2" data-feather="log-out"> </span>Sign out</a></div>
+                                    <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a class="text-body-quaternary me-1" href="javascript:void(0)">Privacy policy</a>&bull;<a class="text-body-quaternary mx-1" href="javascript:void(0)">Terms</a>&bull;<a class="text-body-quaternary ms-1" href="javascript:void(0)">Cookies</a></div>
+                                </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </nav>        
         <!-- Content will be dynamically loaded here -->

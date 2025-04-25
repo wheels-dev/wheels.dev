@@ -7,7 +7,8 @@
                 <cfparam  name="lastName" default=''>
                 <cfparam  name="email" default=''>
                 <cfparam  name="roleId" default=''>
-                <cfif id gt 0>
+                <cfparam  name="status" default=''>
+                <cfif structKeyExists(params, "id") OR id gt 0>
                     <cfset user = findById(params.id)>
                     <cfset action = "Edit">
                     <cfset id = user.id>
@@ -15,6 +16,7 @@
                     <cfset lastName = user.lastName>
                     <cfset email = user.email>
                     <cfset roleId = user.roleId>
+                    <cfset status = user.status>
                 <cfelse>
                     <cfset action = "Add">  
                 </cfif>
@@ -51,20 +53,34 @@
                             <div class="invalid-feedback">Please enter a valid email address.</div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-6 mb-3">
-                        <div class="form-floating">
-                            <input name="passwordHash" type="password" placeholder="Enter your password" class="form-control fs-18"
-                            id="passwordHash" required minlength="8">
-                            <label for="passwordHash" class="form-label fs-18 fw-medium">Password <span class="text-danger">*</span></label>
-                            <div class="invalid-feedback">Password must be at least 8 characters long.</div>
+                    <cfif id eq 0>
+                        <div class="col-sm-6 col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input name="passwordHash" type="password" placeholder="Enter your password" class="form-control fs-18"
+                                id="passwordHash" required minlength="8">
+                                <label for="passwordHash" class="form-label fs-18 fw-medium">Password <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Password must be at least 8 characters long.</div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="col-sm-6 col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input name="confirmPassword" type="password" placeholder="Confirm your password" class="form-control fs-18"
+                                id="confirmPassword" required>
+                                <label for="confirmPassword" class="form-label fs-18 fw-medium">Confirm Password <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Passwords must match.</div>
+                            </div>
+                        </div>
+                    </cfif>
                     <div class="col-sm-6 col-md-6 mb-3">
-                        <div class="form-floating">
-                            <input name="confirmPassword" type="password" placeholder="Confirm your password" class="form-control fs-18"
-                            id="confirmPassword" required>
-                            <label for="confirmPassword" class="form-label fs-18 fw-medium">Confirm Password <span class="text-danger">*</span></label>
-                            <div class="invalid-feedback">Passwords must match.</div>
+                        <div class="form-floating form-floating-advance-select">
+                            <label class="form-label mb-1 fs-18 fw-medium">
+                                Status <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control fs-18" name="status" id="status" required>
+                                <option value="">Select Status</option>
+                                <option value="true" <cfif status eq true>selected</cfif>>Active</option>
+                                <option value="false" <cfif status eq false>selected</cfif>>Inactive</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-sm-6 col-md-6 mb-3">
@@ -100,33 +116,35 @@
                 </form>
         </div>
     </div>
+    <script>
+        <cfif id eq 0>
+            const form = document.getElementById('userForm');
+            form.addEventListener('submit', function (event) {
+                const password = document.getElementById('passwordHash').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    event.preventDefault();
+                    document.getElementById('confirmPassword').setCustomValidity('Passwords must match.');
+                    document.getElementById('confirmPassword').classList.add('is-invalid');
+                } else {
+                    document.getElementById('confirmPassword').setCustomValidity('');
+                    document.getElementById('confirmPassword').classList.remove('is-invalid');
+                }
+            });
+        </cfif>
+
+        (function () {
+            'use strict'
+            var form = document.querySelector('.needs-validation')
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })()
+    </script>
 </cfoutput>
 
-<script>
-    const form = document.getElementById('userForm');
-    form.addEventListener('submit', function (event) {
-        const password = document.getElementById('passwordHash').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        if (password !== confirmPassword) {
-            event.preventDefault();
-            document.getElementById('confirmPassword').setCustomValidity('Passwords must match.');
-            document.getElementById('confirmPassword').classList.add('is-invalid');
-        } else {
-            document.getElementById('confirmPassword').setCustomValidity('');
-            document.getElementById('confirmPassword').classList.remove('is-invalid');
-        }
-    });
-
-    (function () {
-        'use strict'
-        var form = document.querySelector('.needs-validation')
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
-            form.classList.add('was-validated')
-        }, false)
-    })()
-</script>

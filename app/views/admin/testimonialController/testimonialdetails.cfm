@@ -56,7 +56,7 @@
     </div>
     <div class="text-end">
         <div class="col-auto mt-4">
-            <a class="btn btn-primary px-5" href="/admin/testimonials">Back</a>
+            <a class="btn btn-primary px-5" href="/admin/testimonial">Back</a>
         </div>
     </div>
 </cfoutput>

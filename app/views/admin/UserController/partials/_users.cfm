@@ -18,10 +18,10 @@
                 </div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="user/add?id=#users.id[i]#" class="dropdown-item text-success fs-16">Edit</a>
+                        <a href="user/edit/#users.id[i]#" class="dropdown-item text-success fs-16">Edit</a>
                     </li>
                     <li>
-                        <a href="user/delete?id=#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
+                        <a href="user/delete/#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
                     </li>
                 </ul>
             </div>

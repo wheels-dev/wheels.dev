@@ -101,7 +101,7 @@
                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                 <p class="fs-14 fw-normal text-dark">#content#</p>
                                                 <div class="d-flex flex-wrap justify-content-end align-items-center gap-4">
-                                                    <cfif StructKeyExists(session, "userId") and session.userId neq ''>
+                                                    <cfif isLoggedInUser()>
                                                         <div class="d-flex cursor-pointer align-items-center gap-2">
                                                             <p class="fs-14 text--primary mb-0 reply-btn" data-commentid="#Id#" data-blogid="#blog.Id#">Reply</p>
 
@@ -167,7 +167,7 @@
                                 </div>
                             </div>
                         </cfoutput>
-                        <cfif StructKeyExists(session, "userId") and session.userId neq ''>
+                        <cfif isLoggedInUser()>
                             <form hx-target="body" hx-swap="outerHTML" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                                 <div class="d-flex gap-3 align-items-start">
                                     <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>

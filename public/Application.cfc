@@ -98,7 +98,7 @@ component output="false" {
 	}
 
 	public void function onSessionStart() {
-		session.userId = "";
+		// session.userId = "";
 		local.lockName = "reloadLock" & application.applicationName;
 
 		// Fix for shared application name (issue 359).
