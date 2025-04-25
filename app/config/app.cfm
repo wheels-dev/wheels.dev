@@ -34,5 +34,7 @@
 		storage:#not(!this.env.wheelsdev_storage)# // default: false
 	};
 
+	this.mappings["/logbox"] = "app.lib.logbox";
+
 	// CLI-Appends-Here
 </cfscript>
