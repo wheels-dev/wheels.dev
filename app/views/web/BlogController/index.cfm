@@ -8,7 +8,7 @@
             <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                 <div class="d-flex blogs align-items-center justify-content-end gap-3">
 
-                    <cfif StructKeyExists(session, "userId") and session.userId neq ''>
+                    <cfif isLoggedInUser()>
                         <a href="/blog/create" class="bg--iris text-white text-center py-2 fs-16 rounded-3 col-4">Create Blog</a>
                     </cfif>
                     <button 

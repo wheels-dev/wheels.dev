@@ -27,12 +27,11 @@ component extends="wheels.Controller" {
 	/**
      * Check if user is logged In
      */
-    function isUserLoggedIn() {
+    function isLoggedInUser() {
         return (
             structKeyExists(session, "USERID") && 
-            structKeyExists(session, "role") && 
-            (session.role == "Editor" || 
-            session.role == "Admin")
+            structKeyExists(session, "role") &&
+            session.userid != ''
         );
     }
 
@@ -46,6 +45,18 @@ component extends="wheels.Controller" {
             structKeyExists(session, "role") && 
             session.role == "Admin"
         );
+    }
+
+    function checkAdminAccess() {
+        // Ensure only admin users can access these methods
+        if (!isCurrentUserAdmin()) {
+            // Save the current URL in session
+            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
+            // Redirect to login page
+            redirectTo(controller="AuthController", action="login", route="auth-login");
+            return false;
+        }
+        return true;
     }
 
     function f_getVersions(){

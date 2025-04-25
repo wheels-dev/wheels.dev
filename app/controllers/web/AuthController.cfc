@@ -7,7 +7,7 @@ component extends="app.Controllers.Controller" {
 
     function login() {
         // If already logged in, redirect
-        if (structKeyExists(session, "userID") && structKeyExists(session, "role")) {
+        if (isLoggedInUser()) {
             redirectTo(controller="HomeController", action="index", route="home");
             return;
         }

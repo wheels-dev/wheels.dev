@@ -3,13 +3,14 @@ component extends="app.Controllers.Controller" {
 
     function config() {
         verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess", params="key", paramsTypes="integer", handler="index");
-        usesLayout(template="/web/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
+        usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
         filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
         filters(through="checkUserAccess", only="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
     }
 
     // read user
     function index() {
+        users = model("User").getAll();
     }
     
     // Function to load users for the users list
@@ -174,21 +175,8 @@ component extends="app.Controllers.Controller" {
     }
     // Business Logic
 
-    private function checkAdminAccess() {
-        // Ensure only admin users can access these methods
-        if (!isCurrentUserAdmin()) {
-            // Save the current URL in session
-            saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
-            // Redirect to login page
-            redirectTo(controller="AuthController", action="login", route="auth-login");
-            return false;
-        }
-        return true;
-    }
-
     private function checkUserAccess() {
-        // Ensure only admin users can access these methods
-        if (!(structKeyExists(session, "USERID") && structKeyExists(session, "role"))) {
+        if (!isLoggedInUser()) {
             // Save the current URL in session
             saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
             // Redirect to login page
@@ -255,8 +243,7 @@ component extends="app.Controllers.Controller" {
                     user.firstname = userData.firstName;
                     user.lastname = userData.lastName;
                     user.email = userData.email;
-                    user.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
-                    user.status = application.wo.SetActive();
+                    user.status = userData.status;
                     user.roleid = userData.roleid;
                     user.updatedAt = now();
                     if (structKeyExists(userData, "profilePicture") && isDefined("userData.profilePicture")) {

@@ -83,6 +83,7 @@
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
 			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
 			
+			<script src="/javascripts/echarts.min.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/dataTables.min.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
@@ -136,12 +137,12 @@
 							<li class="nav-item px-3">
 								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
-							<cfif isCurrentUserAdmin()>
+							<cfif isCurrentUserAdmin() and isLoggedInUser()>
 								<li class="nav-item px-3">
 									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/admin">Dashboard</a>
 								</li>
 							</cfif>
-							<cfif StructKeyExists(session, "userId") and session.userId neq ''>
+							<cfif isLoggedInUser()>
 								<li class="nav-item dropdown px-3">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
@@ -240,7 +241,7 @@
 								<div class="col-lg-4">
 									<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 									<ul class="list-unstyled">
-										<cfif StructKeyExists(session, "userId") and session.userId neq ''>
+										<cfif isLoggedInUser()>
 											<li class="mt-3">
 												<a href="#" class="text--secondary fs-14 text-decoration-none">
 													<cfoutput>

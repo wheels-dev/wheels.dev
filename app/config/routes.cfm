@@ -30,20 +30,22 @@
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
 			// Admin Controls
-			// .get(name = "admin-index", pattern = "admin", to = "web.AdminController##index")
-			.get(name = "admin-blog", pattern = "admin/blog", to = "web.AdminController##blog")
-			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "web.AdminController##showBlog")
-			.get(name = "blog-List", pattern = "admin/blog/list", to = "web.AdminController##blogList")
-			.post(name = "admin-approve", pattern = "admin/approve", to = "web.AdminController##approve")
-			.post(name = "admin-reject", pattern = "admin/reject", to = "web.AdminController##reject")
+			// .get(name = "admin-index", pattern = "admin", to = "admin.AdminController##index")
+			.get(name = "admin-blog", pattern = "admin/blog", to = "admin.AdminController##blog")
+			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
+			.get(name = "blog-List", pattern = "admin/blog/list", to = "admin.AdminController##blogList")
+			.post(name = "admin-approve", pattern = "admin/approve", to = "admin.AdminController##approve")
+			.post(name = "admin-reject", pattern = "admin/reject", to = "admin.AdminController##reject")
+			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
 
-			.get(name = "user-profile", pattern = "admin/user/profile", to = "web.UserController##profile")
-			.get(name = "user", pattern = "admin/user", to = "web.UserController##Index")
-			.get(name = "loadUsers", pattern = "user/list", to = "web.UserController##loadUsers")
-			.get(name = "loadRoles", pattern = "user/loadRoles", to = "web.UserController##loadRoles")
-			.get(name = "user-add", pattern = "admin/user/add", to = "web.UserController##addUser")
-			.post(name = "user-store", pattern = "user/store", to = "web.UserController##store")
-			.get(name="user-delete", pattern="admin/user/delete", to="web.UserController##delete")
+			.get(name = "user-profile", pattern = "admin/user/profile", to = "admin.UserController##profile")
+			.get(name = "user", pattern = "admin/user", to = "admin.UserController##Index")
+			.get(name = "loadUsers", pattern = "user/list", to = "admin.UserController##loadUsers")
+			.get(name = "loadRoles", pattern = "user/loadRoles", to = "admin.UserController##loadRoles")
+			.get(name = "user-add", pattern = "admin/user/add", to = "admin.UserController##addUser")
+			.get(name = "user-add", pattern = "admin/user/edit/[id]", to = "admin.UserController##addUser")
+			.post(name = "user-store", pattern = "user/store", to = "admin.UserController##store")
+			.get(name="user-delete", pattern="admin/user/delete", to="admin.UserController##delete")
 
 			.get(name = "home", pattern = "", to = "web.HomeController##Index")
 			// Route for loading features,blogs,guides with HTMX
@@ -75,24 +77,23 @@
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
 			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 
-			.get(name = "user-changePassword", pattern = "user/change-password", to = "web.userController##changePassword")
-			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "web.userController##updatePassword")
-			.get(name = "user-update-profile-pic", pattern = "user/update-profile-pic", to = "web.userController##updateProfilePic")
-			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "web.userController##uploadProfilePic")
+			.get(name = "user-changePassword", pattern = "user/change-password", to = "admin.UserController##changePassword")
+			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "admin.UserController##updatePassword")
+			.get(name = "user-update-profile-pic", pattern = "user/update-profile-pic", to = "admin.UserController##updateProfilePic")
+			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "admin.UserController##uploadProfilePic")
 		
 			// Testimonial-specific routes
 			.get(name="check_testimonial", pattern="testimonial/check", to="web.testimonials##check")
 			.get(name="approve_testimonial", pattern="testimonial/approve/[key]", to="web.testimonials##approve")
 			.get(name="feature_testimonial", pattern="testimonial/feature/[key]", to="web.testimonials##feature")
 			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
-			.get(name="admin-testimonials", pattern="admin/testimonials", to="web.adminTestimonialController##testimonials")
-			.get(name = "admin-view-testimonials", pattern = "admin/testimonials/view/[id]", to = "web.adminTestimonialController##testimonialDetails")
-			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "web.adminTestimonialController##approve")
-			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "web.adminTestimonialController##reject")
+			.get(name="admin-testimonial", pattern="admin/testimonial", to="admin.testimonialController##testimonials")
+			.get(name = "admin-view-testimonials", pattern = "admin/testimonials/view/[id]", to = "admin.testimonialController##testimonialDetails")
+			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "admin.testimonialController##approve")
+			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "admin.testimonialController##reject")
 			
 			.post(name="clear_testimonial_prompt", pattern="testimonial/clear-prompt", to="web.Testimonial##clearPromptFlag") // Use POST to indicate an action
 
-			.get(name="admin-dashboard", pattern="admin", to="web.dashboardController##dashboard")
 			// routes for testimonials
 			.resources("web.testimonial")
 		.end()
