@@ -29,6 +29,11 @@ $(document).ready(function(){
 	$(".docreset").on("click", function(e){
 		$(".functiondefinition").show();
 		$(".functionlink").show();
+		$(".functionlink").removeClass("active text--primary fw-bold");
+		$(".functionlink").addClass("text--secondary fw-normal");
+
+		$(this).removeClass("text--secondary fw-normal");
+		$(this).addClass("text--primary fw-bold");
 		updateFunctionCount();
 		e.preventDefault();
 	});
@@ -36,7 +41,14 @@ $(document).ready(function(){
 	$(".functionlink").on("click", function(e){
 		filterByFunctionName($(this).data("function"));
 		$(".functionlink").removeClass("active");
-		$(this).addClass("active");
+		$(this).removeClass("text--secondary fw-normal");
+		$(this).addClass("active text--primary fw-bold");
+
+		$(this).siblings("a").removeClass("active text--primary fw-bold");
+		$(this).siblings("a").addClass("text--secondary fw-normal");
+
+		$(".docreset").removeClass("text--primary fw-bold");
+		$(".docreset").addClass("text--secondary fw-normal");
 		updateFunctionCount();
 		e.preventDefault();
 	});
@@ -108,6 +120,22 @@ $(document).ready(function(){
 			updateFunctionCount();
 		}
 	});
+
+	$('.showSections').click(function(){
+		$("#functionlist").addClass("d-none");
+		$("#sectionContainer").removeClass("d-none");
+	})
+
+	$('.showFunctions').click(function(){
+		$("#functionlist").removeClass("d-none");
+		$("#sectionContainer").addClass("d-none");
+		$(".functionlink").show();
+		$(".functionlink").removeClass("active text--primary fw-bold");
+		$(".functionlink").addClass("text--secondary fw-normal");
+
+		$(".docreset").removeClass("text--secondary fw-normal");
+		$(".docreset").addClass("text--primary fw-bold");
+	})
 
 });
 // jQuery expression for case-insensitive filter

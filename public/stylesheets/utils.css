@@ -191,12 +191,12 @@
 
 .select-arrow {
     -webkit-appearance: none;
-    appearance: none;
     -moz-appearance: none;
-    background-image: url('https://www.svgrepo.com/show/80156/down-arrow.svg');
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='14' height='8' viewBox='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13 0C13.852 0 14.297 0.986 13.783 1.623L13.707 1.707L7.70695 7.707C7.53476 7.87918 7.30566 7.98261 7.06263 7.99789C6.81961 8.01317 6.57936 7.93925 6.38695 7.79L6.29295 7.707L0.292953 1.707L0.209953 1.613L0.155953 1.536L0.101954 1.44L0.0849533 1.404L0.0579534 1.337L0.0259533 1.229L0.0159531 1.176L0.00595331 1.116L0.00195312 1.059V0.941L0.00695324 0.883L0.0159531 0.823L0.0259533 0.771L0.0579534 0.663L0.0849533 0.596L0.154953 0.464L0.219953 0.374L0.292953 0.293L0.386953 0.21L0.463953 0.156L0.559953 0.102L0.595953 0.085L0.662953 0.0579996L0.770953 0.026L0.823953 0.0159998L0.883953 0.00599957L0.940953 0.00199986L13 0Z' fill='%23FD5C63'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-size: 14px 14px;
-    background-position: calc(100% - 16px)
+    background-position: calc(100% - 16px);
 }
 
 .default-blog {

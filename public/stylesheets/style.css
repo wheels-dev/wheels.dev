@@ -70,8 +70,8 @@ main.main .home-section{
 }
 
 main.main-bg {
-    background-image: url("../images/main-bg.png");
-    background-size: 100% 100%;
+    background-image: url("../images/homeBg.png");
+    background-size: 100%;
     background-repeat: no-repeat
 }
 

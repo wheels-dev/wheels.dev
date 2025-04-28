@@ -1,11 +1,26 @@
 <main class="main-bg">
     <div class="container py-5">
         <div class="row">
-            <div class="col-lg-4 col-12">
+            <div class="col-lg-9 col-12">
                 <cfoutput>#includePartial("partials/versions")#</cfoutput>
+                <div class="mt-3" id="main">
+                        <cfoutput>
+                        <cfloop from="1" to="#arraylen(docsChunk)#" index="func">
+                            #includePartial("partials/definition")#
+                        </cfloop>
+                        <div
+                            hx-get="/api/#currentVersion#/functions" 
+                            hx-vals='{"start": "#startIndex + 4#", "limit": "#limitCount#", "version": "#currentVersion#"}' 
+                            hx-trigger="revealed" 
+                            hx-swap="afterend"
+                            class="load-more-trigger mt-3">
+                        </div>
+                    </cfoutput> 
+                </div>
             </div>
-            <div class="col-lg-4 mt-lg-0 mt-3 offset-lg-4 col-12">
-                <div class="d-flex api flex-wrap align-items-center justify-content-end gap-3">
+
+            <div class="col-lg-3 col-12">
+                <div class="d-flex d-none api flex-wrap align-items-center justify-content-end gap-3">
                     <button
                         onclick="handleApiSection('All', this)"
                         class="active px-4 filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border--primary bg-transparent text--secondary">
@@ -28,41 +43,23 @@
                         </svg>
                     </button>
                 </div>
-            </div>
-        </div>
-        <hr class="my-4">
-
-        <div class="row justify-content-center justify-content-lg-between">
-            <div class="mt-lg-0 mt-3 col-lg-9 col-12" id="main">
-                  <cfoutput>
-                    <cfloop from="1" to="#arraylen(docsChunk)#" index="func">
-                        #includePartial("partials/definition")#
-                    </cfloop>
-                    <div
-                        hx-get="/api/#currentVersion#/functions" 
-                        hx-vals='{"start": "#startIndex + 4#", "limit": "#limitCount#", "version": "#currentVersion#"}' 
-                        hx-trigger="revealed" 
-                        hx-swap="afterend"
-                        class="load-more-trigger mt-3">
+                <div>
+                    <div id="functionsContainer">
+                        <div class="bg-white p-3 rounded-18 no-scrollbar h-70vh overflow-y-auto">
+                            <div class="space-y-2" id="functionlist"> 
+                                <cfoutput>#includePartial("partials/functionlist")#</cfoutput>
+                            </div>
+                            <div id="sectionContainer" class="d-none">
+                                <cfoutput>#includePartial("partials/sections")#</cfoutput>                   
+                            </div>
+                        </div>
                     </div>
-                </cfoutput> 
-            </div>
-            <div id="functionsContainer" class="col-lg-3 col-12 order-lg-0 order-first">
-                <div class="bg-white p-3 rounded-18 no-scrollbar h-70vh overflow-y-auto">
-                    <div class="space-y-2 px-2" id="functionlist"> 
-                        <cfoutput>#includePartial("partials/functionlist")#</cfoutput>
-                    </div>
-                </div>
-            </div>
-            <div id="sectionContainer" class="col-lg-3 col-12 d-none order-lg-0 order-first">
-                <div class="bg-white p-3 rounded-18 no-scrollbar h-70vh overflow-y-auto" id="sections">
-                    <cfoutput>#includePartial("partials/sections")#</cfoutput>                   
                 </div>
             </div>
         </div>
     </div>
-    <div class="d-flex mb-5 justify-content-center">
-        <div id="loader" style="display:none; width: 4rem; height: 4rem;" class="spinner-border text-danger" role="status">
+    <div class="d-flex pb-5 justify-content-center">
+        <div id="loader" style="display:none; width: 4rem; height: 4rem;" class="spinner-border text--primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>

@@ -1,6 +1,15 @@
 <cfscript>
 if (structKeyExists(docs, "sections")) {
-    writeOutput('<div class="accordion space-y-3" id="guidesAccordion">');
+    writeOutput('
+    <div class="d-flex align-items-center mb-3 gap-3">
+        <button class="fw-bold showFunctions text--secpndary bg-transparent outline-none" hx-get="/api/#currentVersion#/functions" hx-trigger="click" hx-target="##main" hx-swap="innerHTML">
+            <span class="fs-14 cursor-pointer">All</span>
+        </button>
+        <button class="fw-bold showSections text--primary bg-transparent outline-none">
+            <span class="fs-14 cursor-pointer">Sections</span>
+        </button>
+    </div>
+    <div class="accordion space-y-3" id="guidesAccordion">');
 
     for (var s = 1; s <= arrayLen(docs.sections); s++) {
         var sectionName = docs.sections[s]["name"];
