@@ -29,26 +29,26 @@
                 <div>
                     <div class="d-flex api-filter-buttons align-items-center my-3 gap-2 flex-wrap">
                         <cfif len(meta.tags.section)>
-                            <button class="text--lightGray border d-flex align-items-center gap-2 rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+                            <button class="bg--lightGray text--secondary rounded-4 fs-12 fw-normal px-4 py-2">
                                 <i class="bi bi-tags"></i>
                                 #meta.tags.section#
                             </button>
                         </cfif>
                         <cfif len(meta.tags.category)>
-                            <button class="text--lightGray border d-flex align-items-center gap-2 rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+                            <button class="bg--lightGray text--secondary rounded-4 fs-12 fw-normal px-4 py-2">
                                 <i class="bi bi-tags"></i>
                                 #meta.tags.category#
                             </button>
                         </cfif>
                         <cfif structKeyExists(meta, "returnType") && len(meta.returnType)>
-                            <button class="text--lightGray border d-flex align-items-center gap-2 rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+                            <button class="bg--lightGray text--secondary rounded-4 fs-12 fw-normal px-4 py-2">
                                 <i class="bi bi-arrow-return-left"></i>
                                 #meta.returnType#
                             </button>
                         </cfif>
                         <cfif structKeyExists(meta, "availableIn") && arrayLen(meta.availableIn)>
                             <cfloop from="1" to="#arrayLen(meta.availableIn)#" index="a">
-                                <button class="text--lightGray border d-flex align-items-center gap-2 rounded-4 fs-14 fw-normal px-3 py-2 bg-transparent">
+                                <button class="bg--lightGray text--secondary rounded-4 fs-12 fw-normal px-4 py-2">
                                     <i class="bi bi-bolt"></i>
                                     #meta.availableIn[a]#
                                 </button>
@@ -58,13 +58,13 @@
                 </div>
                 <div class="mt-4 overflow-x-auto no-scrollbar">
                     <table class="table table-responsive">
-                        <thead class="table--primary">
+                        <thead class="table--primary/10">
                             <tr>
-                                <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Name</th>
-                                <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Type</th>
-                                <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Required</th>
-                                <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Default</th>
-                                <th class="text-white px-lg-3 px-1 fs-14 fw-semibold">Description</th>
+                                <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Name</th>
+                                <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Type</th>
+                                <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Required</th>
+                                <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Default</th>
+                                <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Description</th>
                             </tr>
                         </thead>
                         <tbody>
