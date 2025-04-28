@@ -7,15 +7,45 @@ component extends="app.Controllers.Controller" {
     }
 
     function index() {
-        // Add code to render the home page if needed
+        model("Log").log(
+            category = "wheels.home",
+            level = "INFO",
+            message = "Home page accessed",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR,
+                "user_agent": cgi.HTTP_USER_AGENT
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
     }
 
     // Function to load features
     function loadFeatures() {
         try {
+            model("Log").log(
+                category = "wheels.home",
+                level = "DEBUG",
+                message = "Features section loaded",
+                details = {
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             features = getAllFeatures(); // Get feature list
             renderPartial(partial="partials/features"); // Return a partial view for HTMX
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.home",
+                level = "ERROR",
+                message = "Failed to load features",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load features.");
         }
@@ -25,9 +55,30 @@ component extends="app.Controllers.Controller" {
     function loadBlogs() {
         var blogModel = model("Blog"); // Get Blog model instance
         try {
+            model("Log").log(
+                category = "wheels.home",
+                level = "DEBUG",
+                message = "Blogs section loaded",
+                details = {
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             blogs = blogModel.getTenLatest(); // Get blog list
             renderPartial(partial="partials/blogs"); // Return a partial view for HTMX
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.home",
+                level = "ERROR",
+                message = "Failed to load blogs",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load blogs.");
         }
@@ -36,11 +87,32 @@ component extends="app.Controllers.Controller" {
     // Function to load guides
     function loadGuides() {
         try {
-            // var guidesContent = getGuidesContent();
+            model("Log").log(
+                category = "wheels.home",
+                level = "DEBUG",
+                message = "Guides section loaded",
+                details = {
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
 
+            // var guidesContent = getGuidesContent();
             renderPartial(partial="partials/guides");
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.home",
+                level = "ERROR",
+                message = "Failed to load guides",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
+            renderPartial(partial="partials/error", message="Failed to load guides.");
         }
     }
 
