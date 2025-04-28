@@ -4,7 +4,7 @@
             <div class="col-auto">
                 <h1 class="fs-24 mb-5 fw-bold">Blogs</h1>
             </div>
-            <table id="blogTable" class="table table-hover">
+            <table id="blogTable" class="table table-hover mb-5">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -54,7 +54,8 @@
                                             <button 
                                                 class="dropdown-item text-success fs-16"
                                                 hx-post="approve" 
-                                                hx-vals='{"id": "#blogId#"}'
+                                                hx-vals='{"id": "#blogs.id[i]#"}'
+                                                hx-target='body'
                                                 hx-confirm="Are you sure you want to approve this blog?"
                                             >Approve</button>
                                         </li>
@@ -62,7 +63,8 @@
                                             <button 
                                                 class="dropdown-item text-danger fs-16"
                                                 hx-post="reject" 
-                                                hx-vals='{"id": "#blogId#"}'
+                                                hx-vals='{"id": "#blogs.id[i]#"}'
+                                                hx-target='body'
                                                 hx-confirm="Are you sure you want to reject this blog?"
                                             >Reject</button>
                                         </li>
@@ -76,13 +78,16 @@
         </div>
     </cfoutput>
     <script>
-        let table = new DataTable('#blogTable', {
+        var table = new DataTable('#blogTable', {
             columnDefs: [
                 {
                     targets: [5,6], // Adjust these indexes based on your actual table structure
                     orderable: false
                 }
             ]
+        });
+        table.on('draw', function() {
+            htmx.process(document.body);
         });
     </script>
 </main>

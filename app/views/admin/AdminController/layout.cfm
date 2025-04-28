@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="/stylesheets/font.css" rel="stylesheet">
     <link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/javascripts/bootstrap.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link href="/stylesheets/bootstrap.css" rel="stylesheet">
     <link href="/stylesheets/color.css" rel="stylesheet">
@@ -42,7 +43,6 @@
         }
     </script>
     <!-- Bootstrap JS -->
-    <script src="/javascripts/bootstrap.js" type="text/javascript"></script>
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/dataTables.min.js"></script>
 </head>
@@ -76,8 +76,20 @@
                                 </a>
                             </div>
                             <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/comment" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-chat-dots-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Comments</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
                                 <a class="nav-link label-1" href="/admin/testimonial" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-person-lines-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Testimonials</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/category" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-boxes fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Categories</span></span>
                                     </div>
                                 </a>
                             </div>
