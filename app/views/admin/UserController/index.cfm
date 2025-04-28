@@ -62,12 +62,15 @@
         }
         return false; // Prevent the default action (following the link)
     }
-    let table = new DataTable('#userTable', {
+    var table = new DataTable('#userTable', {
         columnDefs: [
             {
                 targets: [5,6], // Adjust these indexes based on your actual table structure
                 orderable: false
             }
         ]
+    });
+    table.on('draw', function() {
+        htmx.process(document.body);
     });
 </script>
