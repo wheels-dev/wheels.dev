@@ -8,9 +8,23 @@ component extends="app.Controllers.Controller" {
     function login() {
         // If already logged in, redirect
         if (isLoggedInUser()) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "User already logged in, redirecting to home",
+                details = {
+                    "user_id": session.userID,
+                    "username": session.username
+                }
+            );
             redirectTo(controller="HomeController", action="index", route="home");
             return;
         }
+        model("Log").log(
+            category = "wheels.auth",
+            level = "DEBUG",
+            message = "Login page accessed"
+        );
     }
 
     function authenticate() {
@@ -18,10 +32,31 @@ component extends="app.Controllers.Controller" {
         param name="params.passwordHash" default="";
 
         try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "DEBUG",
+                message = "Authentication attempt",
+                details = {
+                    "email": params.email,
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            
             // Validate credentials
             var user = validateCredentials(params.email, params.passwordHash);
 
             if (isObject(user)) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "Successful login",
+                    details = {
+                        "user_id": user.id,
+                        "email": user.email,
+                        "role": user.role.name
+                    }
+                );
+                
                 // Store user data in session
                 session.userID = user.id;
                 session.username = user.fullname;
@@ -29,7 +64,7 @@ component extends="app.Controllers.Controller" {
                 session.profilePic = user.profilePicture;
 
                 // Get success data
-                var successData = handleLoginSuccess(user); // Pass user object
+                var successData = handleLoginSuccess(user);
 
                 // Return JSON success response
                 data={
@@ -41,6 +76,15 @@ component extends="app.Controllers.Controller" {
                 return; 
 
             } else {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "WARN",
+                    message = "Failed login attempt",
+                    details = {
+                        "email": params.email,
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
                 // Return JSON error response with 401 status code
                 data={
                     "success" = false,
@@ -50,54 +94,119 @@ component extends="app.Controllers.Controller" {
                 return;
             }
         } catch (any e) {
-            // Log the actual error
-
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Authentication error",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "email": params.email
+                }
+            );
             // Return a generic JSON error response with 500 status code
             data={
                 "success" = false,
                 "message" = "An unexpected error occurred during login. Please try again."
             };
-            renderWith(data=data, hideDebugInformation=true, status=500 ,layout='/responseLayout'); // Internal Server Error status
+            renderWith(data=data, hideDebugInformation=true, status=500 ,layout='/responseLayout');
             return;
         }
     }
 
     private struct function handleLoginSuccess(required User user) {
         var redirectUrl = "";
-        var triggerJson = ""; // Store potential trigger JSON string
+        var triggerJson = "";
 
         try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "DEBUG",
+                message = "Processing login success",
+                details = {
+                    "user_id": user.id,
+                    "email": user.email
+                }
+            );
+            
             // Determine redirect URL based on role or saved URL
-            if (isObject(user.role) && user.role.name == 'Admin') { // Use 'Admin' consistently
-                redirectUrl = urlFor(route="admin-dashboard"); // Admin dashboard route
+            if (isObject(user.role) && user.role.name == 'Admin') {
+                redirectUrl = urlFor(route="admin-dashboard");
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "Admin user redirected to dashboard",
+                    details = {
+                        "user_id": user.id
+                    }
+                );
             } else if (session.keyExists("redirectAfterLogin")) {
                 redirectUrl = session.redirectAfterLogin;
-                structDelete(session, "redirectAfterLogin"); // Clear after use
+                structDelete(session, "redirectAfterLogin");
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "DEBUG",
+                    message = "User redirected to saved URL",
+                    details = {
+                        "user_id": user.id,
+                        "redirect_url": redirectUrl
+                    }
+                );
             } else {
-                redirectUrl = urlFor(route="home"); // Default redirect
+                redirectUrl = urlFor(route="home");
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "DEBUG",
+                    message = "User redirected to home",
+                    details = {
+                        "user_id": user.id
+                    }
+                );
             }
 
-            // Check if the user has submitted a testimonial (non-admin only)
             if (isObject(user.role) && user.role.name != 'Admin' && !user.hasSubmittedTestimonial()) {
-                session.promptForTestimonial = true; // Still set session flag for layout script
-                // Set HX-Trigger header - HTMX will process this even with JSON response
+                session.promptForTestimonial = true;
                 header(name="HX-Trigger", value='{"showTestimonialModal": {}}');
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "DEBUG",
+                    message = "Testimonial prompt set",
+                    details = {
+                        "user_id": user.id
+                    }
+                );
             }
 
         } catch (any e) {
-            // Log the error
-
-            // Fallback to home redirect if error occurs
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error in handleLoginSuccess",
+                details = {
+                    "error_message": e.message,
+                    "user_id": user.id
+                }
+            );
             redirectUrl = urlFor(route="home");
         }
 
-        // Return the calculated redirect URL and any trigger info
         return {
             redirectUrl = redirectUrl
         };
     }
 
     function logout() {
+        if (structKeyExists(session, "username")) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "User logged out",
+                details = {
+                    "user_id": session.userID,
+                    "username": session.username
+                }
+            );
+        }
         StructClear(session);
         redirectTo(route="home");
     }
@@ -105,41 +214,94 @@ component extends="app.Controllers.Controller" {
     function register() {}
 
     function store() {
-        try{
-            // save user logic
+        try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "DEBUG",
+                message = "New user registration attempt",
+                details = {
+                    "email": params.email
+                }
+            );
             var message = saveUser(params);
-            if(findNoCase('success', '#message#'))
-            {
+            
+            if(findNoCase('success', '#message#')) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "User registration successful",
+                    details = {
+                        "email": params.email
+                    }
+                );
                 renderText("<p style='color:green;'>#message#</p>");
             } else {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "WARN",
+                    message = "User registration failed",
+                    details = {
+                        "email": params.email,
+                        "error_message": message
+                    }
+                );
                 renderText("<p style='color:red;'>#message#</p>");
             }
         } catch (any e) {
-            // writeDump(e); abort;
-            // Handle error
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error in user registration",
+                details = {
+                    "error_message": e.message,
+                    "email": params.email
+                }
+            );
             redirectTo(action="error", errorMessage="Invalid login credentials.");
         }
-	}
+    }
 
     function verify() {
         param name="params.token" default="";
+        model("Log").log(
+            category = "wheels.auth",
+            level = "DEBUG",
+            message = "Email verification attempt",
+            details = {
+                "token": params.token
+            }
+        );
 
         user = verifyToken(params.token);
         if(isObject(user)){
-
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Email verification successful",
+                details = {
+                    "user_id": user.id,
+                    "email": user.email
+                }
+            );
+            
             if (isObject(user)) {
-                // Store user data in session
                 session.userID = user.id;
                 session.username = user.fullname;
                 session.role = user.role.name;
 
-                // Send HTMX Redirect Header
                 session.message = "Register and Login Successfully!"
                 redirectto(route="home");
                 return;
             }
-        }else{
-            // Handle invalid token
+        } else {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "WARN",
+                message = "Invalid verification token used",
+                details = {
+                    "token": params.token
+                }
+            );
             rendertext('Invalid User!');
         }
     }
