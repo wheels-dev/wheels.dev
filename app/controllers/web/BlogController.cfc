@@ -9,11 +9,33 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to list all blogs
-    public void function index() {}
-
+    public void function index() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "INFO",
+            message = "Blog index page accessed",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR,
+                "user_agent": cgi.HTTP_USER_AGENT
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
+    }
 
     public void function blogs() {
         try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "DEBUG",
+                message = "Blog listing page accessed",
+                details = {
+                    "filter_type": structKeyExists(params, "filterType") ? params.filterType : "",
+                    "filter_value": structKeyExists(params, "filterValue") ? params.filterValue : "",
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             var blogModel = model("Blog"); // Load model
 
             // --- Filter by category or tag ---
@@ -42,8 +64,18 @@ component extends="app.Controllers.Controller" {
 
             renderPartial(partial="partials/blogList");
         } catch (any e) {
-            // Log or handle error gracefully
-            // logError("Error in blogs(): #e.message# | #e.detail#");
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error in blogs(): #e.message#",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
 
             // Optionally show fallback
             blogs = getAllBlogs(); // fallback content
@@ -53,12 +85,30 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the blog list
     function categories() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "DEBUG",
+            message = "Categories loaded",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         categorylist = model("Category").getAll();
         renderPartial(partial="partials/categorylist");
     }
 
     // Function to show the create blog form
     function create() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "INFO",
+            message = "Blog creation form accessed",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
     }
 
@@ -67,6 +117,17 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var blogModel = model("Blog"); 
         try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "New blog post creation attempted",
+                details = {
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             params.coverImagePath = "";
             var uploadPath = expandPath("/files/"); // Define the upload directory
 
@@ -75,28 +136,54 @@ component extends="app.Controllers.Controller" {
             }
 
             // Handle file upload
-        if (structKeyExists(params, "attachment") && isDefined("params.attachment")) {
-            var uploadedFile = fileUpload(uploadPath, "attachment");
+            if (structKeyExists(params, "attachment") && isDefined("params.attachment")) {
+                var uploadedFile = fileUpload(uploadPath, "attachment");
 
-            if (!structIsEmpty(uploadedFile) && structKeyExists(uploadedFile, "serverFile")) {
-                var originalFileName = uploadedFile.serverFile; // This is the uploaded file name
-                var fileExtension = listLast(originalFileName, "."); // Extract extension
-                var uniqueFileName = createUUID() & "." & fileExtension; // Generate unique name
+                if (!structIsEmpty(uploadedFile) && structKeyExists(uploadedFile, "serverFile")) {
+                    var originalFileName = uploadedFile.serverFile; // This is the uploaded file name
+                    var fileExtension = listLast(originalFileName, "."); // Extract extension
+                    var uniqueFileName = createUUID() & "." & fileExtension; // Generate unique name
 
-                // Rename file to unique name
-                var newFilePath = uploadPath & "/" & uniqueFileName;
-                fileMove(uploadedFile.serverDirectory & "/" & originalFileName, newFilePath);
+                    // Rename file to unique name
+                    var newFilePath = uploadPath & "/" & uniqueFileName;
+                    fileMove(uploadedFile.serverDirectory & "/" & originalFileName, newFilePath);
 
-                // Store the relative file path
-                params.coverImagePath = "/files/" & uniqueFileName;
+                    // Store the relative file path
+                    params.coverImagePath = "/files/" & uniqueFileName;
+                }
             }
-        }
 
             response = saveBlog(params);
             saveTags(params, response.blogId);
             saveCategories(params, response.blogId);
+
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "New blog post created successfully",
+                details = {
+                    "blog_id": response.blogId,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             redirectTo(route="blog");
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to save blog post",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save blog post.");
         }
@@ -105,6 +192,17 @@ component extends="app.Controllers.Controller" {
     // Function to show a specific blog
     function show() {
         try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post viewed",
+                details = {
+                    "slug": params.slug,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             blogModel = model("Blog");
             
             // Get the blog by its slug
@@ -122,6 +220,18 @@ component extends="app.Controllers.Controller" {
             comments = getAllCommentsByBlogid(blog.id); 
 
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Blog post not found",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "slug": params.slug,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // If an error occurs or blog not found, redirect to blog index
             redirectTo(action="index");
             return;
@@ -130,7 +240,18 @@ component extends="app.Controllers.Controller" {
 
     // function to check title is unique
     function checkTitle() {
-        try{
+        try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "DEBUG",
+                message = "Title uniqueness check",
+                details = {
+                    "title": form.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             if(structKeyExists(form, "title")){
                 var blogModel = model("Blog").findAll(where="title='#form.title#'");
                 if(blogModel.recordCount != 0){
@@ -139,18 +260,66 @@ component extends="app.Controllers.Controller" {
                     renderText('<input type="hidden" id="titleExists" value="0">');
                 }
             }
-        }catch (any e) {
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error checking title uniqueness",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "title": form.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
             renderText("Error: " & e);
         }
     }
+
     // Function to update an existing blog
     function update() {
         var blogModel = model("Blog"); // Get model instance
         try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post update attempted",
+                details = {
+                    "blog_id": params.id,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             var message = updateBlog(params);
+
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post updated successfully",
+                details = {
+                    "blog_id": params.id,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             redirectTo(action="show", id=params.id, success="#message#");
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to update blog post",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "blog_id": params.id,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
             redirectTo(action="show", id=params.id, errorMessage="Failed to update blog post.");
         }
@@ -160,9 +329,44 @@ component extends="app.Controllers.Controller" {
     function destroy() {
         var blogModel = model("Blog"); // Get model instance
         try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post deletion attempted",
+                details = {
+                    "blog_id": params.id,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             var message = deleteBlog(params.id);
+
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post deleted successfully",
+                details = {
+                    "blog_id": params.id,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
             redirectTo(action="index", success="#message#");
         } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to delete blog post",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "blog_id": params.id,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
             // Handle error
             redirectTo(action="index", errorMessage="Failed to delete blog post.");
         }
@@ -170,28 +374,73 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the dropdown
     function loadCategories() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "DEBUG",
+            message = "Categories dropdown loaded",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         categories = model("Category").getAll();
         renderPartial(partial="partials/categories");
     }
 
     // Function to load statuses for the dropdown
     function loadStatuses() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "DEBUG",
+            message = "Statuses dropdown loaded",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         statuses = model("PostStatus").getAll();
         renderPartial(partial="partials/statuses");
     }
 
     // Function to load post types for the dropdown
     function loadPostTypes() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "DEBUG",
+            message = "Post types dropdown loaded",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         postTypes = model("PostType").getAll();
         renderPartial(partial="partials/postTypes");
     }
 
     function error() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "ERROR",
+            message = "Error page displayed",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         // Add code to render the error page if needed
         renderPartial(partial="partials/_error");
     }
 
     public function feed() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "INFO",
+            message = "Blog feed accessed",
+            details = {
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = structKeyExists(session, "userID") ? session.userID : 0
+        );
         // Fetch all blogs
         blogPosts = model("Blog").findAll(include="User", order="createdAt DESC", limit=20);
         
