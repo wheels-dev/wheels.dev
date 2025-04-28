@@ -94,12 +94,15 @@
     </table>
 </div>
 <script>
-    let table = new DataTable('#testimonialTable', {
+    var table = new DataTable('#testimonialTable', {
         columnDefs: [
             {
                 targets: [7,8], // Adjust these indexes based on your actual table structure
                 orderable: false
             }
         ]
+    });
+    table.on('draw', function() {
+        htmx.process(document.body);
     });
 </script>

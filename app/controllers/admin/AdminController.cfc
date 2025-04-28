@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog,publish,unpublish,comments", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -17,22 +17,64 @@ component extends="app.Controllers.Controller" {
 
     }
 
+    function comments(){
+        comments = model("comment").findAll(
+            select="id,Content,isPublished,commentParentId,createdat,authorId,blogId,slug,FullName,title",
+            include="User, Blog"
+            );
+    }   
+
     function approve() {
         try {
             var message = blogApproval(params.id);
-            header name="HX-Redirect" value="#urlFor(route='admin-blog')#";
+            redirectTo(action="blog", success="Blog reject successfully!");
+            return;
         } catch (any e) {
             // Handle error
-            renderText("Failed to approve blog.");
+            redirectTo(action="blog", error="error #e.message#");
+            return;
         }
     }
     function reject() {
         try {
             var message = blogReject(params.id);
-            header name="HX-Redirect" value="#urlFor(route='admin-blog')#";
+            redirectTo(action="blog", success="Blog reject successfully!");
+            return;
         } catch (any e) {
             // Handle error
-            renderText("Failed to reject blog.");
+            redirectTo(action="blog", error="error #e.message#");
+            return;
+        }
+    }
+
+    function publish(){
+        try{
+            var message = publishComment(params.id);
+            redirectTo(action="comments", success="Comment publish successfully!");
+        }catch(any e){
+            redirectTo(action="comments", error="error #e.message#");
+            return;
+        }
+    }
+
+    function unpublish(){
+        try{
+            var comment = model("comment").findbyKey(key="#id#");
+            if(!isNull(comment)){
+                comment.isPublished = false;
+                if(comment.save()){
+                    redirectTo(action="comments", success="Comment hide successfully!");
+                    return;
+                }else{
+                    redirectTo(action="comments", error="error: #comment.allErrors()#");
+                    return;
+                }
+            }else{
+                redirectTo(action="comments", error="Comment not found!");
+            }
+        }catch(any e){
+            redirectTo(action="comments", error="error #e.message#");
+            return;
         }
     }
 
@@ -327,6 +369,46 @@ component extends="app.Controllers.Controller" {
 
     }
 
+    function publishComment(id){
+        var comment = model("comment").findbyKey(key="#id#", include="Blog");
+        var user = model("user").findByKey(comment.authorId);
+        if(!isNull(comment)){
+            comment.isPublished = true;
+            if(comment.save()){
+                var siteurl = "http://#cgi.http_host#/blog/#comment.blog.slug#";
+                var message = "Thanks for commenting on our blog post. Your comment is now live on the Wheels site.";
+                var footer = "If you did not write comment, you can safely ignore this email.";
+                emailContent = generateApprovalEmail(siteurl, message, footer);
+                cfmail( 
+                    to = "#user.email#", 
+                    from = "#application.env.mail_from#", 
+                    subject = "Your comment post has been published", 
+                    server = "#application.env.smtp_host#", 
+                    port = "#application.env.smtp_port#", 
+                    username = "#application.env.smtp_username#", 
+                    password = "#application.env.smtp_password#", 
+                    type = "html"
+                ) { 
+                    writeOutput(emailContent);
+                };
+                return {
+                    success = true,
+                    message = "Comment Published successfully!"
+                }
+            }else {
+                return {
+                    success = false,
+                    errors = comment.allErrors(),
+                    message = "Failed to publish comment!"
+                };
+            }
+        }
+        return {
+            success = false,
+            message = "comment not found!"
+        };
+    }
+
     private function blogApproval(id){
         var blog = model("Blog").findByKey(id);
         var user = model("user").findByKey(blog.createdby);
@@ -335,8 +417,10 @@ component extends="app.Controllers.Controller" {
             
             blog.status = "Approved"; //approved            
             if (blog.save()) {
-                siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
-                emailContent = generateApprovalEmail(siteurl);
+                var siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
+                var message = "Thank you for writing a blog post. Your post has been approved and published on the Wheels website.";
+                var footer = "If you did not write blog, you can safely ignore this email.";
+                var emailContent = generateApprovalEmail(siteurl, message, footer);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
                 cfmail( 
                     to = "#user.email#", 
@@ -412,7 +496,7 @@ component extends="app.Controllers.Controller" {
         };
     }
 
-    private string function generateApprovalEmail(required string siteurl) {
+    private string function generateApprovalEmail(required string siteurl, required string message, required string footer) {
         return '
             <!DOCTYPE html>
             <html>
@@ -471,9 +555,9 @@ component extends="app.Controllers.Controller" {
                 <div class="container">
                     <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
                     <h1>Welcome to Wheels.dev!</h1>
-                    <p>Thank you for writing a blog post. Your post has been approved and published on the Wheels website.</p>
+                    <p>'&message&'</p>
                     <a href="' & siteurl & '" class="button">View Your Post</a>
-                    <p class="footer">If you did not write blog, you can safely ignore this email.</p>
+                    <p class="footer">'&footer&'</p>
                 </div>
 
             </body>
