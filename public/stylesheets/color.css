@@ -14,12 +14,20 @@
     color: var(--primary)
 }
 
+.important\:text--primary {
+    color: var(--primary) !important
+}
+
 .bg--primary {
     background-color: var(--primary)
 }
 
 .bg--primary\/10 {
     background-color: rgba(var(--primary-rgb), .1)
+}
+
+.border--primary\/10 {
+    border-color: rgba(var(--primary-rgb), .1)
 }
 
 button.bg--primary:hover{
@@ -79,6 +87,10 @@ button.bg--primary:hover{
 
 .table--primary {
     --bs-table-bg: var(--primary)
+}
+
+.table--primary\/10 {
+    --bs-table-bg: rgba(var(--primary-rgb), .1)
 }
 
 .bg-white\/10 {
