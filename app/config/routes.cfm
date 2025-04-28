@@ -32,10 +32,13 @@
 			// Admin Controls
 			// .get(name = "admin-index", pattern = "admin", to = "admin.AdminController##index")
 			.get(name = "admin-blog", pattern = "admin/blog", to = "admin.AdminController##blog")
+			.get(name = "admin-comment", pattern = "admin/comment", to = "admin.AdminController##comments")
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
 			.get(name = "blog-List", pattern = "admin/blog/list", to = "admin.AdminController##blogList")
 			.post(name = "admin-approve", pattern = "admin/approve", to = "admin.AdminController##approve")
 			.post(name = "admin-reject", pattern = "admin/reject", to = "admin.AdminController##reject")
+			.post(name = "admin-comment-publish", pattern = "admin/publish", to = "admin.AdminController##publish")
+			.post(name = "admin-comment-unpublish", pattern = "admin/hide", to = "admin.AdminController##unpublish")
 			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
 
 			.get(name = "user-profile", pattern = "admin/user/profile", to = "admin.UserController##profile")
@@ -93,6 +96,14 @@
 			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "admin.testimonialController##reject")
 			
 			.post(name="clear_testimonial_prompt", pattern="testimonial/clear-prompt", to="web.Testimonial##clearPromptFlag") // Use POST to indicate an action
+
+			// routes for categories
+			.get(name = "admin-category", pattern = "admin/category", to = "admin.categoriesController##index")
+			.get(name = "admin-add-category", pattern = "admin/category/add", to = "admin.categoriesController##add")
+			.post(name = "admin-edit-category", pattern = "admin/category/save", to = "admin.categoriesController##store")
+			.post(name = "admin-edit-category", pattern = "admin/category/edit", to = "admin.categoriesController##add")
+			.post(name = "admin-delete-category", pattern = "admin/category/delete", to = "admin.categoriesController##delete")
+			.get(name = "admin-load-category", pattern = "admin/loadCategories", to = "admin.categoriesController##loadCategories")
 
 			// routes for testimonials
 			.resources("web.testimonial")
