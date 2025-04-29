@@ -1,8 +1,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="login,authenticate,logout,register,store,error,verify", params="key", paramsTypes="integer", handler="login");
+        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword", params="key", paramsTypes="integer", handler="login");
         usesLayout("/layout");
+        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword");
     }
 
     function login() {
@@ -29,7 +30,8 @@ component extends="app.Controllers.Controller" {
 
     function authenticate() {
         param name="params.email" default="";
-        param name="params.passwordHash" default="";
+        param name="params.password" default="";
+        param name="params.rememberMe" default=false;
 
         try {
             model("Log").log(
@@ -42,10 +44,32 @@ component extends="app.Controllers.Controller" {
                 }
             );
             
+            // Check if user is locked out
+            if (model("LoginAttempt").isUserLocked(params.email)) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "WARN",
+                    message = "Account locked - too many failed attempts",
+                    details = {
+                        "email": params.email,
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
+                data = {
+                    "success" = false,
+                    "message" = "Account locked due to too many failed attempts. Please contact an administrator to reset your account."
+                };
+                renderWith(data=data, hideDebugInformation=true, status=423, layout='/responseLayout');
+                return;
+            }
+            
             // Validate credentials
-            var user = validateCredentials(params.email, params.passwordHash);
+            var user = validateCredentials(params.email, params.password);
 
             if (isObject(user)) {
+                // Clear failed attempts on successful login
+                model("LoginAttempt").clearFailedAttempts(params.email);
+                
                 model("Log").log(
                     category = "wheels.auth",
                     level = "INFO",
@@ -62,6 +86,13 @@ component extends="app.Controllers.Controller" {
                 session.username = user.fullname;
                 session.role = user.role.name;
                 session.profilePic = user.profilePicture;
+                session.lastActivity = now();
+
+                // Handle remember me
+                if (params.rememberMe) {
+                    var token = createRememberMeToken(user);
+                    cookie(name="remember_me", value=token, expires="30");
+                }
 
                 // Get success data
                 var successData = handleLoginSuccess(user);
@@ -76,19 +107,27 @@ component extends="app.Controllers.Controller" {
                 return; 
 
             } else {
+                // Record failed attempt
+                model("LoginAttempt").recordFailedAttempt(params.email, cgi.REMOTE_ADDR);
+                
+                // Get remaining attempts
+                var remainingAttempts = model("LoginAttempt").getRemainingAttempts(params.email);
+                
                 model("Log").log(
                     category = "wheels.auth",
                     level = "WARN",
                     message = "Failed login attempt",
                     details = {
                         "email": params.email,
-                        "ip_address": cgi.REMOTE_ADDR
+                        "ip_address": cgi.REMOTE_ADDR,
+                        "remaining_attempts": remainingAttempts
                     }
                 );
+                
                 // Return JSON error response with 401 status code
                 data={
                     "success" = false,
-                    "message" = "Invalid login credentials."
+                    "message" = "Invalid login credentials. " & (remainingAttempts > 0 ? "You have #remainingAttempts# attempt(s) remaining." : "Account will be locked after next failed attempt.")
                 };
                 renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
                 return;
@@ -109,7 +148,7 @@ component extends="app.Controllers.Controller" {
                 "success" = false,
                 "message" = "An unexpected error occurred during login. Please try again."
             };
-            renderWith(data=data, hideDebugInformation=true, status=500 ,layout='/responseLayout');
+            renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
             return;
         }
     }
@@ -164,17 +203,20 @@ component extends="app.Controllers.Controller" {
                 );
             }
 
-            if (isObject(user.role) && user.role.name != 'Admin' && !user.hasSubmittedTestimonial()) {
-                session.promptForTestimonial = true;
-                header(name="HX-Trigger", value='{"showTestimonialModal": {}}');
-                model("Log").log(
-                    category = "wheels.auth",
-                    level = "DEBUG",
-                    message = "Testimonial prompt set",
-                    details = {
-                        "user_id": user.id
-                    }
-                );
+            // Check if user needs to submit testimonial
+            if (isObject(user.role) && user.role.name != 'Admin') {
+                var testimonial = model("Testimonial").findOne(where="user_id = '#user.id#'");
+                if (!isObject(testimonial)) {
+                    session.promptForTestimonial = true;
+                    model("Log").log(
+                        category = "wheels.auth",
+                        level = "DEBUG",
+                        message = "Testimonial prompt set",
+                        details = {
+                            "user_id": user.id
+                        }
+                    );
+                }
             }
 
         } catch (any e) {
@@ -196,19 +238,61 @@ component extends="app.Controllers.Controller" {
     }
 
     function logout() {
-        if (structKeyExists(session, "username")) {
+        try {
+            // Log the logout attempt if user is logged in
+            if (structKeyExists(session, "userID")) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "User logged out",
+                    details = {
+                        "user_id": session.userID,
+                        "username": session.username,
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
+
+                // Clear remember me token if exists
+                if (cookie.keyExists("remember_me")) {
+                    var token = cookie.remember_me;
+                    var rememberToken = model("RememberToken").findOne(where="token='#token#'");
+                    if (isObject(rememberToken)) {
+                        rememberToken.delete();
+                    }
+                    cookie(name="remember_me", value="", expires="now");
+                }
+            }
+
+            // Clear session data
+            StructClear(session);
+            
+            // Set success message
+            rc.successMessage = "You have been successfully logged out.";
+            
+            // Redirect to home page 
+            redirectTo(route="home");
+
+        } catch (any e) {
             model("Log").log(
                 category = "wheels.auth",
-                level = "INFO",
-                message = "User logged out",
+                level = "ERROR",
+                message = "Error during logout",
                 details = {
-                    "user_id": session.userID,
-                    "username": session.username
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
                 }
             );
+            
+            // Even if there's an error, try to clear the session and redirect
+            try {
+                StructClear(session);
+                redirectTo(route="home");
+            } catch (any redirectError) {
+                // If redirect fails, render error page
+                renderPartial(partial="partials/error", errorMessage="An error occurred during logout. Please try again.");
+            }
         }
-        StructClear(session);
-        redirectTo(route="home");
     }
 
     function register() {}
@@ -307,16 +391,52 @@ component extends="app.Controllers.Controller" {
     }
 
     function error() {
-        // Add code to render the error page if needed
-        renderPartial(partial="partials/_error");
+        param name="params.errorMessage" default="An unexpected error occurred. Please try again.";
+        
+        try {
+            // Log the error
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Auth error page accessed",
+                details = {
+                    "error_message": params.errorMessage,
+                    "ip_address": cgi.REMOTE_ADDR,
+                    "user_agent": cgi.HTTP_USER_AGENT
+                }
+            );
+
+            // Set error message in request context for the view
+            rc.errorMessage = params.errorMessage;
+            
+            // Render error page with appropriate layout
+            renderPartial(partial="partials/_error", errorMessage=params.errorMessage);
+
+        } catch (any e) {
+            // If error occurs while handling error, log it and show generic message
+            model("Log").log(
+                category = "wheels.auth",
+                level = "CRITICAL",
+                message = "Error handling error page",
+                details = {
+                    "original_error": params.errorMessage,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            
+            // Show generic error message
+            renderText("<h1>Error</h1><p>An unexpected error occurred. Please try again later.</p>");
+        }
     }
 
-    private function validateCredentials(required string email, required string passwordHash) {
+    private function validateCredentials(required string email, required string password) {
         var user = model("User").findOne(where="email='#email#'", include="Role");
         if (!isObject(user)) {
             return false; // User not found
         }
-        if(!application.WHEELS.plugins.bcrypt.bCryptCheckPW(passwordHash,user.passwordHash)){
+        if(!application.WHEELS.plugins.bcrypt.bCryptCheckPW(password, user.passwordHash)){
             return false;
         }
         return user;
@@ -483,5 +603,198 @@ component extends="app.Controllers.Controller" {
                 </body>
                 </html>
             ';
+    }
+
+    private boolean function isRateLimited(required string ipAddress) {
+        var attempts = model("LoginAttempt").findAll(where="ip_address='#ipAddress#' AND created_at > '#dateAdd("n", -15, now())#'");
+        return attempts.recordCount >= 3;
+    }
+
+    private string function createRememberMeToken(required User user) {
+        var token = hash(createUUID() & user.id & now());
+        var rememberToken = model("RememberToken").new();
+        rememberToken.token = token;
+        rememberToken.user_id = user.id;
+        rememberToken.expiresAt = dateAdd("d", 30, now());
+        rememberToken.save();
+        return token;
+    }
+
+    function forgotPassword() {
+        // If already logged in, redirect
+        if (isLoggedInUser()) {
+            redirectTo(controller="HomeController", action="index", route="home");
+            return;
+        }
+    }
+
+    function sendResetLink() {
+        param name="params.email" default="";
+        
+        try {
+            var user = model("User").findOne(where="email = '#params.email#'");
+            
+            if (isObject(user)) {
+                // Generate reset token
+                var token = generateResetToken();
+                
+                // Save token to database
+                model("PasswordReset").create(
+                    userId = user.id,
+                    token = token,
+                    expiresAt = dateAdd("h", 1, now())
+                );
+                
+                // Send reset email
+                sendResetEmail(user.email, token);
+                
+                data = {
+                    "success" = true,
+                    "message" = "Password reset instructions have been sent to your email."
+                };
+            } else {
+                data = {
+                    "success" = false,
+                    "message" = "No account found with that email address."
+                };
+            }
+            
+            renderWith(data=data, hideDebugInformation=true, layout='/responseLayout');
+            
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error sending reset link",
+                details = {
+                    "error_message": e.message,
+                    "email": params.email
+                }
+            );
+            
+            data = {
+                "success" = false,
+                "message" = "An error occurred while processing your request. Please try again."
+            };
+            renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
+        }
+    }
+
+    function resetPassword() {
+        param name="params.token" default="";
+        
+        try {
+            var reset = model("PasswordReset").findOne(
+                where="token = '#params.token#' AND expiresAt > '#now()#' AND used = 0"
+            );
+            
+            if (!isObject(reset)) {
+                redirectTo(action="login");
+                return;
+            }
+            
+            // Pass token to view for form submission
+            rc.token = params.token;
+            
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error processing reset password request",
+                details = {
+                    "error_message": e.message,
+                    "token": params.token
+                }
+            );
+            redirectTo(action="login");
+        }
+    }
+
+    function updatePassword() {
+        param name="params.token" default="";
+        param name="params.password" default="";
+        param name="params.password_confirmation" default="";
+        
+        try {
+            // Validate token
+            var reset = model("PasswordReset").findOne(
+                where="token = '#params.token#' AND expiresAt > '#now()#' AND used = 0"
+            );
+            
+            if (!isObject(reset)) {
+                data = {
+                    "success" = false,
+                    "message" = "Invalid or expired reset token."
+                };
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+            
+            // Validate password
+            if (params.password != params.password_confirmation) {
+                data = {
+                    "success" = false,
+                    "message" = "Passwords do not match."
+                };
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+            
+            if (len(params.password) < 8) {
+                data = {
+                    "success" = false,
+                    "message" = "Password must be at least 8 characters long."
+                };
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+            
+            // Update password
+            var user = model("User").findByKey(reset.userId);
+            user.update(password=hash(params.password));
+            
+            // Mark token as used
+            reset.update(used=1);
+            
+            data = {
+                "success" = true,
+                "message" = "Password has been reset successfully. You can now login with your new password.",
+                "redirectUrl" = urlFor(action="login")
+            };
+            renderWith(data=data, hideDebugInformation=true, layout='/responseLayout');
+            
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error updating password",
+                details = {
+                    "error_message": e.message,
+                    "token": params.token
+                }
+            );
+            
+            data = {
+                "success" = false,
+                "message" = "An error occurred while resetting your password. Please try again."
+            };
+            renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
+        }
+    }
+
+    private string function generateResetToken() {
+        return hash(createUUID() & now(), "SHA-256");
+    }
+
+    private void function sendResetEmail(required string email, required string token) {
+        var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
+        
+        // Send email using your email service
+        // This is a placeholder - implement your email sending logic here
+        var emailService = new app.services.EmailService();
+        emailService.sendPasswordResetEmail(
+            to = email,
+            resetUrl = resetUrl
+        );
     }
 }

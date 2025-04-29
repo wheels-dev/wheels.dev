@@ -6,7 +6,8 @@
 <cfset isApi = find("/api", pathInfo)>
 <cfset isLogin = find("/login", pathInfo)>
 <cfset isRegister = find("/register", pathInfo)>
-<cfset isAuthPage = (isLogin OR isRegister)>
+<cfset isForgotPassword = find("/forgot-password", pathInfo)>
+<cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword)>
 <cfset pageTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset ogTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset metaDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
