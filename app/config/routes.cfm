@@ -25,8 +25,10 @@
 			.post(name = "auth-store", pattern = "auth/store", to = "web.AuthController##Store")
 
 			// Routes for user authentication
-			.get(name = "forgot", pattern = "user/forgot-password", to = "web.AuthController##reset")
-			.get(name = "reset", pattern = "user/reset-password", to = "web.AuthController##forgot")
+			.get(name = "forgot-password", pattern = "auth/forgot-password", to = "web.AuthController##forgotPassword")
+			.post(name = "send-reset-link", pattern = "auth/send-reset-link", to = "web.AuthController##sendResetLink")
+			.get(name = "reset-password", pattern = "auth/reset-password/[token]", to = "web.AuthController##resetPassword")
+			.post(name = "update-password", pattern = "auth/update-password", to = "web.AuthController##updatePassword")
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
 			// Admin Controls
