@@ -106,10 +106,10 @@
                     <div class="col-12 gy-6">
                         <div class="row g-3 justify-content-end">
                             <div class="col-auto">
-                                <button type="submit" class="bg--secondary text-white px-3 py-2 rounded px-sm-15 fs-14">Save</button>
+                                <button type="submit" class="btn btn-primary px-sm-15 fs-14">Save</button>
                             </div>
                             <div class="col-auto">
-                                <a href="/admin/user" class="btn btn-primary px-5">Cancel</a>
+                                <button hx-get="/admin/user" hx-trigger="click" hx-swap="innerHTML" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</button>
                             </div>
                         </div>
                     </div>

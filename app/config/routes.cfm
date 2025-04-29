@@ -48,7 +48,7 @@
 			.get(name = "user-add", pattern = "admin/user/add", to = "admin.UserController##addUser")
 			.get(name = "user-add", pattern = "admin/user/edit/[id]", to = "admin.UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "admin.UserController##store")
-			.get(name="user-delete", pattern="admin/user/delete", to="admin.UserController##delete")
+			.get(name="user-delete", pattern="admin/user/delete/[id]", to="admin.UserController##delete")
 
 			.get(name = "home", pattern = "", to = "web.HomeController##Index")
 			// Route for loading features,blogs,guides with HTMX

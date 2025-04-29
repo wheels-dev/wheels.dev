@@ -26,7 +26,12 @@
                         <td>#i#</td>
                         <td>#categories.name[i]#</td>
                         <td>#categories.description[i]#</td>
-                        <td>#categories.parentId[i]#</td>
+                        <td>
+                            <cfset parentCategory = model("category").findAll(where="id = '#categories.parentId[i]#'")>
+                            <cfif parentCategory.recordCount neq 0>
+                                #parentCategory.name#
+                            </cfif>
+                        </td>
                         <td>
                             <cfif categories.isactive[i] eq 1>
                                 <span class="badge bg-success">Actice</span>
