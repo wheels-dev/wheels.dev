@@ -27,7 +27,7 @@ component extends="app.Controllers.Controller" {
     function approve() {
         try {
             var message = blogApproval(params.id);
-            redirectTo(action="blog", success="Blog reject successfully!");
+            renderText('<span class="badge bg-success">Approved</span>');
             return;
         } catch (any e) {
             // Handle error
@@ -38,7 +38,7 @@ component extends="app.Controllers.Controller" {
     function reject() {
         try {
             var message = blogReject(params.id);
-            redirectTo(action="blog", success="Blog reject successfully!");
+            renderText('<span class="badge bg-danger">Rejected</span>');
             return;
         } catch (any e) {
             // Handle error
@@ -50,7 +50,7 @@ component extends="app.Controllers.Controller" {
     function publish(){
         try{
             var message = publishComment(params.id);
-            redirectTo(action="comments", success="Comment publish successfully!");
+            renderText('<span class="badge bg-success">Published</span>');
         }catch(any e){
             redirectTo(action="comments", error="error #e.message#");
             return;
@@ -63,7 +63,7 @@ component extends="app.Controllers.Controller" {
             if(!isNull(comment)){
                 comment.isPublished = false;
                 if(comment.save()){
-                    redirectTo(action="comments", success="Comment hide successfully!");
+                    renderText('<span class="badge bg-danger">Hidden</span>');
                     return;
                 }else{
                     redirectTo(action="comments", error="error: #comment.allErrors()#");
