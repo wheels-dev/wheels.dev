@@ -36,13 +36,15 @@
                             <td>#categoryNames#</td>
                             <td>#blogs.fullName[i]#</td>
                             <td>
-                                <cfif blogs.status[i] eq 'Approved'>
-                                    <span class="badge bg-success">Approved</span>
-                                <cfelseif blogs.status[i] eq 'Rejected'>
-                                    <span class="badge bg-danger">Rejected</span>
-                                <cfelse>
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                </cfif>
+                                <span class="approval-status-#blogId#">
+                                    <cfif blogs.status[i] eq 'Approved'>
+                                        <span class="badge bg-success">Approved</span>
+                                    <cfelseif blogs.status[i] eq 'Rejected'>
+                                        <span class="badge bg-danger">Rejected</span>
+                                    <cfelse>
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    </cfif>
+                                </span>
                             </td>
                             <td>
                                 <div class="dropdown">
@@ -55,7 +57,8 @@
                                                 class="dropdown-item text-success fs-16"
                                                 hx-post="approve" 
                                                 hx-vals='{"id": "#blogs.id[i]#"}'
-                                                hx-target='body'
+                                                hx-target=".approval-status-#blogId#"
+                                                hx-swap="innerHTML"
                                                 hx-confirm="Are you sure you want to approve this blog?"
                                             >Approve</button>
                                         </li>
@@ -64,7 +67,8 @@
                                                 class="dropdown-item text-danger fs-16"
                                                 hx-post="reject" 
                                                 hx-vals='{"id": "#blogs.id[i]#"}'
-                                                hx-target='body'
+                                                hx-target=".approval-status-#blogId#"
+                                                hx-swap="innerHTML"
                                                 hx-confirm="Are you sure you want to reject this blog?"
                                             >Reject</button>
                                         </li>
