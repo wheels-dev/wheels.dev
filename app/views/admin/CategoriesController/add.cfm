@@ -58,8 +58,8 @@
                     </div>
                     <div class="col-sm-6 col-md-6 col-lg-12 mb-3">
                         <div class="form-floating">
-                            <input name="description" type="textArea" placeholder="Enter category description" class="form-control fs-14" id="description"
-                            aria-describedby="descriptionHelp" required minlength="3" maxlength="200" value="#description#" style="height: 80px">
+                            <textarea name="description" type="textArea" placeholder="Enter category description" class="form-control fs-14" id="description"
+                            aria-describedby="descriptionHelp" required minlength="3" maxlength="200" style="height: 80px">#description#</textArea>
                             <label for="description" class="form-label fs-18 fw-medium">Description <span class="text-danger">*</span></label>
                             <div class="invalid-feedback">Catgory description must be between 3 and 200 characters.</div>
                         </div>
@@ -67,10 +67,10 @@
                     <div class="col-12 gy-6">
                         <div class="row g-3 justify-content-end">
                             <div class="col-auto">
-                                <button type="submit" class="bg--secondary text-white px-3 py-2 rounded px-sm-15 fs-14">Save</button>
+                                <button type="submit" class="btn btn-primary px-sm-15 fs-14">Save</button>
                             </div>
                             <div class="col-auto">
-                                <a href="/admin/category" class="btn btn-primary px-5">Cancel</a>
+                                <a href="/admin/category" class="btn btn-dark px-sm-5 fs-14">Cancel</a>
                             </div>
                         </div>
                     </div>
