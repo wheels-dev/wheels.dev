@@ -18,7 +18,7 @@ component extends="app.Controllers.Controller" {
     function approve() {
         try {
             var message = testimonialApproval(params.id);
-            header name="HX-Redirect" value="#urlFor(route='admin-testimonials')#";
+            renderText('<span class="badge bg-success">Approved</span>');
             return;
         } catch (any e) {
             // Handle error
@@ -29,7 +29,7 @@ component extends="app.Controllers.Controller" {
     function reject() {
         try {
             var message = testimonialReject(params.id);
-            header name="HX-Redirect" value="#urlFor(route='admin-testimonials')#";
+            renderText('<span class="badge bg-danger">Rejected</span>');
         } catch (any e) {
             // Handle error
             renderText("Failed to reject testimonials.");

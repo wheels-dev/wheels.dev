@@ -100,7 +100,7 @@ component extends="app.Models.Model" {
         
         // Only set user_id if the user exists
         if (arguments.userId > 0) {
-            var user = model("User").findById(arguments.userId);
+            var user = model("User").findByKey(arguments.userId);
             if (!isNull(user)) {
                 newLog.userId = arguments.userId;
             }
