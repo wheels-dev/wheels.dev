@@ -1,21 +1,22 @@
 <cfoutput>
     <cfloop query="blogs">
         <div class="pb-4 items">
-            <a href="/blog/#slug#" class="d-flex bg-white px-0 rounded-4 overflow-hidden justify-content-between">
-                <div class="p-3 flex-grow-1 rounded-start-4 d-flex justify-content-between flex-column">
-                    <div>
-                        <div class="border--primary w-max border-2 rounded-4 px-3 py-2">
-                            <p class="text--primary fw-medium fs-12 m-0">#blogs.firstname# #blogs.lastname#</p>
-                        </div>
-                        <p class="fs-18 mt-4 text-black fw-bold">#blogs.title#</p>
-                    </div>
-                    <p class="text--lightGray fs-12 fw-medium">
-                            #dateformat(blogs.postDate, 'MMMM DD, YYYY')#
-                    </p>
+            <a href="/blog/#slug#"
+                class="d-flex flex-column rounded-bottom-4 shadow-sm bg-white px-0 overflow-hidden justify-content-between">
+                <div class="default-blog rounded-top-4">
+                    <div class="blog-title-overlay">#blogs.title#</div>
                 </div>
-                <div class="d-lg-block d-none position-relative">
-                    <div class="default-blog rounded-end-4">
-                        <div class="blog-title-overlay">#blogs.title#</div>
+                <div class="p-3 flex-grow-1 d-flex justify-content-between flex-column">
+                    <p class="fs-18 text-black fw-bold">#blogs.title#</p>
+                    <div class="d-flex align-items-center gap-2 mt-3">
+                            #imageTag(source='#profilePicture#', style="width:2.5rem; height:2.5rem",
+                            class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                        <div>
+                            <p class="text--secondary fw-bold fs-14 m-0">#blogs.firstname# #blogs.lastname#</p>
+                            <p class="text--lightGray fs-12 fw-medium">
+                                #dateformat(blogs.postDate, 'MMMM DD, YYYY')#
+                            </p>
+                        </div>
                     </div>
                 </div>
             </a>
@@ -23,7 +24,7 @@
     </cfloop>
 </cfoutput>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         let items = $('.items');
         let itemsPerPage = 4;
         let currentIndex = 0;
@@ -35,20 +36,20 @@
             return;
         }
         // Hide all items initially
-            items.hide();
-            
+        items.hide();
+
         // Function to show next set of items
         function showNextItems() {
             let nextItems = items.slice(currentIndex, currentIndex + itemsPerPage);
-            nextItems.fadeIn(); 
+            nextItems.fadeIn();
             currentIndex += itemsPerPage;
-        
+
             if (currentIndex >= items.length) {
                 $(window).off('scroll', onScroll); // All items shown, stop scroll
             }
             loading = false;
         }
-    
+
         // Scroll handler
         function onScroll() {
             if (loading) return;
@@ -56,15 +57,15 @@
                 loading = true;
                 $('#loader').show();
                 setTimeout(() => {
-                showNextItems();
-                $('#loader').hide();
+                    showNextItems();
+                    $('#loader').hide();
                 }, 1000); // Simulate a brief delay
             }
         }
-    
+
         // Initial load
         showNextItems();
-    
+
         // Attach scroll event
         $(window).on('scroll', onScroll);
     });
