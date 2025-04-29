@@ -62,6 +62,10 @@
     height: 70vh
 }
 
+.h-600{
+    height: 600px;
+}
+
 .min-h-200 {
     min-height: 200px
 }
@@ -96,6 +100,10 @@
     line-height: clamp(1.625rem, .8266rem + 3.5484vw, 4.375rem)
 }
 
+.line-height-100 {
+    line-height: 100%
+}
+
 .no-scrollbar::-webkit-scrollbar {
     display: none
 }
@@ -122,6 +130,10 @@
 
 .bottom-10 {
     bottom: 10px
+}
+
+.bottom-50px {
+    bottom: 50px
 }
 
 @media (min-width:992px) {
@@ -201,16 +213,16 @@
 
 .default-blog {
     position: relative;
-    width: 320px;
-    height: 280px;
-    background: url('/images/blog-default.png') center/cover no-repeat;
+    width: 100%;
+    height: 192px;
+    background: url('/images/blog-default.png') bottom/cover no-repeat;
     overflow: hidden
 }
 
 .blog-title-overlay {
     position: absolute;
     top: 50%;
-    left: 2.5rem;
+    left: 2rem;
     transform: translateY(-50%);
     color: #fff;
     font-weight: 600;
@@ -218,7 +230,7 @@
     line-height: 1.2;
     width: calc(100% - 3rem);
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
