@@ -544,7 +544,7 @@ component extends="app.Controllers.Controller" {
         try {
             // Check if the blog ID is greater than 0 (editing an existing post)
             if (structKeyExists(blogData, "id") && blogData.id > 0) {
-                var blog = model("Blog").findById(blogData.id);
+                var blog = model("Blog").findByKey(blogData.id);
     
                 if (not isNull(blog)) {
                     // Update the existing blog post
@@ -641,7 +641,7 @@ component extends="app.Controllers.Controller" {
     private function updateBlog(required struct blogData) {
         var response = { "message": "", "blogId": 0 };
 
-        var blog = model("Blog").findById(blogData.id);
+        var blog = model("Blog").findByKey(blogData.id);
 
         if (!isNull(blog)) {
             // Update the existing blog post
@@ -671,7 +671,7 @@ component extends="app.Controllers.Controller" {
         var message = "";
 
         try {
-            var blog = model("Blog").findById(id);
+            var blog = model("Blog").findByKey(id);
 
             if (not isNull(blog)) {
                 blog.isDeleted = true;

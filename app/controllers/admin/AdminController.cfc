@@ -252,25 +252,6 @@ component extends="app.Controllers.Controller" {
     }
 
     /**
-     * User Create/Edit Form
-     */
-    function userForm() {
-        var userId = param("key", 0);
-        
-        // Use service to get user or create new
-        var user = userId > 0 
-            ? variables.userService.findById(userId)
-            : variables.userModel.new();
-
-        // Fetch available roles
-        var roles = variables.roleService.findAll();
-
-        // Set variables for view
-        setVariable("user", user);
-        setVariable("roles", roles);
-    }
-
-    /**
      * Save User
      */
     function saveUser() {
