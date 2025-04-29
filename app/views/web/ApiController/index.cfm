@@ -1,7 +1,7 @@
 <main class="main-bg">
     <div class="container py-5">
         <div class="row">
-            <div class="col-lg-9 col-12">
+            <div class="col-lg-9 col-12 order-lg-first order-last">
                 <cfoutput>#includePartial("partials/versions")#</cfoutput>
                 <div class="mt-3" id="main">
                         <cfoutput>
@@ -19,7 +19,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-12">
+            <div class="col-lg-3 col-12 mb-lg-0 mb-5 order-lg-last order-first">
                 <div class="d-flex d-none api flex-wrap align-items-center justify-content-end gap-3">
                     <button
                         onclick="handleApiSection('All', this)"

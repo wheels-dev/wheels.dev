@@ -337,3 +337,9 @@ main.main-bg {
 .contributorsSwiperThumb :where(.swiper-button-next, .swiper-button-prev){
     color: var(--primary) !important;
 }
+
+.feature-blog{
+    background-image: url('../images/blog-default.png');
+    background-position: center;
+    background-size: cover;
+}
