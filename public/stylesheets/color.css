@@ -104,3 +104,7 @@ button.bg--primary:hover{
 .bg--input{
     background-color: var(--input);
 }
+
+.bg--blog__search{
+    background-color: rgba(239, 239, 239, 1);
+}

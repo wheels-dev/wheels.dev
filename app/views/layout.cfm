@@ -110,7 +110,7 @@
 		</head>
 		<body>			
 
-			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top navbar-expand-lg py-2 nav-bg">
+			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-lg py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="200">
