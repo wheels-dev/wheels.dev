@@ -46,13 +46,15 @@
                             </cfloop>
                         </td>
                         <td>
-                            <cfif Testimonial.status[i] eq 'Approved'>
-                                <span class="badge bg-success">Approved</span>
-                            <cfelseif Testimonial.status[i] eq 'Rejected'>
-                                <span class="badge bg-danger">Rejected</span>
-                            <cfelse>
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            </cfif>
+                            <span class="approval-status-#TestimonialId#">
+                                <cfif Testimonial.status[i] eq 'Approved'>
+                                    <span class="badge bg-success">Approved</span>
+                                <cfelseif Testimonial.status[i] eq 'Rejected'>
+                                    <span class="badge bg-danger">Rejected</span>
+                                <cfelse>
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                </cfif>
+                            </span>
                         </td>
                         <td class="text-center">
                             <div class="dropdown">
@@ -72,7 +74,8 @@
                                             hx-post="/admin/testimonials/approve" 
                                             hx-vals='{"id": "#TestimonialId#"}'
                                             hx-confirm="Are you sure you want to approve this testimonial?"
-                                            hx-target="##testimonials"
+                                            hx-target=".approval-status-#TestimonialId#"
+                                            hx-swap="innerHTML"
                                         >Approve</button>
                                     </li>
                                     <li>
@@ -81,7 +84,8 @@
                                             hx-post="/admin/testimonials/reject" 
                                             hx-vals='{"id": "#TestimonialId#"}'
                                             hx-confirm="Are you sure you want to reject this testimonial?"
-                                            hx-target="##testimonials"
+                                            hx-target=".approval-status-#TestimonialId#"
+                                            hx-swap="innerHTML"
                                         >Reject</button>
                                     </li>
                                 </ul>
