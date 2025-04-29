@@ -28,11 +28,13 @@
                         <td><a href="blog/#comments.slug[j]#" class="cursor-pointer text-primary">#comments.title[j]#</a></td>
                         <td>#datetimeFormat(comments.createdAt[j], "dd-MMM-YYYY HH:MM")#</td>
                         <td>
-                            <cfif comments.isPublished[j] eq true>
-                                <span class="badge bg-success">Published</span>
-                            <cfelse>
-                                <span class="badge bg-warning">Waiting for Approval</span>
-                            </cfif>
+                            <span class="approval-status-#commentId#">
+                                <cfif comments.isPublished[j] eq true>
+                                    <span class="badge bg-success">Published</span>
+                                <cfelse>
+                                    <span class="badge bg-danger">Hidden</span>
+                                </cfif>
+                            </span>
                         </td>
                         <td>
                             <div class="dropdown">
@@ -45,7 +47,8 @@
                                             class="dropdown-item text-success fs-16"
                                             hx-post="/admin/publish" 
                                             hx-vals='{"id": "#commentId#"}'
-                                            hx-target="body"
+                                            hx-target=".approval-status-#commentId#"
+                                            hx-swap="innerHTML"
                                             hx-confirm="Are you sure you want to publish this comment?"
                                         >Publish</button>
                                     </li>
@@ -54,8 +57,9 @@
                                             class="dropdown-item text-danger fs-16"
                                             hx-post="/admin/hide" 
                                             hx-vals='{"id": "#commentId#"}'
-                                            hx-target="body"
-                                            hx-confirm="Are you sure you want to publish this comment?"
+                                            hx-target=".approval-status-#commentId#"
+                                            hx-swap="innerHTML"
+                                            hx-confirm="Are you sure you want to Hide this comment?"
                                         >Hide</button>
                                     </li>
                                 </ul>
