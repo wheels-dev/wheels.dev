@@ -269,8 +269,8 @@ component extends="app.Controllers.Controller" {
             // Set success message
             rc.successMessage = "You have been successfully logged out.";
             
-            // Redirect to login page with success message
-            redirectTo(action="home");
+            // Redirect to home page 
+            redirectTo(route="home");
 
         } catch (any e) {
             model("Log").log(
