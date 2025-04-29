@@ -57,10 +57,12 @@ component extends="app.Controllers.Controller" {
     function delete() {
         try {
             var message = softDelete(params.id);
-            redirectTo(action="index", success="#message#");
+            renderText('');
+            return;
         } catch (any e) {
             // Handle error
-            redirectTo(action="index", errorMessage="Failed to delete user.");
+            cfheader(statusCode=500);
+            return;
         }
     }
 
