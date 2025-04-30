@@ -57,6 +57,10 @@ nav {
     font-weight: 700
 }
 
+.nav-link-hover:hover{
+    background-color: var(--input);
+}
+
 main.main .home-section{
     background-image: url("../images/homeBg.png");
     background-size: 100% 100%;
@@ -201,7 +205,10 @@ main.main-bg {
     background-color: rgba(var(--primary-rgb), .1) !important
 }
 
-.section .accordion-button::after,
+.section .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
+}
+
 .section .accordion-button:not(.collapsed)::after {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ef3b2d'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
 }
@@ -342,4 +349,17 @@ main.main-bg {
     background-image: url('../images/blog-default.png');
     background-position: center;
     background-size: cover;
+}
+
+.docs-container .docs-badge{
+    position: absolute;
+    inset: -20px 50% 0 50%;
+    height: max-content;
+    width: max-content;
+    transform: translateX(-50%);
+}
+
+.navHandlers .dropdown-item:active {
+    text-decoration: none;
+    background-color: var(--primary) !important;
 }

@@ -5,7 +5,7 @@
     data-category="#meta.tags.categoryClass#"
     data-function="#lcase(meta.slug)#">
 
-    <div class="d-flex align-items-center gap-5 border-2 border-top-0 border-end-0 border-start-0 border--primary/10 pb-3">
+    <div class="d-flex align-items-center gap-5 border-2 border-top-0 border-end-0 border-start-0 border border--primary/10 pb-3">
         <button class="fs-14 bg-transparent text--primary fw-bold">General</button>
         <button class="fs-14 bg-transparent text--lightGray">Permalink</button>
         <button class="fs-14 bg-transparent text--lightGray">JSON</button>
