@@ -11,7 +11,7 @@
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <div class="row gy-4 pb-3">
                         <div class="col-lg-12 col-12 d-flex flex-column">
-                            <div class="d-flex my-3 align-items-center gap-3">
+                            <!--- <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
                                     <cfif structKeyExists(blog.user, "profilePicture") AND len(trim(blog.user.profilePicture))>
                                         <cfoutput>#imageTag(source = '#blog.user.profilePicture#', alt="wheels.dev-user-profile-picture", height="50", width="50", class="bg-body-secondary rounded-5")#</cfoutput>
@@ -26,12 +26,12 @@
                                 </div>
 
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
-                            </div>
-                            <h1 class="fs-36 fw-bold text--secondary">
+                            </div> --->
+                            <h1 class="fs-36 fw-bold text-center text--secondary">
                                 #blog.title#
                             </h1>
                             <cfif categories.recordCount GT 0 OR tags.recordCount GT 0>
-                                <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
+                                <div class="d-flex flex-wrap justify-content-center flex-grow-1 align-items-end gap-lg-5 gap-2 mt-3">
                                     <!-- Blog date -->
                                     <p class="fw-medium fs-12 text--lightGray mb-0">
                                         #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
@@ -88,7 +88,6 @@
                     </div>
 
                     <div class="border-top pt-3">
-
                         <cfoutput query="comments">
                             <div class="mt-4">
                                 <div class="position-relative"> 
@@ -140,7 +139,8 @@
                                                                         <button class="ql-indent" value="+1"></button>
                                                                     </span>
                                                                 </div>
-                                                            <div class="editor editor2 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
+                                                                <div class="editor editor2 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
+                                                            </div>
                                                             <input required class="form-control" type="hidden" name="content" id="content">
                                                             <div class="mt-3 text-end">
                                                                 <button type="button" class="btn btn-light border fs-14 px-3 py-2 rounded-2 cancel-reply" data-commentid="#Id#">Cancel</button>
@@ -154,7 +154,7 @@
                                     </cfif>
                                     
                                     <cfif commentParentId neq '' and commentParentId neq 0>
-                                        <div class="d-flex pt-5 align-items-start gap-3 position-relative" style="margin-left: 70px;">
+                                        <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                             <div>
                                                 #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
                                             </div>  
@@ -167,6 +167,7 @@
                                 </div>
                             </div>
                         </cfoutput>
+                        
                         <cfif isLoggedInUser()>
                             <form hx-target="body" hx-swap="outerHTML" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                                 <div class="d-flex gap-3 align-items-start">

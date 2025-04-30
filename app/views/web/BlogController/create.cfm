@@ -52,43 +52,43 @@
     
                         <div class="mb-3">
                             <div id="toolbar-container" class="border-bottom-0 border rounded-top">
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <select class="ql-size"></select>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <button class="ql-bold"></button>
                                     <button class="ql-italic"></button>
                                     <button class="ql-underline"></button>
                                     <button class="ql-strike"></button>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <select class="ql-color"></select>
                                     <select class="ql-background"></select>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <button class="ql-header" value="1"></button>
                                     <button class="ql-header" value="2"></button>
                                     <button class="ql-header" value="3"></button>
                                     <button class="ql-blockquote"></button>
                                     <button class="ql-code-block"></button>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <button class="ql-list" value="ordered"></button>
                                     <button class="ql-list" value="bullet"></button>
                                     <button class="ql-indent" value="-1"></button>
                                     <button class="ql-indent" value="+1"></button>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <button class="ql-direction" value="rtl"></button>
                                     <select class="ql-align"></select>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <button class="ql-link"></button>
                                     <button class="ql-image"></button>
                                     <button class="ql-video"></button>
                                     <button class="ql-formula"></button>
                                 </span>
-                                <span class="ql-formats m-lg-0 my-1 px-3 rounded py-1 border">
+                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
                                     <button class="ql-clean"></button>
                                 </span>
                             </div>
@@ -98,10 +98,10 @@
     
                         <input type="hidden" name="isDraft" id="isDraft" value="0">
                         <div class="text-end">
-                            <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded fs-14" id="saveDraftBtn">
+                            <button type="button" class="btn btn-outline-dark px-3 py-2 rounded fs-14" id="saveDraftBtn">
                                 Save as Draft
                             </button>
-                            <button type="submit" class="bg--secondary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
+                            <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                         </div>
                     </form>
                     <div id="message"></div>
@@ -110,7 +110,7 @@
             <div class="col-lg-4 col-12">
                 <h4 class="mb-3">Live Preview</h4>
                 <div id="previewContent" class="p-3 border rounded bg-white">
-                    <h2 id="previewTitle" class="fs-20 fw-bold mb-3 text-primary"></h2>
+                    <h2 id="previewTitle" class="fs-20 fw-bold mb-3"></h2>
                     <div id="previewMeta" class="mb-3">
                         <div id="previewCategories" class="mb-1"></div>
                         <div id="previewTags"></div>

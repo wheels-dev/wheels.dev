@@ -4,10 +4,10 @@
             <a href="/blog/#slug#"
                 class="d-flex flex-column rounded-bottom-4 shadow-sm bg-white px-0 overflow-hidden justify-content-between">
                 <div class="default-blog rounded-top-4">
-                    <div class="blog-title-overlay">#blogs.title#</div>
+                    <p class="blog-title-overlay">#blogs.title#</p>
                 </div>
                 <div class="p-3 flex-grow-1 d-flex justify-content-between flex-column">
-                    <p class="fs-18 text-black fw-bold">#blogs.title#</p>
+                    <p class="fs-18 text-black fw-bold line-clamp-1">#blogs.title#</p>
                     <div class="d-flex align-items-center gap-2 mt-3">
                             #imageTag(source='#profilePicture#', style="width:2.5rem; height:2.5rem",
                             class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
