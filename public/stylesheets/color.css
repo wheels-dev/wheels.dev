@@ -30,12 +30,24 @@
     border-color: rgba(var(--primary-rgb), .1)
 }
 
+.hover\:border--primary:hover {
+    border-color: var(--primary)
+}
+
+.hover\:bg--primary:hover {
+    background-color: var(--primary) !important;
+}
+
+.hover\:text-white:hover{
+    color: white !important;
+}
+
 button.bg--primary:hover{
     background-color: rgba(var(--primary-rgb), .8)
 }
 
 .border--primary {
-    border: 1px solid var(--primary)
+    border-color: var(--primary) !important;
 }
 
 .form-check-input-primary:checked{
@@ -63,6 +75,10 @@ button.bg--primary:hover{
 
 .text--lightGray {
     color: var(--lightGray)
+}
+
+.border--lightGray{
+    border-color: var(--lightGray);
 }
 
 .bg--iris {

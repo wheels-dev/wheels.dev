@@ -71,6 +71,8 @@
 			<meta property="og:url" content="https://wheels.dev/">
 			<meta property="og:site_name" content="CFWheels">
 			<!-- Bootstrap CSS -->
+			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
 			<link href="/stylesheets/font.css" rel="stylesheet">
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
 			<link href="/stylesheets/color.css" rel="stylesheet">
@@ -124,27 +126,37 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://guides.cfwheels.org/">Guides</a>
+								<a class="nav-link py-2 px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels">Source</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/api/v3.0.0">Function Docs</a>
+								<a class="nav-link py-2 px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/docs">Docs</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/blog">Blog</a>
+								<a class="nav-link py-2 px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/community">Community</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions">Discussions</a>
+								<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/news">News</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
+								<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
 							<cfif isCurrentUserAdmin() and isLoggedInUser()>
 								<li class="nav-item px-3">
-									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/admin">Dashboard</a>
+									<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/admin">Dashboard</a>
 								</li>
 							</cfif>
 							<cfif isLoggedInUser()>
-								<li class="nav-item dropdown px-3">
+								<li class="nav-item dropdown px-3 navHandlers">
+									<a href="javascript:void(0)" class="nav-link bg--primary rounded-5 size-40 d-flex justify-content-center align-items-center" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="bi bi-plus-circle text--secondary fs-5 text-white"></i>
+									</a>
+									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
+										<li><a class="dropdown-item text--secondary" href="/blog/create">Add Blog</a></li>
+										<li><a class="dropdown-item text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
+										<li><a class="dropdown-item text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
+									</ul>
+								</li>
+								<li class="nav-item dropdown px-3 navHandlers">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
 											<cfset session.profilePic = "avatar-rounded.webp">
@@ -165,7 +177,7 @@
 								</li>
 								<cfelse>
 								<li class="nav-item px-3">
-									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/login">
+									<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/login">
 										Login
 									</a>
 								</li>

@@ -107,6 +107,15 @@
 			.post(name = "admin-delete-category", pattern = "admin/category/delete", to = "admin.categoriesController##delete")
 			.get(name = "admin-load-category", pattern = "admin/loadCategories", to = "admin.categoriesController##loadCategories")
 
+			// route for docs
+			.get(name = "docs", pattern = "docs", to="web.docsController##index")
+
+			// route for community
+			.get(name = "community", pattern = "community", to="web.communityController##index")
+
+			// route for news
+			.get(name = "news", pattern = "news", to="web.newsController##index")
+
 			// routes for testimonials
 			.resources("web.testimonial")
 		.end()
