@@ -17,8 +17,8 @@ if (structKeyExists(docs, "sections")) {
 
         writeOutput('
             <div class="accordion-item bg-transparent border-0">
-                <div class="accordion-header section pe-2 text-white" data-section="' & sectionId & '">
-                    <button class="accordion-button fs-14 fw-normal shadow-none bg--primary/10 p-2 rounded-3 text--primary collapsed"
+                <div class="accordion-header section text-white" data-section="' & sectionId & '">
+                    <button class="accordion-button fs-14 fw-normal shadow-none bg--input p-2 rounded-3 text--secondary collapsed"
                         type="button"
                         data-section="#sectionId#"
                         type="button" data-bs-toggle="collapse" data-bs-target="##' & sectionId & '" 
@@ -33,20 +33,20 @@ if (structKeyExists(docs, "sections")) {
                 </div>
                 <div id="' & sectionId & '" class="accordion-collapse collapse" data-bs-parent="##guidesAccordion">
                     <div class="accordion-body pb-0 space-y-3 pt-3 px-0 position-relative">
-                        <div class="space-y-3 ps-4">');
+                        <div class="space-y-2 ps-4">');
 
         for (var ss = 1; ss <= arrayLen(docs.sections[s]["categories"]); ss++) {
             var categoryName = docs.sections[s]["categories"][ss];
             var categoryId = $cssClassLink(categoryName);
             writeOutput('
-                <a href="javascript:void(0)" class="category" data-section="' & sectionId & '" data-category="' & categoryId & '"
+                <a href="javascript:void(0)" class="category d-block" data-section="' & sectionId & '" data-category="' & categoryId & '"
                 hx-get="/api/#params.version#/functions/sectionCategory"
                 hx-include="this"
                 hx-target="##main"
                 hx-swap="innerHTML">
                 <input type="hidden" name="section" value="#sectionId#">
                 <input type="hidden" name="category" value="#categoryId#">
-                <p class="fs-14 fw-normal cursor-pointer text--primary">#categoryName#</p>
+                <p class="fs-14 fw-normal cursor-pointer text--secondary">#categoryName#</p>
                 </a>
             ');
         }
@@ -59,13 +59,16 @@ if (structKeyExists(docs, "sections")) {
 
     // Adding "Uncategorized" section at the end
     writeOutput('
-                <button class="accordion-button fs-14 fw-normal shadow-none bg--primary/10 p-2 rounded-3 text--primary collapsed"
-                    
-                    type="button"
-                    hx-get="/api/#params.version#/functions/section" hx-include="this" hx-target="##main" hx-swap="innerHTML">
-                    <input type="hidden" name="section" value="">
-                    Uncategorized
-                </button>
+            <div class="accordion-item bg-transparent border-0">
+                <div class="accordion-header section text-white" data-section="">
+                    <button class="accordion-button fs-14 fw-normal shadow-none bg--input p-2 rounded-3 text--secondary collapsed"
+                        type="button"
+                        hx-get="/api/#params.version#/functions/section" hx-include="this" hx-target="##main" hx-swap="innerHTML">
+                        <input type="hidden" name="section" value="">
+                        Uncategorized
+                    </button>
+                </div>
+            </div>
     ');
 
     writeOutput('</div>'); // Closing accordion
