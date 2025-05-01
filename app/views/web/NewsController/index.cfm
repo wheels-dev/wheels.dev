@@ -1,6 +1,6 @@
 <main class="main-bg">
     <div class="container py-5">
-        <div class="d-flex justify-content-center align-items-center gap-4">
+        <div class="d-flex justify-content-center flex-wrap align-items-center gap-4">
             <a href="/news" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary">Everything</a>
             <a href="/news" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary">Releases</a>
             <a href="/blog" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary">Blogs</a>

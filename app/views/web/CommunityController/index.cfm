@@ -7,7 +7,7 @@
 
     <main class="main-bg">
         <div class="container py-5">
-            <h1 class="text-center fw-bold fs-60">We make Wheels better.</h1>
+            <h1 class="text-center fw-bold fs-60">We make Wheels better</h1>
             <p class="text--secondary fs-18 text-center fw-medium">
                 Wheels continues to improve each year thanks to the efforts of thousands of volunteers, contributing in
                 both
