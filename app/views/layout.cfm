@@ -181,9 +181,6 @@
 							<li class="nav-item px-3">
 								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isNews>active</cfif>" aria-current="page" href="/news">News</a>
 							</li>
-							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
-							</li>
 							<cfif isCurrentUserAdmin() and isLoggedInUser()>
 								<li class="nav-item px-3">
 									<a class="nav-link px-3 fw-normal py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/admin">Dashboard</a>
@@ -294,7 +291,7 @@
 											Interaction</a></li>
 								</ul>
 							</div>
-							<div class="col-lg-6 row gy-lg-0 gy-3 gx-5">
+							<div class="col-lg-6 row gy-lg-0 gy-3 gx-lg-5">
 								<div class="col-lg-4">
 									<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 									<ul class="list-unstyled">
@@ -334,11 +331,8 @@
 								<div class="col-lg-4">
 									<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
 									<ul class="list-unstyled">
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Installing
-												and
-												Using
-												PI</a></li>
+										<li class="mt-3"><a href="https://www.forgebox.io/type/cfwheels-plugins" target="_blank"
+												class="text--secondary fs-14 text-decoration-none">Plugins</a></li>
 										<li class="mt-3"><a href="#"
 												class="text--secondary fs-14 text-decoration-none">Developing
 												Plugins</a></li>

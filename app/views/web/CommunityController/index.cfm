@@ -18,8 +18,18 @@
 
             <div class="mt-5">
                 <div class="bg-white rounded-18 px-4 py-5 mt-lg-5 mt-3">
+
                     <div>
-                        <p class="text-center text--primary fs-32 pb-2 fw-bold">Meet the Core team.</p>
+                        <p class="text-center text--primary fs-32 pb-2 fw-bold">Top Contributors</p>
+                        <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                            <a href="https://github.com/cfwheels/cfwheels/graphs/contributors" target="_blank">
+                                <img src="https://contrib.rocks/image?repo=cfwheels/cfwheels" style="max-width: 100%;">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-none">
+                        <p class="text-center text--primary fs-32 pb-2 fw-bold">Meet the Core team</p>
                         <p class="fw-normal fs-18 text-center col-lg-9 mx-auto">
                             <strong>The direction of the framework is stewarded by the
                                 Wheels Core.</strong> This group of long-term contributors
@@ -49,8 +59,8 @@
                         </div>
                     </div>
 
-                    <div class="mt-5">
-                        <p class="text-center text--primary fs-32 pb-2 fw-bold">The Committers.</p>
+                    <div class="mt-5 d-none">
+                        <p class="text-center text--primary fs-32 pb-2 fw-bold">The Committers</p>
                         <p class="fw-normal fs-18 text-center col-lg-9 mx-auto">
                             <strong>The Committer team assists with processing pull requests and making changes to the
                                 framework</strong>, but does not have the keys to make final releases or set policy. All
@@ -79,8 +89,13 @@
                         </div>
                     </div>
 
-                    <div class="mt-5">
-                        <p class="text-center text--primary fs-32 pb-2 fw-bold">The Issues team.</p>
+                    <div class="mt-5 text-center">
+                        <p class="text-center text--primary fs-32 fw-bold">Financial Contributors</p>
+                        <script src='https://opencollective.com/wheels-dev/banner.js?style={"a":{"color":"rgb(191, 40, 33)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
+                    </div>
+
+                    <div class="mt-5 d-none">
+                        <p class="text-center text--primary fs-32 pb-2 fw-bold">The Issues team</p>
                         <p class="fw-normal fs-18 text-center col-lg-9 mx-auto">
                             <strong>The Issues team assists with issues triage, pull request reviews, and documentation
                                 improvements.</strong> They are often the first point of interaction of users with the
@@ -98,9 +113,8 @@
                         </p>
                     </div>
 
-                    
-                    <div class="mt-5">
-                        <p class="text-center text--primary fs-32 pb-2 fw-bold">The Alumni.</p>
+                    <div class="mt-5 d-none">
+                        <p class="text-center text--primary fs-32 pb-2 fw-bold">The Alumni</p>
                         <p class="fw-normal fs-18 text-center col-lg-9 mx-auto">
                             <strong>We'd like to extend special thanks</strong> to the following Rails Core team members, lovingly known as The Alumni: George Claghorn, Santiago Pastorino, Yves Senn, Godfrey Chan, Michael Koziarski, José Valim, Yehuda Katz, Jon Leighton, Josh Peek, Carl Lerche, Pratik Naik, Jamis Buck, Marcel Molina, Nicholas Seckar, Sam Stephenson, Florian Weber, Scott Barron, Tobias Lütke, Rick Olson
                         </p>

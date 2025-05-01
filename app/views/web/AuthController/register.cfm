@@ -3,7 +3,9 @@
         <div class="col-lg-6 bg-white col-12">
             <div class="flex-column d-flex py-4 justify-content-center h-100 gap-3 align-items-center">
                 <h1 class="fs-36 mb-0 fw-bold text--secondary">Welcome to</h1>
-                <img src="/images/wheels-logo.png" width="300" alt="Logo">
+                <a href="/">
+                    <img src="/images/wheels-logo.png" width="300" alt="Logo">
+                </a>
                 <p class="text--secondary fw-medium fs-18 text-center w-100 max-w-450 mx-auto pt-4">
                     CFWheels is an open-source CFML framework inspired by Ruby on Rails. It offers fast app development,
                     organized code structure, and is easy and fun to learn.
