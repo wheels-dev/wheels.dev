@@ -1,8 +1,10 @@
 <main class="w-100 vh-100 d-flex justify-content-center align-items-center main-login position-relative">
-    <div class="pt-3 ps-5 position-absolute top-0 start-0">
-        <a href="/" class="text-decoration-none">
-            <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
-        </a>
+    <div class="position-absolute w-100 top-0 start-0">
+        <div class="container w-100 px-0 pt-3">
+            <a href="/" class="text-decoration-none container">
+                <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
+            </a>
+        </div>
     </div>
     <div class="row w-100 m-lg-auto m-2">
         <div class="col-lg-4 bg-white col-12 position-relative mx-auto p-4 border rounded-4 shadow-sm">
