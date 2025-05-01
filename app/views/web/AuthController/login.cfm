@@ -1,6 +1,6 @@
 <main class="w-100 vh-100 d-flex justify-content-center align-items-center main-login position-relative">
     <div class="position-absolute w-100 top-0 start-0">
-        <div class="container w-100 pt-3">
+        <div class="container w-100 px-0 pt-3">
             <a href="/" class="text-decoration-none container">
                 <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
             </a>

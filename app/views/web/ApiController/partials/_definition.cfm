@@ -5,13 +5,7 @@
     data-category="#meta.tags.categoryClass#"
     data-function="#lcase(meta.slug)#">
 
-    <div class="d-flex align-items-center gap-5 border-2 border-top-0 border-end-0 border-start-0 border border--primary/10 pb-3">
-        <button class="fs-14 bg-transparent text--primary fw-bold">General</button>
-        <button class="fs-14 bg-transparent text--lightGray">Permalink</button>
-        <button class="fs-14 bg-transparent text--lightGray">JSON</button>
-    </div>
-
-    <div class="d-flex align-items-center pt-3 gap-2">
+    <div class="d-flex align-items-center gap-2">
         <h1 class="text--primary fs-24 fw-bold">#meta.name#()</h1>
         <div class="dropdown">
             <button class="dropdown-toggle outline-none border-0 no-dropdown-arrow text-center bg-transparent"
