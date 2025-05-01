@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog,publish,unpublish,comments,bulkApprove,bulkReject,viewComments", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -33,7 +33,7 @@ component extends="app.Controllers.Controller" {
         renderPartial(partial="partials/commentView");
     }  
 
-    function approve() {
+    function blogApprove() {
         try {
             var message = blogApproval(params.id);
             renderText('<span class="badge bg-success">Approved</span>');
@@ -45,7 +45,7 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    function reject() {
+    function rejectBlog() {
         try {
             var message = blogReject(params.id);
             renderText('<span class="badge bg-danger">Rejected</span>');
@@ -57,7 +57,7 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    function bulkApprove(){
+    function blogBulkApprove(){
         try{
             for (blogId in params.selectedBlogIds) {
                 var message = blogApproval(blogId);
@@ -71,7 +71,7 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    function bulkReject(){
+    function blogBulkReject(){
         try{
             for (blogId in params.selectedBlogIds) {
                 var message = blogReject(blogId);
@@ -85,7 +85,7 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    function publish(){
+    function commentsPublish(){
         try{
             var message = publishComment(params.id);
             renderText('<span class="badge bg-success">Published</span>');
@@ -95,7 +95,7 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    function unpublish(){
+    function unpublishComment(){
         try{
             var comment = model("comment").findbyKey(key="#id#");
             if(!isNull(comment)){
