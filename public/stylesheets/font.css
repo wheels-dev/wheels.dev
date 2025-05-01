@@ -12,6 +12,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 100;
     src: url('../fonts/Sora-Thin.ttf') format('truetype');
 }
@@ -19,6 +20,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 200;
     src: url('../fonts/Sora-ExtraLight.ttf') format('truetype');
 }
@@ -26,6 +28,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 300;
     src: url('../fonts/Sora-Light.ttf') format('truetype');
 }
@@ -33,6 +36,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 400;
     src: url('../fonts/Sora-Regular.ttf') format('truetype');
 }
@@ -40,6 +44,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 500;
     src: url('../fonts/Sora-Medium.ttf') format('truetype');
 }
@@ -47,6 +52,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 600;
     src: url('../fonts/Sora-SemiBold.ttf') format('truetype');
 }
@@ -54,6 +60,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 700;
     src: url('../fonts/Sora-Bold.ttf') format('truetype');
 }
@@ -61,6 +68,7 @@
 @font-face {
     font-family: 'Sora';
     font-style: normal;
+    font-display: swap;
     font-weight: 800;
     src: url('../fonts/Sora-ExtraBold.ttf') format('truetype');
 }
