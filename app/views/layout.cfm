@@ -7,7 +7,11 @@
 <cfset isLogin = find("/login", pathInfo)>
 <cfset isRegister = find("/register", pathInfo)>
 <cfset isForgotPassword = find("/forgot-password", pathInfo)>
+<cfset isDocs = find("/docs", pathInfo)>
+<cfset isCommunity = find("/community", pathInfo)>
+<cfset isNews = find("/news", pathInfo)>
 <cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword)>
+
 <cfset pageTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset ogTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset metaDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
@@ -72,6 +76,13 @@
 			<meta property="og:site_name" content="CFWheels">
 			<!-- Bootstrap CSS -->
 			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
 			<link href="/stylesheets/font.css" rel="stylesheet">
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
@@ -113,50 +124,83 @@
 		</head>
 		<body>			
 
-			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-lg py-2 nav-bg">
+			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
 						<img src="/images/wheels-logo.png" alt="Bootstrap" width="200">
 					</a>
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-						data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-						aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
+					<div class="d-flex align-items-center justify-content-end flex-xl-grow-0 flex-grow-1 gap-2">
+						<cfif isLoggedInUser()>
+							<div class="dropdown d-xl-none d-block navHandlers">
+								<a href="javascript:void(0)" class="nav-link bg--primary rounded-5 size-40 d-flex justify-content-center align-items-center" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class="bi bi-plus-circle text--secondary fs-5 text-white"></i>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
+									<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
+								</ul>
+							</div>
+							<div class="nav-item d-xl-none d-block dropdown navHandlers">
+								<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+									<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
+										<cfset session.profilePic = "avatar-rounded.webp">
+									</cfif>
+									<cfoutput>
+										#imageTag(source = '#session.profilePic#', alt="user profile pic", height="40", width="40", class="rounded-circle")#
+									</cfoutput>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
+									<!-- Profile (expandable section) -->
+									<li class="dropdown-item-text fw-bold">Profile</li>
+									<li><a class="dropdown-item fw-normal ps-4" href="/user/change-password">Change Password</a></li>
+									<li><a class="dropdown-item fw-normal ps-4" href="/user/update-profile-pic">Update Profile Pic</a></li>
+
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item fw-normal" href="/logout">Logout</a></li>
+								</ul>
+							</div>
+						</cfif>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+							data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+							aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+					</div>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels">Source</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels">Source</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/docs">Docs</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isDocs>active</cfif>" aria-current="page" href="/docs">Docs</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/community">Community</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isCommunity>active</cfif>" aria-current="page" href="/community">Community</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/news">News</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isNews>active</cfif>" aria-current="page" href="/news">News</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 							</li>
 							<cfif isCurrentUserAdmin() and isLoggedInUser()>
 								<li class="nav-item px-3">
-									<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/admin">Dashboard</a>
+									<a class="nav-link px-3 fw-normal py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/admin">Dashboard</a>
 								</li>
 							</cfif>
 							<cfif isLoggedInUser()>
-								<li class="nav-item dropdown px-3 navHandlers">
+								<li class="nav-item d-xl-block d-none dropdown px-3 mb-lg-0 mb-3 navHandlers">
 									<a href="javascript:void(0)" class="nav-link bg--primary rounded-5 size-40 d-flex justify-content-center align-items-center" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 										<i class="bi bi-plus-circle text--secondary fs-5 text-white"></i>
 									</a>
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
-										<li><a class="dropdown-item text--secondary" href="/blog/create">Add Blog</a></li>
-										<li><a class="dropdown-item text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
-										<li><a class="dropdown-item text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
 									</ul>
 								</li>
-								<li class="nav-item dropdown px-3 navHandlers">
+								<li class="nav-item d-xl-block d-none dropdown px-3 navHandlers">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
 										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
 											<cfset session.profilePic = "avatar-rounded.webp">
@@ -168,16 +212,16 @@
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 										<!-- Profile (expandable section) -->
 										<li class="dropdown-item-text fw-bold">Profile</li>
-										<li><a class="dropdown-item ps-4" href="/user/change-password">Change Password</a></li>
-										<li><a class="dropdown-item ps-4" href="/user/update-profile-pic">Update Profile Pic</a></li>
+										<li><a class="dropdown-item fw-normal ps-4" href="/user/change-password">Change Password</a></li>
+										<li><a class="dropdown-item fw-normal ps-4" href="/user/update-profile-pic">Update Profile Pic</a></li>
 
 										<li><hr class="dropdown-divider"></li>
-										<li><a class="dropdown-item" href="/logout">Logout</a></li>
+										<li><a class="dropdown-item fw-normal" href="/logout">Logout</a></li>
 									</ul>
 								</li>
 								<cfelse>
 								<li class="nav-item px-3">
-									<a class="nav-link px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/login">
+									<a class="nav-link fw-normal px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/login">
 										Login
 									</a>
 								</li>
