@@ -37,12 +37,12 @@
 			.get(name = "admin-comment", pattern = "admin/comment", to = "admin.AdminController##comments")
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
 			.get(name = "blog-List", pattern = "admin/blog/list", to = "admin.AdminController##blogList")
-			.post(name = "admin-approve", pattern = "admin/approve", to = "admin.AdminController##approve")
-			.post(name = "admin-bulk-approve", pattern = "admin/bulkApprove", to = "admin.AdminController##bulkApprove")
-			.post(name = "admin-reject", pattern = "admin/reject", to = "admin.AdminController##reject")
-			.post(name = "admin-bulk-reject", pattern = "admin/bulkReject", to = "admin.AdminController##bulkReject")
-			.post(name = "admin-comment-publish", pattern = "admin/publish", to = "admin.AdminController##publish")
-			.post(name = "admin-comment-unpublish", pattern = "admin/hide", to = "admin.AdminController##unpublish")
+			.post(name = "admin-blog-approve", pattern = "admin/approve", to = "admin.AdminController##blogApprove")
+			.post(name = "admin-bulk-approve", pattern = "admin/bulkApprove", to = "admin.AdminController##blogBulkApprove")
+			.post(name = "admin-blog-reject", pattern = "admin/reject", to = "admin.AdminController##rejectBlog")
+			.post(name = "admin-bulk-reject", pattern = "admin/bulkReject", to = "admin.AdminController##blogBulkReject")
+			.post(name = "admin-comment-publish", pattern = "admin/publish", to = "admin.AdminController##commentsPublish")
+			.post(name = "admin-comment-unpublish", pattern = "admin/hide", to = "admin.AdminController##unpublishComment")
 			.get(name = "admin-view-comment", pattern = "admin/commentDetails/[id]", to = "admin.AdminController##viewComments")
 			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
 
@@ -116,6 +116,7 @@
 			.post(name = "admin-save-role", pattern = "admin/role/save", to = "admin.rolesController##store")
 			.post(name = "admin-edit-role", pattern = "admin/role/edit", to = "admin.rolesController##add")
 			.post(name = "admin-delete-role", pattern = "admin/role/delete", to = "admin.rolesController##delete")
+			.post(name = "admin-role-exist", pattern = "admin/role/exist", to = "admin.rolesController##checkRoleExistance")
 			.get(name = "admin-load-role", pattern = "admin/loadRole", to = "admin.rolesController##loadRoles")
 
 			// route for docs
