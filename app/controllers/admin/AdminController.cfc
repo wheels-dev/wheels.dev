@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog,publish,unpublish,comments", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,approve,reject,showBlog,publish,unpublish,comments,bulkApprove,bulkReject,viewComments", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -24,6 +24,15 @@ component extends="app.Controllers.Controller" {
             );
     }   
 
+    function viewComments(){
+        id = params.id;
+        comments = model("comment").findbyKey( key="#id#",
+            select="id,Content,isPublished,commentParentId,createdat,authorId,blogId,slug,FullName,title",
+            include="User, Blog"
+            );
+        renderPartial(partial="partials/commentView");
+    }  
+
     function approve() {
         try {
             var message = blogApproval(params.id);
@@ -31,10 +40,11 @@ component extends="app.Controllers.Controller" {
             return;
         } catch (any e) {
             // Handle error
-            redirectTo(action="blog", error="error #e.message#");
+            cfheader(statusCode=500);
             return;
         }
     }
+
     function reject() {
         try {
             var message = blogReject(params.id);
@@ -42,7 +52,35 @@ component extends="app.Controllers.Controller" {
             return;
         } catch (any e) {
             // Handle error
-            redirectTo(action="blog", error="error #e.message#");
+            cfheader(statusCode=500);
+            return;
+        }
+    }
+
+    function bulkApprove(){
+        try{
+            for (blogId in params.selectedBlogIds) {
+                var message = blogApproval(blogId);
+            }
+            success="Blogs are approved successfully!";
+            blogs = getAllBlogs();
+            renderPartial(partial="partials/blogs");
+        } catch(e) {
+            cfheader(statusCode=500);
+            return;
+        }
+    }
+
+    function bulkReject(){
+        try{
+            for (blogId in params.selectedBlogIds) {
+                var message = blogReject(blogId);
+            }
+            success="Blogs are rejected successfully!";
+            blogs = getAllBlogs();
+            renderPartial(partial="partials/blogs");
+        } catch(e) {
+            cfheader(statusCode=500);
             return;
         }
     }
@@ -52,7 +90,7 @@ component extends="app.Controllers.Controller" {
             var message = publishComment(params.id);
             renderText('<span class="badge bg-success">Published</span>');
         }catch(any e){
-            redirectTo(action="comments", error="error #e.message#");
+            redirectTo(action="comments", error="Error: Comment not publish!");
             return;
         }
     }
@@ -155,7 +193,7 @@ component extends="app.Controllers.Controller" {
         totalBlogs = model("blog").count();
         totalApprovedBlogs = model("blog").count(where="status = 'Approved'");
         rejectedBlogs = model("blog").count(where="status = 'Rejected'");
-        waitingforApprovalBlogs = model("blog").count(where="status = ''");
+        waitingforApprovalBlogs = model("blog").count(where="status IS NULL");
 
 
         last_7Days_Blogs = queryExecute("
@@ -399,7 +437,7 @@ component extends="app.Controllers.Controller" {
             blog.status = "Approved"; //approved            
             if (blog.save()) {
                 var siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
-                var message = "Thank you for writing a blog post. Your post has been approved and published on the Wheels website.";
+                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been approved and published on the Wheels website.";
                 var footer = "If you did not write blog, you can safely ignore this email.";
                 var emailContent = generateApprovalEmail(siteurl, message, footer);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -417,20 +455,20 @@ component extends="app.Controllers.Controller" {
                 };
                 return {
                     success = true,
-                    message = "blog status approved successfully"
+                    message = "Blog approved successfully!"
                 };
             } else {
                 return {
                     success = false,
                     errors = blog.allErrors(),
-                    message = "Failed to approve blog status"
+                    message = "Failed to approve blog!"
                 };
             }
         }
         
         return {
             success = false,
-            message = "blog not found"
+            message = "Blog not found"
         };
     }
     
@@ -444,7 +482,9 @@ component extends="app.Controllers.Controller" {
             
             if (blog.save()) {
                 siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
-                emailContent = generateRejectEmail(siteurl);
+                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected and not published on the Wheels website.";
+                var footer = "If you did not write blog, you can safely ignore this email.";
+                emailContent = generateRejectEmail(siteurl, message, footer);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
                 cfmail( 
                     to = "#user.email#", 
@@ -460,20 +500,20 @@ component extends="app.Controllers.Controller" {
                 };
                 return {
                     success = true,
-                    message = "blog status rejected successfully"
+                    message = "Blog rejected successfully"
                 };
             } else {
                 return {
                     success = false,
                     errors = blog.allErrors(),
-                    message = "Failed to reject blog status"
+                    message = "Failed to reject blog!"
                 };
             }
         }
         
         return {
             success = false,
-            message = "blog not found"
+            message = "Blog not found"
         };
     }
 
@@ -546,7 +586,7 @@ component extends="app.Controllers.Controller" {
         ';
     }
 
-    private string function generateRejectEmail(required string siteurl) {
+    private string function generateRejectEmail(required string siteurl, required string message, required string footer) {
         return '
             <!DOCTYPE html>
             <html>
@@ -605,8 +645,8 @@ component extends="app.Controllers.Controller" {
                 <div class="container">
                     <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
                     <h1>Welcome to Wheels.dev!</h1>
-                    <p>Thank you for writing a blog post. Your post has been rejected and not published on the Wheels website.</p>
-                    <p class="footer">If you did not write post, you can safely ignore this email.</p>
+                    <p>'&message&'</p>
+                    <p class="footer">'&footer&'</p>
                 </div>
 
             </body>

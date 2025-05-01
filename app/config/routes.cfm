@@ -38,9 +38,12 @@
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
 			.get(name = "blog-List", pattern = "admin/blog/list", to = "admin.AdminController##blogList")
 			.post(name = "admin-approve", pattern = "admin/approve", to = "admin.AdminController##approve")
+			.post(name = "admin-bulk-approve", pattern = "admin/bulkApprove", to = "admin.AdminController##bulkApprove")
 			.post(name = "admin-reject", pattern = "admin/reject", to = "admin.AdminController##reject")
+			.post(name = "admin-bulk-reject", pattern = "admin/bulkReject", to = "admin.AdminController##bulkReject")
 			.post(name = "admin-comment-publish", pattern = "admin/publish", to = "admin.AdminController##publish")
 			.post(name = "admin-comment-unpublish", pattern = "admin/hide", to = "admin.AdminController##unpublish")
+			.get(name = "admin-view-comment", pattern = "admin/commentDetails/[id]", to = "admin.AdminController##viewComments")
 			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
 
 			.get(name = "user-profile", pattern = "admin/user/profile", to = "admin.UserController##profile")
@@ -102,10 +105,18 @@
 			// routes for categories
 			.get(name = "admin-category", pattern = "admin/category", to = "admin.categoriesController##index")
 			.get(name = "admin-add-category", pattern = "admin/category/add", to = "admin.categoriesController##add")
-			.post(name = "admin-edit-category", pattern = "admin/category/save", to = "admin.categoriesController##store")
+			.post(name = "admin-save-category", pattern = "admin/category/save", to = "admin.categoriesController##store")
 			.post(name = "admin-edit-category", pattern = "admin/category/edit", to = "admin.categoriesController##add")
 			.post(name = "admin-delete-category", pattern = "admin/category/delete", to = "admin.categoriesController##delete")
 			.get(name = "admin-load-category", pattern = "admin/loadCategories", to = "admin.categoriesController##loadCategories")
+			
+			// route for admin roles
+			.get(name = "admin-roles", pattern = "admin/role", to = "admin.rolesController##index")
+			.get(name = "admin-add-role", pattern = "admin/role/add", to = "admin.rolesController##add")
+			.post(name = "admin-save-role", pattern = "admin/role/save", to = "admin.rolesController##store")
+			.post(name = "admin-edit-role", pattern = "admin/role/edit", to = "admin.rolesController##add")
+			.post(name = "admin-delete-role", pattern = "admin/role/delete", to = "admin.rolesController##delete")
+			.get(name = "admin-load-role", pattern = "admin/loadRole", to = "admin.rolesController##loadRoles")
 
 			// route for docs
 			.get(name = "docs", pattern = "docs", to="web.docsController##index")

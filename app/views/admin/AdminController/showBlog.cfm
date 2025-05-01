@@ -48,9 +48,10 @@
                                 </p>
                                     <p class="fw-medium fs-12 text--lightGray" 
                                     hx-push-url="/blog"
-                                    hx-get="/blog/list"
+                                    hx-get="/blog"
                                     hx-trigger="click"
                                     hx-swap="innerHTML"
+                                    hx-target=".main"
 <!---                                     hx-vals='{"category_id": "#blog.Category.id#"}' --->
                                     >
                                     #blog.PostStatus.name# in #categoryList#
