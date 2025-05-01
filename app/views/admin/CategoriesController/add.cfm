@@ -61,7 +61,7 @@
                             <textarea name="description" type="textArea" placeholder="Enter category description" class="form-control fs-14" id="description"
                             aria-describedby="descriptionHelp" required minlength="3" maxlength="200" style="height: 80px">#description#</textArea>
                             <label for="description" class="form-label fs-18 fw-medium">Description <span class="text-danger">*</span></label>
-                            <div class="invalid-feedback">Catgory description must be between 3 and 200 characters.</div>
+                            <div class="invalid-feedback">Category description must be between 3 and 200 characters.</div>
                         </div>
                     </div>
                     <div class="col-12 gy-6">

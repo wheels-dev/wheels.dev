@@ -16,6 +16,9 @@
     <link href="/stylesheets/style.css" rel="stylesheet">
     <link href="/stylesheets/utils.css" rel="stylesheet">
     <link href="/stylesheets/dataTables.min.css" rel="stylesheet">
+    <link href="/stylesheets/notifier.min.css" rel="stylesheet">
+    
+    <script src="/javascripts/notifier.min.js"></script>
     <script src="/javascripts/htmx.min.js"></script>
     <cfoutput>
         #stylesheetLinkTag(source="simplebar.min.css")#
@@ -93,6 +96,28 @@
                                     </div>
                                 </a>
                             </div>
+                            <div class="nav-item-wrapper">
+                                <a class="nav-link dropdown-indicator label-1" href="#nv-setting" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-setting">
+                                    <div class="d-flex align-items-center">
+                                        <div class="dropdown-indicator-icon-wrapper"></div><span class="nav-link-icon"><i class="bi bi-gear-fill fs-18"></i></span><span class="nav-link-text fs-14">Settings</span>
+                                    </div>
+                                </a>
+                                <div class="parent-wrapper label-1">
+                                    <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-setting">
+                                        <li class="collapsed-nav-item-title d-none fs-14">Settings</li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/admin/role">
+                                                <div class="d-flex align-items-center"><span class="nav-link-text fs-14">Roles</span></div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/admin/permissions">
+                                                <div class="d-flex align-items-center"><span class="nav-link-text f-14">Permissions</span></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -117,7 +142,7 @@
                 </div>
                 <div class="d-flex align-items-center gap-5">
                     <a class="nav-link label-1 fs-24 mt-1" href="/" role="button" data-bs-toggle="" aria-expanded="false">
-                        Back to Wheels
+                        Back to Wheels.dev
                     </a>
                     <ul class="navbar-nav navbar-nav-icons flex-row">
                         <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
