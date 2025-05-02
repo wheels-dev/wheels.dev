@@ -7,12 +7,6 @@
             #response.message#
         </div>
     </div>
-    <script>
-        htmx.trigger('body', 'notify', {
-            type: 'success',
-            message: '#response.message#'
-        });
-    </script>
 <cfelse>
     <div class="input-group">
         <div class="alert alert-danger mb-2 fs-12" role="alert">
@@ -20,11 +14,5 @@
             #response.message#
         </div>
     </div>
-    <script>
-        htmx.trigger('body', 'notify', {
-            type: 'error',
-            message: '#response.message#'
-        });
-    </script>
 </cfif>
 </cfoutput>
