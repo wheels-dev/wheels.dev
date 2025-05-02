@@ -75,7 +75,7 @@
                     Welcome to Our Community - a place where hike-minded people connect, share ideas, <br> and grow
                     together in a positive and supportive environment.
                 </p>
-                <a href="/blog" class="bg--primary d-block w-max mx-auto fs-16 px-3 py-2 rounded-18 text-white">
+                <a href="/community" class="bg--primary d-block w-max mx-auto fs-16 px-3 py-2 rounded-18 text-white">
                     <span>Explore community</span>
                 </a>
             </div>
@@ -96,8 +96,8 @@
                     </p>
                 </div>
                 <div class="col-12 pb-5 testimonialsSwiper swiper">
-                    <div class="w-100 swiper-wrapper">
-                        <div class="w-100 d-flex row swiper-slide">
+                    <div class="w-100 gap-lg-5 gap-0 swiper-wrapper">
+                        <div class="d-flex row swiper-slide">
                             <div class="col-lg-3 col-12">
                                 <img src="/images/testi.png" class="img-fluid" alt="Community">
                             </div>
@@ -114,7 +114,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-100 d-flex row swiper-slide">
+                        <div class="d-flex row swiper-slide">
                             <div class="col-lg-3 col-12">
                                 <img src="/images/testi.png" class="img-fluid" alt="Community">
                             </div>
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-100 d-flex row swiper-slide">
+                        <div class="d-flex row swiper-slide">
                             <div class="col-lg-3 col-12">
                                 <img src="/images/testi.png" class="img-fluid" alt="Community">
                             </div>

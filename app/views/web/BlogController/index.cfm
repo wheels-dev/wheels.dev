@@ -3,12 +3,9 @@
     <div class="w-100 h-600 position-relative feature-blog">
         <div class="position-absolute mx-auto container start-0 end-0 bottom-50px">
             <p class="text-white fs-18 pb-2">Featured</p>
-            <p class="text-white fw-bold fs-36 pb-3 line-height-100">Neque porro quisquam est qui dolorem
-                ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
-            <p class="text-white opacity-50 fs-18">It is a long established fact that a reader will be distracted by the
-                readable content
-                of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less
-                normal distribution of letters, as opposed to using 'Content here, content here.</p>
+            <p class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</p>
+            <p class="text-white opacity-50 fs-18">Build apps quickly with an organized, Ruby on Rails-inspired
+            structure. Get up and running in no time!</p>
         </div>
     </div>
     <main class="main-bg">

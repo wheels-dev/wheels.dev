@@ -26,7 +26,7 @@
 <script>
     $(document).ready(function () {
         let items = $('.items');
-        let itemsPerPage = 4;
+        let itemsPerPage = 6;
         let currentIndex = 0;
         let loading = false;
 

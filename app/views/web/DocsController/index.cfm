@@ -1,6 +1,6 @@
 <main class="main-bg">
     <div class="container py-5">
-        <h1 class="text-center fw-bold fs-60">Everything you need <br> to get building</h1>
+        <h1 class="text-center fw-bold fs-60">Everything you need <br class="d-lg-none d-block"> to get building</h1>
 
         <div class="mt-5">
             <p class="text-center text--primary fs-32 fw-bold">Get Started</p>
