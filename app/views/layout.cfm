@@ -256,7 +256,7 @@
 									<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
 									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the
 										latest updates from
-										Wheels.dev</p>
+										Wheels.Dev</p>
 								</div>
 								<div class="pt-3">
 									<input type="email" class="form-control mb-2 fs-12"
@@ -358,7 +358,7 @@
 							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
 							<div>
 								<p class="p-0 m-0 fs-12 text--secondary">
-										&copy; 2005-2025 wheels.dev. All rights are reserved.<br>
+										&copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
 										Wheels is licensed under the Apache License, Version 3.0.
 								</p>
 							</div>
