@@ -12,8 +12,8 @@
 <cfset isNews = find("/news", pathInfo)>
 <cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword)>
 
-<cfset pageTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
-<cfset ogTitle = "CFWheels - an open source CFML framework inspired by Ruby on Rails">
+<cfset pageTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">
+<cfset ogTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset metaDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
 <cfset ogDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
 
@@ -26,12 +26,13 @@
     <cfif isStruct(post) && structKeyExists(post, "id")>
 		<cfset metaDescription = this.generateMetaDescription(post.content)>
 
+        <cfset pageTitle = post.title & " - Wheels">
 		<cfset ogTitle = post.title>
 		<cfset ogDescription = metaDescription>
 		<cfset ogImage = ''>
     <cfelse>
-        <cfset pageTitle = "Blog | CFWheels">
-        <cfset metaDescription = "Explore our latest blogs on CFWheels.">
+        <cfset pageTitle = "Blogs - Wheels">
+        <cfset metaDescription = "Explore our latest blogs on Wheels.">
         <cfset ogTitle = pageTitle>
         <cfset ogDescription = metaDescription>
     </cfif>
@@ -39,12 +40,25 @@
 
 <cfif isApi>
     <cfset apiPath = listLast(pathInfo, "/")>
-    <cfset pageTitle = apiPath & " | CFWheels API ">
+    <cfset pageTitle = apiPath & " - Wheels API ">
 </cfif>
 
-<cfif isApi>
-	<cfset apiPath = listLast(pathInfo, "/")>
-	<cfset pageTitle = apiPath & " | CFWheels API ">
+<cfif isDocs>
+	<cfset docsPath = listLast(pathInfo, "/")>
+	<cfset docsPath = uCase(left(docsPath, 1)) & mid(docsPath, 2)>
+	<cfset pageTitle = docsPath & " - Wheels ">
+</cfif>
+
+<cfif isCommunity>
+	<cfset communityPath = listLast(pathInfo, "/")>
+	<cfset communityPath = uCase(left(communityPath, 1)) & mid(communityPath, 2)>
+	<cfset pageTitle = communityPath & " - Wheels ">
+</cfif>
+
+<cfif isNews>
+	<cfset newsPath = listLast(pathInfo, "/")>
+	<cfset newsPath = uCase(left(newsPath, 1)) & mid(newsPath, 2)>
+	<cfset pageTitle = newsPath & " - Wheels ">
 </cfif>
 
 <cfif application.contentOnly>
@@ -73,7 +87,7 @@
 			</cfoutput>
 			<meta property="og:description" content="Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
 			<meta property="og:url" content="https://wheels.dev/">
-			<meta property="og:site_name" content="CFWheels">
+			<meta property="og:site_name" content="Wheels">
 			<!-- Bootstrap CSS -->
 			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
@@ -168,7 +182,7 @@
 						</button>
 					</div>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav divide-x-primary mx-auto mb-2 mb-lg-0 align-items-center">
+						<ul class="navbar-nav divide-x-primary ms-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
 								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels">Source</a>
 							</li>
@@ -224,16 +238,6 @@
 								</li>
 							</cfif>
 						</ul>
-						<div class="d-lg-block d-none">
-							<a href="https://github.com/cfwheels" target="_blank">
-								<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<rect width="40" height="39.4186" rx="10" fill="#EF3B2D" />
-									<path
-										d="M20 8C18.4241 8 16.8637 8.31039 15.4078 8.91345C13.9519 9.5165 12.629 10.4004 11.5147 11.5147C9.26428 13.7652 8 16.8174 8 20C8 25.304 11.444 29.804 16.208 31.4C16.808 31.496 17 31.124 17 30.8V28.772C13.676 29.492 12.968 27.164 12.968 27.164C12.416 25.772 11.636 25.4 11.636 25.4C10.544 24.656 11.72 24.68 11.72 24.68C12.92 24.764 13.556 25.916 13.556 25.916C14.6 27.74 16.364 27.2 17.048 26.912C17.156 26.132 17.468 25.604 17.804 25.304C15.14 25.004 12.344 23.972 12.344 19.4C12.344 18.068 12.8 17 13.58 16.148C13.46 15.848 13.04 14.6 13.7 12.98C13.7 12.98 14.708 12.656 17 14.204C17.948 13.94 18.98 13.808 20 13.808C21.02 13.808 22.052 13.94 23 14.204C25.292 12.656 26.3 12.98 26.3 12.98C26.96 14.6 26.54 15.848 26.42 16.148C27.2 17 27.656 18.068 27.656 19.4C27.656 23.984 24.848 24.992 22.172 25.292C22.604 25.664 23 26.396 23 27.512V30.8C23 31.124 23.192 31.508 23.804 31.4C28.568 29.792 32 25.304 32 20C32 18.4241 31.6896 16.8637 31.0866 15.4078C30.4835 13.9519 29.5996 12.629 28.4853 11.5147C27.371 10.4004 26.0481 9.5165 24.5922 8.91345C23.1363 8.31039 21.5759 8 20 8Z"
-										fill="white" />
-								</svg>
-							</a>
-						</div>
 					</div>
 				</div>
 			</nav>
@@ -245,133 +249,120 @@
 
 			<footer class="bg-white <cfif isAuthPage>d-none</cfif> pt-5 pb-3 border-top">
 					<div class="container">
-						<div class="row text-lg-left text-center gy-lg-0 gy-3 gx-5">
+						<div class="row gy-lg-0 gy-3 gx-5">
 							<div class="col-lg-4">
 								<img src="/images/wheels-logo.png" width="284" alt="">
 								<div class="mt-3">
 									<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
 									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the
 										latest updates from
-										Wheels.dev</p>
+										Wheels.Dev</p>
 								</div>
 								<div class="pt-3">
-									<input type="email" class="form-control mb-2 fs-12"
-										placeholder="your@email.com">
-									<button
-										class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe
-										to
-										newsletter</button>
+								<cfoutput>
+									<form hx-post="#URLFor(route='newsletter-subscribe')#" hx-swap="outerHTML">
+										<div class="input-group">
+											#authenticityTokenField()#
+											<input type="email" name="email" class="form-control mb-2 fs-12" placeholder="Enter your email" required>
+											<button type="submit" class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe to newsletter</button>
+										</div>
+									</form>
+								</cfoutput>
 								</div>
 							</div>
 							<div class="col-lg-2">
-								<h6 class="fw-bold fs-16 text--secondary">Guides</h6>
+								<h6 class="fw-bold fs-16 text--secondary">Docs</h6>
 								<ul class="list-unstyled">
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Introduction</a>
+									<li class="mt-2"><a href="https://guides.cfwheels.org/cfwheels-guides/3.0.0-snapshot" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Introduction</a>
 									</li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Command Line
+									<li class="mt-2"><a href="https://github.com/cfwheels/wheels-cli" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Command Line
 											Tools</a></li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Working with
-											Wheels</a></li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Handling
-											Requests</a></li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Multiple
-											Formats</a>
-									</li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Displaying
-											Views</a>
-									</li>
-									<li class="mt-3"><a href="#"
-											class="text--secondary fs-14 text-decoration-none">Database
-											Interaction</a></li>
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>
+									<li class="mt-2"><a href="https://www.youtube.com/@wheels-dev" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a tutorial</a></li>
+									<li class="mt-2"><a href="https://guides.cfwheels.org/cfwheels-guides" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Read the guides</a></li>
+									<li class="mt-2"><a href="/api/v3.0.0"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">API Documentation</a></li>
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/discussions" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Join the conversation</a></li>
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Contribute to Wheels</a></li>
 								</ul>
 							</div>
-							<div class="col-lg-6 row gy-lg-0 gy-3 gx-lg-5">
-								<div class="col-lg-4">
-									<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
-									<ul class="list-unstyled">
-										<cfif isLoggedInUser()>
-											<li class="mt-3">
-												<a href="#" class="text--secondary fs-14 text-decoration-none">
-													<cfoutput>
-														#session.username#
-													</cfoutput>
-												</a>
-											</li>
-											<li class="mt-3"><a href="/logout"
-													class="text--secondary fs-14 text-decoration-none">Logout</a>
-											</li>	
-										<cfelse>
-											<li class="mt-3"><a href="/login"
-												class="text--secondary fs-14 text-decoration-none">Login</a>
-											</li>
-											<li class="mt-3"><a href="/register"
-													class="text--secondary fs-14 text-decoration-none">Register</a>
-											</li>		
-										</cfif>
-										
-										<li class="mt-3"><a href="/blog/feed"
-												class="text--secondary fs-14 text-decoration-none">Entries
-												feed</a>
+							<div class="col-lg-2">
+								<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
+								<ul class="list-unstyled">
+									<cfif isLoggedInUser()>
+										<li class="mt-2">
+											<a href="#" class="text--secondary fs-14 text-decoration-none cursor-pointer">
+												<cfoutput>
+													#session.username#
+												</cfoutput>
+											</a>
 										</li>
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Comments
-												feed</a>
+										<li class="mt-2"><a href="/logout"
+												class="text--secondary fs-14 text-decoration-none cursor-pointer">Logout</a>
+										</li>	
+									<cfelse>
+										<li class="mt-2"><a href="/login"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Login</a>
 										</li>
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none"></a>
-										</li>
-									</ul>
-								</div>
-								<div class="col-lg-4">
-									<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
-									<ul class="list-unstyled">
-										<li class="mt-3"><a href="https://www.forgebox.io/type/cfwheels-plugins" target="_blank"
-												class="text--secondary fs-14 text-decoration-none">Plugins</a></li>
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Developing
-												Plugins</a></li>
-										<li class="mt-3"><a href="#"
-												class="text--secondary fs-14 text-decoration-none">Publishing
-												Plugins</a></li>
-									</ul>
-								</div>
-								<div class="col-lg-4">
-									<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
-									<ul class="list-unstyled">
-										<li class="mt-3"><a href="https://github.com/cfwheels/cfwheels/releases"
-												class="text--secondary fs-14 text-decoration-none" target="_blank">Source
-												Code</a></li>
-										<li class="mt-3"><a href="https://github.com/cfwheels/cfwheels/issues"
-												class="text--secondary fs-14 text-decoration-none" target="_blank">Issue
-												Tracker</a>
-										</li>
-										<li class="mt-3"><a href="https://opencollective.com/wheels-fw"
-												class="text--secondary fs-14 text-decoration-none" target="_blank">Sponsor
-												Us</a>
-										</li>
-										<li class="mt-3"><a href="/blog"
-												class="text--secondary fs-14 text-decoration-none">Community</a>
-										</li>
-									</ul>
-								</div>
-								<div class="col-12">
-									<script src='https://opencollective.com/wheels-dev/banner.js?style={"a":{"color":"rgb(191, 40, 33)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
-								</div>
+										<li class="mt-2"><a href="/register"
+												class="text--secondary fs-14 text-decoration-none cursor-pointer">Register</a>
+										</li>		
+									</cfif>
+									
+									<li class="mt-2"><a href="/blog/feed"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Entries
+											feed</a>
+									</li>
+									<li class="mt-2"><a href="#"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Comments
+											feed</a>
+									</li>
+									<li class="mt-2"><a href="#"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer"></a>
+									</li>
+								</ul>
+							</div>
+							<div class="col-lg-2">
+								<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
+								<ul class="list-unstyled">
+									<li class="mt-2"><a href="https://www.forgebox.io/type/cfwheels-plugins" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Plugins</a></li>
+								</ul>
+							</div>
+							<div class="col-lg-2">
+								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
+								<ul class="list-unstyled">
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Source
+											Code</a></li>
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/issues"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Issue
+											Tracker</a>
+									</li>
+									<li class="mt-2"><a href="https://opencollective.com/wheels-fw"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Sponsor
+											Us</a>
+									</li>
+									<li class="mt-2"><a href="/community"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Community</a>
+									</li>
+								</ul>
 							</div>
 						</div>
 						<hr>
 						<div
 							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
 							<div>
-								<p class="p-0 m-0 fs-12">
-										&copy; 2005-2025 wheels.dev. All rights are reserved.<br>
-										Wheels is licensed under the Apache License, Version 2.0.
+								<p class="p-0 m-0 fs-12 text--secondary">
+										&copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
+										Wheels is licensed under the Apache License, Version 3.0.
 								</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">

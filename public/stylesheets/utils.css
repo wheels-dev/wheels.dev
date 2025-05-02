@@ -141,7 +141,7 @@
     bottom: 50px
 }
 
-@media (min-width:992px) {
+@media (min-width:1200px) {
     .divide-x-primary>:not([hidden])~:not([hidden]) {
         border-right-width: 0;
         border-left-width: 1px;

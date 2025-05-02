@@ -9,8 +9,7 @@ body {
 ::before,
 ::file-selector-button {
     box-sizing: border-box;
-      font-family: "Sora", sans-serif;
-
+    font-family: Montserrat, serif;
     margin: 0;
     padding: 0;
     border: 0 solid
