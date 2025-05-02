@@ -2,6 +2,7 @@ var swiper = new Swiper(".blogSwiper", {
     spaceBetween: 30,
     freeMode: true,
     // autoHeight: true,
+    initialSlide: 1,
     slidesOffsetBefore: 250,
     breakpoints: {
         640: {
@@ -38,8 +39,8 @@ var contributorsSwiper = new Swiper(".contributorsSwiper", {
 });
 
 var contributorsSwiper = new Swiper(".testimonialsSwiper", {
-    spaceBetween: 30,
-
+    slidesPerView: "auto",
+    centeredSlides: true,
     pagination: {
         el: ".swiper-pagination",
         clickable: true,
