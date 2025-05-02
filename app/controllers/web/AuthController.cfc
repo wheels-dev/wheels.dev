@@ -89,9 +89,21 @@ component extends="app.Controllers.Controller" {
                 session.lastActivity = now();
 
                 // Handle remember me
-                if (params.rememberMe) {
+                if (structKeyExists(params, "rememberMe")) {
                     var token = createRememberMeToken(user);
-                    cookie(name="remember_me", value=token, expires="30");
+                    if (len(token)) {
+                        cfcookie(name="remember_me", value=token, expires="30");
+                    } else {
+                        model("Log").log(
+                            category = "wheels.auth",
+                            level = "WARN",
+                            message = "Remember me token creation failed, proceeding without remember me",
+                            details = {
+                                "user_id": user.id,
+                                "email": user.email
+                            }
+                        );
+                    }
                 }
 
                 // Get success data
@@ -253,13 +265,13 @@ component extends="app.Controllers.Controller" {
                 );
 
                 // Clear remember me token if exists
-                if (cookie.keyExists("remember_me")) {
-                    var token = cookie.remember_me;
+                if (cfcookie.keyExists("remember_me")) {
+                    var token = cfcookie.remember_me;
                     var rememberToken = model("RememberToken").findOne(where="token='#token#'");
                     if (isObject(rememberToken)) {
                         rememberToken.delete();
                     }
-                    cookie(name="remember_me", value="", expires="now");
+                    cfcookie(name="remember_me", value="", expires="now");
                 }
             }
 
@@ -611,13 +623,49 @@ component extends="app.Controllers.Controller" {
     }
 
     private string function createRememberMeToken(required User user) {
-        var token = hash(createUUID() & user.id & now());
-        var rememberToken = model("RememberToken").new();
-        rememberToken.token = token;
-        rememberToken.user_id = user.id;
-        rememberToken.expiresAt = dateAdd("d", 30, now());
-        rememberToken.save();
-        return token;
+        try {
+            var token = hash(createUUID() & user.id & now());
+            var rememberToken = model("RememberToken").new();
+            rememberToken.token = token;
+            rememberToken.user_id = user.id;
+            rememberToken.expiresAt = dateAdd("d", 30, now());
+            
+            if (rememberToken.save()) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "Remember me token created successfully",
+                    details = {
+                        "user_id": user.id,
+                        "token": token
+                    }
+                );
+                return token;
+            } else {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "ERROR",
+                    message = "Failed to create remember me token",
+                    details = {
+                        "user_id": user.id,
+                        "errors": rememberToken.allErrors()
+                    }
+                );
+                return "";
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Exception while creating remember me token",
+                details = {
+                    "user_id": user.id,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            return "";
+        }
     }
 
     function forgotPassword() {
