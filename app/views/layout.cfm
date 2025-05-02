@@ -259,12 +259,15 @@
 										Wheels.Dev</p>
 								</div>
 								<div class="pt-3">
-									<input type="email" class="form-control mb-2 fs-12"
-										placeholder="your@email.com">
-									<button
-										class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe
-										to
-										newsletter</button>
+								<cfoutput>
+									<form hx-post="#URLFor(route='newsletter-subscribe')#" hx-swap="outerHTML">
+										<div class="input-group">
+											#authenticityTokenField()#
+											<input type="email" name="email" class="form-control mb-2 fs-12" placeholder="Enter your email" required>
+											<button type="submit" class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe to newsletter</button>
+										</div>
+									</form>
+								</cfoutput>
 								</div>
 							</div>
 							<div class="col-lg-2">

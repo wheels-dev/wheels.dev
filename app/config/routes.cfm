@@ -130,6 +130,16 @@
 
 			// routes for testimonials
 			.resources("web.testimonial")
+			
+			// Newsletter Routes
+			.post(name="newsletter-subscribe", pattern="newsletter/subscribe", to="web.NewsletterController##subscribe")
+			.get(name="newsletter-verify", pattern="newsletter/verify/[token]", to="web.NewsletterController##verify")
+			.post(name="newsletter-unsubscribe", pattern="newsletter/unsubscribe", to="web.NewsletterController##unsubscribe")
+	
+			// Admin Newsletter Routes
+			.get(name="admin-newsletter", pattern="admin/newsletter", to="admin.NewsletterController##index")
+			.post(name="admin-newsletter-send", pattern="admin/newsletter/send", to="admin.NewsletterController##send")
+			.post(name="admin-newsletter-unsubscribe", pattern="admin/newsletter/unsubscribe", to="admin.NewsletterController##unsubscribe")
 		.end()
 			
 		.namespace("")
@@ -141,6 +151,7 @@
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/", to="web.ApiController##show")
 			.get(name="docVersion", pattern="api/*[version]/", to="web.ApiController##index")
 		.end()
+
 
 		// The "wildcard" call below enables automatic mapping of "controller/action" type routes.
 		// This way you don't need to explicitly add a route every time you create a new action in a controller.
