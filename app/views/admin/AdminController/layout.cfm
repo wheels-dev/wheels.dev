@@ -85,6 +85,12 @@
                                 </a>
                             </div>
                             <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/newsletter" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-envelope-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Newsletter</span></span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
                                 <a class="nav-link label-1" href="/admin/testimonial" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-person-lines-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Testimonials</span></span>
                                     </div>
@@ -176,13 +182,13 @@
             <div class="content">
 				<div class="mb-9">
                     <cfif flashKeyExists("error")>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert alert-subtle-success alert-dismissible fade show" role="alert">
                             #flash("error")#
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </cfif>	
                     <cfif flashKeyExists("success")>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-subtle-success alert-dismissible fade show" role="alert">
                             #flash("success")#
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>

@@ -140,6 +140,9 @@
 			.get(name="admin-newsletter", pattern="admin/newsletter", to="admin.NewsletterController##index")
 			.post(name="admin-newsletter-send", pattern="admin/newsletter/send", to="admin.NewsletterController##send")
 			.post(name="admin-newsletter-unsubscribe", pattern="admin/newsletter/unsubscribe", to="admin.NewsletterController##unsubscribe")
+			.get(name="admin-newsletter-filter", pattern="admin/newsletter/filterByType", to="admin.NewsletterController##filterByType")
+			.get(name="admin-newsletter-search", pattern="admin/newsletter/search", to="admin.NewsletterController##search")
+			.get(name="admin-newsletter-export", pattern="admin/newsletter/export", to="admin.NewsletterController##export")
 		.end()
 			
 		.namespace("")
