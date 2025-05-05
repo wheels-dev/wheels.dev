@@ -127,6 +127,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Send verification email
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             sendEmail(
                 template = "verify",
                 from = application.env.mail_from,
@@ -137,7 +138,7 @@ component extends="app.Controllers.Controller" {
                 port = application.env.smtp_port, 
                 username = application.env.smtp_username, 
                 password = application.env.smtp_password, 
-                type = "html"
+                type = "text/html"
             );
 
             data = {
@@ -222,6 +223,7 @@ component extends="app.Controllers.Controller" {
             );
 
             // Send welcome email
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             sendEmail(
                 template = "welcome",
                 from = application.env.mail_from,
