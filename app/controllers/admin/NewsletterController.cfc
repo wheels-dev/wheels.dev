@@ -157,7 +157,6 @@ component extends="app.Controllers.Controller" {
                 message: "Newsletter sent successfully!"
             });
         } catch (any e) {
-            writedump(e); abort;
             // Log the error
             model("Log").log(
                 category = "wheels.newsletter",
@@ -185,6 +184,7 @@ component extends="app.Controllers.Controller" {
         try {
             var email = params.email;
             var type = params.type;
+            var response = {};
             
             // Log the unsubscribe attempt
             model("Log").log(
@@ -214,6 +214,15 @@ component extends="app.Controllers.Controller" {
                         },
                         userId = session.userID
                     );
+                    response = {
+                        "success" = true,
+                        "message" = "User has been unsubscribed."
+                    };
+                } else {
+                    response = {
+                        "success" = false,
+                        "message" = "User not found."
+                    };
                 }
             } else {
                 var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
@@ -230,13 +239,19 @@ component extends="app.Controllers.Controller" {
                         },
                         userId = session.userID
                     );
+                    response = {
+                        "success" = true,
+                        "message" = "Subscriber has been unsubscribed."
+                    };
+                } else {
+                    response = {
+                        "success" = false,
+                        "message" = "Subscriber not found."
+                    };
                 }
             }
             
-            return renderWith(data={
-                success: true,
-                message: "Subscriber has been unsubscribed."
-            });
+            renderText(SerializeJSON(response));
         } catch (any e) {
             // Log the error
             model("Log").log(
@@ -253,10 +268,11 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = session.userID
             );
-            return renderWith(data={
-                success: false,
-                message: "An error occurred while unsubscribing the user."
-            });
+            
+            renderText(SerializeJSON({
+                "success" = false,
+                "message" = "An error occurred while unsubscribing the user."
+            }));
         }
     }
 
@@ -407,5 +423,69 @@ component extends="app.Controllers.Controller" {
         };
         
         return renderPartial(partial="subscribersTable");
+    }
+
+    // Export subscribers to CSV
+    function export() {
+        try {
+            // Get all subscribers
+            var userSubscribers = model("User").findAll(where="newsletter = 1");
+            var nonUserSubscribers = model("NewsletterSubscriber").findAll(where="status = 'active'");
+            
+            // Create CSV content with proper line endings
+            var newLine = chr(13) & chr(10);
+            var csvContent = "Email,Name,Type,Subscription Date" & newLine;
+            
+            // Add user subscribers
+            for (var user in userSubscribers) {
+                csvContent &= '"#user.email#","#user.firstname# #user.lastname#","User","#dateFormat(user.createdAt, "yyyy-mm-dd")#"' & newLine;
+            }
+            
+            // Add non-user subscribers
+            for (var subscriber in nonUserSubscribers) {
+                csvContent &= '"#subscriber.email#"," ","Subscriber","#dateFormat(subscriber.createdAt, "yyyy-mm-dd")#"' & newLine;
+            }
+            
+            // Set response headers for CSV download
+            getPageContext().getResponse().setContentType("text/csv");
+            getPageContext().getResponse().setHeader("Content-Disposition", "attachment; filename=newsletter_subscribers_#dateFormat(now(), "yyyymmdd")#.csv");
+            
+            // Log the export
+            model("Log").log(
+                category = "wheels.newsletter",
+                level = "INFO",
+                message = "Newsletter subscribers exported",
+                details = {
+                    "total_subscribers": userSubscribers.recordCount + nonUserSubscribers.recordCount,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = session.userID
+            );
+            
+            // Output the CSV content
+            writeOutput(csvContent);
+            abort;
+            
+        } catch (any e) {
+            // Log the error
+            model("Log").log(
+                category = "wheels.newsletter",
+                level = "ERROR",
+                message = "Newsletter export failed",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = session.userID
+            );
+            data = {
+                success: false,
+                message: "An error occurred while exporting subscribers."
+            };
+            // Return error response
+            return renderWith(data=data);
+        }
     }
 } 

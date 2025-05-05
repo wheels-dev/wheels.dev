@@ -21,16 +21,17 @@
                     </td>
                     <td>#dateFormat(subscriber.subscribedAt, "mmm d, yyyy")#</td>
                     <td>
-                        <div class="btn-group">
+                        <cfif subscriber.type != "inactive">
                             <button class="btn btn-sm btn-outline-danger"
                                     hx-post="/admin/newsletter/unsubscribe"
-                                    hx-vals='{"email": "#subscriber.email#", "type": "#subscriber.type#"}'
                                     hx-confirm="Are you sure you want to unsubscribe this user?"
+                                    hx-vals='{"email": "#subscriber.email#", "type": "#subscriber.type#"}'
                                     hx-target="closest tr"
-                                    hx-swap="outerHTML swap:1s">
-                                <i class="bi bi-envelope-x me-1"></i>Unsubscribe
+                                    hx-swap="delete"
+                                    >
+                                <i class="bi bi-person-x"></i> Unsubscribe
                             </button>
-                        </div>
+                        </cfif>
                     </td>
                 </tr>
             </cfloop>
