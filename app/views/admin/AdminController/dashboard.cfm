@@ -8,7 +8,7 @@
                 </div>
                 <div class="row align-items-center g-4">
                     <div class="col-12 col-md-auto">
-                        <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-1x dark__text-opacity-50 text-success-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-1x stack-circle text-stats-circle-success" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-star text-success " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 86px;min-width: 86px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-user-plus text-success " data-fa-transform="shrink-2 up-8 right-6"></span></span>
                             <div class="ms-3">
                                 <h4 class="mb-0">#totalNewUser# new</h4>
                                 <p class="text-body-secondary fs-9 mb-0">user signup today</p>
@@ -16,7 +16,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-auto">
-                        <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-1x dark__text-opacity-50 text-warning-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-1x stack-circle text-stats-circle-warning" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-pause text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 86px;min-width: 86px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-warning" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-brands fa-rocketchat text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
                             <div class="ms-3">
                                 <h4 class="mb-0">#totalBlogs#</h4>
                                 <p class="text-body-secondary fs-9 mb-0">Total Blogs</p>
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-auto">
-                        <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-1x dark__text-opacity-50 text-danger-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-1x stack-circle text-stats-circle-danger" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-xmark text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 86px;min-width: 86px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-quote-left text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
                             <div class="ms-3">
                                 <h4 class="mb-0">#totalTestimonials#</h4>
                                 <p class="text-body-secondary fs-9 mb-0">Total Testimonials</p>
@@ -46,8 +46,8 @@
                                 </div>
                                 <h4>#last_seven_days_user.recordcount#</h4>
                             </div>
-                            <div class="d-flex justify-content-center px-4 py-6">
-                                <div id="barChart" style="height:85px;width:115px"></div>
+                            <div class="d-flex justify-content-center">
+                                <div id="barChart" style="height:300px;width:90%"></div>
                             </div>
                             <div class="mt-2">
                                 <div class="d-flex align-items-center mb-2">
@@ -74,8 +74,8 @@
                                 </div>
                                 <h4>#totalComments#</h4>
                             </div>
-                            <div class="d-flex justify-content-center px-4 py-6">
-                                <div id="echarts-comments" style="height:85px;width:115px"></div>
+                            <div class="d-flex justify-content-center">
+                                <div id="echarts-comments" style="height:300px;width:90%"></div>
                             </div>
                             <div>
                                 <div class="d-flex align-items-center mb-2">
@@ -102,8 +102,8 @@
                                 </div>
                                 <h4>#totalCategories#</h4>
                             </div>
-                            <div class="d-flex justify-content-center px-4 py-6">
-                                <div id="echart-blogs" style="height:185px;width:215px;"></div>
+                            <div class="d-flex justify-content-center">
+                                <div id="echart-blogs" style="height:300px;width:50%;"></div>
                             </div>
                             <div>
                                 <div class="d-flex align-items-center mb-2">
@@ -136,20 +136,25 @@
     </div>
 
     <script>
-        var chartData = #userJsonData#; // CFML JSON data
+        var userChartData = #userJsonData#; // CFML JSON data
 
-        var days = chartData.map(item => item.day);
-        var values = chartData.map(item => item.usercount);
+        var days = userChartData.map(item => {
+            var date = new Date(item.day);
+            var day = date.getDate();
+            var month = date.toLocaleString('default', { month: 'short' });
+            return `${day}-${month}`;
+        });
+        var values = userChartData.map(item => item.usercount);
 
         var chart = echarts.init(document.getElementById('barChart'));
 
         var options = {
-            tooltip: { show: true }, // Hide hover tooltip
-            xAxis: { type: 'category', data: days, show: false }, // Hide x-axis
-            yAxis: { show: false }, // Hide y-axis
-            grid: { left: 0, right: 0, top: 0, bottom: 0 }, // Remove padding
+            tooltip: { show: true },
+            xAxis: { data: days },
+            yAxis: {  type: 'value' },
             series: [{
                 type: 'bar',
+                barMinHeight: 10,
                 data: values,
                 itemStyle: { color: '##2B6ED8' } // Blue bars
             }],
@@ -158,17 +163,23 @@
 
         chart.setOption(options);
 
-        var ipchartData = #commentJsonData#;  // Inject ColdFusion JSON Data
+        var commentsChartData = #commentJsonData#;  // Inject ColdFusion JSON Data
         
-        var days = ipchartData.map(item => item.day);
-        var commentcount = ipchartData.map(item => item.commentcount);
+        var days = commentsChartData.map(item => {
+            var date = new Date(item.day);
+            var day = date.getDate();
+            var month = date.toLocaleString('default', { month: 'short' });
+            return `${day}-${month}`;
+        });
+        var commentcount = commentsChartData.map(item => item.commentcount);
 
         var ipchart = echarts.init(document.getElementById('echarts-comments'));
         var options = {
-            xAxis: { type: 'category', data: days, show: false },  // Hide axis labels
-            yAxis: { show: false },  // Hide axis labels
+            xAxis: { data: days },
+            yAxis: { type: 'value' }, 
             series: [{ 
                 type: 'bar', 
+                barMinHeight: 10,
                 data: commentcount, 
                 itemStyle: { color: '##fc9ad0' } // Set bar color
             }],
@@ -177,17 +188,23 @@
         ipchart.setOption(options);
 
 
-        var logchartData = #blogJsonData#;  // Inject ColdFusion JSON Data
+        var blogChartData = #blogJsonData#;  // Inject ColdFusion JSON Data
         
-        var days = logchartData.map(item => item.day);
-        var blogcount = logchartData.map(item => item.blogcount);
+        var days = blogChartData.map(item => {
+            var date = new Date(item.day);
+            var day = date.getDate();
+            var month = date.toLocaleString('default', { month: 'short' });
+            return `${day}-${month}`;
+        });
+        var blogcount = blogChartData.map(item => item.blogcount);
 
         var logchart = echarts.init(document.getElementById('echart-blogs'));
         var options = {
-            xAxis: { type: 'category', data: days, show: false },  // Hide axis labels
-            yAxis: { show: false },  // Hide axis labels
+            xAxis: { data: days},  // Hide axis labels
+            yAxis: { type: 'value' },  // Hide axis labels
             series: [{ 
-                type: 'bar', 
+                type: 'bar',
+                barMinHeight: 10, 
                 data: blogcount, 
                 itemStyle: { color: '##57b396' } // Set bar color
             }],
