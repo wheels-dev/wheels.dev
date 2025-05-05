@@ -4,16 +4,16 @@
         // Determine the status text based on the value of users.status[i]
         var statusText = (users.status[i] == 1) ? "Active" : "Inactive";
 
-        writeOutput('<tr> <td class="text-center">' & i & '</td>');
+        writeOutput('<tr> <td>' & i & '</td>');
         writeOutput('<td>' & users.firstname[i] & '</td>');
         writeOutput('<td>' & users.lastname[i] & '</td>');
         writeOutput('<td>' & users.email[i] & '</td>');
         writeOutput('<td>' & statusText & '</td>'); // Show "Active" or "Inactive"
         writeOutput('<td>' & users.name[i] & '</td>');
 
-        writeOutput('<td class="text-center">
+        writeOutput('<td>
             <div class="dropdown">
-                <div class="fw-bold cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
                     ...
                 </div>
                 <ul class="dropdown-menu">

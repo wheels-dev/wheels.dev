@@ -1,67 +1,71 @@
 <cfoutput>
-    <div class="rolesResponce container py-5">
-        <div class="row mb-4 gx-6 gy-3 align-items-center">
+<div class="bg-white p-4 box-shadow rounded-4 mt-3">
+    <div class="rolesResponce container">
+        <div class="d-flex mb-3 justify-content-between align-items-center">
             <div class="col-auto">
                 <h1 class="fs-24 fw-bold">Roles</h1>
             </div>
-            <div class="col-auto">
-                <a class="btn btn-primary px-5" hx-get="/admin/role/add" hx-trigger="click" hx-target="body" hx-swap="innerHTML"><i class="fa-solid fa-plus me-2"></i>Add Role</a>
+            <div>
+                <a class="btn bg--primary text-white px-5" hx-get="/admin/role/add" hx-trigger="click" hx-target="body" hx-swap="innerHTML"><i class="fa-solid fa-plus me-2"></i>Add Role</a>
             </div>
         </div>
-        <table id="rolesTable" class="table table-hover mb-5">
-            <thead>
-                <tr>
-                    <th class="w-5-col">No.</th>
-                    <th class="w-20-col">Name</th>
-                    <th class="w-35-col">Description</th>
-                    <th class="w-10-col">Status</th>
-                    <th class="w-10-col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <cfloop from="1" to="#roles.recordCount#" index="i">
-                    <cfset roleId = roles.id[i]>
+        <div class="table-responsive">
+            <table id="rolesTable" class="table table-hover table-striped">
+                <thead>
                     <tr>
-                        <td class="p-2">#i#</td>
-                        <td>#roles.name[i]#</td>
-                        <td>#roles.description[i]#</td>
-                        <td>
-                            <cfif roles.status[i] eq 1>
-                                <span class="badge bg-success">Actice</span>
-                            <cfelse>
-                                <span class="badge bg-danger">Inactive</span>
-                            </cfif>
-                        </td>
-                        <td class="text-end">
-                            <div class="dropdown">
-                                <div class="fw-bold cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false">
-                                    ...
-                                </div>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a hx-post="/admin/role/edit" 
-                                            hx-vals='{"id": "#roleId#"}'
-                                            hx-target="body" 
-                                            hx-swap="innerHTML"
-                                            class="dropdown-item text-success fs-16">Edit</a>
-                                    </li>
-                                    <li>
-                                        <a hx-post="/admin/role/delete" 
-                                            hx-vals='{"id": "#roleId#"}'
-                                            hx-target="closest tr" 
-                                            hx-swap="outerHTML"
-                                            hx-trigger="click"
-                                            hx-confirm="Are you sure you want to delete this role? It will affect all users assigned to this role." 
-                                            class="dropdown-item text-danger fs-16">Delete</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
+                        <th class="w-5-col">No.</th>
+                        <th class="w-20-col">Name</th>
+                        <th class="w-35-col">Description</th>
+                        <th class="w-10-col">Status</th>
+                        <th class="w-10-col"></th>
                     </tr>
-                </cfloop>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <cfloop from="1" to="#roles.recordCount#" index="i">
+                        <cfset roleId = roles.id[i]>
+                        <tr>
+                            <td class="p-2">#i#</td>
+                            <td>#roles.name[i]#</td>
+                            <td>#roles.description[i]#</td>
+                            <td>
+                                <cfif roles.status[i] eq 1>
+                                    <span class="badge bg-success">Actice</span>
+                                <cfelse>
+                                    <span class="badge bg-danger">Inactive</span>
+                                </cfif>
+                            </td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
+                                        ...
+                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a hx-post="/admin/role/edit" 
+                                                hx-vals='{"id": "#roleId#"}'
+                                                hx-target="body" 
+                                                hx-swap="innerHTML"
+                                                class="dropdown-item text-success fs-16">Edit</a>
+                                        </li>
+                                        <li>
+                                            <a hx-post="/admin/role/delete" 
+                                                hx-vals='{"id": "#roleId#"}'
+                                                hx-target="closest tr" 
+                                                hx-swap="outerHTML"
+                                                hx-trigger="click"
+                                                hx-confirm="Are you sure you want to delete this role? It will affect all users assigned to this role." 
+                                                class="dropdown-item text-danger fs-16">Delete</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </cfloop>
+                </tbody>
+            </table>
+        </div>
     </div>
+</div>
 </cfoutput>
 <script>
     var table = new DataTable('#rolesTable', {

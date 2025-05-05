@@ -58,6 +58,10 @@ nav {
     color: var(--primary) !important;
 }
 
+.navbar-vertical-collapsed .navbar-vertical.navbar-expand-lg .nav-item-wrapper:has(.active) .label-1 .nav-link-icon{
+    color: var(--primary) !important;
+}
+
 .nav-link-hover:hover{
     background-color: var(--input);
 }
@@ -363,4 +367,7 @@ main.main-bg {
 .navHandlers .dropdown-item:active {
     text-decoration: none;
     background-color: var(--primary) !important;
+}
+.box-shadow{
+    box-shadow: 0 4px 12px rgba(66, 63, 63, 0.15) !important;
 }
