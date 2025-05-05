@@ -128,11 +128,11 @@
                                    hx-target="##subscribersTable"
                                    name="searchTerm">
                         </div>
-                        <button class="btn btn-outline-secondary" 
-                                hx-get="/admin/newsletter/export" 
-                                hx-trigger="click">
-                            <i class="bi bi-download me-2"></i>Export
-                        </button>
+                        <form action="/admin/newsletter/export" method="get" style="display: inline;">
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="bi bi-download me-2"></i>Export
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -178,5 +178,26 @@
         </div>
     </div>
 
-    
+    <script>
+        document.body.addEventListener("htmx:afterRequest", function(event) {
+            const xhr = event.detail.xhr;
+            try {
+                if (xhr.responseText && xhr.responseText.trim() !== '') {
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    if (xhr.status === 200 && xhr.responseURL.includes("/admin/newsletter/unsubscribe")) {
+                        if (response.success) {
+                            notifier.show('Success', response.message || 'Subscriber has been unsubscribed.', 'success', '', 5000);
+                        } else {
+                            notifier.show('Error', response.message || 'Failed to unsubscribe.', 'danger', '', 5000);
+                        }
+                    }
+                }
+            } catch (e) {
+                if (xhr.status !== 200) {
+                    notifier.show('Error', 'An unexpected error occurred.', 'danger', '', 5000);
+                }
+            }
+        });
+    </script>
 </cfoutput> 
