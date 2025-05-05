@@ -1,5 +1,6 @@
 <cfoutput>
-    <div class="row mb-4 gx-6 gy-3 align-items-center">
+<div class="bg-white p-4 box-shadow col-xl-9 rounded-4 mt-3">
+    <div class="row gx-6 align-items-center">
         <div class="col-auto">
             <h1 class="fs-24 fw-bold">
                 <cfparam  name="id" default=0>
@@ -25,97 +26,96 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-9">
-                <form class="row g-3 mb-6 needs-validation" id="userForm" novalidate hx-post="/user/store" hx-target="body" hx-validate="true">
-                    <input name="id" type="hidden" id="id" value="#id#">
+        <form class="row g-3 mb-6 needs-validation" id="userForm" novalidate hx-post="/user/store" hx-target="body" hx-validate="true">
+            <input name="id" type="hidden" id="id" value="#id#">
 
-                    <div class="col-sm-6 col-md-6 mb-3">
-                        <div class="form-floating">
-                            <input name="firstName" type="text" placeholder="Enter your firstname" class="form-control fs-18" id="firstName"
-                            aria-describedby="firstNameHelp" required minlength="3" maxlength="20" value="#firstName#">
-                            <label for="firstName" class="form-label fs-18 fw-medium">First Name <span class="text-danger">*</span></label>
-                            <div class="invalid-feedback">First Name must be between 3 and 20 characters.</div>
-                        </div>
+            <div class="col-sm-6 col-md-6 mb-3">
+                <div class="form-floating">
+                    <input name="firstName" type="text" placeholder="Enter your firstname" class="form-control fs-18" id="firstName"
+                    aria-describedby="firstNameHelp" required minlength="3" maxlength="20" value="#firstName#">
+                    <label for="firstName" class="form-label fs-18 fw-medium">First Name <span class="text-danger">*</span></label>
+                    <div class="invalid-feedback">First Name must be between 3 and 20 characters.</div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 mb-3">
+                <div class="form-floating">
+                    <input name="lastName" type="text" placeholder="Enter your lastname" class="form-control fs-14" id="lastName"
+                    aria-describedby="lastNameHelp" required minlength="3" maxlength="20" value="#lastName#">
+                    <label for="lastName" class="form-label fs-18 fw-medium">Last Name <span class="text-danger">*</span></label>
+                    <div class="invalid-feedback">Last Name must be between 3 and 20 characters.</div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-12 mb-3">
+                <div class="form-floating">
+                    <input name="email" type="email" placeholder="Enter your email address" class="form-control fs-18" id="email"
+                    aria-describedby="emailHelp" required value="#email#">
+                    <label for="email" class="form-label fs-18 fw-medium">Email address <span class="text-danger">*</span></label>
+                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                </div>
+            </div>
+            <cfif id eq 0>
+                <div class="col-sm-6 col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input name="passwordHash" type="password" placeholder="Enter your password" class="form-control fs-18"
+                        id="passwordHash" required minlength="8">
+                        <label for="passwordHash" class="form-label fs-18 fw-medium">Password <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Password must be at least 8 characters long.</div>
                     </div>
-                    <div class="col-sm-6 col-md-6 mb-3">
-                        <div class="form-floating">
-                            <input name="lastName" type="text" placeholder="Enter your lastname" class="form-control fs-14" id="lastName"
-                            aria-describedby="lastNameHelp" required minlength="3" maxlength="20" value="#lastName#">
-                            <label for="lastName" class="form-label fs-18 fw-medium">Last Name <span class="text-danger">*</span></label>
-                            <div class="invalid-feedback">Last Name must be between 3 and 20 characters.</div>
-                        </div>
+                </div>
+                <div class="col-sm-6 col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input name="confirmPassword" type="password" placeholder="Confirm your password" class="form-control fs-18"
+                        id="confirmPassword" required>
+                        <label for="confirmPassword" class="form-label fs-18 fw-medium">Confirm Password <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Passwords must match.</div>
                     </div>
-                    <div class="col-sm-6 col-md-6 col-lg-12 mb-3">
-                        <div class="form-floating">
-                            <input name="email" type="email" placeholder="Enter your email address" class="form-control fs-18" id="email"
-                            aria-describedby="emailHelp" required value="#email#">
-                            <label for="email" class="form-label fs-18 fw-medium">Email address <span class="text-danger">*</span></label>
-                            <div class="invalid-feedback">Please enter a valid email address.</div>
-                        </div>
+                </div>
+            </cfif>
+            <div class="col-sm-6 col-md-6 mb-3">
+                <div class="form-floating form-floating-advance-select">
+                    <label class="form-label mb-1 fs-18 fw-medium">
+                        Status <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-control fs-18" name="status" id="status" required>
+                        <option value="">Select Status</option>
+                        <option value="true" <cfif status eq true>selected</cfif>>Active</option>
+                        <option value="false" <cfif status eq false>selected</cfif>>Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 mb-3">
+                <div class="form-floating form-floating-advance-select">
+                    <label class="form-label mb-1 fs-18 fw-medium">
+                        Role <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-control fs-18" name="roleId" id="roleId" required hx-get="/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
+                        <option value="">Select Role</option>
+                    </select>
+                </div>
+            </div>
+            <cfif id eq 0>
+                <div class="form-check col-sm-6 col-md-6">
+                    <div class="form-check mt-2">
+                        <input name="termsCheck" type="checkbox" class="form-check-input form-check-input-primary" id="termsCheck" required>
+                        <label class="form-check-label fs-18" for="termsCheck">Agree to Terms & Privacy Policy</label>
+                        <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
                     </div>
-                    <cfif id eq 0>
-                        <div class="col-sm-6 col-md-6 mb-3">
-                            <div class="form-floating">
-                                <input name="passwordHash" type="password" placeholder="Enter your password" class="form-control fs-18"
-                                id="passwordHash" required minlength="8">
-                                <label for="passwordHash" class="form-label fs-18 fw-medium">Password <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback">Password must be at least 8 characters long.</div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-6 mb-3">
-                            <div class="form-floating">
-                                <input name="confirmPassword" type="password" placeholder="Confirm your password" class="form-control fs-18"
-                                id="confirmPassword" required>
-                                <label for="confirmPassword" class="form-label fs-18 fw-medium">Confirm Password <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback">Passwords must match.</div>
-                            </div>
-                        </div>
-                    </cfif>
-                    <div class="col-sm-6 col-md-6 mb-3">
-                        <div class="form-floating form-floating-advance-select">
-                            <label class="form-label mb-1 fs-18 fw-medium">
-                                Status <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control fs-18" name="status" id="status" required>
-                                <option value="">Select Status</option>
-                                <option value="true" <cfif status eq true>selected</cfif>>Active</option>
-                                <option value="false" <cfif status eq false>selected</cfif>>Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-6 mb-3">
-                        <div class="form-floating form-floating-advance-select">
-                            <label class="form-label mb-1 fs-18 fw-medium">
-                                Role <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-control fs-18" name="roleId" id="roleId" required hx-get="/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
-                                <option value="">Select Role</option>
-                            </select>
-                        </div>
-                    </div>
-                    <cfif id eq 0>
-                        <div class="form-check form-switch col-sm-6 col-md-6">
-                            <div class="form-check mt-2">
-                                <input name="termsCheck" type="checkbox" class="form-check-input" id="termsCheck" required>
-                                <label class="form-check-label fs-18" for="termsCheck">Agree to Terms & Privacy Policy</label>
-                                <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
-                            </div>
-                        </div>
-                    </cfif>
+                </div>
+            </cfif>
 
-                    <div class="col-12 gy-6">
-                        <div class="row g-3 justify-content-end">
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-primary px-sm-15 fs-14">Save</button>
-                            </div>
-                            <div class="col-auto">
-                                <button hx-get="/admin/user" hx-trigger="click" hx-swap="innerHTML" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</button>
-                            </div>
-                        </div>
+            <div class="col-12 gy-6">
+                <div class="row g-3 justify-content-end">
+                    <div class="col-auto">
+                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
                     </div>
-                </form>
-        </div>
+                    <div class="col-auto">
+                        <button hx-get="/admin/user" hx-trigger="click" hx-swap="innerHTML" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
     <script>
         <cfif id eq 0>
             const form = document.getElementById('userForm');

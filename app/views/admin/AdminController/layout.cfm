@@ -182,13 +182,13 @@
             <div class="content">
 				<div class="mb-9">
                     <cfif flashKeyExists("error")>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert alert-subtle-success alert-dismissible fade show" role="alert">
                             #flash("error")#
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </cfif>	
                     <cfif flashKeyExists("success")>
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-subtle-success alert-dismissible fade show" role="alert">
                             #flash("success")#
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
