@@ -31,7 +31,7 @@ component extends="app.Models.Model" {
 
         // Verification Token Property
         property(
-            name="verificationToken", 
+            name="verification_token", 
             column="verification_token", 
             dataType="string", 
             label="Verification Token"
@@ -40,14 +40,14 @@ component extends="app.Models.Model" {
         // Timestamps
         property(
             name="createdAt", 
-            column="created_at", 
+            column="createdat", 
             dataType="timestamp", 
             label="Created On"
         );
 
         property(
             name="updatedAt", 
-            column="updated_at", 
+            column="updatedat", 
             dataType="timestamp", 
             label="Last Updated"
         );
@@ -58,14 +58,14 @@ component extends="app.Models.Model" {
 
     // Generate verification token
     public function generateVerificationToken() {
-        this.verificationToken = hash(createUUID());
-        return this.verificationToken;
+        this.verification_token = hash(createUUID());
+        return this.verification_token;
     }
 
     // Verify subscriber
     public function verify() {
         this.status = "active";
-        this.verificationToken = "";
+        this.verification_token = "";
         return this.save();
     }
 
