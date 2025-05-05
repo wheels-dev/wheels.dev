@@ -135,7 +135,7 @@ component output="false" {
 				if (timeSinceLastActivity >= 30) {
 					structDelete(session, "userId");
 					structDelete(session, "lastActivity");
-					location(url="/auth/login", addtoken=false);
+					location(url="/login", addtoken=false);
 					return false;
 				}
 			}
