@@ -31,4 +31,8 @@ networks:
     driver: overlay
 
 volumes:
+  shared-images:
+    external: true
+  shared-files:
+    external: true
   wheels-data:
