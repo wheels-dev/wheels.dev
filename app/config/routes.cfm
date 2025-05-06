@@ -32,7 +32,6 @@
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
 			// Admin Controls
-			// .get(name = "admin-index", pattern = "admin", to = "admin.AdminController##index")
 			.get(name = "admin-blog", pattern = "admin/blog", to = "admin.AdminController##blog")
 			.get(name = "admin-comment", pattern = "admin/comment", to = "admin.AdminController##comments")
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
@@ -143,6 +142,9 @@
 			.get(name="admin-newsletter-filter", pattern="admin/newsletter/filterByType", to="admin.NewsletterController##filterByType")
 			.get(name="admin-newsletter-search", pattern="admin/newsletter/search", to="admin.NewsletterController##search")
 			.get(name="admin-newsletter-export", pattern="admin/newsletter/export", to="admin.NewsletterController##export")
+			
+			// error routes
+			.get(name = "error403", pattern = "error403", to = "errorController##error403")
 		.end()
 			
 		.namespace("")

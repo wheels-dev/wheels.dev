@@ -54,6 +54,22 @@
                     <div class="invalid-feedback">Role description must be between 3 and 100 characters.</div>
                 </div>
             </div>
+            <!-- Select All Checkbox -->
+            <div class="col-sm-12 mb-2">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input form-check-input-primary" id="selectAllPermissions">
+                    <label class="form-check-label fs-18" for="selectAllPermissions">Select All Permissions</label>
+                </div>
+            </div>
+            <cfloop query="permissions">
+                <cfset isChecked = ArrayContains(existingPermissionIds, permissions.id)>
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-check mt-2">
+                        <input name="permission-#id#" type="checkbox" class="form-check-input form-check-input-primary permission-checkbox" id="permissionCheck" <cfif isChecked>checked</cfif>>
+                        <label class="form-check-label fs-18" for="termsCheck">#description#</label>
+                    </div>
+                </div>
+            </cfloop>
             <div class="col-12 gy-6">
                 <div class="row g-3 justify-content-end">
                     <div class="col-auto">
@@ -87,6 +103,14 @@
             if (xhr.status === 200 && xhr.responseURL.includes("/admin/Role/save")) {
                 notifier.show('Success', 'Role save successfully!', 'success', '', 5000);
             }
+        });
+
+        // checked all permissions
+        document.getElementById('selectAllPermissions').addEventListener('change', function() {
+            const isChecked = this.checked;
+            document.querySelectorAll('.permission-checkbox').forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
         });
     </script>
 </cfoutput>
