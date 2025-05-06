@@ -59,6 +59,21 @@ component extends="wheels.Controller" {
         return true;
     }
 
+    function checkRoleAccess(){
+        var controller = lCase(listLast(request.wheels.params.controller, "."));
+        var action = request.wheels.params.action;
+        var accesspermission = model("RolePermission").findAll(
+            select="roleId, permissionId, name, permissionName, permissionstatus, controller, permissiondescription", 
+            include="Role, Permission", 
+            where="name = '#session.role#' AND permissions.Name = '#action#' AND permissions.controller = '#controller#'"
+            );
+        if(accesspermission.recordCount == 0){
+            getPageContext().getResponse().setHeader("HX-Redirect", "/error403");
+            abort;
+        }
+        return true;
+    }
+
     function f_getVersions(){
 		versions=getAvailableVersions();
 	}
