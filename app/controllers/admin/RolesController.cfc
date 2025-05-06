@@ -16,8 +16,16 @@ component extends="app.Controllers.Controller" {
         role;
         if(id > 0) {
             role = model("role").findByKey(params.id);
+            permissions = model("permission").findAll();
+            activePermission = model("RolePermission").findAll(select="permissionId", where="roleId = #params.id#");
+            existingPermissionIds = [];
+            for (row in activePermission) {
+                arrayAppend(existingPermissionIds, row.permissionId);
+            }
         }else {
             role = model("role");
+            existingPermissionIds = [];
+            permissions = model("permission").findAll();
         }
         return role;
     }
@@ -73,17 +81,51 @@ component extends="app.Controllers.Controller" {
                     Role.description = RoleData.description;
                     Role.status = RoleData.status;
                     Role.save();
+
+                    // Update role permissions
+                    permissionList = [];
+                    model("RolePermission").deleteAll(where="roleId = #RoleData.id#");
+                    for (fieldName in RoleData) {
+                        if (left(fieldName, 11) == "permission-") {
+                            // Extract the numeric part after the dash
+                            permissionId = listLast(fieldName, "-");
+                            arrayAppend(permissionList, permissionId);
+                        }
+                    }
+                    for (permId in permissionList) {
+                        model("RolePermission").create(
+                            roleId = RoleData.id,
+                            permissionId = permId
+                        );
+                    }
+
                     message = "Role updated successfully.";
                 } else {
                     message = "Role not found for editing.";
                 }
             } else {
+                    permissionList = [];
+
                     var newRole = model("Role").new();
                     newRole.name = RoleData.Name;
                     newRole.description = RoleData.description;
                     newRole.status = RoleData.status;
-                    newRole.save();
-
+                    newRole.save(reload=true);
+        
+                    roleId = newRole.id;
+                    for (fieldName in RoleData) {
+                        if (left(fieldName, 11) == "permission-") {
+                            // Extract the numeric part after the dash
+                            permissionId = listLast(fieldName, "-");
+                            arrayAppend(permissionList, permissionId);
+                        }
+                    }
+                    for (permId in permissionList) {
+                        model("RolePermission").create(
+                            roleId = roleId,
+                            permissionId = permId
+                        );
+                    }
                     message = "Role created successfully.";
             }
             

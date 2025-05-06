@@ -6,6 +6,7 @@ component extends="app.Controllers.Controller" {
         usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
         filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
         filters(through="checkUserAccess", only="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
+        filters(through="checkRoleAccess", only="index,addUser,delete");
     }
 
     // read user

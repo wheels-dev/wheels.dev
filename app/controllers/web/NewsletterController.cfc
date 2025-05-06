@@ -148,7 +148,6 @@ component extends="app.Controllers.Controller" {
             renderWith(data=data, hideDebugInformation=true, status=200, layout='/responseLayout');
 
         } catch (any e) {
-            writeDump(e); abort;
             // Log error
             model("Log").log(
                 category = "Newsletter",

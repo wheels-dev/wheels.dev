@@ -7,17 +7,11 @@ component extends="wheels.migrator.Migration" hint="creates permission table" {
                 t = createTable(name = 'permissions');
                 t.string(columnNames='name', null=false, default='', limit=255);
                 t.boolean(columnNames='status', null=false, default='');
-				t.integer(columnNames='module_id', null=false);
+				t.string(columnNames='controller', null=false, default='');
+				t.string(columnNames='description', null=false, default='');
                 t.timestamps();
                 t.create();
 
-				// add foreign key constraint
-                addForeignKey(
-                    table='permissions',
-                    column='module_id',
-                    referenceTable='modules',
-                    referenceColumn='id'
-                );
 			} catch (any e) {
 				local.exception = e;
 			}
