@@ -184,7 +184,7 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary ms-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels">Source</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1">Source</a>
 							</li>
 							<li class="nav-item px-3">
 								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isDocs>active</cfif>" aria-current="page" href="/docs">Docs</a>
@@ -263,7 +263,7 @@
 									<form hx-post="#URLFor(route='newsletter-subscribe')#" hx-swap="outerHTML">
 										<div class="input-group">
 											#authenticityTokenField()#
-											<input type="email" name="email" class="form-control mb-2 fs-12" placeholder="Enter your email" required>
+											<input type="email" name="email" class="form-control form-check-input-primary py-2 rounded-2 mb-2 fs-12" placeholder="Enter your email" required>
 											<button type="submit" class="text-white fw-medium py-2 fs-12 rounded-2 bg--primary w-100">Subscribe to newsletter</button>
 										</div>
 									</form>
@@ -282,13 +282,13 @@
 									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>
 									<li class="mt-2"><a href="https://www.youtube.com/@wheels-dev" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a tutorial</a></li>
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a Tutorial</a></li>
 									<li class="mt-2"><a href="https://guides.cfwheels.org/cfwheels-guides" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Read the guides</a></li>
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Read the Guides</a></li>
 									<li class="mt-2"><a href="/api/v3.0.0"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">API Documentation</a></li>
 									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/discussions" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Join the conversation</a></li>
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Join the Conversation</a></li>
 									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Contribute to Wheels</a></li>
 								</ul>
@@ -317,12 +317,11 @@
 									</cfif>
 									
 									<li class="mt-2"><a href="/blog/feed"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Entries
-											feed</a>
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Blog Feed</a>
 									</li>
 									<li class="mt-2"><a href="#"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Comments
-											feed</a>
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Comments
+											Feed</a>
 									</li>
 									<li class="mt-2"><a href="#"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer"></a>
@@ -339,7 +338,7 @@
 							<div class="col-lg-2">
 								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
 								<ul class="list-unstyled">
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels"
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Source
 											Code</a></li>
 									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/issues"
