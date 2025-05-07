@@ -7,9 +7,9 @@
 <cfset isLogin = find("/login", pathInfo)>
 <cfset isRegister = find("/register", pathInfo)>
 <cfset isForgotPassword = find("/forgot-password", pathInfo)>
-<cfset isDocs = find("/docs", pathInfo)>
+<cfset isDocs = find("/docs", pathInfo) or isApi>
 <cfset isCommunity = find("/community", pathInfo)>
-<cfset isNews = find("/news", pathInfo)>
+<cfset isNews = find("/news", pathInfo) or isBlog and !find("/blog/create", pathInfo)>
 <cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword)>
 
 <cfset pageTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">
@@ -279,7 +279,7 @@
 									<li class="mt-2"><a href="https://github.com/cfwheels/wheels-cli" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Command Line
 											Tools</a></li>
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels" target="_blank"
+									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>
 									<li class="mt-2"><a href="https://www.youtube.com/@wheels-dev" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a Tutorial</a></li>
