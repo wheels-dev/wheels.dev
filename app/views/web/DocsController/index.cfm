@@ -7,7 +7,7 @@
             <div class="row mt-lg-5 mt-3">
                 <div class="col-lg-4 col-12 mt-lg-0 mt-5">
                     <a class="position-relative d-block docs-container bg-white border-2 px-4 py-5 cursor-pointer rounded-4 border--lightGray hover:border--primary"
-                        aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels">
+                        aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1">
                         <div class="docs-badge d-flex align-items-center gap-2 bg--primary px-3 py-2 text-white">
                             <p class="fw-bold text-uppercase fs-12">Installation</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
