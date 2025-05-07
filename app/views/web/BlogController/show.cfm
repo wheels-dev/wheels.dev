@@ -27,9 +27,23 @@
 
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div> --->
-                            <h1 class="fs-36 fw-bold text-center text--secondary">
-                                #blog.title#
-                            </h1>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h1 class="fs-36 fw-bold text-center text--secondary mb-0">
+                                    #blog.title#
+                                </h1>
+                                <cfif isLoggedInUser() AND (session.role EQ "Admin" OR session.userID EQ blog.createdBy)>
+                                    <a href="/blog/edit/#blog.id#" class="btn btn-primary btn-sm" id="editBlogBtn">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                </cfif>
+                            </div>
+                            <div id="editLoader" class="position-fixed top-50 start-50 translate-middle" style="display: none; z-index: 9999;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+
                             <cfif categories.recordCount GT 0 OR tags.recordCount GT 0>
                                 <div class="d-flex flex-wrap justify-content-center flex-grow-1 align-items-end gap-lg-5 gap-2 mt-3">
                                     <!-- Blog date -->
