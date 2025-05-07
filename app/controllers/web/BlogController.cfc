@@ -3,8 +3,8 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,AuthorProfileBlogs", params="key", paramsTypes="integer", handler="index");
-        filters(through="restrictAccess", only="create,store,comment");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update", params="key", paramsTypes="integer", handler="index");
+        filters(through="restrictAccess", only="create,store,comment,edit,update");
         usesLayout("/layout");
     }
 
@@ -20,6 +20,72 @@ component extends="app.Controllers.Controller" {
             },
             userId = structKeyExists(session, "userID") ? session.userID : 0
         );
+    }
+
+    // Function to edit a blog post
+    public void function edit() {
+        try {
+            // Check if user is logged in
+            if (!structKeyExists(session, "userID")) {
+                redirectTo(route="login");
+                return;
+            }
+
+            // Get the blog post
+            var blog = model("Blog").findByKey(key=params.id, include="User,PostStatus");
+            
+            // Check if blog exists
+            if (!isObject(blog)) {
+                throw("Blog not found", "BlogNotFound");
+            }
+
+            // Check if user has permission to edit this post
+            if (session.role != "admin" && blog.userId != session.userID) {
+                throw("You don't have permission to edit this post", "UnauthorizedAccess");
+            }
+
+
+            // Get categories and tags for the form
+            var categories = model("Category").findAll(order="name ASC");
+            var postTypes = model("PostType").findAll(order="name ASC");
+            var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
+            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+
+            // Prepare data for the view
+            var selectedCategories = [];
+            for (var cat in blogCategories) {
+                arrayAppend(selectedCategories, cat.categoryId);
+            }
+
+            var selectedTags = [];
+            for (var tag in blogTags) {
+                arrayAppend(selectedTags, tag.name);
+            }
+
+            // Set view variables
+            blog.categories = selectedCategories;
+            blog.tags = arrayToList(selectedTags, ",");
+            
+            // Render the edit form with the blog data
+            renderView(template="create", blog=blog, categories=categories, postTypes=postTypes, isEdit=true);
+            
+        } catch (any e) {
+            // Log the error
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error editing blog post: #e.message#",
+                details = {
+                    "error": e,
+                    "blog_id": structKeyExists(params, "key") ? params.key : "",
+                    "user_id": structKeyExists(session, "userID") ? session.userID : 0,
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            
+            // Redirect with error message
+            redirectTo(route="blog");
+        }
     }
 
     public void function blogs() {
@@ -244,6 +310,78 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    // Function to update an existing blog
+    public void function update() {
+        // Get request parameters
+        var blogModel = model("Blog");
+        var blogId = params.id;
+        
+        try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post update attempted",
+                details = {
+                    "blog_id": blogId,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
+            // Set additional parameters from the form
+            params.isDraft = isNumeric(params.isDraft) ? params.isDraft : 0;
+            
+            response = updateBlog(params, blogId);
+            
+            // Update relationships
+            deleteBlogTags(blogId);
+            deleteBlogCategories(blogId);
+            
+            // Handle tags which are passed as a comma-separated string in postTags
+            if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
+                params.tags = params.postTags;
+                saveTags(params, blogId);
+            }
+            
+            // Handle categories which are passed as selected values in categoryId
+            if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
+                saveCategories(params, blogId);
+            }
+
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post updated successfully",
+                details = {
+                    "blog_id": blogId,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
+            redirectTo(route="blog");
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to update blog post",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            // Handle error
+            redirectTo(action="error", errorMessage="Failed to update blog post.");
+        }
+    }
+
     // function to check title is unique
     function checkTitle() {
         try {
@@ -253,17 +391,28 @@ component extends="app.Controllers.Controller" {
                 message = "Title uniqueness check",
                 details = {
                     "title": form.title,
+                    "id": structKeyExists(form, "id") ? form.id : 0,
                     "ip_address": cgi.REMOTE_ADDR
                 },
                 userId = structKeyExists(session, "userID") ? session.userID : 0
             );
 
-            if(structKeyExists(form, "title")){
-                var blogModel = model("Blog").findAll(where="title='#form.title#'");
-                if(blogModel.recordCount != 0){
-                    renderText('<span class="text-danger">A blog already exist with this title!</span><input type="hidden" id="titleExists" value="1">');
-                }else{
-                    renderText('<input type="hidden" id="titleExists" value="0">');
+            if(structKeyExists(form, "title")) {
+                // Build the query condition
+                var whereClause = "title='#form.title#'";
+                
+                // If we're in edit mode, exclude the current blog post
+                if(structKeyExists(form, "id") && isNumeric(form.id) && form.id > 0) {
+                    whereClause &= " AND id != #form.id#";
+                }
+                
+                // Check if any other blogs have this title
+                var blogModel = model("Blog").findAll(where=whereClause);
+                
+                if(blogModel.recordCount != 0) {
+                    renderText('<span class="text-danger">A blog already exists with this title!</span><input type="hidden" id="titleExists" value="1">');
+                } else {
+                    renderText('<span class="text-success">Title is available</span><input type="hidden" id="titleExists" value="0">');
                 }
             }
         } catch (any e) {
@@ -275,59 +424,13 @@ component extends="app.Controllers.Controller" {
                     "error_message": e.message,
                     "error_detail": e.detail,
                     "title": form.title,
+                    "id": structKeyExists(form, "id") ? form.id : 0,
                     "ip_address": cgi.REMOTE_ADDR
                 },
                 userId = structKeyExists(session, "userID") ? session.userID : 0
             );
             // Handle error
-            renderText("Error: " & e);
-        }
-    }
-
-    // Function to update an existing blog
-    function update() {
-        var blogModel = model("Blog"); // Get model instance
-        try {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "INFO",
-                message = "Blog post update attempted",
-                details = {
-                    "blog_id": params.id,
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
-            );
-
-            var message = updateBlog(params);
-
-            model("Log").log(
-                category = "wheels.blog",
-                level = "INFO",
-                message = "Blog post updated successfully",
-                details = {
-                    "blog_id": params.id,
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
-            );
-
-            redirectTo(action="show", id=params.id, success="#message#");
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to update blog post",
-                details = {
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "blog_id": params.id,
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
-            );
-            // Handle error
-            redirectTo(action="show", id=params.id, errorMessage="Failed to update blog post.");
+            renderText('<span class="text-danger">Error checking title: ' & e.message & '</span>');
         }
     }
 
@@ -602,76 +705,86 @@ component extends="app.Controllers.Controller" {
         }
     
         return response;
-    }  
-
-    /**
-    * Saves a new blog post
-    */
-    private function saveNewBlog(required struct blogData) {
-        var response = { "message": "", "blogId": 0 };
-
-        // Check for duplicate title
-        var existingBlog = model("Blog").findOne(
-            where="title = #blogData.title# AND slug = #blogData.slug#"
-        );
-
-        if (!isObject(existingBlog)) {
-            var newBlog = model("Blog").new();
-            newBlog.title = blogData.title;
-            newBlog.content = blogData.content;
-            newBlog.slug = blogData.slug;
-            newBlog.statusId = blogData.statusId;
-            newBlog.postTypeId = blogData.postTypeId;
-            newBlog.coverImagePath = blogData.coverImagePath;
-            newBlog.createdAt = now();
-            newBlog.updatedAt = now();
-            newBlog.createdBy = GetSignedInUserId();
-            
-            if (len(trim(blogData.postCreatedDate))) {
-                newBlog.postCreatedDate = blogData.postCreatedDate;
-            }
-
-            newBlog.save();
-            response.blogId = newBlog.id;
-            response.message = "Blog post created successfully.";
-        } else {
-            response.message = "A blog post with the same title already exists.";
-        }
-
-        return response;
-    }
-
-    /**
-    * Updates an existing blog post
-    */
-    private function updateBlog(required struct blogData) {
-        var response = { "message": "", "blogId": 0 };
-
-        var blog = model("Blog").findByKey(blogData.id);
-
-        if (!isNull(blog)) {
-            // Update the existing blog post
-            blog.title = blogData.title;
-            blog.content = blogData.content;
-            blog.statusId = blogData.statusId;
-            blog.postTypeId = blogData.postTypeId;
-            blog.slug = blogData.slug;
-            blog.updatedAt = now();
-            blog.updatedBy = GetSignedInUserId();
-            blog.save();
-
-            response.blogId = blog.id;
-            response.message = "Blog post updated successfully.";
-        } else {
-            response.message = "Blog post not found for editing.";
-        }
-
-        return response;
     } 
 
-    private function updateBlog(required struct blogData) {
-        return saveBlog(blogData);
-    }
+    // Helper function to update blog post
+    function updateBlog(required struct params, required numeric blogId) {
+        var response = { "success": false, "message": "", "blogId": blogId };
+
+        try {
+            // Find the blog by ID
+            var blog = model("Blog").findByKey(blogId);
+            
+            if (isNull(blog)) {
+                response.message = "Blog post not found for updating.";
+                return response;
+            }
+            
+            // Generate slug
+            var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
+            slug = rereplace(slug, "-+", "-", "all");
+            params.slug = slug;
+            
+            // Set status based on isDraft flag
+            if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
+                params.statusId = 1; // Draft
+            } else {
+                params.statusId = 2; // Under Review
+            }
+            
+            // Check if a blog with the same title/slug exists (that isn't this one)
+            var existingBlog = model("Blog").findFirst(
+                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
+            );
+            
+            if (isObject(existingBlog)) {
+                response.message = "Another blog post with the same title already exists.";
+                return response;
+            }
+            
+            // Update the blog post
+            blog.title = params.title;
+            blog.content = params.content;
+            blog.slug = params.slug;
+            blog.statusId = params.statusId;
+            
+            // Only update these if they exist in params
+            if (structKeyExists(params, "postTypeId")) {
+                blog.postTypeId = params.postTypeId;
+            }
+            
+            if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
+                blog.postCreatedDate = params.postCreatedDate;
+            }
+            
+            // Update tracking fields
+            blog.updatedAt = now();
+            blog.updatedBy = GetSignedInUserId();
+            
+            // Save the blog post
+            blog.save();
+            
+            response.success = true;
+            response.message = "Blog post updated successfully.";
+        }
+        catch (any e) {
+            response.message = "Error updating blog: " & e.message;
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error in updateBlog function",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = GetSignedInUserId()
+            );
+        }
+        
+        return response;
+    } 
 
     private function deleteBlog(required numeric id) {
         var message = "";
@@ -723,6 +836,33 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    // Function to delete tags associated with a blog post
+    function deleteBlogTags(required numeric blogId) {
+        try {
+            if (blogId > 0) {
+                // direct delete approach
+                model("Tag").deleteAll(where="blogId = #blogId#");
+                
+                return true;
+            }
+            return false;
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to delete blog tags",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            return false;
+        }
+    }
+
     // Categories
 
     function getAllCategories() {
@@ -747,6 +887,33 @@ component extends="app.Controllers.Controller" {
             }
         } catch (any e) {
             local.exception = e;
+        }
+    }
+
+    // Function to delete categories associated with a blog post
+    function deleteBlogCategories(required numeric blogId) {
+        try {
+            if (blogId > 0) {
+                // Find all category associations for this blog post
+                model("BlogCategory").deleteAll(where="blogId = #blogId#");
+                
+                return true;
+            }
+            return false;
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to delete blog categories",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            return false;
         }
     }
 
