@@ -164,6 +164,12 @@ component extends="app.Controllers.Controller" {
         renderPartial(partial="partials/categorylist");
     }
 
+    function AuthorProfileBlogs(){
+        blogs = model("blog").findAll(where="status = 'Approved' AND createdby = '#params.author#'");
+        author = model("user").findAll(select="fullName, email, profilePicture, name, profileUrl", include = "Role", where = "id ='#params.author#'");
+        comments = model("comment").findAll(where="authorId = '#params.author#' AND  isPublished = '1'")
+        return true;
+    }
     // Function to show the create blog form
     function create() {
         model("Log").log(
@@ -571,7 +577,7 @@ component extends="app.Controllers.Controller" {
         var enddate = "#year#-#NumberFormat(month, '00')#-#DaysInMonth('#year#-#NumberFormat(month, '00')#-01')# 23:59:59";
 
         return model("Blog").findAll(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#'",
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'",
             order="createdat DESC",
             include="User",
             returnAs="query"
