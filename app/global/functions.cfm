@@ -1,7 +1,7 @@
 <cfscript>
 // Place functions here that should be available globally in your application.
 public function GetSignedInUserId(){
-    return session.USERID;
+    return structKeyExists(session, "userID") ? session.userID : 0
 }
 public function GetUserRoleId(){
     return 3;
