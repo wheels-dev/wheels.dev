@@ -56,8 +56,7 @@
         // Scroll handler
         function onScroll() {
             if (loading) return;
-            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 5
-            00) {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 500) {
                 loading = true;
                 $('#loader').show();
                 setTimeout(() => {
