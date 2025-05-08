@@ -7,7 +7,7 @@
                     <img src="/images/wheels-logo.png" width="300" alt="Logo">
                 </a>
                 <p class="text--secondary fw-medium fs-18 text-center w-100 max-w-450 mx-auto pt-4">
-                    CFWheels is an open-source CFML framework inspired by Ruby on Rails. It offers fast app development,
+                    Wheels is an open-source CFML framework inspired by Ruby on Rails. It offers fast app development,
                     organized code structure, and is easy and fun to learn.
                 </p>
             </div>
