@@ -34,7 +34,7 @@
         let loading = false;
 
         if (items.length <= itemsPerPage) {
-            items.show(); // Show items if they are 4 or fewer
+            items.show(); // Show items if they are 6 or fewer
             $('#loader').hide();
             return;
         }
