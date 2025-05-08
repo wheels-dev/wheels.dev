@@ -63,7 +63,7 @@
             <div class="pt-4">
                 <p class="fs-22 pb-4 fw-medium">Recent blog posts</p>
                 <!-- Loader Element -->
-                <div class="d-flex justify-content-center" id="loader-wrapper" hx-indicator>
+                <div class="d-flex justify-content-center" id="loader-wrapper">
                     <div style="width: 2rem; height: 2rem;" class="spinner-border my-5 text--primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -122,20 +122,26 @@
 <script>
     const loader = document.getElementById("loader-wrapper");
 
+    let isLoading = false;
+
     document.body.addEventListener("htmx:beforeRequest", function (evt) {
-        if (evt.target.id === "hxLoader") {
-            loader.style.display = "flex"; // show loader
+        if (evt.target.id === "hxLoader" && !isLoading) {
+            isLoading = true;
+            loader.classList.remove("d-none"); // show loader by removing d-none
         }
     });
 
     document.body.addEventListener("htmx:afterSwap", function (evt) {
-        if (evt.target.id === "blogsContainer") {
-            loader.style.display = "none"; // hide loader
+        if (evt.target.id === "blogsContainer" && isLoading) {
+            isLoading = false;
+            loader.classList.add("d-none"); // hide loader by adding d-none
         }
     });
 
     document.body.addEventListener("htmx:responseError", function (evt) {
-        loader.style.display = "none"; // hide loader on error
+        isLoading = false; // Reset loading flag on error
+        loader.classList.add("d-none"); // hide loader on error by adding d-none
         alert("Failed to load blogs.");
     });
+
 </script>
