@@ -62,9 +62,9 @@
             </div>
             <div class="pt-4">
                 <p class="fs-22 pb-4 fw-medium">Recent blog posts</p>
-                <div class="d-flex justify-content-center">
-                    <div id="loader-wrapper" style="width: 2rem; height: 2rem;" class="spinner-border my-5 text--primary"
-                        role="status">
+                <!-- Loader Element -->
+                <div class="d-flex justify-content-center" id="loader-wrapper" hx-indicator>
+                    <div style="width: 2rem; height: 2rem;" class="spinner-border my-5 text--primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                         </cfif>
                         <!-- wrapper that triggers the HTMX call -->
                         <div id="hxLoader" hx-get="#blogUrl#" hx-trigger="load" hx-target="##blogsContainer"
-                            hx-swap="innerHTML">
+                            hx-swap="innerHTML"  hx-indicator="##loader-wrapper">
                         </div>
                         <!-- blog list container -->
                         <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-3 row-cols-1">
@@ -116,26 +116,26 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex pb-5 justify-content-center">
-                <div id="loader" style="display:none; width: 2rem; height: 2rem;" class="spinner-border text--primary"
-                    role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 <script>
-    document.addEventListener("htmx:beforeRequest", function (evt) {
-        document.getElementById("loader-wrapper").style.display = "block";
+    const loader = document.getElementById("loader-wrapper");
+
+    document.body.addEventListener("htmx:beforeRequest", function (evt) {
+        if (evt.target.id === "hxLoader") {
+            loader.style.display = "flex"; // show loader
+        }
     });
 
-    document.addEventListener("htmx:afterSwap", function (evt) {
-        document.getElementById("loader-wrapper").style.display = "none";
+    document.body.addEventListener("htmx:afterSwap", function (evt) {
+        if (evt.target.id === "blogsContainer") {
+            loader.style.display = "none"; // hide loader
+        }
     });
 
-    // Also hide it if request fails
-    document.addEventListener("htmx:responseError", function (evt) {
-        document.getElementById("loader-wrapper").style.display = "none";
+    document.body.addEventListener("htmx:responseError", function (evt) {
+        loader.style.display = "none"; // hide loader on error
+        alert("Failed to load blogs.");
     });
 </script>
