@@ -345,7 +345,7 @@
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Issue
 											Tracker</a>
 									</li>
-									<li class="mt-2"><a href="https://opencollective.com/wheels-fw"
+									<li class="mt-2"><a href="https://opencollective.com/wheels-dev"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Sponsor
 											Us</a>
 									</li>
@@ -467,6 +467,16 @@
 						if (testimonialModalElement) {
 							// Get or create the Bootstrap modal instance right away
 							testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
+							
+							// Automatically show the modal on page load
+							window.addEventListener('DOMContentLoaded', function() {
+								console.log('DOM loaded, showing testimonial modal automatically');
+								setTimeout(function() {
+									if (testimonialModalInstance) {
+										testimonialModalInstance.show();
+									}
+								}, 1000); // Small delay to ensure everything is loaded
+							});
 
 							document.body.addEventListener('showTestimonialModal', function handleShowTrigger() {
 								console.log('Received showTestimonialModal trigger from backend.');

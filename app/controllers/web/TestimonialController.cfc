@@ -4,9 +4,8 @@ component extends="app.Controllers.Controller" {
     // Configuration function
     function config() {
         verifies(except="index,publicList,new,create,edit,update,check,error,clearPromptFlag", params="key", paramsTypes="integer", handler="error");
-        // Apply filters for security
-        filters(through="restrictAccess", only="new,create,edit,update,check");
-        filters(through="requireAdmin", only="index,approve,feature,delete");
+        filters(through="restrictAccess", only="new,create,edit,update,delete");
+        filters(through="requireAdmin", only="index,admin,approve,unapprove,feature,unfeature");
         usesLayout("/layout");
     }
     
@@ -21,6 +20,67 @@ component extends="app.Controllers.Controller" {
         );
         
         renderPartial(partial="partials/testimonialsList");
+    }
+    
+    /**
+     * Show all testimonials (admin only)
+     */
+    function index() {
+        testimonials = model("Testimonial").findAll(
+            include="User",
+            order="createdAt DESC"
+        );
+        renderView(testimonials=testimonials);
+    }
+    
+    /**
+     * Admin dashboard for testimonial management
+     */
+    function admin() {
+        // Get filter parameter
+        param name="params.filter" default="all";
+        param name="params.page" default="1";
+        
+        // Build where clause based on filter
+        local.whereClause = "";
+        local.filter = params.filter;
+        
+        switch(local.filter) {
+            case "pending":
+                local.whereClause = "isApproved = 0";
+                break;
+            case "approved":
+                local.whereClause = "isApproved = 1";
+                break;
+            case "featured":
+                local.whereClause = "isFeatured = 1";
+                break;
+            default:
+                local.filter = "all";
+                local.whereClause = "";
+        }
+        
+        // Get testimonials with pagination
+        local.perPage = 10;
+        testimonials = model("Testimonial").findAll(
+            where = local.whereClause,
+            include = "User",
+            order = "createdAt DESC",
+            page = params.page,
+            perPage = local.perPage
+        );
+        
+        // Get total count for pagination
+        local.totalCount = model("Testimonial").count(where = local.whereClause);
+        local.totalPages = ceiling(local.totalCount / local.perPage);
+        
+        // Render admin view
+        renderView(
+            testimonials = testimonials,
+            currentPage = params.page,
+            totalPages = local.totalPages,
+            filter = local.filter
+        );
     }
     
     /**
@@ -275,24 +335,15 @@ component extends="app.Controllers.Controller" {
     function approve() {
         try {
             // Get the testimonial
-            id = params.key;
-            testimonial = model("Testimonial").findByKey(id);
+            testimonial = model("Testimonial").findByKey(params.key);
             
             if (!IsObject(testimonial)) {
-                if (isHtmx()) {
-                    renderWith(data={
-                        "success"=false, 
-                        "message"="Testimonial not found."
-                    });
-                } else {
-                    flashInsert(error="Testimonial not found.");
-                    redirectTo(action="index");
-                }
-                return;
+                throw(message="Testimonial not found.");
             }
             
-            // Toggle approval status
-            testimonial.isApproved = !testimonial.isApproved;
+            // Update approval status
+            testimonial.isApproved = true;
+            testimonial.save();
             
             // Save changes
             if (testimonial.save(validate=false)) {
@@ -328,50 +379,93 @@ component extends="app.Controllers.Controller" {
     function feature() {
         try {
             // Get the testimonial
-            id = params.key;
-            testimonial = model("Testimonial").findByKey(id);
+            testimonial = model("Testimonial").findByKey(params.key);
             
             if (!IsObject(testimonial)) {
-                if (isHtmx()) {
-                    renderWith(data={
-                        "success"=false, 
-                        "message"="Testimonial not found."
-                    });
-                } else {
-                    flashInsert(error="Testimonial not found.");
-                    redirectTo(action="index");
-                }
-                return;
+                throw(message="Testimonial not found.");
             }
             
-            // Toggle featured status
-            testimonial.isFeatured = !testimonial.isFeatured;
+            // Set featured status to true
+            testimonial.isFeatured = true;
             
             // Save changes
             if (testimonial.save(validate=false)) {
-                if (isHtmx()) {
-                    renderWith(data={
-                        "success"=true, 
-                        "message"="Testimonial " & (testimonial.isFeatured ? "featured" : "unfeatured") & " successfully.",
-                        "isFeatured"=testimonial.isFeatured
-                    });
-                } else {
-                    flashInsert(success="Testimonial " & (testimonial.isFeatured ? "featured" : "unfeatured") & " successfully.");
-                    redirectTo(action="index");
-                }
+                model("Log").log(
+                    category = "wheels.testimonial",
+                    level = "INFO",
+                    message = "Testimonial featured",
+                    details = {
+                        "testimonial_id": testimonial.id,
+                        "admin_id": session.userID
+                    }
+                );
+                
+                flashInsert(success="Testimonial featured successfully.");
+                redirectTo(action="admin");
             } else {
-                throw(message="Failed to update testimonial feature status.");
+                throw(message="Failed to feature testimonial.");
             }
         } catch (any e) {
-            if (isHtmx()) {
-                renderWith(data={
-                    "success"=false, 
-                    "message"="Failed to update testimonial feature status: " & e.message
-                });
-            } else {
-                flashInsert(error="Failed to update testimonial feature status: " & e.message);
-                redirectTo(action="index");
+            model("Log").log(
+                category = "wheels.testimonial",
+                level = "ERROR",
+                message = "Failed to feature testimonial",
+                details = {
+                    "error_message": e.message,
+                    "testimonial_id": params.key
+                }
+            );
+            
+            flashInsert(error="Failed to feature testimonial: " & e.message);
+            redirectTo(action="admin");
+        }
+    }
+    
+    /**
+     * Admin: Unfeature a testimonial
+     */
+    function unfeature() {
+        try {
+            // Get the testimonial
+            testimonial = model("Testimonial").findByKey(params.key);
+            
+            if (!IsObject(testimonial)) {
+                throw(message="Testimonial not found.");
             }
+            
+            // Set featured status to false
+            testimonial.isFeatured = false;
+            
+            // Save changes
+            if (testimonial.save(validate=false)) {
+                model("Log").log(
+                    category = "wheels.testimonial",
+                    level = "INFO",
+                    message = "Testimonial unfeatured",
+                    details = {
+                        "testimonial_id": testimonial.id,
+                        "admin_id": session.userID
+                    }
+                );
+                
+                flashInsert(success="Testimonial unfeatured successfully.");
+                redirectTo(action="admin");
+            } else {
+                throw(message="Failed to unfeature testimonial.");
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.testimonial",
+                level = "ERROR",
+                message = "Failed to unfeature testimonial",
+                details = {
+                    "error_message": e.message,
+                    "testimonial_id": params.key
+                }
+            );
+            
+            flashInsert(error="Failed to unfeature testimonial: " & e.message);
+            redirectTo(action="admin");
         }
     }
     
@@ -609,15 +703,40 @@ component extends="app.Controllers.Controller" {
     */
     function clearPromptFlag() {
         try {
+            // Log the attempt to clear the flag
+            model("Log").log(
+                category = "wheels.testimonial",
+                level = "DEBUG",
+                message = "Clearing testimonial prompt flag",
+                details = {
+                    "session_has_flag": session.keyExists("promptForTestimonial"),
+                    "user_id": isLoggedInUser() ? session.userID : "not logged in"
+                }
+            );
+            
+            // Clear the session flag that triggers the testimonial prompt
             if (session.keyExists("promptForTestimonial")) {
-                session.delete("promptForTestimonial");
+                structDelete(session, "promptForTestimonial");
+                model("Log").log(
+                    category = "wheels.testimonial",
+                    level = "INFO",
+                    message = "Testimonial prompt flag cleared successfully"
+                );
             }
-            // Return a success response
-            renderWith(data={"success"=true});
+            
+            // Return a 200 OK status with no content
+            renderNothing();
         } catch (any e) {
-            // Log error;
-            // Return an error response
-            renderWith(data={"success"=false, "message"="Error clearing flag."}, status=500);
+            model("Log").log(
+                category = "wheels.testimonial",
+                level = "ERROR",
+                message = "Error clearing testimonial prompt flag",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            renderNothing();
         }
     }
 }

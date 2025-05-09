@@ -11,7 +11,7 @@
 >
 <channel>
 <cfoutput>
-	<title>Blog | CFWheels</title>
+	<title>Blog | Wheels.dev</title>
 	<atom:link href="#application.env.application_host#/blog/feed/" rel="self" type="application/rss+xml" />
 	<link>#application.env.application_host#/blog</link>
 	<description><![CDATA[Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!]]></description>
