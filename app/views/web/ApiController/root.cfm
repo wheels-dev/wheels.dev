@@ -2,7 +2,7 @@
 <cfoutput>
 	<div class="container">
 		<div class="well">
-			<h3>CFWheels API reference</h3>
+			<h3>Wheels API reference</h3>
 			<h4>Select Version</h4>
 			<ul>
 				<cfloop from="1" to="#arraylen(versions)#" index="v">

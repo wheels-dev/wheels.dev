@@ -217,15 +217,30 @@ component extends="app.Controllers.Controller" {
 
             // Check if user needs to submit testimonial
             if (isObject(user.role) && user.role.name != 'Admin') {
-                var testimonial = model("Testimonial").findOne(where="user_id = '#user.id#'");
+                var testimonial = model("Testimonial").findOne(where="userId = '#user.id#'");
+                
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "DEBUG",
+                    message = "Checking if user needs testimonial prompt",
+                    details = {
+                        "user_id": user.id,
+                        "has_testimonial": isObject(testimonial),
+                        "role": user.role.name
+                    }
+                );
+                
                 if (!isObject(testimonial)) {
+                    // Set the session flag to prompt for testimonial
                     session.promptForTestimonial = true;
+                    
                     model("Log").log(
                         category = "wheels.auth",
-                        level = "DEBUG",
-                        message = "Testimonial prompt set",
+                        level = "INFO",
+                        message = "Testimonial prompt flag set for user",
                         details = {
-                            "user_id": user.id
+                            "user_id": user.id,
+                            "session_flag": "promptForTestimonial"
                         }
                     );
                 }

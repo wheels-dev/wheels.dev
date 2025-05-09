@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,create,loadFeatures,loadBlogs,loadGuides", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,loadFeatures,loadBlogs,loadGuides,loadTestimonials", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -17,6 +17,15 @@ component extends="app.Controllers.Controller" {
             },
             userId = structKeyExists(session, "userID") ? session.userID : 0
         );
+        
+        // Load featured testimonials for the homepage
+        featuredTestimonials = model("Testimonial").getApprovedTestimonials(
+            onlyFeatured = true,
+            perPage = 3
+        );
+        
+        // Pass testimonials to the view
+        renderView(featuredTestimonials=featuredTestimonials);
     }
 
     // Function to load features
@@ -113,6 +122,43 @@ component extends="app.Controllers.Controller" {
             );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load guides.");
+        }
+    }
+    
+    // Function to load testimonials
+    function loadTestimonials() {
+        try {
+            model("Log").log(
+                category = "wheels.home",
+                level = "DEBUG",
+                message = "Testimonials section loaded",
+                details = {
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
+            // Get approved testimonials
+            testimonials = model("Testimonial").getApprovedTestimonials(
+                onlyFeatured = false,
+                perPage = 6
+            );
+            
+            renderPartial(partial="partials/testimonials", testimonials=testimonials);
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.home",
+                level = "ERROR",
+                message = "Failed to load testimonials",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            // Handle error
+            renderPartial(partial="partials/error", message="Failed to load testimonials.");
         }
     }
 
