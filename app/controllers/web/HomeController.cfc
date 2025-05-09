@@ -19,13 +19,13 @@ component extends="app.Controllers.Controller" {
         );
         
         // Load featured testimonials for the homepage
-        featuredTestimonials = model("Testimonial").getApprovedTestimonials(
-            onlyFeatured = true,
-            perPage = 3
-        );
+        // featuredTestimonials = model("Testimonial").getApprovedTestimonials(
+        //     onlyFeatured = true,
+        //     perPage = 3
+        // );
         
         // Pass testimonials to the view
-        renderView(featuredTestimonials=featuredTestimonials);
+        renderView();
     }
 
     // Function to load features
