@@ -144,7 +144,7 @@ component extends="app.Models.Model" {
     // Get all approved testimonials
     public function getApprovedTestimonials(struct options = {}) {
         // Default options
-        local.defaultOptions = {
+        defaultOptions = {
             page = 1,
             perPage = 10,
             sortBy = "createdAt",
@@ -153,29 +153,29 @@ component extends="app.Models.Model" {
         };
         
         // Merge provided options
-        local.mergedOptions = structAppend(local.defaultOptions, arguments.options);
+        mergedOptions = structAppend(defaultOptions, arguments.options);
         
         // Build where clause
-        local.whereClause = "isApproved = 1 AND displayPermission = 1";
+        whereClause = "isApproved = 1 AND displayPermission = 1";
         
         // Add featured filter if specified
-        if (local.mergedOptions.onlyFeatured) {
-            local.whereClause &= " AND isFeatured = 1";
+        if (mergedOptions.onlyFeatured) {
+            whereClause &= " AND isFeatured = 1";
         }
         
         // Find testimonials
         return findAll(
-            where = local.whereClause,
-            order = "#local.mergedOptions.sortBy# #local.mergedOptions.sortOrder#",
-            page = local.mergedOptions.page,
-            perPage = local.mergedOptions.perPage,
+            where = whereClause,
+            order = "#mergedOptions.sortBy# #mergedOptions.sortOrder#",
+            page = mergedOptions.page,
+            perPage = mergedOptions.perPage,
             include = "User"
         );
     }
     
     // Format testimonial for display
     public function formatForDisplay() {
-        local.user = this.user();
+        user = this.user();
         
         return {
             id = this.id,
@@ -186,8 +186,8 @@ component extends="app.Models.Model" {
             experienceLevel = this.experienceLevel,
             websiteUrl = this.websiteUrl,
             socialMediaLinks = this.socialMediaLinks,
-            userFullName = local.user.fullName,
-            userProfilePicture = local.user.profilePicture,
+            userFullName = user.fullName,
+            userProfilePicture = user.profilePicture,
             isFeatured = this.isFeatured,
             submittedOn = this.createdAt
         };

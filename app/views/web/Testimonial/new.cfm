@@ -1,10 +1,12 @@
+<cfoutput>
 <form method="post"
-      action="/wb.testimonial/create" <!--- Standard form action (fallback) --->
+      action="#urlFor(controller='web.Testimonial', action='create')#" <!--- Standard form action (fallback) --->
       enctype="multipart/form-data"
-      hx-post="/web.testimonials/create" <!--- HTMX action --->
+      hx-post="#urlFor(controller='web.Testimonial', action='create')#" <!--- HTMX action --->
       hx-target="#testimonial-form-container" <!--- Target the container holding this form --->
       hx-swap="outerHTML" <!--- Replace the container with the response --->
       hx-encoding="multipart/form-data"> <!--- Needed for file uploads --->
+</cfoutput>
 
     <!--- Placeholder for server-side validation messages (HTMX will replace this whole form on error/success) --->
     <div id="form-messages"></div>
