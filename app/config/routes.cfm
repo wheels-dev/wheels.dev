@@ -43,6 +43,8 @@
 			.post(name = "admin-comment-publish", pattern = "admin/publish", to = "admin.AdminController##commentsPublish")
 			.post(name = "admin-comment-unpublish", pattern = "admin/hide", to = "admin.AdminController##unpublishComment")
 			.get(name = "admin-view-comment", pattern = "admin/commentDetails/[id]", to = "admin.AdminController##viewComments")
+			.get(name = "admin-close-comments", pattern = "admin/closeComments/[id]", to = "admin.AdminController##closeComments")
+			.get(name = "admin-publish-blog", pattern = "admin/publishblog/[id]", to = "admin.AdminController##publishblog")
 			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
 
 			.get(name = "user-profile", pattern = "admin/user/profile", to = "admin.UserController##profile")

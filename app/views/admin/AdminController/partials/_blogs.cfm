@@ -6,10 +6,10 @@
                     <h1 class="fs-24 mb-5 fw-bold">Blogs</h1>
                 </div>
                 <div class="d-flex gap-2">
-                    <form id="bulkForm" hx-post="bulkApprove" hx-target="##responseTable" hx-swap="innerHTML"></form>
-                    <button id="bulkApproveBtn" class="btn btn-primary mb-3">Approve Selected</button>
                     <form id="bulkRejectForm" hx-post="/admin/bulkReject" hx-target="##responseTable" hx-swap="innerHTML"></form>
                     <button id="bulkRejectBtn" class="btn btn-ligh border solid mb-3">Reject Selected</button>
+                    <form id="bulkForm" hx-post="bulkApprove" hx-target="##responseTable" hx-swap="innerHTML"></form>
+                    <button id="bulkApproveBtn" class="btn bg--primary text-white mb-3">Approve Selected</button>
                 </div>
             </div>
             <table id="blogTable" class="table table-hover mb-5">
@@ -24,6 +24,8 @@
                         <th>Title</th>
                         <th>Status</th>
                         <th>Categories</th>
+                        <th>Publish</th>
+                        <th>Disable Comments</th>
                         <th>Created By</th>
                         <th>Approval Status</th>
                         <th></th>
@@ -52,6 +54,16 @@
                                 var categoryNames = valueList(categories.name);
                             </cfscript>
                             <td>#categoryNames#</td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" id="isPublished-#blogs.id[i]#" name="isPublished-#blogs.id[i]#" type="checkbox" <cfif blogs.isPublished[i]> checked </cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" id="closeComment-#blogs.id[i]#" name="closeComment-#blogs.id[i]#" type="checkbox" <cfif blogs.iscommentClosed[i]> checked </cfif> hx-get="/admin/closeComments/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                </div>
+                            </td>
                             <td>#blogs.fullName[i]#</td>
                             <td>
                                 <span class="approval-status-#blogId#">
