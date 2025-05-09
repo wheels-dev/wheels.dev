@@ -35,6 +35,102 @@ component extends="app.Controllers.Controller" {
             renderText("Failed to reject testimonials.");
         }
     }
+    
+    /**
+     * Feature a testimonial
+     */
+    function feature() {
+        try {
+            // Get the testimonial
+            testimonial = model("Testimonial").findByKey(params.key);
+            
+            if (!IsObject(testimonial)) {
+                throw(message="Testimonial not found.");
+            }
+            
+            // Set featured status to true
+            testimonial.isFeatured = true;
+            
+            // Save changes
+            if (testimonial.save(validate=false)) {
+                model("Log").log(
+                    category = "wheels.testimonial",
+                    level = "INFO",
+                    message = "Testimonial featured",
+                    details = {
+                        "testimonial_id": testimonial.id,
+                        "admin_id": session.userID
+                    }
+                );
+                
+                flashInsert(success="Testimonial featured successfully.");
+                redirectTo(action="index");
+            } else {
+                throw(message="Failed to feature testimonial.");
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.testimonial",
+                level = "ERROR",
+                message = "Failed to feature testimonial",
+                details = {
+                    "error_message": e.message,
+                    "testimonial_id": params.key
+                }
+            );
+            
+            flashInsert(error="Failed to feature testimonial: " & e.message);
+            redirectTo(action="index");
+        }
+    }
+    
+    /**
+     * Unfeature a testimonial
+     */
+    function unfeature() {
+        try {
+            // Get the testimonial
+            testimonial = model("Testimonial").findByKey(params.key);
+            
+            if (!IsObject(testimonial)) {
+                throw(message="Testimonial not found.");
+            }
+            
+            // Set featured status to false
+            testimonial.isFeatured = false;
+            
+            // Save changes
+            if (testimonial.save(validate=false)) {
+                model("Log").log(
+                    category = "wheels.testimonial",
+                    level = "INFO",
+                    message = "Testimonial unfeatured",
+                    details = {
+                        "testimonial_id": testimonial.id,
+                        "admin_id": session.userID
+                    }
+                );
+                
+                flashInsert(success="Testimonial unfeatured successfully.");
+                redirectTo(action="index");
+            } else {
+                throw(message="Failed to unfeature testimonial.");
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.testimonial",
+                level = "ERROR",
+                message = "Failed to unfeature testimonial",
+                details = {
+                    "error_message": e.message,
+                    "testimonial_id": params.key
+                }
+            );
+            
+            flashInsert(error="Failed to unfeature testimonial: " & e.message);
+            redirectTo(action="index");
+        }
+    }
 
 
     private function testimonialApproval(id){
