@@ -26,7 +26,9 @@
                                 <th>Title</th>
                                 <th>Status</th>
                                 <th>Categories</th>
-                                <th>Created By</th>
+                                <th>Publish</th>
+                                <th>Disable Comments</th>
+                                <th>Author</th>
                                 <th>Approval Status</th>
                                 <th></th>
                             </tr>
@@ -54,6 +56,16 @@
                                         var categoryNames = valueList(categories.name);
                                     </cfscript>
                                     <td>#categoryNames#</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" id="isPublished-#blogs.id[i]#" name="isPublished-#blogs.id[i]#" type="checkbox" <cfif blogs.isPublished[i]> checked </cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" id="closeComment-#blogs.id[i]#" name="closeComment-#blogs.id[i]#" type="checkbox" <cfif blogs.iscommentClosed[i]> checked </cfif> hx-get="/admin/closeComments/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                        </div>
+                                    </td>
                                     <td>#blogs.fullName[i]#</td>
                                     <td>
                                         <span class="approval-status-#blogId#">
@@ -199,6 +211,18 @@
                 }
                 if (xhr.status === 200 && xhr.responseURL.includes("/admin/bulkReject")) {
                     notifier.show('Success', 'Blogs posts rejected Successfully!', 'success', '', 5000);
+                }
+                if (xhr.status === 500 && xhr.responseURL.includes("/admin/publishblog")) {
+                    notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
+                }
+                if (xhr.status === 200 && xhr.responseURL.includes("/admin/publishblog")) {
+                    notifier.show('Success', 'Blog publish successfully!', 'success', '', 5000);
+                }
+                if (xhr.status === 500 && xhr.responseURL.includes("/admin/closeComments")) {
+                    notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
+                }
+                if (xhr.status === 200 && xhr.responseURL.includes("/admin/closeComments")) {
+                    notifier.show('Success', xhr.responseText, 'success', '', 5000);
                 }
             });
         </script>
