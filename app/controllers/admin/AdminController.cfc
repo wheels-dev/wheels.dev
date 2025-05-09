@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -83,6 +83,89 @@ component extends="app.Controllers.Controller" {
             cfheader(statusCode=500);
             return;
         }
+    }
+
+    function publishblog(){
+        try{
+            var message = blogPublish(params);
+        } catch(e) {
+            cfheader(statusCode=500);
+            return;
+        }
+
+    }
+
+    function closeComments(){
+        try{
+            closeComment = false;
+            if(structKeyExists(params, "closeComment-#params.id#")){
+                closeComment = true;
+            }
+            var blog = model("Blog").findByKey(params.id);
+            blog.isCommentClosed = closeComment;
+            blog.save();
+            if(closeComment){
+                renderText("Blog comments section closed successfully!")
+            }else{
+                renderText("Blog comments section open successfully!")
+            }
+            return;
+        } catch(e) {
+            cfheader(statusCode=500);
+            return;
+        }
+    }
+
+    private function blogPublish(blogData){
+        isPublished = false;
+        if(structKeyExists(blogData, "isPublished-#blogData.id#")){
+            isPublished = true;
+        }
+        
+        var blog = model("Blog").findByKey(blogData.id);
+        var user = model("user").findByKey(blog.createdby);
+
+        if (!isNull(blog)) {
+            blog.isPublished = isPublished;
+            blog.publishedat = now();         
+            if (blog.save()) {
+                var siteurl = "";
+                if(isPublished){
+                    var siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
+                }
+                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been published on the Wheels website.";
+                var footer = "If you did not write blog, you can safely ignore this email.";
+                var emailContent = generateApprovalEmail(siteurl, message, footer);
+                cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+                cfmail( 
+                    to = "#user.email#", 
+                    from = "#application.env.mail_from#", 
+                    subject = "Your blog post has been published", 
+                    server = "#application.env.smtp_host#", 
+                    port = "#application.env.smtp_port#", 
+                    username = "#application.env.smtp_username#", 
+                    password = "#application.env.smtp_password#", 
+                    type = "html"
+                ) { 
+                    writeOutput(emailContent);
+                };
+                return {
+                    success = true,
+                    message = "Blog Published successfully!"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to publish blog!"
+                };
+            }
+        }
+        
+        return {
+            success = false,
+            message = "Blog not found"
+        };
     }
 
     function commentsPublish(){
@@ -436,8 +519,8 @@ component extends="app.Controllers.Controller" {
             
             blog.status = "Approved"; //approved            
             if (blog.save()) {
-                var siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
-                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been approved and published on the Wheels website.";
+                var siteurl = "";
+                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been approved.";
                 var footer = "If you did not write blog, you can safely ignore this email.";
                 var emailContent = generateApprovalEmail(siteurl, message, footer);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -482,7 +565,7 @@ component extends="app.Controllers.Controller" {
             
             if (blog.save()) {
                 siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
-                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected and not published on the Wheels website.";
+                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected.";
                 var footer = "If you did not write blog, you can safely ignore this email.";
                 emailContent = generateRejectEmail(siteurl, message, footer);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -518,6 +601,10 @@ component extends="app.Controllers.Controller" {
     }
 
     private string function generateApprovalEmail(required string siteurl, required string message, required string footer) {
+        var buttonHTML = "";
+        if (len(trim(arguments.siteurl))) {
+            buttonHTML = '<a href="' & arguments.siteurl & '" class="button">View Your Post</a>';
+        }
         return '
             <!DOCTYPE html>
             <html>
@@ -577,7 +664,7 @@ component extends="app.Controllers.Controller" {
                     <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
                     <h1>Welcome to Wheels.dev!</h1>
                     <p>'&message&'</p>
-                    <a href="' & siteurl & '" class="button">View Your Post</a>
+                    ' & buttonHTML & '
                     <p class="footer">'&footer&'</p>
                 </div>
 

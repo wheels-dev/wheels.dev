@@ -565,7 +565,7 @@ component extends="app.Controllers.Controller" {
 
     private function getAllBlogs() {
         return model("Blog").findAll(
-            where="statusid <> 1 AND status ='Approved'",
+            where="statusid <> 1 AND status ='Approved' AND isPublished='true'",
             include="User, PostStatus, PostType",
             order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
         );
