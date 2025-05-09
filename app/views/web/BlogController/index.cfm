@@ -144,4 +144,32 @@
         alert("Failed to load blogs.");
     });
 
+    const handleBlogFilter = (type, button) => {
+    const blogsContainer = document.getElementById('blogsContainer');
+    const filtersContainer = document.getElementById('filtersContainer');
+    const archives = document.getElementById('Archives');
+    const categories = document.getElementById('Categories');
+
+    blogsContainer.classList.remove('col-lg-12', 'col-lg-10');
+    blogsContainer.classList.add(type === 'All' ? 'col-lg-12' : 'col-lg-10');
+    filtersContainer.classList.remove('d-none');
+
+    const buttons = document.querySelectorAll('.filter-button');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    button.classList.add('active');
+
+    Array.from(filtersContainer.children).forEach(child => child.classList.add('d-none'));
+
+    if (type === 'All') {
+        filtersContainer.classList.add('d-none');
+    } else if (type === 'Archives') {
+        archives.classList.remove('d-none');
+        categories.classList.add('d-none');
+    } else {
+        archives.classList.add('d-none');
+        document.getElementById(type).classList.remove('d-none');
+    }
+}
 </script>
