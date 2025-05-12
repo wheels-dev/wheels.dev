@@ -103,6 +103,9 @@
 			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "admin.testimonialController##approve")
 			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "admin.testimonialController##reject")
 			
+			.get(name="new-testimonial", pattern="testimonial/new", to="web.TestimonialController##new")
+			.post(name="create-testimonial", pattern="testimonial/create", to="web.TestimonialController##create")
+
 			.post(name="clear_testimonial_prompt", pattern="testimonial/clear-prompt", to="web.Testimonial##clearPromptFlag") // Use POST to indicate an action
 
 			// routes for categories
@@ -131,9 +134,6 @@
 			// route for news
 			.get(name = "news", pattern = "news", to="web.newsController##index")
 
-			// routes for testimonials
-			.resources("web.testimonial")
-			
 			// Newsletter Routes
 			.post(name="newsletter-subscribe", pattern="newsletter/subscribe", to="web.NewsletterController##subscribe")
 			.get(name="newsletter-verify", pattern="newsletter/verify/[token]", to="web.NewsletterController##verify")
