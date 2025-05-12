@@ -17,14 +17,22 @@ component extends="app.Controllers.Controller" {
             },
             userId = structKeyExists(session, "userID") ? session.userID : 0
         );
+
+        // Check if user is logged in and has not submitted testimonial
+       showTestimonialPopup = false;
+        if (structKeyExists(session, "userID")) {
+            var user = model("User").findbyKey(session.userID);
+            if (isStruct(user) && structKeyExists(user, "hasSubmittedTestimonial") && !user.hasSubmittedTestimonial()) {
+                showTestimonialPopup = true;
+            }
+        }
         
         // Load featured testimonials for the homepage
         // featuredTestimonials = model("Testimonial").getApprovedTestimonials(
         //     onlyFeatured = true,
         //     perPage = 3
         // );
-        
-        // Pass testimonials to the view
+
         renderView();
     }
 

@@ -1,17 +1,16 @@
 <cfoutput>
 <form method="post"
-      action="#urlFor(controller='web.Testimonial', action='create')#" <!--- Standard form action (fallback) --->
+      action="#urlFor(route="create-testimonial")#"
       enctype="multipart/form-data"
-      hx-post="#urlFor(controller='web.Testimonial', action='create')#" <!--- HTMX action --->
-      hx-target="#testimonial-form-container" <!--- Target the container holding this form --->
-      hx-swap="outerHTML" <!--- Replace the container with the response --->
-      hx-encoding="multipart/form-data"> <!--- Needed for file uploads --->
+      hx-post="#urlFor(route="create-testimonial")#"
+      hx-target="##testimonial-form-container"
+      hx-swap="outerHTML"
+      hx-encoding="multipart/form-data"
+      hx-on="htmx:afterOnLoad: handleTestimonialResponse(event)">
 </cfoutput>
 
-    <!--- Placeholder for server-side validation messages (HTMX will replace this whole form on error/success) --->
     <div id="form-messages"></div>
 
-    <!--- Company Name --->
     <div class="mb-3">
         <label for="companyName" class="form-label">Company Name</label>
         <input type="text"
@@ -21,11 +20,10 @@
                required>
     </div>
 
-    <!--- Testimonial Text --->
     <div class="mb-3">
-        <label for="testimonialText" class="form-label">Your Testimonial</label>
-        <textarea name="testimonialText"
-                  id="testimonialText"
+        <label for="content" class="form-label">Your Testimonial</label>
+        <textarea name="content"
+                  id="content"
                   class="form-control"
                   rows="5"
                   required
@@ -34,11 +32,9 @@
         <div class="form-text">Please share your experience (20-500 characters).</div>
     </div>
 
-    <!--- Rating --->
     <div class="mb-3">
         <label class="form-label">Rating (1-5 Stars)</label>
         <div class="d-flex">
-            <!-- Loop from 1 to 5 -->
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="rating" id="rating1" value="1" required>
                 <label class="form-check-label" for="rating1">1 Star</label>
@@ -62,7 +58,6 @@
         </div>
     </div>
 
-    <!--- Experience Level --->
     <div class="mb-3">
         <label for="experienceLevel" class="form-label">Your Experience Level with Wheels.dev</label>
         <select name="experienceLevel"
@@ -77,7 +72,6 @@
         </select>
     </div>
 
-    <!--- Website URL --->
     <div class="mb-3">
         <label for="websiteUrl" class="form-label">Company Website (Optional)</label>
         <input type="url"
@@ -87,7 +81,6 @@
                placeholder="https://...">
     </div>
 
-    <!--- Social Media Links --->
     <div class="mb-3">
         <label for="socialMediaLinks" class="form-label">Social Media Link (Optional)</label>
         <input type="url"
@@ -97,31 +90,59 @@
                placeholder="https://linkedin.com/in/...">
     </div>
 
-    <!--- Logo Upload --->
     <div class="mb-3">
         <label for="logo" class="form-label">Company Logo (Optional)</label>
         <input type="file"
                name="logo"
                id="logo"
                class="form-control"
-               accept="image/jpeg, image/png, image/gif, image/webp"> <!--- Hint for file types --->
+               accept="image/jpeg, image/png, image/gif, image/webp">
         <div class="form-text">Upload JPG, PNG, GIF, or WEBP.</div>
     </div>
 
-    <!--- Display Permission --->
     <div class="mb-3 form-check">
         <input type="checkbox"
                name="displayPermission"
                id="displayPermission"
-               value="true" <!--- Value sent when checked --->
+               value="true"
                class="form-check-input">
         <label class="form-check-label" for="displayPermission">I grant permission to display this testimonial publicly.</label>
         <input type="hidden" name="displayPermission" value="false">
     </div>
 
-    <!--- Submit Button --->
     <div class="d-grid">
         <button type="submit" class="btn btn-primary">Submit Testimonial</button>
     </div>
 
 </form>
+
+<script>
+    function handleTestimonialResponse(event) {
+        var xhr = event.detail.xhr;
+        var response = null;
+        try {
+            response = JSON.parse(xhr.responseText);
+        } catch (e) {
+            // Not JSON, ignore
+            return;
+        }
+        var formMessages = document.getElementById('form-messages');
+        if (!formMessages) return;
+
+        if (response.success) {
+            formMessages.innerHTML = '<div class="alert alert-success">' + response.message + '</div>';
+            // Close modal after short delay
+            setTimeout(function() {
+                var modalEl = document.getElementById('testimonialPromptModal');
+                if (modalEl) {
+                    var modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                }
+            }, 1500);
+        } else {
+            formMessages.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
+        }
+    }
+</script>
