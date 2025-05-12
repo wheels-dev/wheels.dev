@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment,edit,update");
         usesLayout("/layout");
     }
@@ -149,6 +149,22 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    function blogSearch(){
+        param name="params.searchTerm" default="";
+        var searchTerm = params.searchTerm;
+        
+        if (len(trim(searchTerm))) {
+            blogs = model("blog").findAll(where="status ='Approved' AND isPublished='true' 
+            AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')",
+            include="User, PostStatus, PostType",
+            order = "COALESCE(post_created_date, blog_posts.createdat) DESC");
+            renderPartial(partial="partials/blogList");
+        }else{
+            // return all publish blogs.
+            blogs = getAllBlogs();
+            renderPartial(partial="partials/blogList");
+        }
+    }
     // Function to load categories for the blog list
     function categories() {
         model("Log").log(
@@ -165,7 +181,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function AuthorProfileBlogs(){
-        blogs = model("blog").findAll(where="status = 'Approved' AND createdby = '#params.author#'");
+        blogs = model("blog").findAll(where="status = 'Approved' AND createdby = '#params.author#' AND  isPublished = 'true'");
         author = model("user").findAll(select="fullName, email, profilePicture, name, profileUrl", include = "Role", where = "id ='#params.author#'");
         comments = model("comment").findAll(where="authorId = '#params.author#' AND  isPublished = '1'")
         return true;
@@ -924,7 +940,8 @@ component extends="app.Controllers.Controller" {
     }
     
     function getAllCommentsByBlogid(required numeric id) {
-        var comments = model("Comment").findAll(include="User", where='isPublished = 1 AND blogid = #arguments.id#');
+        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ");
+
         return comments;
     }
 
@@ -951,11 +968,15 @@ component extends="app.Controllers.Controller" {
         var commentModel = model("Comment");
         try {
             blog = getBlogById(params.blogId);
-            if (params.content.trim() == "" || params.content.trim() == "<p><br></p>") {
+            if (params.content.trim() == "" || params.content.trim() == "<p> </p>" || params.content.trim() == "<p><br></p>") {
+                response = {};
             } else {
                 response = saveComment(params);
             }
-            redirectTo(action="show", slug=blog.slug);
+            if(structKeyExists(response, "Id")){
+                comments = commentModel.findAll(include="User", where="id ='#response.Id#' AND isPublished = 1");
+                renderPartial(partial="partials/comment");
+            }
         } catch (any e) {
             // Handle error
             flashInsert(error="Failed to save comment.");
@@ -982,6 +1003,7 @@ component extends="app.Controllers.Controller" {
                 newComment.isPublished = Published();
                 newComment.save();
 
+                response.Id = newComment.Id;
                 response.blogId = newComment.blogId;
                 response.message = "comment created successfully.";
             } else {
@@ -996,6 +1018,7 @@ component extends="app.Controllers.Controller" {
                 newComment.isPublished = Published();
                 newComment.save();
 
+                response.Id = newComment.Id;
                 response.blogId = newComment.blogId;
                 response.message = "comment created successfully.";
             }

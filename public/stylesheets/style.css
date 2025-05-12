@@ -371,3 +371,7 @@ main.main-bg {
 .box-shadow{
     box-shadow: 0 4px 12px rgba(66, 63, 63, 0.15) !important;
 }
+
+.comment-wrapper .ql-hidden{
+    display: none !important;
+}

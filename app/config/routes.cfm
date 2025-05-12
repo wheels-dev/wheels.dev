@@ -69,6 +69,7 @@
 			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
 
 			// New routes for loading categories, statuses, and post types
+			.get(name = "blog-Search", pattern = "blog/Search", to = "web.BlogController##blogSearch")
 			.get(name = "loadCategories", pattern = "blog/loadCategories", to = "web.BlogController##loadCategories")
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
