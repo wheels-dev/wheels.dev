@@ -189,7 +189,7 @@ component extends="app.Controllers.Controller" {
                 }
                 return;
             }
-            
+
             // Handle logo upload if present
             if (structKeyExists(params, "logo") && isDefined("params.logo")) {
                 var uploadResult = handleLogoUpload(params.logo);
@@ -240,7 +240,7 @@ component extends="app.Controllers.Controller" {
     /**
      * Handle logo upload
      */
-    private struct function handleLogoUpload(required struct file) {
+    private struct function handleLogoUpload(file) {
         try {
             // Define upload directory
             directory = expandPath("/images/");
@@ -251,9 +251,11 @@ component extends="app.Controllers.Controller" {
             }
             
             // Validate file type
-            allowedExtensions = "jpg,jpeg,png,gif,webp";
-            extension = ListLast(file.name, ".");
-            
+            var fileName = ListLast(file, "\");
+
+            var extension = LCase(ListLast(fileName, "."));
+            var allowedExtensions = "jpg,jpeg,png,gif,webp";
+
             if (!ListFindNoCase(allowedExtensions, extension)) {
                 return {
                     success = false,
