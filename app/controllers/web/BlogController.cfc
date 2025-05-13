@@ -18,7 +18,7 @@ component extends="app.Controllers.Controller" {
                 "ip_address": cgi.REMOTE_ADDR,
                 "user_agent": cgi.HTTP_USER_AGENT
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
     }
 
@@ -78,7 +78,7 @@ component extends="app.Controllers.Controller" {
                 details = {
                     "error": e,
                     "blog_id": structKeyExists(params, "key") ? params.key : "",
-                    "user_id": structKeyExists(session, "userID") ? session.userID : 0,
+                    "user_id": GetSignedInUserId(),
                     "ip_address": cgi.REMOTE_ADDR
                 }
             );
@@ -99,7 +99,7 @@ component extends="app.Controllers.Controller" {
                     "filter_value": structKeyExists(params, "filterValue") ? params.filterValue : "",
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             var blogModel = model("Blog"); // Load model
@@ -140,7 +140,7 @@ component extends="app.Controllers.Controller" {
                     "error_type": e.type,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             // Optionally show fallback
@@ -174,7 +174,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         categorylist = model("Category").getAll();
         renderPartial(partial="partials/categorylist");
@@ -195,7 +195,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
     }
@@ -213,7 +213,7 @@ component extends="app.Controllers.Controller" {
                     "title": params.title,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             params.coverImagePath = "";
@@ -254,7 +254,7 @@ component extends="app.Controllers.Controller" {
                     "title": params.title,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             redirectTo(route="blog");
@@ -270,7 +270,7 @@ component extends="app.Controllers.Controller" {
                     "title": params.title,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             redirectTo(action="error", errorMessage="Failed to save blog post.");
@@ -288,7 +288,7 @@ component extends="app.Controllers.Controller" {
                     "slug": params.slug,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             blogModel = model("Blog");
@@ -318,7 +318,7 @@ component extends="app.Controllers.Controller" {
                     "slug": params.slug,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // If an error occurs or blog not found, redirect to blog index
             redirectTo(action="index");
@@ -342,7 +342,7 @@ component extends="app.Controllers.Controller" {
                     "title": params.title,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             // Set additional parameters from the form
@@ -374,7 +374,7 @@ component extends="app.Controllers.Controller" {
                     "title": params.title,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             redirectTo(route="blog");
@@ -391,7 +391,7 @@ component extends="app.Controllers.Controller" {
                     "title": params.title,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             redirectTo(action="error", errorMessage="Failed to update blog post.");
@@ -410,7 +410,7 @@ component extends="app.Controllers.Controller" {
                     "id": structKeyExists(form, "id") ? form.id : 0,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             if(structKeyExists(form, "title")) {
@@ -443,7 +443,7 @@ component extends="app.Controllers.Controller" {
                     "id": structKeyExists(form, "id") ? form.id : 0,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             renderText('<span class="text-danger">Error checking title: ' & e.message & '</span>');
@@ -462,7 +462,7 @@ component extends="app.Controllers.Controller" {
                     "blog_id": params.id,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             var message = deleteBlog(params.id);
@@ -475,7 +475,7 @@ component extends="app.Controllers.Controller" {
                     "blog_id": params.id,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             redirectTo(action="index", success="#message#");
@@ -490,7 +490,7 @@ component extends="app.Controllers.Controller" {
                     "blog_id": params.id,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             redirectTo(action="index", errorMessage="Failed to delete blog post.");
@@ -506,7 +506,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         categories = model("Category").getAll();
         renderPartial(partial="partials/categories");
@@ -521,7 +521,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         statuses = model("PostStatus").getAll();
         renderPartial(partial="partials/statuses");
@@ -536,7 +536,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         postTypes = model("PostType").getAll();
         renderPartial(partial="partials/postTypes");
@@ -550,7 +550,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         // Add code to render the error page if needed
         renderPartial(partial="partials/_error");
@@ -564,7 +564,7 @@ component extends="app.Controllers.Controller" {
             details = {
                 "ip_address": cgi.REMOTE_ADDR
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
         // Fetch all blogs
         blogPosts = model("Blog").findAll(include="User", order="createdAt DESC", limit=20);
@@ -873,7 +873,7 @@ component extends="app.Controllers.Controller" {
                     "error_detail": e.detail,
                     "error_type": e.type
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             return false;
         }
@@ -927,7 +927,7 @@ component extends="app.Controllers.Controller" {
                     "error_detail": e.detail,
                     "error_type": e.type
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             return false;
         }

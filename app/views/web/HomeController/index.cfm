@@ -86,6 +86,8 @@
     </div>
 
     <!-- Testimonials -->
+    <cfoutput>
+    <cfif testimonials.recordCount GT 0>
     <div class="py-5 mt-5 bg-white">
         <div class="container w-100">
             <div class="row align-items-center gap-5">
@@ -95,65 +97,56 @@
                         Elevating Customer Interactions
                     </p>
                 </div>
+                <!-- Swiper container -->
                 <div class="col-12 pb-5 testimonialsSwiper swiper">
                     <div class="w-100 gap-lg-5 gap-0 swiper-wrapper">
-                        <div class="d-flex row swiper-slide">
-                            <div class="col-lg-3 col-12">
-                                <img src="/images/testi.png" class="img-fluid" alt="Community">
-                            </div>
-                            <div class="col-lg-9 col-12">
-                                <div class="d-flex flex-column justify-content-between h-100">
-                                    <p class="text--secondary fs-24 fw-medium">It helps companies create visually
-                                        stunning and strategically sound digital experiences that captivate audiences.
-                                        Our experts works closely with you to ensure every detail aligns with your
-                                        goals.</p>
-                                    <p class="text--lightGray fs-16 fw-normal">From concept to launch, we craft digital
-                                        solutions that not only look exceptional but also drive results, building
-                                        connections that last.</p>
-                                    <p class="fs-18 text--secondary fw-medium border-top pt-4">Annie Bassett</p>
+                        <cfloop query="testimonials">
+                            <div class="d-flex row swiper-slide">
+                                <div class="col-lg-3 col-12">
+                                    <img src="#len(testimonials.logoPath) gt 0 ? testimonials.logoPath : '/images/testi.png'#" class="img-fluid" alt="#encodeForHtml(testimonials.companyName)#" style="width: 330px; height: 290px;">
+                                </div>
+                                <div class="col-lg-9 col-12">
+                                    <div class="d-flex flex-column justify-content-between h-100">
+                                        <p class="text--secondary fs-24 fw-medium">#encodeForHtml(testimonials.testimonialText)#</p>
+                                        <p class="text--lightGray fs-16 fw-normal">
+                                            From concept to launch, we craft digital
+                                            solutions that not only look exceptional but also drive results, building
+                                            connections that last.
+                                        </p>
+                                        <p class="fs-18 text--secondary fw-medium border-top pt-4">
+                                            <cfif structKeyExists(variables, "user_fullName") AND len(trim(user_fullName))>
+                                                #encodeForHtml(user_fullName)#
+                                            <cfelseif len(trim(testimonials.companyName))>
+                                                #encodeForHtml(testimonials.companyName)#
+                                            <cfelse>
+                                                Anonymous
+                                            </cfif>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="d-flex row swiper-slide">
-                            <div class="col-lg-3 col-12">
-                                <img src="/images/testi.png" class="img-fluid" alt="Community">
-                            </div>
-                            <div class="col-lg-9 col-12">
-                                <div class="d-flex flex-column justify-content-between h-100">
-                                    <p class="text--secondary fs-24 fw-medium">It helps companies create visually
-                                        stunning and strategically sound digital experiences that captivate audiences.
-                                        Our experts works closely with you to ensure every detail aligns with your
-                                        goals.</p>
-                                    <p class="text--lightGray fs-16 fw-normal">From concept to launch, we craft digital
-                                        solutions that not only look exceptional but also drive results, building
-                                        connections that last.</p>
-                                    <p class="fs-18 text--secondary fw-medium border-top pt-4">Bassett</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex row swiper-slide">
-                            <div class="col-lg-3 col-12">
-                                <img src="/images/testi.png" class="img-fluid" alt="Community">
-                            </div>
-                            <div class="col-lg-9 col-12">
-                                <div class="d-flex flex-column justify-content-between h-100">
-                                    <p class="text--secondary fs-24 fw-medium">It helps companies create visually
-                                        stunning and strategically sound digital experiences that captivate audiences.
-                                        Our experts works closely with you to ensure every detail aligns with your
-                                        goals.</p>
-                                    <p class="text--lightGray fs-16 fw-normal">From concept to launch, we craft digital
-                                        solutions that not only look exceptional but also drive results, building
-                                        connections that last.</p>
-                                    <p class="fs-18 text--secondary fw-medium border-top pt-4">Annie</p>
-                                </div>
-                            </div>
-                        </div>
+                        </cfloop>
                     </div>
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
         </div>
     </div>
+    </cfif>
+    </cfoutput>
+
+
+    <cfif showTestimonialPopup>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var testimonialModalElement = document.getElementById('testimonialPromptModal');
+                if (testimonialModalElement) {
+                    var testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
+                    testimonialModalInstance.show();
+                }
+            });
+        </script>
+    </cfif>
 
     <!-- Top contribute -->
     <div class="container py-5 mt-5">
@@ -392,4 +385,101 @@
             <div class="swiper-button-prev start-0"></div>
         </div>
     </div>
+    <!-- Testimonial Popup Modal -->
+    <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testimonialPromptModalLabel">Share Your Experience!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
+
+                <!--- HTMX Target Area --->
+                <div id="testimonial-form-container"
+                    hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
+                    hx-target="this"
+                    hx-trigger="load"
+                    hx-swap="innerHTML">
+                    <!--- Optional: Loading indicator --->
+                    <div class="text-center p-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading form...</span>
+                        </div>
+                        <p class="mt-2">Loading form...</p>
+                    </div>
+                    <!--- The form content from TestimonialController::new will be loaded here --->
+                </div>
+
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <!--- The submit button will be part of the loaded form --->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <cfif structKeyExists(session, "promptForTestimonial") AND showTestimonialPopup>
+        <script>
+            // This script block only renders if the session flag exists and showTestimonialPopup is true.
+
+            // Get modal element immediately
+            var testimonialModalElement = document.getElementById('testimonialPromptModal');
+            var testimonialModalInstance = null;
+            // Flag to ensure the 'shown.bs.modal' listener is attached only once
+            let formLoadListenerAttached = false;
+
+            if (testimonialModalElement) {
+                // Get or create the Bootstrap modal instance right away
+                testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
+                
+                // Automatically show the modal on page load
+                window.addEventListener('DOMContentLoaded', function() {
+                    console.log('DOM loaded, showing testimonial modal automatically');
+                    setTimeout(function() {
+                        if (testimonialModalInstance) {
+                            testimonialModalInstance.show();
+                        }
+                    }, 1000); // Small delay to ensure everything is loaded
+                });
+
+                document.body.addEventListener('showTestimonialModal', function handleShowTrigger() {
+                    console.log('Received showTestimonialModal trigger from backend.');
+                    if (testimonialModalInstance) {
+                        testimonialModalInstance.show();
+                    } else {
+                        var currentModalInstance = bootstrap.Modal.getInstance(testimonialModalElement);
+                        if (currentModalInstance) {
+                            currentModalInstance.show();
+                        } else {
+                            console.error("Modal instance not found when trying to show via HX-Trigger.");
+                        }
+                    }
+                }, { once: true });
+
+                if (!formLoadListenerAttached && testimonialModalInstance) {
+                    testimonialModalElement.addEventListener('shown.bs.modal', function handleModalShown() {
+                        var formContainer = testimonialModalElement.querySelector('#testimonial-form-container');
+                        if (formContainer) {
+                            var isLoadingIndicatorPresent = formContainer.querySelector('.spinner-border');
+                            if (isLoadingIndicatorPresent || formContainer.innerHTML.trim() === '') {
+                                console.log('Modal shown, processing HTMX for form container.');
+                                htmx.process(formContainer); // Trigger the hx-get on the container
+                            } else {
+                                console.log('Modal shown, form container already has content.');
+                            }
+                        } else {
+                            console.error('Form container #testimonial-form-container not found inside modal.');
+                        }
+                    });
+                    formLoadListenerAttached = true; // Mark that this listener has been attached.
+                    console.log('Attached shown.bs.modal listener.');
+                }
+            } else {
+                console.error("Testimonial prompt modal element not found when initializing script.");
+            }
+        </script>
+    </cfif>
 </main>
