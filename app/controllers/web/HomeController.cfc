@@ -15,7 +15,7 @@ component extends="app.Controllers.Controller" {
                 "ip_address": cgi.REMOTE_ADDR,
                 "user_agent": cgi.HTTP_USER_AGENT
             },
-            userId = structKeyExists(session, "userID") ? session.userID : 0
+            userId = GetSignedInUserId()
         );
 
         // Check if user is logged in and has not submitted testimonial
@@ -46,7 +46,7 @@ component extends="app.Controllers.Controller" {
                 details = {
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             features = getAllFeatures(); // Get feature list
@@ -61,7 +61,7 @@ component extends="app.Controllers.Controller" {
                     "error_detail": e.detail,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load features.");
@@ -79,7 +79,7 @@ component extends="app.Controllers.Controller" {
                 details = {
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             blogs = blogModel.getTenLatest(); // Get blog list
@@ -94,7 +94,7 @@ component extends="app.Controllers.Controller" {
                     "error_detail": e.detail,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load blogs.");
@@ -111,7 +111,7 @@ component extends="app.Controllers.Controller" {
                 details = {
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             // var guidesContent = getGuidesContent();
@@ -126,7 +126,7 @@ component extends="app.Controllers.Controller" {
                     "error_detail": e.detail,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load guides.");
@@ -143,7 +143,7 @@ component extends="app.Controllers.Controller" {
                 details = {
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
 
             // Get approved testimonials
@@ -163,7 +163,7 @@ component extends="app.Controllers.Controller" {
                     "error_detail": e.detail,
                     "ip_address": cgi.REMOTE_ADDR
                 },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
+                userId = GetSignedInUserId()
             );
             // Handle error
             renderPartial(partial="partials/error", message="Failed to load testimonials.");
