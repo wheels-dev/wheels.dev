@@ -198,6 +198,7 @@ component extends="app.Controllers.Controller" {
             userId = GetSignedInUserId()
         );
         saveRedirectUrl(cgi.script_name & "?" & cgi.query_string);
+        isEdit = false;
     }
 
     // Function to store a new blog
