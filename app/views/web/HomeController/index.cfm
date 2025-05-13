@@ -387,14 +387,14 @@
     </div>
     <!-- Testimonial Popup Modal -->
     <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="testimonialPromptModalLabel">Share Your Experience!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-bold fs-18 text--primary" id="testimonialPromptModalLabel">Share Your Experience!</h5>
+                <button type="button" class="btn-close text--primary" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
+                <p class="mb-2">We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
 
                 <!--- HTMX Target Area --->
                 <div id="testimonial-form-container"

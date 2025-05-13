@@ -85,6 +85,12 @@
                                             </div>
                                             <ul class="dropdown-menu">
                                                 <li>
+                                                    <a 
+                                                        class="dropdown-item fs-16"
+                                                        href="blog/edit/#blogs.id[i]#" 
+                                                    >Edit</a>
+                                                </li>
+                                                <li>
                                                     <button 
                                                         class="dropdown-item text-success fs-16"
                                                         hx-post="approve" 

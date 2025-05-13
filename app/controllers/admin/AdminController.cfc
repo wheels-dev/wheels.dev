@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -15,6 +15,310 @@ component extends="app.Controllers.Controller" {
     function blog() {
         blogs = getAllBlogs();
 
+    }
+
+    // Function to edit a blog post
+    public void function editBlog() {
+        try {
+            // Get the blog post
+            var blog = model("Blog").findByKey(key=params.id, include="User,PostStatus");
+            
+            // Check if blog exists
+            if (!isObject(blog)) {
+                throw("Blog not found", "BlogNotFound");
+            }
+
+            // Check if user has permission to edit this post
+            if (session.role != "admin" && blog.userId != session.userID) {
+                throw("You don't have permission to edit this post", "UnauthorizedAccess");
+            }
+
+
+            // Get categories and tags for the form
+            var categories = model("Category").findAll(order="name ASC");
+            var postTypes = model("PostType").findAll(order="name ASC");
+            var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
+            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+
+            // Prepare data for the view
+            var selectedCategories = [];
+            for (var cat in blogCategories) {
+                arrayAppend(selectedCategories, cat.categoryId);
+            }
+
+            var selectedTags = [];
+            for (var tag in blogTags) {
+                arrayAppend(selectedTags, tag.name);
+            }
+
+            // Set view variables
+            blog.categories = selectedCategories;
+            blog.tags = arrayToList(selectedTags, ",");
+            
+            // Render the edit form with the blog data
+            renderView(template="editBlog", blog=blog, categories=categories, postTypes=postTypes, isEdit=true);
+            
+        } catch (any e) {
+            // Log the error
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error editing blog post: #e.message#",
+                details = {
+                    "error": e,
+                    "blog_id": structKeyExists(params, "key") ? params.key : "",
+                    "user_id": structKeyExists(session, "userID") ? session.userID : 0,
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            
+            // Redirect with error message
+            // redirectTo(route="blog");
+        }
+    }
+
+    // Function to update an existing blog
+    public void function update() {
+        // Get request parameters
+        var blogModel = model("Blog");
+        var blogId = params.id;
+        
+        try {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post update attempted",
+                details = {
+                    "blog_id": blogId,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            
+            response = updateBlog(params, blogId);
+            
+            // Update relationships
+            deleteBlogTags(blogId);
+            deleteBlogCategories(blogId);
+            
+            // Handle tags which are passed as a comma-separated string in postTags
+            if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
+                params.tags = params.postTags;
+                saveTags(params, blogId);
+            }
+            
+            // Handle categories which are passed as selected values in categoryId
+            if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
+                saveCategories(params, blogId);
+            }
+
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog post updated successfully",
+                details = {
+                    "blog_id": blogId,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+
+            redirectTo(route="admin-blog", success="Blog post updated successfully!");
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to update blog post",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type,
+                    "title": params.title,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            // Handle error
+            redirectTo(action="admin-blog", error="Failed to update blog post!");
+        }
+    }
+
+    // Helper function to update blog post
+    function updateBlog(required struct params, required numeric blogId) {
+        var response = { "success": false, "message": "", "blogId": blogId };
+
+        try {
+            // Find the blog by ID
+            var blog = model("Blog").findByKey(blogId);
+            
+            if (isNull(blog)) {
+                response.message = "Blog post not found for updating.";
+                return response;
+            }
+            
+            // Generate slug
+            var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
+            slug = rereplace(slug, "-+", "-", "all");
+            params.slug = slug;
+            
+            // Set status based on isDraft flag
+            if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
+                params.statusId = 1; // Draft
+            } else {
+                params.statusId = 2; // Under Review
+            }
+            
+            // Check if a blog with the same title/slug exists (that isn't this one)
+            var existingBlog = model("Blog").findFirst(
+                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
+            );
+            
+            if (isObject(existingBlog)) {
+                response.message = "Another blog post with the same title already exists.";
+                return response;
+            }
+            
+            // Update the blog post
+            blog.title = params.title;
+            blog.content = params.content;
+            blog.slug = params.slug;
+            blog.statusId = params.statusId;
+            
+            // Only update these if they exist in params
+            if (structKeyExists(params, "postTypeId")) {
+                blog.postTypeId = params.postTypeId;
+            }
+            
+            if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
+                blog.postCreatedDate = params.postCreatedDate;
+            }
+            
+            // Update tracking fields
+            blog.updatedAt = now();
+            blog.updatedBy = GetSignedInUserId();
+            
+            // Save the blog post
+            blog.save();
+            
+            response.success = true;
+            response.message = "Blog post updated successfully.";
+        }
+        catch (any e) {
+            response.message = "Error updating blog: " & e.message;
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error in updateBlog function",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = GetSignedInUserId()
+            );
+        }
+        
+        return response;
+    }
+
+    function saveTags(required struct blogData, blogId) {
+        try {
+            if (blogId > 0 && structKeyExists(blogData, "postTags")) {
+                
+                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
+    
+                // Insert new tags
+                for (var tagName in tagArray) {
+                    var newTag = model("Tag").new();
+                    newTag.name = trim(tagName); // Trim spaces if any
+                    newTag.blogId = blogId;
+                    newTag.createdAt = now();
+                    newTag.updatedAt = now();
+                    newTag.save();
+                }
+            }
+        } catch (any e) {
+            local.exception = e;
+        }
+    }
+
+    // Function to delete tags associated with a blog post
+    function deleteBlogTags(required numeric blogId) {
+        try {
+            if (blogId > 0) {
+                // direct delete approach
+                model("Tag").deleteAll(where="blogId = #blogId#");
+                
+                return true;
+            }
+            return false;
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to delete blog tags",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            return false;
+        }
+    }
+
+    function saveCategories(required struct blogData, blogId) {
+        try {
+            if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
+                
+                var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
+    
+                // Insert new categories
+                for (var category_Id in categoryArray) {
+                    var newCategory = model("BlogCategory").new();
+                    newCategory.categoryId = category_Id;
+                    newCategory.blogId = blogId;
+                    newCategory.createdAt = now();
+                    newCategory.updatedAt = now();
+                    newCategory.save();
+                }
+            }
+        } catch (any e) {
+            local.exception = e;
+        }
+    }
+
+    // Function to delete categories associated with a blog post
+    function deleteBlogCategories(required numeric blogId) {
+        try {
+            if (blogId > 0) {
+                // Find all category associations for this blog post
+                model("BlogCategory").deleteAll(where="blogId = #blogId#");
+                
+                return true;
+            }
+            return false;
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Failed to delete blog categories",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = structKeyExists(session, "userID") ? session.userID : 0
+            );
+            return false;
+        }
     }
 
     function comments(){

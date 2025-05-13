@@ -33,6 +33,8 @@
 
 			// Admin Controls
 			.get(name = "admin-blog", pattern = "admin/blog", to = "admin.AdminController##blog")
+			.get(name = "admin-blog-edit", pattern = "admin/blog/edit/[id]", to = "admin.AdminController##editBlog")
+			.put(name = "admin-blog-update", pattern = "admin/blog/blogUpdate/[id]", to = "admin.AdminController##update")
 			.get(name = "admin-comment", pattern = "admin/comment", to = "admin.AdminController##comments")
 			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
 			.get(name = "blog-List", pattern = "admin/blog/list", to = "admin.AdminController##blogList")
