@@ -28,10 +28,10 @@ component extends="app.Controllers.Controller" {
         }
         
         // Load featured testimonials for the homepage
-        // featuredTestimonials = model("Testimonial").getApprovedTestimonials(
-        //     onlyFeatured = true,
-        //     perPage = 3
-        // );
+        testimonials = model("Testimonial").getApprovedTestimonials(
+            onlyFeatured = true,
+            perPage = 3
+        );
 
         renderView();
     }
