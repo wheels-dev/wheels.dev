@@ -192,17 +192,18 @@ component extends="app.Controllers.Controller" {
                     }
                 );
             } else if (session.keyExists("redirectAfterLogin")) {
-                redirectUrl = session.redirectAfterLogin;
-                structDelete(session, "redirectAfterLogin");
-                model("Log").log(
-                    category = "wheels.auth",
-                    level = "DEBUG",
-                    message = "User redirected to saved URL",
-                    details = {
-                        "user_id": user.id,
-                        "redirect_url": redirectUrl
-                    }
-                );
+                redirectUrl = urlFor(route="home");
+                // redirectUrl = session.redirectAfterLogin;
+                // structDelete(session, "redirectAfterLogin");
+                // model("Log").log(
+                //     category = "wheels.auth",
+                //     level = "DEBUG",
+                //     message = "User redirected to saved URL",
+                //     details = {
+                //         "user_id": user.id,
+                //         "redirect_url": redirectUrl
+                //     }
+                // );
             } else {
                 redirectUrl = urlFor(route="home");
                 model("Log").log(

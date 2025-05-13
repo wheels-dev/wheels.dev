@@ -131,6 +131,62 @@ component extends="app.Controllers.Controller" {
             redirectTo(action="index");
         }
     }
+    
+    /**
+     * Delete a testimonial
+     */
+    function delete() {
+        try {
+            // Get the testimonial
+            id = params.key;
+            testimonial = model("Testimonial").findByKey(id);
+            
+            if (!IsObject(testimonial)) {
+                if (isHtmx()) {
+                    renderWith(data={
+                        "success"=false, 
+                        "message"="Testimonial not found."
+                    });
+                } else {
+                    flashInsert(error="Testimonial not found.");
+                    redirectTo(action="index");
+                }
+                return;
+            }
+            
+            // Get the associated user
+            user = testimonial.user();
+            
+            // Delete the testimonial
+            if (testimonial.delete()) {
+                // Update the user's has_testimonial flag
+                user.hasTestimonial = false;
+                user.save(validate=false);
+                
+                if (isHtmx()) {
+                    renderWith(data={
+                        "success"=true, 
+                        "message"="Testimonial deleted successfully."
+                    });
+                } else {
+                    flashInsert(success="Testimonial deleted successfully.");
+                    redirectTo(action="index");
+                }
+            } else {
+                throw(message="Failed to delete testimonial.");
+            }
+        } catch (any e) {
+            if (isHtmx()) {
+                renderWith(data={
+                    "success"=false, 
+                    "message"="Failed to delete testimonial: " & e.message
+                });
+            } else {
+                flashInsert(error="Failed to delete testimonial: " & e.message);
+                redirectTo(action="index");
+            }
+        }
+    }
 
 
     private function testimonialApproval(id){
