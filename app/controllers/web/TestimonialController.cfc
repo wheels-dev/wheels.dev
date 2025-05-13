@@ -114,6 +114,7 @@ component extends="app.Controllers.Controller" {
             // Create a new testimonial object
             testimonial = model("Testimonial").new();
             
+
             // If this is an AJAX request, render without layout
             if (isHtmx()) {
                 renderView(testimonial=testimonial, layout=false);
@@ -655,18 +656,11 @@ component extends="app.Controllers.Controller" {
     }
     
     /**
-     * Helper method to get current user ID
-     */
-    private function GetSignedInUserId() {
-        return session.user.id;
-    }
-    
-    /**
     * Helper method to check if the request was initiated by HTMX.
     */
     private boolean function isHtmx() {
-        // HTMX requests include the HX-Request header set to "true"
-        return StructKeyExists(cgi, "HTTP_HX_REQUEST") && cgi.HTTP_HX_REQUEST == "true";
+        // HTMX requests include the HX-Request header
+        return StructKeyExists(request.$wheelsheaders, "HX-REQUEST");
     }
     
     /**
@@ -696,47 +690,5 @@ component extends="app.Controllers.Controller" {
             }
         }
         return true;
-    }
-
-    /**
-    * Endpoint to clear the promptForTestimonial session flag.
-    */
-    function clearPromptFlag() {
-        try {
-            // Log the attempt to clear the flag
-            model("Log").log(
-                category = "wheels.testimonial",
-                level = "DEBUG",
-                message = "Clearing testimonial prompt flag",
-                details = {
-                    "session_has_flag": session.keyExists("promptForTestimonial"),
-                    "user_id": isLoggedInUser() ? session.userID : "not logged in"
-                }
-            );
-            
-            // Clear the session flag that triggers the testimonial prompt
-            if (session.keyExists("promptForTestimonial")) {
-                structDelete(session, "promptForTestimonial");
-                model("Log").log(
-                    category = "wheels.testimonial",
-                    level = "INFO",
-                    message = "Testimonial prompt flag cleared successfully"
-                );
-            }
-            
-            // Return a 200 OK status with no content
-            renderNothing();
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.testimonial",
-                level = "ERROR",
-                message = "Error clearing testimonial prompt flag",
-                details = {
-                    "error_message": e.message,
-                    "error_detail": e.detail
-                }
-            );
-            renderNothing();
-        }
     }
 }
