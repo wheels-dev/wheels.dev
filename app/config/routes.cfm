@@ -80,6 +80,7 @@
 			.get(name = "blogsFilter", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
 			.get(name = "blogs", pattern = "blog/list/[filterType]/[filterValue]", to = "web.BlogController##blogs")
 			.get(name = "blogFeed", pattern = "blog/feed", to = "web.BlogController##feed")
+			.get(name = "commentFeed", pattern = "comment/feed", to = "web.BlogController##commentsFeed")
 			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
