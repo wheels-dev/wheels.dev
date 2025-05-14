@@ -319,7 +319,7 @@
 									<li class="mt-2"><a href="/blog/feed"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Blog Feed</a>
 									</li>
-									<li class="mt-2"><a href="#"
+									<li class="mt-2"><a href="/comment/feed"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Comments
 											Feed</a>
 									</li>
