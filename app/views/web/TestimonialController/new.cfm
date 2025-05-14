@@ -108,7 +108,7 @@
                name="logo"
                id="logo"
                class="form-control form-check-input-primary "
-               accept="image/jpeg, image/png, image/gif, image/webp">
+               accept="image/jpeg, image/png, image/gif, image/webp" required>
         <div class="form-text">Upload JPG, PNG, GIF, or WEBP.</div>
     </div>
 
@@ -116,10 +116,9 @@
         <input type="checkbox"
                name="displayPermission"
                id="displayPermission"
-               value="true"
                class="form-check-input form-check-input-primary">
         <label class="form-check-label" for="displayPermission">I grant permission to display this testimonial publicly.</label>
-        <input type="hidden" name="displayPermission" value="false">
+<!---         <input type="hidden" name="displayPermission" value="false"> --->
     </div>
 
     <div class="d-grid">

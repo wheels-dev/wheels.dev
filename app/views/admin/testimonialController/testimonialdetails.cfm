@@ -14,7 +14,7 @@
                 <th>Logo:</th>
                 <td>
                     <cfif Testimonial.logoPath neq "" AND !isNull(Testimonial.logoPath) >
-                        #imageTag(source = '#Testimonial.logoPath#', alt="Testimonial logo", height="60", width="60")#
+                       <img alt="company-logo" width="200" src="#Testimonial.logoPath#">
                     <cfelse>
                         #Testimonial.logoPath#
                     </cfif>
@@ -25,11 +25,25 @@
                 <td>#Testimonial.companyName#</td>
             </tr>
             <tr>
+                <th>Display Permission:</th>
+                <td>
+                    <cfif Testimonial.displayPermission>
+                        Yes
+                    <cfelse>
+                        No
+                    </cfif>
+                </td>
+            </tr>
+            <tr>
                 <th>Experience Level:</th>
                 <td>#Testimonial.ExperienceLevel#</td>
             </tr>
             <tr>
-                <th>Testimonial Text:</th>
+                <th>Title</th>
+                <td>#Testimonial.Title#<td>
+            </tr>
+            <tr>
+                <th>Testimonial Content:</th>
                 <td>#Testimonial.TestimonialText#</td>
             </tr>
             <tr>
@@ -56,7 +70,7 @@
     </div>
     <div class="text-end">
         <div class="col-auto mt-4">
-            <a class="btn btn-primary px-5" href="/admin/testimonial">Back</a>
+            <a class="btn bg--primary text-white px-5" href="/admin/testimonial">Back</a>
         </div>
     </div>
 </cfoutput>
