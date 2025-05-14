@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch,commentsFeed", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment,edit,update");
         usesLayout("/layout");
     }
@@ -567,12 +567,60 @@ component extends="app.Controllers.Controller" {
             },
             userId = GetSignedInUserId()
         );
+
         // Fetch all blogs
-        blogPosts = model("Blog").findAll(include="User", order="createdAt DESC", limit=20);
-        
+        blogPosts = model("Blog").findAll(
+            where="status = 'Approved' AND isPublished = 'true'",
+            include="User",
+            order="COALESCE(post_created_date, blog_posts.createdAt) DESC"
+        );
+
         // Render the feed view
         renderPartial(partial="partials/feed");
     }
+
+    public function commentsFeed() {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "INFO",
+            message = "Blog comments feed accessed",
+            details = { "ip_address": cgi.REMOTE_ADDR },
+            userId = GetSignedInUserId()
+        );
+
+        // Get recent comments with related blog post
+        comments = model("Comment").findAll(
+            where = "isPublished = 1",
+            include = "Blog",
+            order = "createdAt DESC",
+            limit = 20,
+            returnAs = "structs"
+        );
+
+        // Collect unique authorIds
+        authorIds = [];
+        for (comment in comments) {
+            if (!arrayContains(authorIds, comment.authorId)) {
+                arrayAppend(authorIds, comment.authorId);
+            }
+        }
+
+        // Fetch all related users at once
+        authors = model("User").findAll(where="id IN (#arrayToList(authorIds)#)", returnAs="structs");
+
+        // Map authors by ID for quick lookup
+        authorMap = {};
+        for (author in authors) {
+            authorMap[author.id] = author;
+        }
+
+        renderPartial(partial="partials/commentsFeed", locals={
+            comments = comments,
+            authorMap = authorMap
+        });
+
+    }
+
 
     // Business Logic
 

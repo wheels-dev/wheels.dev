@@ -80,6 +80,7 @@
 			.get(name = "blogsFilter", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
 			.get(name = "blogs", pattern = "blog/list/[filterType]/[filterValue]", to = "web.BlogController##blogs")
 			.get(name = "blogFeed", pattern = "blog/feed", to = "web.BlogController##feed")
+			.get(name = "commentFeed", pattern = "comment/feed", to = "web.BlogController##commentsFeed")
 			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
@@ -103,6 +104,7 @@
 			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
 			.get(name="admin-testimonial", pattern="admin/testimonial", to="admin.testimonialController##testimonials")
 			.get(name = "admin-view-testimonials", pattern = "admin/testimonials/view/[id]", to = "admin.testimonialController##testimonialDetails")
+			.get(name = "admin-Featured-testimonial", pattern = "admin/featuredTestimonial/[id]", to = "admin.testimonialController##featuredTestimonial")
 			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "admin.testimonialController##approve")
 			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "admin.testimonialController##reject")
 			

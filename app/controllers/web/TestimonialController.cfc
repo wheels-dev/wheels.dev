@@ -116,10 +116,17 @@ component extends="app.Controllers.Controller" {
             );
 
             if (isHtmx()) {
-                renderWith(data={ "success"=true, "message"="Thank you for your testimonial!" });
+                renderText('
+                    <div style="padding: 15px; margin-top: 20px; background-color: ##e6ffed; border: 1px solid ##b2f5bb; color: ##2d7a36; border-radius: 5px;">
+                        <strong>Thank you!</strong> We appreciate your kind words. Your testimonial will appear once it has been reviewed.
+                    </div>
+                ');
             } else {
-                flashInsert(success="Thank you for your testimonial!");
-                redirectTo(controller="home", action="index");
+                renderText('
+                    <div style="padding: 15px; margin-top: 20px; background-color: ##e6ffed; border: 1px solid ##b2f5bb; color: ##2d7a36; border-radius: 5px;">
+                        <strong>Thank you!</strong> We appreciate your kind words. Your testimonial will appear once it has been reviewed.
+                    </div>
+                ');
             }
 
         } catch (any e) {
@@ -189,7 +196,7 @@ component extends="app.Controllers.Controller" {
                 }
                 return;
             }
-
+            
             // Handle logo upload if present
             if (structKeyExists(params, "logo") && isDefined("params.logo")) {
                 var uploadResult = handleLogoUpload(params.logo);
@@ -242,67 +249,58 @@ component extends="app.Controllers.Controller" {
      */
     private struct function handleLogoUpload(file) {
         try {
-            // Define upload directory
-            directory = expandPath("/images/");
-            
-            // Create directory if it doesn't exist
-            if (!DirectoryExists(directory)) {
-                DirectoryCreate(directory, true);
-            }
-            
-            // Validate file type
-            var fileName = ListLast(file, "\");
+            // Define target directory
+            var uploadPath = expandPath("/images/");
 
-            var extension = LCase(ListLast(fileName, "."));
-            var allowedExtensions = "jpg,jpeg,png,gif,webp";
-
-            if (!ListFindNoCase(allowedExtensions, extension)) {
-                return {
-                    success = false,
-                    message = "Only image files (JPG, PNG, GIF, WEBP) are allowed."
-                };
+            // Create the directory if it doesn't exist
+            if (!DirectoryExists(uploadPath)) {
+                DirectoryCreate(uploadPath, true);
             }
-            
-            // Generate a unique filename
-            newFileName = CreateUUID() & "." & extension;
-            filePath = directory & newFileName;
-            
-            // Move the uploaded file
-            FileMove(file.serverDirectory & "/" & file.serverFile, filePath);
-            
+
+            // Upload the file and only allow image files
+            var uploadedFile = fileUpload(
+                destination   = uploadPath,
+                nameConflict  = "makeUnique",  // Avoid overwriting
+                fileField     = file,  // Name of the file input field
+                accept        = "image/jpeg,image/png,image/gif,image/webp"
+            );
+
+            // Return success and path
             return {
                 success = true,
-                path = "/images/" & newFileName
+                path = "/images/" & uploadedFile.serverFile
             };
+
         } catch (any e) {
             return {
                 success = false,
-                message = "Error uploading logo: " & e.message
+                message = "Error uploading image: " & e.message
             };
         }
     }
+
     
     /**
      * Save new testimonial
      */
     private function saveTestimonial(required struct testimonialData) {
         var response = { "message": "", "testimonialId": 0 };
-
         try {
             var newTestimonial = model("Testimonial").new();
             newTestimonial.testimonialText = testimonialData.content;
+            newTestimonial.title = testimonialData.title;
             newTestimonial.companyName = testimonialData.companyName;
             newTestimonial.rating = testimonialData.rating ?: 5;
             newTestimonial.logoPath = testimonialData.logoPath;
             newTestimonial.experienceLevel = testimonialData.experienceLevel ?: "";
             newTestimonial.websiteUrl = testimonialData.websiteUrl ?: "";
             newTestimonial.socialMediaLinks = testimonialData.socialMediaLinks ?: "";
-            newTestimonial.displayPermission = testimonialData.displayPermission;
+            if(structKeyExists(testimonialData, "displayPermission")){
+                newTestimonial.displayPermission = true;
+            }
             newTestimonial.userId = GetSignedInUserId();
             newTestimonial.isApproved = false;
             newTestimonial.isFeatured = false;
-            newTestimonial.createdAt = now();
-            newTestimonial.updatedAt = now();
 
             if (!newTestimonial.save()) {
                 throw(message=serializeJSON(newTestimonial.allErrors()));
@@ -315,7 +313,7 @@ component extends="app.Controllers.Controller" {
             response.message = "Testimonial created successfully.";
 
         } catch (any e) {
-            throw(message="Error: " & e.message);
+            response.message="Error: " & e.message;
         }
 
         return response;

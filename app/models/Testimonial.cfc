@@ -14,6 +14,7 @@ component extends="app.Models.Model" {
 
         // === Testimonial Content ===
         property(name="testimonialText", column="testimonial_text", dataType="text", label="Testimonial Text", defaultValue="");
+        property(name="title", column="title", dataType="text", label="Testimonial title", defaultValue="");
         property(name="experienceLevel", column="experience_level", dataType="string", label="Experience Level", defaultValue="Beginner");
 
         // === Rating & Approval ===
@@ -49,7 +50,7 @@ component extends="app.Models.Model" {
 
         mergedOptions.append(options, true);
 
-        conditions = "isApproved = 0 AND displayPermission = 0";
+        conditions = "isApproved = 1 AND displayPermission = 1";
         if (mergedOptions.onlyFeatured) {
             conditions &= " AND isFeatured = 0";
         }
