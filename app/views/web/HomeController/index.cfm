@@ -107,11 +107,9 @@
                                 </div>
                                 <div class="col-lg-9 col-12">
                                     <div class="d-flex flex-column justify-content-between h-100">
-                                        <p class="text--secondary fs-24 fw-medium">#encodeForHtml(testimonials.testimonialText)#</p>
+                                        <p class="text--secondary fs-24 fw-medium">#encodeForHtml(testimonials.title)#</p>
                                         <p class="text--lightGray fs-16 fw-normal">
-                                            From concept to launch, we craft digital
-                                            solutions that not only look exceptional but also drive results, building
-                                            connections that last.
+                                            #encodeForHtml(testimonials.testimonialText)#
                                         </p>
                                         <p class="fs-18 text--secondary fw-medium border-top pt-4">
                                             <cfif structKeyExists(variables, "user_fullName") AND len(trim(user_fullName))>

@@ -1,7 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="testimonials,testimonialDetails,delete,approve,reject,checkAdminAccess", params="key", paramsTypes="integer");
+        verifies(except="testimonials,testimonialDetails,delete,approve,reject,checkAdminAccess,featuredTestimonial", params="key", paramsTypes="integer");
         usesLayout(template="/layout", except="testimonials,store,delete,approve,reject,checkAdminAccess");
         usesLayout(template="/admin/AdminController/layout", except="approve,reject");
         filters(through="checkAdminAccess");
@@ -188,6 +188,24 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    function featuredTestimonial(){
+        try{
+            var testimonial = model("testimonial").findByKey(params.id);
+            if(structKeyExists(params, "isFeatured-#params.id#")){
+                testimonial.isFeatured = true;
+                message = "Testimonial is Featured Successfully."
+            }else{
+                testimonial.isFeatured = false;
+                message = "Testimonial is unFeatured Successfully."
+            }
+            testimonial.save();
+            renderText(message);
+            return;
+        } catch(e) {
+            cfheader(statusCode=500);
+            return;
+        }
+    }
 
     private function testimonialApproval(id){
         var Testimonial = model("Testimonial").findByKey(id);
@@ -196,7 +214,7 @@ component extends="app.Controllers.Controller" {
         if (!isNull(Testimonial)) {
             
             Testimonial.status = "Approved"; //approved 
-            Testimonial.is_Approved = true;           
+            Testimonial.isApproved = true;           
             if (Testimonial.save()) {
                 siteurl = "http://#cgi.http_host#/";
                 emailContent = generateApprovalEmail(siteurl);
@@ -239,7 +257,7 @@ component extends="app.Controllers.Controller" {
         if (!isNull(Testimonial)) {
             
             Testimonial.status = "Rejected"; //reject
-            Testimonial.is_Approved = false;
+            Testimonial.isApproved = false;
             if (Testimonial.save()) {
                 siteurl = "http://#cgi.http_host#/";
                 emailContent = generateRejectEmail(siteurl);

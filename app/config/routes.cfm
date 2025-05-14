@@ -104,6 +104,7 @@
 			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
 			.get(name="admin-testimonial", pattern="admin/testimonial", to="admin.testimonialController##testimonials")
 			.get(name = "admin-view-testimonials", pattern = "admin/testimonials/view/[id]", to = "admin.testimonialController##testimonialDetails")
+			.get(name = "admin-Featured-testimonial", pattern = "admin/featuredTestimonial/[id]", to = "admin.testimonialController##featuredTestimonial")
 			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "admin.testimonialController##approve")
 			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "admin.testimonialController##reject")
 			

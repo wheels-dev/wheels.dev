@@ -11,11 +11,11 @@
                     <tr>
                         <th class="text-center">No.</th>
                         <th>User</th>
-                        <th>Logo</th>
                         <th>Company</th>
                         <th>Experience</th>
-                        <th>Testimonial text</th>
+                        <th>Content</th>
                         <th>Rating</th>
+                        <th>Featured</th>
                         <th>Status</th>
                         <th></th>
                     </tr>
@@ -27,16 +27,15 @@
                                 <cfset TestimonialId = Testimonial.id[i]>
                                 <td>#i#</td>
                                 <td>#Testimonial.firstname[i]# #Testimonial.lastname[i]#</td>
-                                <td>#Testimonial.logoPath[i]#</td>
                                 <td>#Testimonial.companyName[i]#</td>
                                 <td>#Testimonial.experienceLevel[i]#</td>
                                 <td>
                                     <cfset shortText = left(Testimonial.TestimonialText[i], 30) & " ...">
                                     #shortText#
                                 </td>
-                                <td>
-                                    <cfset rating = Testimonial.rating>
-                                    <cfset fullStars = Testimonial.rating>
+                                <td class="white-space-nowrap">
+                                    <cfset rating = Testimonial.rating[i]>
+                                    <cfset fullStars = Testimonial.rating[i]>
                                     <cfset emptyStars = 5 - fullStars>
                                     <cfloop from="1" to="#fullStars#" index="j">
                                         <i class="bi bi-star-fill text-warning"></i>
@@ -46,6 +45,11 @@
                                     <cfloop from="1" to="#emptyStars#" index="j">
                                         <i class="bi bi-star text-warning"></i>
                                     </cfloop>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" id="isFeatured-#TestimonialId#" name="isFeatured-#TestimonialId#" type="checkbox" <cfif Testimonial.isFeatured[i]> checked </cfif> hx-get="/admin/featuredTestimonial/#TestimonialId#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                    </div>
                                 </td>
                                 <td>
                                     <span class="approval-status-#TestimonialId#">
@@ -112,5 +116,14 @@
     });
     table.on('draw', function() {
         htmx.process(document.body);
+    });
+    document.body.addEventListener("htmx:afterRequest", function(event) {
+        const xhr = event.detail.xhr;
+        if (xhr.status === 500 && xhr.responseURL.includes("/admin/featuredTestimonial")) {
+            notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
+        }
+        if (xhr.status === 200 && xhr.responseURL.includes("/admin/featuredTestimonial")) {
+            notifier.show('Success', xhr.responseText, 'Success', '', 5000);
+        }
     });
 </script>
