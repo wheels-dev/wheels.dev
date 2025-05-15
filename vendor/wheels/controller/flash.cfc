@@ -128,6 +128,24 @@ component {
 	}
 
 	/**
+	 * Dynamically sets flashStorage during request lifecycle.
+	 *
+	 * [section: Controller]
+	 * [category: Flash Functions]
+	 *
+	 * @storage   Accepts "session" or "cookie"
+	 * @setGlobally       If true, updates both app-level and controller-level flashStorage
+	 */
+	public void function setFlashStorage(string storage = "session", boolean setGlobally = false) {
+		if (listFindNoCase("session,cookie", arguments.storage)) {
+			if (setGlobally) {
+				application.wheels.flashStorage = arguments.storage;
+			}
+			$setFlashStorage(arguments.storage);
+		}
+	}
+
+	/**
 	 * Internal function.
 	 */
 	public struct function $readFlash() {
@@ -136,9 +154,21 @@ component {
 			local.lockName = "flashLock" & application.applicationName;
 			local.rv = $simpleLock(name = local.lockName, type = "readonly", execute = "$readFlash", executeArgs = arguments);
 		} else if ($getFlashStorage() == "cookie" && StructKeyExists(cookie, "flash")) {
-			local.rv = DeserializeJSON(cookie.flash);
+			if (isJSON(cookie.flash)) {
+				local.rv = DeserializeJSON(cookie.flash);
+			} else {
+				local.rv = {
+					"action": cookie.flash
+				};
+			}
 		} else if ($getFlashStorage() == "session" && StructKeyExists(session, "flash")) {
-			local.rv = Duplicate(session.flash);
+			if (isStruct(session.flash)) {
+				local.rv = Duplicate(session.flash);
+			} else {
+				local.rv = {
+					"action": Duplicate(session.flash)
+				};
+			}
 		}
 		return local.rv;
 	}
