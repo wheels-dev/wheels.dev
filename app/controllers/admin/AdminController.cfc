@@ -2,8 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
-
+        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments,importData", params="key", paramsTypes="integer");
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
     }
@@ -1043,5 +1042,216 @@ component extends="app.Controllers.Controller" {
             </body>
             </html>
         ';
+    }
+
+    public void function importData() {
+
+        // 1) Load & parse JSON
+        var raw   = fileRead( expandPath("files/posts.json") );
+        var rss   = deserializeJSON(raw).rss;
+        var chan  = rss.channel;
+
+        // 2) Import Authors
+        // ------------------
+        // Map of WP‐login -> local Author.id
+        var authorMap = importWpAuthors(chan.author);
+
+        // 3) Import Posts
+        // ----------------
+        // Map of WP‐post_id -> local Post.id
+
+        var postMap = importWpPosts(
+            items = chan.item,
+            authorMap = authorMap,
+            defaultPostTypeId = 1, // Blog post type
+            defaultStatusMap = {
+                "draft": 1,    // Draft
+                "publish": 2,  // Published
+                "pending": 4,  // Pending
+                "private": 6,  // Private
+                "trash": 7     // Deleted/Trash
+            }
+        );
+
+        // 4) Import Comments & Replies
+        // ----------------------------
+        // Map of WP‐comment_id -> local Comment.id
+        
+        
+        // 5) Done!
+        abort;
+    }
+
+    /**
+    * Import WordPress authors into the users table
+    * @param authors The WordPress author data structure
+    * @param roleId The default role ID to assign to imported users (optional)
+    * @return struct A map of WordPress logins to user IDs
+    */
+    private struct function importWpAuthors(required array authors, numeric roleId=2) {
+        authorMap = {};
+        
+        for (wpAuth in arguments.authors) {
+            login = wpAuth.author_login.__cdata;
+            firstName = wpAuth.author_first_name.__cdata;
+            lastName = wpAuth.author_last_name.__cdata;
+            displayName = wpAuth.author_display_name.__cdata;
+            email = wpAuth.author_email.__cdata;
+            wpId = wpAuth.author_id.__text;
+            
+            // Find existing user by email
+            user = model("User").findOne(where="email='#email#'");
+            
+            if (!IsObject(user)) {
+                // Create new user if not found
+                user = model("User").create({
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    roleId = arguments.roleId,
+                    username = login,
+                    wpId = wpId,
+                    status = true,
+                    newsletter = false
+                });
+                
+                // Generate a password hash
+                user.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW("wheels.dev@"&login, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                
+                if (user.save(validate=false)) {
+                    // Successfully created user
+                    writeDump("Created new user from WordPress author: #displayName#");
+                } else {
+                    // Failed to create user
+                    writeDump("Failed to create user for WordPress author: #displayName#");
+                    writeDump("Errors: #serializeJSON(user.allErrors())#");
+                }
+            } else {
+                // Update existing user with WordPress data
+                user.firstName = firstName;
+                user.lastName = lastName;
+                user.username = login;
+                user.wpId = wpId;
+                
+                if (user.save(validate=false)) {
+                    // Successfully updated user
+                    writeDump("Updated existing user from WordPress author: #displayName#");
+                }
+            }
+            
+            // Map WordPress login to internal user ID
+            authorMap[login] = user.id;
+        }
+        
+        return authorMap;
+    }
+
+    /**
+    * Import WordPress posts into the blog_posts table
+    * @param items The WordPress post items array
+    * @param authorMap A mapping of WordPress author logins to local user IDs
+    * @param defaultPostTypeId The default post type ID to assign (optional)
+    * @param defaultStatusMap A mapping of WordPress status to local statusId (optional)
+    * @return struct A map of WordPress post IDs to local blog post IDs
+    */
+    public struct function importWpPosts(
+        required array items,
+        required struct authorMap,
+        numeric defaultPostTypeId = 1,
+        struct defaultStatusMap = {
+            "draft": 1,    // Draft
+            "publish": 2,  // Published
+            "pending": 4,  // Pending
+            "private": 6,  // Private
+            "trash": 7     // Deleted/Trash
+        }
+    ) {
+        var postMap = {};
+        
+        for (var item in arguments.items) {
+            var wpId = item.post_id.__text;
+            var login = item.creator.__cdata; // Maps to author_login
+            var title = item.title;
+            
+            // Handle content which can be either an object or an array
+            var encoded = item.encoded;
+            var content = isArray(encoded) ? encoded[1].__cdata : encoded.__cdata;
+            
+            var slug = item.post_name.__cdata;
+            var wpStatus = item.status.__cdata;
+            var publishedAt = parseDateTime(item.post_date.__cdata);
+            var modifiedAt = parseDateTime(item.post_modified.__cdata);
+            
+            // Map WordPress status to local status ID
+            var statusId = structKeyExists(arguments.defaultStatusMap, wpStatus) 
+                ? arguments.defaultStatusMap[wpStatus] 
+                : 1; // Default to Draft if not mapped
+                
+            // Determine if post is published based on WordPress status
+            var isPublished = (wpStatus == "publish");
+            
+            // Get author ID from the mapping or use a default
+            var authorId = structKeyExists(arguments.authorMap, login) 
+                ? arguments.authorMap[login] 
+                : 1; // Default to ID 1 if not found
+            
+            // Check if post already exists by WordPress ID
+            var existingPost = model("Blog").findOne(where="title='#escapeSQL(title)#' AND slug='#escapeSQL(slug)#'");
+            
+            if (!isObject(existingPost)) {
+                // Create new blog post
+                var blogPost = model("Blog").create({
+                    title = title,
+                    content = content,
+                    slug = slug,
+                    status = wpStatus,
+                    isPublished = isPublished,
+                    postCreatedDate = publishedAt,
+                    updatedAt = modifiedAt,
+                    publishedAt = isPublished ? publishedAt : "",
+                    statusId = statusId,
+                    postTypeId = arguments.defaultPostTypeId,
+                    createdBy = authorId,
+                    updatedBy = authorId,
+                    isCommentClosed = false // Default setting for comments
+                });
+                
+                if (blogPost.save(validate=false)) {
+                    writeDump("Imported WordPress post: #wpId# - #title#");
+                    postMap[wpId] = blogPost.id;
+                } else {
+                    writeDump("Failed to import WordPress post: #wpId# - #title#");
+                    writeDump("Errors: #serializeJSON(blogPost.allErrors())#");
+                }
+            } else {
+                // Update existing post
+                existingPost.title = title;
+                existingPost.content = content;
+                existingPost.slug = slug;
+                existingPost.status = wpStatus;
+                existingPost.isPublished = isPublished;
+                existingPost.postCreatedDate = publishedAt;
+                existingPost.updatedAt = modifiedAt;
+                existingPost.publishedAt = isPublished ? publishedAt : "";
+                existingPost.statusId = statusId;
+                existingPost.updatedBy = authorId;
+                
+                if (existingPost.save(validate=false)) {
+                    writeDump("Updated WordPress post: #wpId# - #title#");
+                    postMap[wpId] = existingPost.id;
+                } else {
+                    writeDump("Failed to update WordPress post: #wpId# - #title#");
+                }
+            }
+        }
+        
+        return postMap;
+    }
+
+    /**
+    * Helper function to escape SQL strings
+    */
+    private string function escapeSQL(required string str) {
+        return replace(arguments.str, "'", "''", "all");
     }
 }
