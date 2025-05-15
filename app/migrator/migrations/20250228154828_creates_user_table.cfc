@@ -13,6 +13,8 @@ component extends="wheels.migrator.Migration" hint="creates user table" {
                 t.string(columnNames='profile_url', null=true, limit=255);
                 t.boolean(columnNames='status', null=false, default=true);
                 t.integer(columnNames='role_id', null=false);
+                t.string(columnNames='username', null=true, limit=20);
+                t.integer(columnNames='wp_id', null=false);
                 t.timestamps();
                 t.create();
 

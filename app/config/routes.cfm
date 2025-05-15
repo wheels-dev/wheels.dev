@@ -48,6 +48,7 @@
 			.get(name = "admin-close-comments", pattern = "admin/closeComments/[id]", to = "admin.AdminController##closeComments")
 			.get(name = "admin-publish-blog", pattern = "admin/publishblog/[id]", to = "admin.AdminController##publishblog")
 			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
+			.get(name="admin-import-data", pattern="admin/import-data", to="admin.AdminController##importData")
 
 			.get(name = "user-profile", pattern = "admin/user/profile", to = "admin.UserController##profile")
 			.get(name = "user", pattern = "admin/user", to = "admin.UserController##Index")

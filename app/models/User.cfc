@@ -128,6 +128,20 @@ component extends="app.Models.Model" {
             label="news letter subbscription",
             defaultValue=false
         );
+
+        property(
+            name="username", 
+            column="username", 
+            dataType="string", 
+            label="Login username"
+        );
+
+        property(
+            name="wpId", 
+            column="wp_id", 
+            dataType="integer", 
+            label="WordPress ID"
+        );
         // Relationships
         belongsTo(name="Role", foreignKey="roleId");
         
