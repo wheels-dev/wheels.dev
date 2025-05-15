@@ -87,7 +87,7 @@ component output="false" {
 		application.wo = wirebox.getInstance("global");
 		initArgs.path="wheels";
 		initArgs.filename="onapplicationstart";
-		application.wirebox.getInstance(name = "wheels.events.onapplicationstart", initArguments = initArgs).$init();
+		application.wirebox.getInstance(name = "wheels.events.onapplicationstart", initArguments = initArgs).$init(this);
 	}
 
 	public void function onApplicationEnd( struct ApplicationScope ) {
@@ -98,7 +98,6 @@ component output="false" {
 	}
 
 	public void function onSessionStart() {
-		// session.userId = "";
 		local.lockName = "reloadLock" & application.applicationName;
 
 		// Fix for shared application name (issue 359).
@@ -126,23 +125,6 @@ component output="false" {
 	}
 
 	public boolean function onRequestStart( string targetPage ) {
-		if (structKeyExists(session, "userId") && session.userId neq "") {
-			// Check if lastActivity is set
-			if (structKeyExists(session, "lastActivity")) {
-				var timeSinceLastActivity = dateDiff("n", session.lastActivity, now());
-				
-				// If idle for more than 30 minutes, log out
-				if (timeSinceLastActivity >= 30) {
-					structDelete(session, "userId");
-					structDelete(session, "lastActivity");
-					location(url="/login", addtoken=false);
-					return false;
-				}
-			}
-			
-			// Update last activity timestamp
-			session.lastActivity = now();
-		}
 
 		// Added this section so that whenever the format parameter is passed in the URL and it is junit, json or txt then the content will be served without the head and body tags
 		if(structKeyExists(url, "format") && listFindNoCase("junit,json,txt", url.format))
