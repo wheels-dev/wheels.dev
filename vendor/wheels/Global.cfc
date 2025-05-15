@@ -189,6 +189,7 @@ component output="false" {
     try{
       cfdbinfo(attributeCollection="#arguments#");
     }catch(any e){
+      cfdbinfo(attributeCollection="#arguments#");
       local.type = arguments.type;
 			arguments.type = "dbnames";
       cfdbinfo(attributeCollection="#arguments#");
@@ -2649,6 +2650,34 @@ component output="false" {
 		}
 
 		return local.rv;
+	}
+
+	/**
+	 * Normalizes a nested key path by converting bracket notation (e.g., `form[user][email]`) to dot notation (e.g., `form.user.email`).
+	 *
+	 * [section: Global Helpers]
+	 * [category: String Functions]
+	 *
+	 * @path The key path to normalize.
+	 */
+	public string function normalizePath(required string path) {
+		local.norm = arguments.path;
+		local.norm = reReplace(local.norm, "\[(.*?)\]", ".\1", "all");
+		local.norm = reReplace(local.norm, "^\.", "", "one");
+		return local.norm;
+	}
+
+	/**
+	 * Generates a 36-character UUID compatible with SQL Server's uniqueidentifier.
+	 *
+	 * [section: Global Helpers]
+	 * [category: UUID Functions]
+	 *
+	 * @return A valid 36-character UUID string (e.g., 123e4567-e89b-12d3-a456-426614174000)
+	 */
+	public string function generateUUID() {
+		// Use Java UUID generator for a 36-character format
+		return createObject("java", "java.util.UUID").randomUUID().toString();
 	}
 
 	include "/app/global/functions.cfm";
