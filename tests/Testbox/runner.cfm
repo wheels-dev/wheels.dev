@@ -170,7 +170,12 @@
             application.wheels.dataSourceName = application.wheels.coreTestDataSourceName;
         }
         application.testenv.db = application.wo.$dbinfo(datasource = application.wheels.dataSourceName, type = "version")
-
-        
+        // Setting up test database for test environment
+        local.tables = application.wo.$dbinfo(datasource = application.wheels.dataSourceName, type = "tables")
+        local.tableList = ValueList(local.tables.table_name)
+        local.populate = StructKeyExists(url, "populate") ? url.populate : true
+        if (local.populate || !FindNoCase("authors", local.tableList)) {
+            include "populate.cfm"
+        }
     }
 </cfscript>

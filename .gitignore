@@ -15,6 +15,7 @@ WEB-INF
 /migrator/sql/
 /vendor/testbox/
 /vendor/wirebox/
+/vendor/wheels/
 
 settings.json
 settings.xml
