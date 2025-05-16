@@ -4,14 +4,15 @@ component extends="app.Models.Model" {
 
         property(name="id", column="id", type="integer", required=true, primarykey=true);
         property(name="content", column="content", type="text", required=false, default="");
-        property(name="commentParentId", column="comment_parent_id", type="integer", required=false, default="");
         property(name="createdAt", column="createdat", type="datetime", required=false, default="");
         property(name="publishedAt", column="published_at", type="datetime", required=false, default="");
         property(name="updatedAt", column="updatedat", type="datetime", required=false, default="");
         property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
 
         property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
-        property(name="isDeleted", column="is_deleted", type="boolean", required=true, default=false);
+        property(name="isFlagged", column="is_flagged", type="boolean", required=true, default=false);
+        property(name="isApproved", column="is_approved", type="boolean", required=true, default=false);
+        property(name="wpId", column="wp_id", dataType="integer",label="WordPress ID");
 
 
         // Defining the foreign key
