@@ -142,6 +142,10 @@ component extends="app.Models.Model" {
             dataType="integer", 
             label="WordPress ID"
         );
+        
+        property(name="website", column="website", dataType="string", default="");
+        property(name="ip", column="ip", dataType="string", default="");
+        
         // Relationships
         belongsTo(name="Role", foreignKey="roleId");
         

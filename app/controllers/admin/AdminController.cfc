@@ -1077,8 +1077,10 @@ component extends="app.Controllers.Controller" {
         // ----------------------------
         // Map of WP‐comment_id -> local Comment.id
         
+        var commentMap = importWpComments(chan.item, postMap, authorMap);
         
         // 5) Done!
+        writeDump('Data imported!');
         abort;
     }
 
@@ -1147,11 +1149,13 @@ component extends="app.Controllers.Controller" {
     }
 
     /**
-    * Import WordPress posts into the blog_posts table
+    * Import WordPress posts into the blog_posts table with categories and tags
     * @param items The WordPress post items array
     * @param authorMap A mapping of WordPress author logins to local user IDs
     * @param defaultPostTypeId The default post type ID to assign (optional)
     * @param defaultStatusMap A mapping of WordPress status to local statusId (optional)
+    * @param categoryMap A mapping of WordPress category names to local category IDs (optional)
+    * @param tagMap A mapping of WordPress tag names to local tag IDs (optional)
     * @return struct A map of WordPress post IDs to local blog post IDs
     */
     public struct function importWpPosts(
@@ -1164,7 +1168,9 @@ component extends="app.Controllers.Controller" {
             "pending": 4,  // Pending
             "private": 6,  // Private
             "trash": 7     // Deleted/Trash
-        }
+        },
+        struct categoryMap = {},
+        struct tagMap = {}
     ) {
         var postMap = {};
         
@@ -1198,9 +1204,10 @@ component extends="app.Controllers.Controller" {
             // Check if post already exists by WordPress ID
             var existingPost = model("Blog").findOne(where="title='#escapeSQL(title)#' AND slug='#escapeSQL(slug)#'");
             
+            var blogPost = "";
             if (!isObject(existingPost)) {
                 // Create new blog post
-                var blogPost = model("Blog").create({
+                blogPost = model("Blog").create({
                     title = title,
                     content = content,
                     slug = slug,
@@ -1219,6 +1226,9 @@ component extends="app.Controllers.Controller" {
                 if (blogPost.save(validate=false)) {
                     writeDump("Imported WordPress post: #wpId# - #title#");
                     postMap[wpId] = blogPost.id;
+                    
+                    // Process taxonomies (categories and tags)
+                    processTaxonomies(item, blogPost.id, arguments.categoryMap, arguments.tagMap);
                 } else {
                     writeDump("Failed to import WordPress post: #wpId# - #title#");
                     writeDump("Errors: #serializeJSON(blogPost.allErrors())#");
@@ -1239,6 +1249,13 @@ component extends="app.Controllers.Controller" {
                 if (existingPost.save(validate=false)) {
                     writeDump("Updated WordPress post: #wpId# - #title#");
                     postMap[wpId] = existingPost.id;
+                    
+                    // Delete existing categories and tags for this post
+                    model("BlogCategory").deleteAll(where="blogId=#existingPost.id#");
+                    model("Tag").deleteAll(where="blogId=#existingPost.id#");
+                    
+                    // Process taxonomies (categories and tags)
+                    processTaxonomies(item, existingPost.id, arguments.categoryMap, arguments.tagMap);
                 } else {
                     writeDump("Failed to update WordPress post: #wpId# - #title#");
                 }
@@ -1249,9 +1266,476 @@ component extends="app.Controllers.Controller" {
     }
 
     /**
+    * Process WordPress taxonomies (categories and tags) for a post
+    * @param wpPost The WordPress post item
+    * @param blogId The local blog post ID
+    * @param categoryMap A mapping of WordPress category names to local category IDs
+    * @param tagMap A mapping of WordPress tag names to local tag IDs
+    */
+    private void function processTaxonomies(
+        required struct wpPost,
+        required numeric blogId,
+        required struct categoryMap,
+        required struct tagMap
+    ) {
+        try {
+            // Check if categories/tags exist in the WordPress post
+            if (structKeyExists(wpPost, "category")) {
+                var wpCategories = [];
+                var wpTags = [];
+                
+                // Handle single category/tag or multiple categories/tags
+                if (isStruct(wpPost.category)) {
+                    processTaxonomyItem(wpPost.category, wpCategories, wpTags);
+                } else if (isArray(wpPost.category)) {
+                    // Multiple categories/tags
+                    for (var tax in wpPost.category) {
+                        processTaxonomyItem(tax, wpCategories, wpTags);
+                    }
+                }
+                
+                // Process regular categories
+                importCategories(wpCategories, arguments.blogId, arguments.categoryMap);
+                
+                // Process tags
+                importTags(wpTags, arguments.blogId, arguments.tagMap);
+            }
+        } catch (any e) {
+            writeDump("Error processing taxonomies: #e.message#");
+        }
+    }
+
+    /**
+    * Helper function to process a taxonomy item and sort it into categories or tags
+    * @param taxItem The taxonomy item to process
+    * @param wpCategories Array of WordPress categories to append to
+    * @param wpTags Array of WordPress tags to append to
+    */
+    private void function processTaxonomyItem(
+        required struct taxItem,
+        required array wpCategories,
+        required array wpTags
+    ) {
+        if (structKeyExists(taxItem, "__cdata")) {
+            // Check if it's a tag or a category
+            var domain = "";
+            if (structKeyExists(taxItem, "_domain")) {
+                domain = taxItem._domain;
+            }
+            
+            // Add to appropriate array based on domain
+            if (domain == "post_tag") {
+                // It's a tag
+                wpTags.append(taxItem.__cdata);
+            } else {
+                // It's a category (or default to category if domain is not specified)
+                wpCategories.append(taxItem.__cdata);
+            }
+        }
+    }
+
+    /**
+    * Import WordPress categories for a post
+    * @param wpCategories Array of WordPress category names
+    * @param blogId The local blog post ID
+    * @param categoryMap A mapping of WordPress category names to local category IDs
+    */
+    private void function importCategories(
+        required array wpCategories,
+        required numeric blogId,
+        required struct categoryMap
+    ) {
+        try {
+            // Process each category
+            for (var categoryName in arguments.wpCategories) {
+                // Try to get the category ID from the mapping
+                var categoryId = 0;
+                
+                if (structKeyExists(arguments.categoryMap, categoryName)) {
+                    // Use existing mapping
+                    categoryId = arguments.categoryMap[categoryName];
+                } else {
+                    // Look up category by name
+                    var existingCategory = model("Category").findOne(where="name='#escapeSQL(categoryName)#'");
+                    
+                    if (isObject(existingCategory)) {
+                        categoryId = existingCategory.id;
+                        // Update the mapping for future use
+                        arguments.categoryMap[categoryName] = categoryId;
+                    } else {
+                        // Create a new category
+                        var newCategory = model("Category").create({
+                            name = categoryName,
+                            isActive = true,
+                            createdAt = now(),
+                            updatedAt = now()
+                        });
+                        
+                        if (newCategory.save()) {
+                            categoryId = newCategory.id;
+                            // Update the mapping for future use
+                            arguments.categoryMap[categoryName] = categoryId;
+                            writeDump("Created new category: #categoryName# (#categoryId#)");
+                        } else {
+                            writeDump("Failed to create category: #categoryName#");
+                        }
+                    }
+                }
+                
+                // Associate the category with the blog post
+                if (categoryId > 0) {
+                    var blogCategory = model("BlogCategory").new();
+                    blogCategory.categoryId = categoryId;
+                    blogCategory.blogId = arguments.blogId;
+                    blogCategory.createdAt = now();
+                    blogCategory.updatedAt = now();
+                    
+                    if (blogCategory.save()) {
+                        writeDump("Associated category '#categoryName#' with blog ID #arguments.blogId#");
+                    } else {
+                        writeDump("Failed to associate category '#categoryName#' with blog ID #arguments.blogId#");
+                    }
+                }
+            }
+        } catch (any e) {
+            writeDump("Error importing categories: #e.message#");
+        }
+    }
+
+    /**
+    * Import WordPress tags for a post
+    * @param wpTags Array of WordPress tag names
+    * @param blogId The local blog post ID
+    * @param tagMap A mapping of WordPress tag names to local tag IDs
+    */
+    private void function importTags(
+        required array wpTags,
+        required numeric blogId,
+        required struct tagMap
+    ) {
+        try {
+            // Process each tag
+            for (var tagName in arguments.wpTags) {
+                // Create a new tag directly linked to the blog post
+                var newTag = model("Tag").create({
+                    name = tagName,
+                    blogId = arguments.blogId,
+                    createdAt = now(),
+                    updatedAt = now()
+                });
+                
+                if (newTag.save()) {
+                    writeDump("Created tag '#tagName#' for blog ID #arguments.blogId#");
+                    // Update the mapping for future reference
+                    arguments.tagMap[tagName] = newTag.id;
+                } else {
+                    writeDump("Failed to create tag '#tagName#' for blog ID #arguments.blogId#");
+                }
+            }
+        } catch (any e) {
+            writeDump("Error importing tags: #e.message#");
+        }
+    }
+
+
+    /**
     * Helper function to escape SQL strings
     */
     private string function escapeSQL(required string str) {
         return replace(arguments.str, "'", "''", "all");
+    }
+
+    /**
+    * Import WordPress comments into the comments table
+    * @param items The WordPress post items array containing comments
+    * @param postMap A mapping of WordPress post IDs to local blog post IDs
+    * @param authorMap A mapping of WordPress author emails to local user IDs
+    * @return struct A map of WordPress comment IDs to local comment IDs
+    */
+    public struct function importWpComments(
+        required array items,
+        required struct postMap,
+        required struct authorMap
+    ) {
+        var commentMap = {};
+        var count = {
+            processed: 0,
+            imported: 0,
+            skipped: 0,
+            failed: 0,
+            updated: 0,
+            usersCreated: 0,
+            anonymousComments: 0
+        };
+        
+        // First pass: Import all comments and track their IDs
+        for (var item in arguments.items) {
+            // Skip if this item doesn't have a post_id
+            if (!structKeyExists(item, "post_id") || !structKeyExists(item.post_id, "__text")) {
+                continue;
+            }
+            
+            var wpPostId = item.post_id.__text;
+            count.processed++;
+            
+            // Skip if we don't have this post mapped
+            if (!structKeyExists(arguments.postMap, wpPostId)) {
+                writeDump("Skipping comments for unmapped post ID: #wpPostId#");
+                count.skipped++;
+                continue;
+            }
+            
+            var localBlogId = arguments.postMap[wpPostId];
+            
+            // Check if this post has comments
+            if (structKeyExists(item, "comment")) {
+                var comments = isArray(item.comment) ? item.comment : [item.comment];
+                
+                for (var c in comments) {
+                    try {
+                        // Extract comment data safely using helper functions
+                        var wpCommentId = c.comment_id.__text;
+                        var parentWpId = c.comment_parent.__text;
+                        var authorName = c.comment_author.__cdata;
+                        var authorEmail = structKeyExists(c, "comment_author_email") && structKeyExists(c.comment_author_email, "__cdata") ? c.comment_author_email.__cdata : "";
+                        var authorUrl = structKeyExists(c, "comment_author_url") && structKeyExists(c.comment_author_url, "__text") ? c.comment_author_url.__text : '';
+                        var authorIp = structKeyExists(c, "comment_author_IP") && structKeyExists(c.comment_author_IP, "__cdata") ? c.comment_author_IP.__cdata : '';
+                        var content = c.comment_content.__cdata;
+                        var approved = c.comment_approved.__cdata;
+                        var commentType = structKeyExists(c, "comment_type") && structKeyExists(c.comment_type, "__cdata") ? c.comment_type.__cdata : '';
+                        var commentUserId = c.comment_user_id.__text;
+                        
+                        // Parse dates properly
+                        var commentDate = "";
+                        var commentDateStr = c.comment_date.__cdata;
+                        if (len(trim(commentDateStr))) {
+                            try {
+                                commentDate = parseDateTime(commentDateStr);
+                            } catch (any e) {
+                                commentDate = now();
+                                writeDump("Failed to parse date: #commentDateStr# for comment #wpCommentId#");
+                            }
+                        } else {
+                            commentDate = now();
+                        }
+                        
+                        // Check if this comment already exists in our system
+                        var existingComment = model("Comment").findOne(where="wpId='#wpCommentId#'");
+                        
+                        // Try to find a user ID for this comment author
+                        var userId = 0;
+                        var user;
+                        
+                        // First check if we have this email in our authorMap
+                        if (len(trim(authorEmail)) && structKeyExists(arguments.authorMap, authorEmail)) {
+                            userId = arguments.authorMap[authorEmail];
+                            user = model("User").findByKey(userId);
+                        } else if (commentUserId != "0") {
+                            // If WordPress specified a user ID, try to find that user
+                            user = model("User").findOne(where="wpId='#commentUserId#'");
+                            if (isObject(user)) {
+                                userId = user.id;
+                            }
+                        } else if (len(trim(authorEmail))) {
+                            // Try to find a user with this email
+                            user = model("User").findOne(where="email='#escapeSQL(authorEmail)#'");
+                            if (isObject(user)) {
+                                userId = user.id;
+                            }
+                        }
+                        
+                        // If no user found and we have an email, create a new user with "commenter" role
+                        if (!isObject(user) && len(trim(authorEmail))) {
+                            // Get the commenter role ID (you'll need to adjust this to your role system)
+                            var commenterRole = model("Role").findOne(where="name='commenter'");
+                            var commenterRoleId = isObject(commenterRole) ? commenterRole.id : 4; // Default to role ID 4 if not found
+                            
+                            // Create names array by splitting author name
+                            var names = listToArray(authorName, " ");
+                            var firstName = arrayLen(names) >= 1 ? names[1] : "";
+                            var lastName = arrayLen(names) >= 2 ? names[2] : "";
+                            
+                            // Generate a username from the email
+                            var username = listFirst(authorEmail, "@");
+                            
+                            // Check if username exists and append number if needed
+                            var baseUsername = username;
+                            var counter = 1;
+                            while (model("User").exists(where = "username='#username#'")) {
+                                username = baseUsername & counter;
+                                counter++;
+                            }
+                            
+                            // Create the new user
+                            user = model("User").create({
+                                firstName = firstName,
+                                lastName = lastName,
+                                email = authorEmail,
+                                username = username,
+                                website = authorUrl,
+                                ip = authorIp,
+                                roleId = commenterRoleId,
+                                passwordHash = hash(createUUID(), "SHA-256"), // Create a random password hash
+                                status = true,
+                                createdAt = commentDate,
+                                updatedAt = commentDate
+                            });
+                            
+                            if (user.save(validate=false)) {
+                                userId = user.id;
+                                // Update the authorMap for future reference
+                                arguments.authorMap[authorEmail] = userId;
+                                count.usersCreated++;
+                                writeDump("Created new user for commenter: #authorEmail#");
+                            } else {
+                                writeDump("Failed to create user for: #authorEmail#, Errors: #serializeJSON(user.allErrors())#");
+                            }
+                        } 
+                        // Handle case where there's no email but we still have an author name
+                        else if (!isObject(user) && !len(trim(authorEmail)) && len(trim(authorName))) {
+                            // Get the commenter role ID
+                            var commenterRole = model("Role").findOne(where="name='commenter'");
+                            var commenterRoleId = isObject(commenterRole) ? commenterRole.id : 4; // Default to role ID 4 if not found
+                            
+                            // Create names array by splitting author name
+                            var names = listToArray(authorName, " ");
+                            var firstName = arrayLen(names) >= 1 ? names[1] : "";
+                            var lastName = arrayLen(names) >= 2 ? names[2] : "";
+                            
+                            // Generate a unique username from the author name
+                            var username = replaceNoCase(authorName, " ", "_", "all");
+                            username = reReplace(username, "[^a-zA-Z0-9_]", "", "all");
+                            if (!len(trim(username))) {
+                                username = "anonymous_" & createUUID();
+                            }
+                            
+                            // Check if username exists and append number if needed
+                            var baseUsername = username;
+                            var counter = 1;
+                            while (model("User").exists(where = "username='#username#'")) {
+                                username = baseUsername & counter;
+                                counter++;
+                            }
+                            
+                            // Generate a placeholder email if needed
+                            var placeholderEmail = "anonymous_" & createUUID() & "@example.com";
+                            
+                            // Create the new user
+                            user = model("User").create({
+                                firstName = firstName,
+                                lastName = lastName,
+                                email = placeholderEmail,
+                                username = username,
+                                website = authorUrl,
+                                ip = authorIp,
+                                roleId = commenterRoleId,
+                                passwordHash = hash(createUUID(), "SHA-256"), // Create a random password hash
+                                status = true,
+                                createdAt = commentDate,
+                                updatedAt = commentDate
+                            });
+                            
+                            if (user.save(validate=false)) {
+                                userId = user.id;
+                                // Update the authorMap for future reference
+                                arguments.authorMap[placeholderEmail] = userId;
+                                count.usersCreated++;
+                                count.anonymousComments++;
+                                writeDump("Created new anonymous user for commenter: #authorName#");
+                            } else {
+                                writeDump("Failed to create anonymous user for: #authorName#, Errors: #serializeJSON(user.allErrors())#");
+                            }
+                        }
+                        
+                        // If we found an existing comment, update it
+                        if (isObject(existingComment)) {
+                            existingComment.content = content;
+                            existingComment.authorId = userId > 0 ? userId : javaCast("null", "");
+                            existingComment.isPublished = approved == "1";
+                            existingComment.publishedAt = approved == "1" ? commentDate : javaCast("null", "");
+                            
+                            if (existingComment.save(validate=false)) {
+                                commentMap[wpCommentId] = existingComment.id;
+                                count.updated++;
+                            } else {
+                                writeDump("Failed to update comment ID: #wpCommentId#, Errors: #serializeJSON(existingComment.allErrors())#");
+                                count.failed++;
+                            }
+                        } else {
+                            // For now set parentId to 0 - we'll update in second pass
+                            var newComment = model("Comment").create({
+                                content = content,
+                                commentParentId = '', // Temporary value, updated in second pass
+                                blogId = localBlogId,
+                                authorId = userId > 0 ? userId : javaCast("null", ""),
+                                createdAt = commentDate,
+                                publishedAt = approved == "1" ? commentDate : javaCast("null", ""),
+                                updatedAt = commentDate,
+                                isPublished = approved == "1" ? true : false,
+                                isApproved = approved == "1" ? true : false,
+                                isFlagged = false,
+                                wpId = wpCommentId
+                            });
+                            
+                            if (newComment.save(validate=false)) {
+                                writeDump("Imported comment ID: #wpCommentId# for post: #wpPostId#");
+                                commentMap[wpCommentId] = newComment.id;
+                                count.imported++;
+                            } else {
+                                writeDump("Failed to import comment ID: #wpCommentId#, Errors: #serializeJSON(newComment.allErrors())#");
+                                count.failed++;
+                            }
+                        }
+                    } catch (any e) {
+                        writeDump("Error processing comment: #e.message# #e.detail#");
+                        count.failed++;
+                    }
+                }
+            }
+        }
+        
+        // Second pass: Update parent comment IDs now that we have all comments imported
+        for (var item in arguments.items) {
+            if (structKeyExists(item, "comment")) {
+                var comments = isArray(item.comment) ? item.comment : [item.comment];
+                
+                for (var c in comments) {
+                    try {
+                        var wpCommentId = c.comment_id.__text;
+                        var parentWpId = c.comment_parent.__text;
+                        
+                        // Skip if we don't have this comment mapped
+                        if (!structKeyExists(commentMap, wpCommentId)) {
+                            continue;
+                        }
+                        
+                        var localCommentId = commentMap[wpCommentId];
+                        
+                        // Only update if this comment has a parent
+                        if (parentWpId != "0" && structKeyExists(commentMap, parentWpId)) {
+                            var localParentId = commentMap[parentWpId];
+                            
+                            // Find and update the comment
+                            var comment = model("Comment").findByKey(localCommentId);
+                            if (isObject(comment)) {
+                                comment.commentParentId = localParentId;
+                                
+                                if (comment.save(validate=false)) {
+                                    writeDump("Updated parent reference for comment ID: #localCommentId#");
+                                } else {
+                                    writeDump("Failed to update parent reference for comment ID: #localCommentId#");
+                                }
+                            }
+                        }
+                    } catch (any e) {
+                        writeDump("Error updating comment parent: #e.message# #e.detail#");
+                    }
+                }
+            }
+        }
+        
+        writeDump("Comments import summary - Processed: #count.processed#, Imported: #count.imported#, Updated: #count.updated#, Skipped: #count.skipped#, Failed: #count.failed#, Users Created: #count.usersCreated#, Anonymous Comments: #count.anonymousComments#");
+        
+        return commentMap;
     }
 }
