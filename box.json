@@ -21,7 +21,7 @@
         "cfwheels-plugins":"vendor/"
     },
     "installPaths":{
-        "cfwheels":"vendor/wheels/",
+        "wheels-core":"vendor/wheels/",
         "wirebox":"vendor/wirebox/",
         "testbox":"vendor/testbox/",
         "semver":"app/lib/semver/",
@@ -36,7 +36,7 @@
         "wirebox":"^7",
         "testbox":"^5",
         "semver":"^1.2.6",
-        "logbox": "7.3.1+17",
+        "logbox":"7.3.1+17",
         "wheels-core":"^3.0.0-SNAPSHOT"
     },
     "type":"mvc",
