@@ -37,6 +37,9 @@
                                     </cfloop>
                                 <cfelse>
                                     <option value="" disabled>Loading categories...</option>
+                                    <cfloop query="categories">
+                                        <option value="#categories.id#">#categories.name#</option>
+                                    </cfloop>
                                 </cfif>
                             </select>
                         </div>
@@ -53,6 +56,9 @@
                                     </cfloop>
                                 <cfelse>
                                     <option value="" disabled>Loading post types...</option>
+                                    <cfloop query="postTypes">
+                                        <option value="#postTypes.id#">#postTypes.name#</option>
+                                    </cfloop>
                                 </cfif>
                             </select>
                         </div>
@@ -364,7 +370,9 @@
         document.getElementById("title").addEventListener("input", updatePreview);
         document.getElementById("categoryId").addEventListener("change", updatePreview);
         quill.on('text-change', updatePreview);
-        
+        quill.on('text-change', function() {
+            syncQuillContent();
+        })
         // Fix the check-title functionality to work with both POST and PUT methods
         const titleInput = document.getElementById('title');
         if (titleInput) {
