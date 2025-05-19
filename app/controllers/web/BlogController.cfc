@@ -188,6 +188,8 @@ component extends="app.Controllers.Controller" {
     }
     // Function to show the create blog form
     function create() {
+        categories = model("Category").findAll(order="name ASC");
+        postTypes = model("PostType").findAll(order="name ASC");
         model("Log").log(
             category = "wheels.blog",
             level = "INFO",
