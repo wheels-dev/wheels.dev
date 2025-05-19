@@ -6,14 +6,16 @@ component extends="wheels.migrator.Migration" hint="creates comment table" {
                 // create comments table
                 t = createTable(name = 'comments', force=false, id=true, primaryKey='id');
                 t.text(columnNames='content', null=false);
-                t.boolean(columnNames='is_deleted', null=false, default=false);
                 t.integer(columnNames='comment_parent_id', null=true);
                 t.integer(columnNames='blog_id', null=false);
+                t.boolean(columnNames='is_approved', null=false, default=false);
+                t.boolean(columnNames='is_flagged', null=false, default=false);
+                t.boolean(columnNames='is_published', null=false, default=false);
                 t.integer(columnNames='author_id', null=false);
                 t.integer(columnNames='updated_by', null=true);
                 t.integer(columnNames='deleted_by', null=true);
                 t.datetime(columnNames='published_at', null=true);
-                t.boolean(columnNames='is_published', null=false, default=false);
+                t.integer(columnNames='wp_id', null=true);
                 t.timestamps();
                 t.create();
 
