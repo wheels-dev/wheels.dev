@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments,importData", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
     }
@@ -1618,7 +1618,7 @@ component extends="app.Controllers.Controller" {
                             }
                             
                             // Generate a placeholder email if needed
-                            var placeholderEmail = "anonymous_" & createUUID() & "@example.com";
+                            var placeholderEmail = username & "@example.com";
                             
                             // Create the new user
                             user = model("User").create({
