@@ -3,12 +3,12 @@
             <!-- Blog filter -->
             <div class="container pt-4 pb-5">
                 <div class="d-flex justify-content-between align-items-center">
-                    <a href="/blog" class="py-2 px-3 bg-white shadow-sm rounded-3">
+                    <button onclick="history.back()" class="py-2 px-3 bg-white shadow-sm rounded-3">
                         <i class="bi bi-arrow-left"></i>
                         <span class="fs-14 text--secondary">
                             Back
                         </span>
-                    </a>
+                    </button>
                     <cfif isLoggedInUser() AND (session.role EQ "Admin" OR session.userID EQ blog.createdBy)>
                         <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
                             <i class="bi bi-pencil"></i> Edit
@@ -18,22 +18,6 @@
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <div class="row gy-4 pb-3">
                         <div class="col-lg-12 col-12 d-flex flex-column">
-                            <!--- <div class="d-flex my-3 align-items-center gap-3">
-                                <div>
-                                    <cfif structKeyExists(blog.user, "profilePicture") AND len(trim(blog.user.profilePicture))>
-                                        <cfoutput>#imageTag(source = '#blog.user.profilePicture#', alt="wheels.dev-user-profile-picture", height="50", width="50", class="bg-body-secondary rounded-5")#</cfoutput>
-                                    <cfelse>
-                                        <img 
-                                            src="/images/avatar-rounded.webp" 
-                                            style="width:3rem; height:3rem" 
-                                            class="bg-body-secondary rounded-5" 
-                                            alt="default-profile-picture"
-                                        >
-                                    </cfif>
-                                </div>
-
-                                <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
-                            </div> --->
 
                             <h1 class="col-md-8 mx-auto fs-36 fw-bold text-center text--secondary mb-0">
                                 #blog.title#
@@ -88,16 +72,9 @@
                             </cfif>
 
                         </div>
-                        <!--- <div class="col-lg-5 col-12 text-lg-end text-center"> 
-                            <div class="default-blog default-blog-single">
-                                <div class="blog-title-overlay">
-                                    #blog.title#
-                                </div>
-                            </div>
-                        </div> --->
 
                         <div class="col-12">
-                            #blog.content#
+                            #this.autoLink(blog.content,"text--primary")#
                         </div>
                     </div>
                     <cfif not blog.isCommentClosed>
