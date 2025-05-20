@@ -26,3 +26,4 @@ settings.xml
 *.log
 /public/images
 /plu
+server.json

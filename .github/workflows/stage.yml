@@ -1,0 +1,54 @@
+name: Wheels.dev
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy-to-docker-swarm:
+    runs-on: [self-hosted, Linux, pai]
+
+    steps:
+      - name: Checkout Repository
+        id: Checkout-Repository
+        uses: actions/checkout@v4
+
+      - name: Create .env File
+        id: Create-Env-File
+        run: |
+          mv .env-stage .env
+
+      - name: Create server.json File
+        id: Create-Server.json-File
+        run: |
+          mv server.json-stage server.json
+
+      - name: Install Dependencies
+        id: Install-Dependencies
+        run: |
+          box install
+
+      - name: Login to Docker Registry
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login "${{ secrets.DOCKER_HUB_IP }}":"${{ secrets.DOCKER_HUB_PORT}}" -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Push Docker Image
+        id: Push-Docker-Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-stage-img .
+          docker push ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-stage-img
+
+      - name: Deploy to Docker Swarm
+        id: Deploy-to-Docker-Swarm
+        run: |
+          docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-stage-img
+          docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-stage
+
+      - name: Post Slack Message
+        id: Post-Slack-Message
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#it_builds'
+        if: always()
