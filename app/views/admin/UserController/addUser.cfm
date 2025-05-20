@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="row">
-        <form class="row g-3 mb-6 needs-validation" id="userForm" novalidate hx-post="/user/store" hx-target="body" hx-validate="true">
+        <form class="row g-3 mb-6 needs-validation" id="userForm" novalidate action="/user/store" method="post" hx-validate="true">
             <input name="id" type="hidden" id="id" value="#id#">
 
             <div class="col-sm-6 col-md-6 mb-3">
