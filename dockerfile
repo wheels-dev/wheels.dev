@@ -7,9 +7,9 @@ WORKDIR /app
 COPY . .
 
 # Expose the port
-EXPOSE 60052
-ENV PORT 60052
-ENV HEALTHCHECK_URI         "http://127.0.0.1:60052/"
+EXPOSE 60151
+ENV PORT 60151
+ENV HEALTHCHECK_URI         "http://127.0.0.1:60151/"
 #ENV ENV_MODE                "remote"
 
 #Keep the server from trying to open in a browser
