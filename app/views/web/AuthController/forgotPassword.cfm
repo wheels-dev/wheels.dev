@@ -131,36 +131,21 @@
             
             const xhr = event.detail.xhr;
             clearBootstrapValidationStyles();
-
-            try {
-                if (xhr.responseText && xhr.responseText.trim() !== '') {
-                    const response = JSON.parse(xhr.responseText);
-
-                    if (event.detail.successful) {
-                        if (response.success) {
-                            notifier.show('Success!', response.message || 'Reset instructions have been sent to your email.', 'success', '', 4000);
-                            if (response.redirectUrl) {
-                                setTimeout(() => {
-                                    window.location.href = response.redirectUrl;
-                                }, 100);
-                            }
-                        } else {
-                            notifier.show('Error', response.message || 'No account found with that email address.', 'warning', '', 4000);
-                        }
+            if (xhr.responseText && xhr.responseText.trim() !== '' && xhr.responseURL.includes("/auth/send-reset-link")) {
+                if (event.detail.successful) {
+                    if (xhr.status === 200 && xhr.responseURL.includes("/auth/send-reset-link")) {
+                        notifier.show('Success!', 'Reset instructions have been sent to your email.', 'success', '', 4000);
+                            setTimeout(() => {
+                                window.location.href = "/login";
+                            }, 3000);
                     } else {
-                        notifier.show('Error', response.message || 'An error occurred. Please try again.', 'danger', '', 4000);
+                        notifier.show('Error', 'No account found with that email address.', 'warning', '', 4000);
                     }
                 } else {
-                    notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
+                    notifier.show('Error', 'An error occurred. Please try again.', 'danger', '', 4000);
                 }
-            } catch (e) {
-                let errorMsg = 'An unexpected error occurred. Please try again.';
-                if (xhr.responseText && xhr.responseText.trim() !== '') {
-                    errorMsg = 'Error processing server response. Please try again.';
-                } else if (xhr.status === 0) {
-                    errorMsg = 'Network error or request cancelled. Please check connection.';
-                }
-                notifier.show('Error', errorMsg, 'danger', '', 4000);
+            } else {
+                notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
             }
         });
     });

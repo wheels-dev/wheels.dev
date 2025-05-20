@@ -4,6 +4,8 @@ component extends="testbox.system.BaseSpec" {
         authenticate = "#requestServer#/auth/authenticate";
         store = "#requestServer#/auth/store";
         logout = "#requestServer#/logout";
+        forgetPassword = "#requestServer#/auth/forgot-password";
+        resetPassword = "#requestServer#/auth/send-reset-link";
         
         local.AssetPath = "/app/"
         application.wo.set(controllerPath = local.AssetPath & "controllers")
@@ -95,6 +97,17 @@ component extends="testbox.system.BaseSpec" {
 
                 // Assert
                 expect(response.status_code).toBe(200);
+            });
+        });
+
+        describe("Forget Password Function Tests", function() {
+            it("It return 200 status code and forget password form", function() {
+                var response = "";
+                cfhttp(url = "#forgetPassword#", method = "Get", result = "local.response");
+
+                // Assert
+                expect(response.status_code).toBe(200);
+                expect(response.error).toBe("false");
             });
         });
     }
