@@ -40,7 +40,7 @@ jobs:
         id: Deploy-to-Docker-Swarm
         run: |
           docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-prod
-          docker stack deploy --with-registry-auth -c docker-compose.yml prod
+          docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-prod
 
       - name: Post Slack Message
         id: Post-Slack-Message
