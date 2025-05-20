@@ -17,10 +17,10 @@ jobs:
       - name: Create Environment Files
         id: Create-Environment-Files
         run: |
-          mv ./.settings/stage/.env .env
-          mv ./.settings/stage/server.json server.json
-          mv ./.settings/stage/docker-compose.yml docker-compose.yml
-          mv ./.settings/stage/dockerfile dockerfile
+          mv ./deploy/stage/.env .env
+          mv ./deploy/stage/server.json server.json
+          mv ./deploy/stage/docker-compose.yml docker-compose.yml
+          mv ./deploy/stage/dockerfile dockerfile
 
       - name: Install Dependencies
         id: Install-Dependencies
