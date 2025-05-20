@@ -20,10 +20,10 @@ WEB-INF
 settings.json
 settings.xml
 *.db
-.env
+/.env
 /public/files
 /app/lib
 *.log
 /public/images
 /plu
-server.json
+/server.json
