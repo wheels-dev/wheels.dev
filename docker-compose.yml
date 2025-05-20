@@ -10,8 +10,6 @@ services:
       update_config:
         parallelism: 1
         delay: 15s
-        order: start-first
-        failure_action: pause
       placement:
         constraints: []
     ports:
