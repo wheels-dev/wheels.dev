@@ -7,10 +7,11 @@
 <cfset isLogin = find("/login", pathInfo)>
 <cfset isRegister = find("/register", pathInfo)>
 <cfset isForgotPassword = find("/forgot-password", pathInfo)>
+<cfset isResetPassword = find("/reset-password", pathInfo)>
 <cfset isDocs = find("/docs", pathInfo) or isApi>
 <cfset isCommunity = find("/community", pathInfo)>
 <cfset isNews = find("/news", pathInfo) or isBlog and !find("/blog/create", pathInfo)>
-<cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword)>
+<cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword OR isResetPassword)>
 
 <cfset pageTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">
 <cfset ogTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">

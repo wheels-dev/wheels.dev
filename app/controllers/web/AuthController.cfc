@@ -701,9 +701,9 @@ component extends="app.Controllers.Controller" {
             if (isObject(user)) {
                 // Generate reset token
                 var token = generateResetToken();
-                
+
                 // Save token to database
-                model("PasswordReset").create(
+                tokendetails = model("PasswordReset").create(
                     userId = user.id,
                     token = token,
                     expiresAt = dateAdd("h", 1, now())
@@ -723,8 +723,7 @@ component extends="app.Controllers.Controller" {
                 };
             }
             
-            renderWith(data=data, hideDebugInformation=true, layout='/responseLayout');
-            
+            renderText("#data.message#");    
         } catch (any e) {
             model("Log").log(
                 category = "wheels.auth",
@@ -751,7 +750,7 @@ component extends="app.Controllers.Controller" {
             var reset = model("PasswordReset").findOne(
                 where="token = '#params.token#' AND expiresAt > '#now()#' AND used = 0"
             );
-            
+
             if (!isObject(reset)) {
                 redirectTo(action="login");
                 return;
@@ -777,7 +776,7 @@ component extends="app.Controllers.Controller" {
     function updatePassword() {
         param name="params.token" default="";
         param name="params.password" default="";
-        param name="params.password_confirmation" default="";
+        param name="params.confirmPassword" default="";
         
         try {
             // Validate token
@@ -790,17 +789,17 @@ component extends="app.Controllers.Controller" {
                     "success" = false,
                     "message" = "Invalid or expired reset token."
                 };
-                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                renderText("#data.message#"); 
                 return;
             }
             
             // Validate password
-            if (params.password != params.password_confirmation) {
+            if (params.password != params.confirmPassword) {
                 data = {
                     "success" = false,
                     "message" = "Passwords do not match."
                 };
-                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                renderText("#data.message#"); 
                 return;
             }
             
@@ -809,14 +808,13 @@ component extends="app.Controllers.Controller" {
                     "success" = false,
                     "message" = "Password must be at least 8 characters long."
                 };
-                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                renderText("#data.message#"); 
                 return;
             }
             
             // Update password
             var user = model("User").findByKey(reset.userId);
-            user.update(password=hash(params.password));
-            
+            user.update(passwordHash=application.WHEELS.plugins.bcrypt.bCryptHashPW(params.password, application.WHEELS.plugins.bcrypt.bCryptGenSalt()));
             // Mark token as used
             reset.update(used=1);
             
@@ -825,7 +823,7 @@ component extends="app.Controllers.Controller" {
                 "message" = "Password has been reset successfully. You can now login with your new password.",
                 "redirectUrl" = urlFor(action="login")
             };
-            renderWith(data=data, hideDebugInformation=true, layout='/responseLayout');
+            renderText("#data.message#"); 
             
         } catch (any e) {
             model("Log").log(
@@ -842,7 +840,7 @@ component extends="app.Controllers.Controller" {
                 "success" = false,
                 "message" = "An error occurred while resetting your password. Please try again."
             };
-            renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
+            renderText("#data.message#"); 
         }
     }
 
@@ -852,13 +850,24 @@ component extends="app.Controllers.Controller" {
 
     private void function sendResetEmail(required string email, required string token) {
         var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
-        
-        // Send email using your email service
-        // This is a placeholder - implement your email sending logic here
-        var emailService = new app.services.EmailService();
-        emailService.sendPasswordResetEmail(
-            to = email,
-            resetUrl = resetUrl
-        );
+        var emailparams = {
+            "content" = "We received a request to reset the password for your account associated with this email address.",
+            "URl" = resetUrl,
+            "Footer" = "If you did not request reset password, you can safely ignore this email."
+        };
+        var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+        cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+        cfmail( 
+            to = "#arguments.email#", 
+            from = "#application.env.mail_from#", 
+            subject = "Reset Your Password", 
+            server = "#application.env.smtp_host#", 
+            port = "#application.env.smtp_port#", 
+            username = "#application.env.smtp_username#", 
+            password = "#application.env.smtp_password#", 
+            type = "html"
+        ) { 
+            writeOutput(emailContent);
+        };
     }
 }
