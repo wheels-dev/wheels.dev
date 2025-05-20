@@ -104,7 +104,7 @@ component extends="app.Controllers.Controller" {
 
             var blogModel = model("Blog"); // Load model
 
-            // --- Filter by category or tag ---
+            // --- Filter by category, tag, or author ---
             if (structKeyExists(params, "filterType") && structKeyExists(params, "filterValue")) {
                 // Normalize value (e.g., convert "design-ui" to "design.ui")
                 params.filterValue = replace(params.filterValue, "-", ".", "all");
@@ -119,6 +119,12 @@ component extends="app.Controllers.Controller" {
                             break;
                         case "tag":
                             blogs = getAllByTag(params.filterValue);
+                            break;
+                        case "author":
+                            blogs = getBlogsByAuthor(params.filterValue);
+                            author.totalposts = blogs.recordCount;
+                            author.totalcomments = model("Comment").count(
+                                where="authorId = #params.filterValue#");
                             break;
                         default:
                             blogs = getAllBlogs(); // fallback in case of unknown filterType
@@ -147,6 +153,14 @@ component extends="app.Controllers.Controller" {
             blogs = getAllBlogs(); // fallback content
             renderPartial(partial="partials/blogList");
         }
+    }
+
+    private function getBlogsByAuthor(required numeric authorId) {
+        return model("Blog").findAll(
+            where="statusid <> 1 AND status ='Approved' AND isPublished='true' AND createdBy = #authorId#",
+            include="User",
+            order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
+        );
     }
 
     function blogSearch(){

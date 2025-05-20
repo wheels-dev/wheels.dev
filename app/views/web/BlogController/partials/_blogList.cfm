@@ -8,22 +8,51 @@
                     </div>
                 </a>
                 <div class="p-3 flex-grow-1 d-flex justify-content-between flex-column">
-                    <p class="fs-18 text-black fw-bold line-clamp-1">#blogs.title#</p>
+                    <a href="/blog/#slug#"><p class="fs-18 text-black fw-bold line-clamp-1">#blogs.title#</p></a>
                     <div class="d-flex align-items-center gap-2 mt-3">
-                        <a href="javascript:void(0)" hx-trigger="click" hx-post="/blog/author-profile" hx-vals='{"author": "#blogs.createdby#"}' hx-target="body" hx-swap="innerHTML">
-                            #imageTag(source='#profilePicture#', style="width:2.5rem; height:2.5rem",
-                            class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                        <a href="javascript:void(0)" 
+                            class="author-filter-link" 
+                            hx-get="/blog/list/author/#blogs.createdby#" 
+                            hx-target="##blogsContainer" 
+                            hx-swap="innerHTML" 
+                            hx-indicator="##loader-wrapper"
+                            data-author-id="#blogs.createdby#" 
+                            data-author-name="#blogs.firstname# #blogs.lastname#"
+                            style="cursor:pointer;">
+                                #imageTag(source='#profilePicture#', 
+                                    style="width:2.5rem; height:2.5rem", 
+                                    class="bg-body-secondary rounded-5 flex-shrink-0", 
+                                    alt="profile-picture")#
                         </a>
-                        <div>
-                            <p class="text--secondary fw-bold fs-14 m-0">#blogs.firstname# #blogs.lastname#</p>
-                            <p class="text--lightGray fs-12 fw-medium" hx-trigger="click" hx-get="/blog/list/#DateFormat(blogs.postDate, "yyyy")#/#DateFormat(blogs.postDate, "mm")#" hx-target="##blogsContainer" hx-swap="innerHTML" style="cursor: pointer;">
-                                #dateformat(blogs.postDate, 'MMMM DD, YYYY')#
+                        <div
+                            hx-get="/blog/list/author/#blogs.createdby#" 
+                            hx-target="##blogsContainer" 
+                            hx-swap="innerHTML" 
+                            hx-indicator="##loader-wrapper"
+                            data-author-id="#blogs.createdby#" 
+                            data-author-name="#blogs.fullName#" 
+                            style="cursor:pointer;"
+                            >
+                            <p class="text--secondary fw-bold fs-14 m-0 author-filter-link">
+                                    #blogs.fullName#
                             </p>
+                            <p class="text--lightGray fs-12 fw-medium">
+                                #dateformat(blogs.postDate, 'MMMM DD, YYYY')# </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <cfif isDefined('author')>
+            <div id="blogAuthorInfo"
+                data-author-id="#blogs.createdby#"
+                data-author-name="#blogs.fullName#"
+                data-total-comments="#author.totalcomments#"
+                data-total-posts="#author.totalposts#"
+                data-profile-picture="#HTMLEditFormat(imageTag(source='#blogs.profilePicture#', width='40', height='40', class='rounded-circle', alt='#blogs.fullName#'))#"
+                style="display:none;">
+            </div>
+        </cfif>
     </cfloop>
 </cfoutput>
 <script>
@@ -71,5 +100,12 @@
 
         // Attach scroll event
         $(window).on('scroll', onScroll);
+    });
+
+    // Scroll to top after HTMX swaps in new blog content
+    document.body.addEventListener("htmx:afterSwap", function(evt) {
+        if (evt.target.id === "blogsContainer") {
+            window.scrollTo({ top: 50, behavior: "smooth" });
+        }
     });
 </script>
