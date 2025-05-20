@@ -33,7 +33,7 @@ component extends="app.Controllers.Controller" {
 
             // Get the blog post
             var blog = model("Blog").findByKey(key=params.id, include="User,PostStatus");
-            
+
             // Check if blog exists
             if (!isObject(blog)) {
                 throw("Blog not found", "BlogNotFound");
@@ -65,10 +65,10 @@ component extends="app.Controllers.Controller" {
             // Set view variables
             blog.categories = selectedCategories;
             blog.tags = arrayToList(selectedTags, ",");
-            
+
             // Render the edit form with the blog data
             renderView(template="create", blog=blog, categories=categories, postTypes=postTypes, isEdit=true);
-            
+
         } catch (any e) {
             // Log the error
             model("Log").log(
@@ -82,7 +82,7 @@ component extends="app.Controllers.Controller" {
                     "ip_address": cgi.REMOTE_ADDR
                 }
             );
-            
+
             // Redirect with error message
             redirectTo(route="blog");
         }
@@ -104,7 +104,7 @@ component extends="app.Controllers.Controller" {
 
             var blogModel = model("Blog"); // Load model
 
-            // --- Filter by category or tag ---
+            // --- Filter by category, tag, or author ---
             if (structKeyExists(params, "filterType") && structKeyExists(params, "filterValue")) {
                 // Normalize value (e.g., convert "design-ui" to "design.ui")
                 params.filterValue = replace(params.filterValue, "-", ".", "all");
@@ -119,6 +119,12 @@ component extends="app.Controllers.Controller" {
                             break;
                         case "tag":
                             blogs = getAllByTag(params.filterValue);
+                            break;
+                        case "author":
+                            blogs = getBlogsByAuthor(params.filterValue);
+                            author.totalposts = blogs.recordCount;
+                            author.totalcomments = model("Comment").count(
+                                where="authorId = #params.filterValue#");
                             break;
                         default:
                             blogs = getAllBlogs(); // fallback in case of unknown filterType
@@ -149,12 +155,20 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    private function getBlogsByAuthor(required numeric authorId) {
+        return model("Blog").findAll(
+            where="statusid <> 1 AND status ='Approved' AND isPublished='true' AND createdBy = #authorId#",
+            include="User",
+            order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
+        );
+    }
+
     function blogSearch(){
         param name="params.searchTerm" default="";
         var searchTerm = params.searchTerm;
-        
+
         if (len(trim(searchTerm))) {
-            blogs = model("blog").findAll(where="status ='Approved' AND isPublished='true' 
+            blogs = model("blog").findAll(where="status ='Approved' AND isPublished='true'
             AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')",
             include="User, PostStatus, PostType",
             order = "COALESCE(post_created_date, blog_posts.createdat) DESC");
@@ -206,7 +220,7 @@ component extends="app.Controllers.Controller" {
     // Function to store a new blog
     public void function store() {
         // Get request parameters
-        var blogModel = model("Blog"); 
+        var blogModel = model("Blog");
         try {
             model("Log").log(
                 category = "wheels.blog",
@@ -295,10 +309,10 @@ component extends="app.Controllers.Controller" {
             );
 
             blogModel = model("Blog");
-            
+
             // Get the blog by its slug
             blog = getBlogBySlug(params.slug);
-            
+
             // If no blog is found, throw an error to be caught
             if (!structKeyExists(blog, "id")) {
                 throw("Blog not found");
@@ -308,7 +322,7 @@ component extends="app.Controllers.Controller" {
             tags = getTagsByBlogid(blog.id);
             categories = getCategoriesByBlogid(blog.id);
             attachments = getAttachmentsByBlogid(blog.id);
-            comments = getAllCommentsByBlogid(blog.id); 
+            comments = getAllCommentsByBlogid(blog.id);
 
         } catch (any e) {
             model("Log").log(
@@ -334,7 +348,7 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var blogModel = model("Blog");
         var blogId = params.id;
-        
+
         try {
             model("Log").log(
                 category = "wheels.blog",
@@ -350,19 +364,19 @@ component extends="app.Controllers.Controller" {
 
             // Set additional parameters from the form
             params.isDraft = isNumeric(params.isDraft) ? params.isDraft : 0;
-            
+
             response = updateBlog(params, blogId);
-            
+
             // Update relationships
             deleteBlogTags(blogId);
             deleteBlogCategories(blogId);
-            
+
             // Handle tags which are passed as a comma-separated string in postTags
             if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
                 params.tags = params.postTags;
                 saveTags(params, blogId);
             }
-            
+
             // Handle categories which are passed as selected values in categoryId
             if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
                 saveCategories(params, blogId);
@@ -419,15 +433,15 @@ component extends="app.Controllers.Controller" {
             if(structKeyExists(form, "title")) {
                 // Build the query condition
                 var whereClause = "title='#form.title#'";
-                
+
                 // If we're in edit mode, exclude the current blog post
                 if(structKeyExists(form, "id") && isNumeric(form.id) && form.id > 0) {
                     whereClause &= " AND id != #form.id#";
                 }
-                
+
                 // Check if any other blogs have this title
                 var blogModel = model("Blog").findAll(where=whereClause);
-                
+
                 if(blogModel.recordCount != 0) {
                     renderText('<span class="text-danger">A blog already exists with this title!</span><input type="hidden" id="titleExists" value="1">');
                 } else {
@@ -574,7 +588,7 @@ component extends="app.Controllers.Controller" {
         blogPosts = model("Blog").findAll(
             where="status = 'Approved' AND isPublished = 'true'",
             include="User",
-            order="COALESCE(post_created_date, blog_posts.createdAt) DESC"
+            order="COALESCE(post_Created_Date, blog_posts.createdAt) DESC"
         );
 
         // Render the feed view
@@ -650,7 +664,7 @@ component extends="app.Controllers.Controller" {
             returnAs="query"
         );
     }
-    
+
     // Fetch Blogs by Category
     public function getBlogsByCategory(required string categoryName) {
         // Get category ID from name
@@ -674,7 +688,7 @@ component extends="app.Controllers.Controller" {
             returnAs="query"
         );
     }
-    
+
     // Fetch Blogs by Tag
     private function getAllByTag(required string tag){
         return model("Blog").findAll(
@@ -690,13 +704,13 @@ component extends="app.Controllers.Controller" {
             where="blog_posts.id = #arguments.id#",
             include="User, PostStatus",
             options={
-                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent, 
-                    blog_posts.createdat AS createdDate, 
-                    users.fullName AS authorName, 
-                    post_statuses.name AS statusName 
-                    FROM blog_posts 
+                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent,
+                    blog_posts.createdat AS createdDate,
+                    users.fullName AS authorName,
+                    post_statuses.name AS statusName
+                    FROM blog_posts
                     INNER JOIN users ON users.id = blog_posts.userId
-                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId 
+                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
                     WHERE blog_posts.id = #arguments.id#"
             }
         );
@@ -704,24 +718,24 @@ component extends="app.Controllers.Controller" {
 
     private function saveBlog(required struct blogData) {
         var response = { "message": "", "blogId": 0 };
-    
+
         // Generate slug
         var slug = rereplace(lcase(blogData.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
         slug = rereplace(slug, "-+", "-", "all");
         blogData.slug = slug;
 
-        
+
         if (blogData.isdraft eq 1) {
             blogData.statusId = 1; // Draft
         } else {
             blogData.statusId = 2; // Under Review
         }
-    
+
         try {
             // Check if the blog ID is greater than 0 (editing an existing post)
             if (structKeyExists(blogData, "id") && blogData.id > 0) {
                 var blog = model("Blog").findByKey(blogData.id);
-    
+
                 if (not isNull(blog)) {
                     // Update the existing blog post
                     blog.title = blogData.title;
@@ -732,7 +746,7 @@ component extends="app.Controllers.Controller" {
                     blog.updatedAt = now();
                     blog.updatedBy = GetSignedInUserId();
                     blog.save();
-    
+
                     response.blogId = blog.id;
                     response.message = "Blog post updated successfully.";
                 } else {
@@ -743,7 +757,7 @@ component extends="app.Controllers.Controller" {
                 var existingBlog = model("Blog").findFirst(
                     where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
                 );
-    
+
                 if (!isObject(existingBlog)) {
                     // Create a new blog post
                     var newBlog = model("Blog").new();
@@ -760,7 +774,7 @@ component extends="app.Controllers.Controller" {
                         newBlog.postCreatedDate = blogData.postCreatedDate;
                     }
                     newBlog.save();
-    
+
                     response.blogId = newBlog.id;
                     response.message = "Blog post created successfully.";
                 } else {
@@ -770,9 +784,9 @@ component extends="app.Controllers.Controller" {
         } catch (any e) {
             response.message = "Error: " & e.message;
         }
-    
+
         return response;
-    } 
+    }
 
     // Helper function to update blog post
     function updateBlog(required struct params, required numeric blogId) {
@@ -781,56 +795,56 @@ component extends="app.Controllers.Controller" {
         try {
             // Find the blog by ID
             var blog = model("Blog").findByKey(blogId);
-            
+
             if (isNull(blog)) {
                 response.message = "Blog post not found for updating.";
                 return response;
             }
-            
+
             // Generate slug
             var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
             slug = rereplace(slug, "-+", "-", "all");
             params.slug = slug;
-            
+
             // Set status based on isDraft flag
             if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
                 params.statusId = 1; // Draft
             } else {
                 params.statusId = 2; // Under Review
             }
-            
+
             // Check if a blog with the same title/slug exists (that isn't this one)
             var existingBlog = model("Blog").findFirst(
                 where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
             );
-            
+
             if (isObject(existingBlog)) {
                 response.message = "Another blog post with the same title already exists.";
                 return response;
             }
-            
+
             // Update the blog post
             blog.title = params.title;
             blog.content = params.content;
             blog.slug = params.slug;
             blog.statusId = params.statusId;
-            
+
             // Only update these if they exist in params
             if (structKeyExists(params, "postTypeId")) {
                 blog.postTypeId = params.postTypeId;
             }
-            
+
             if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
                 blog.postCreatedDate = params.postCreatedDate;
             }
-            
+
             // Update tracking fields
             blog.updatedAt = now();
             blog.updatedBy = GetSignedInUserId();
-            
+
             // Save the blog post
             blog.save();
-            
+
             response.success = true;
             response.message = "Blog post updated successfully.";
         }
@@ -849,9 +863,9 @@ component extends="app.Controllers.Controller" {
                 userId = GetSignedInUserId()
             );
         }
-        
+
         return response;
-    } 
+    }
 
     private function deleteBlog(required numeric id) {
         var message = "";
@@ -885,9 +899,9 @@ component extends="app.Controllers.Controller" {
     function saveTags(required struct blogData, blogId) {
         try {
             if (blogId > 0 && structKeyExists(blogData, "postTags")) {
-                
+
                 var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
-    
+
                 // Insert new tags
                 for (var tagName in tagArray) {
                     var newTag = model("Tag").new();
@@ -909,7 +923,7 @@ component extends="app.Controllers.Controller" {
             if (blogId > 0) {
                 // direct delete approach
                 model("Tag").deleteAll(where="blogId = #blogId#");
-                
+
                 return true;
             }
             return false;
@@ -939,9 +953,9 @@ component extends="app.Controllers.Controller" {
     function saveCategories(required struct blogData, blogId) {
         try {
             if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
-                
+
                 var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
-    
+
                 // Insert new categories
                 for (var category_Id in categoryArray) {
                     var newCategory = model("BlogCategory").new();
@@ -963,7 +977,7 @@ component extends="app.Controllers.Controller" {
             if (blogId > 0) {
                 // Find all category associations for this blog post
                 model("BlogCategory").deleteAll(where="blogId = #blogId#");
-                
+
                 return true;
             }
             return false;
@@ -989,7 +1003,7 @@ component extends="app.Controllers.Controller" {
     function getAllAttachments() {
         return model("Attachment").findAll();
     }
-    
+
     function getAllCommentsByBlogid(required numeric id) {
         var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ");
 
@@ -1037,11 +1051,11 @@ component extends="app.Controllers.Controller" {
 
     private function saveComment(required struct commentData) {
         var response = { "message": "", "blogId": 0 };
-    
+
         try {
             // Check if the commentParentId is greater than 0 (saving reply against a comment)
             if (structKeyExists(commentData, "commentParentId") && commentData.commentParentId > 0) {
-                
+
                 // Create a new comment(reply)
                 var newComment = model("Comment").new();
                 newComment.content = commentData.content;
@@ -1076,7 +1090,7 @@ component extends="app.Controllers.Controller" {
         } catch (any e) {
             response.message = "Error: " & e.message;
         }
-    
+
         return response;
-    }  
+    }
 }

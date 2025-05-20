@@ -182,4 +182,35 @@ component extends="wheels.Controller" {
 
         return left(meta, 160);
     }
+
+    public function autoLink(required string text, string class = "", string target = "_blank") {
+        var result = text;
+
+        // Step 1: Add class and target to existing anchor tags (if not present)
+        result = reReplace(result, "<a(?![^>]*\bclass=)([^>]*?)>", "<a class='#arguments.class#'\1>", "all");
+        result = reReplace(result, "<a(?![^>]*\btarget=)([^>]*?)>", "<a target='#arguments.target#'\1>", "all");
+
+        // Step 2: Convert plain URLs (http/https) not already in anchor tags
+        var anchors = reMatch("<a[^>]*>.*?</a>", result);
+        var placeholders = [];
+        var i = 1;
+
+        for (a in anchors) {
+            var placeholder = "%%ANCHOR_" & i & "%%";
+            placeholders.append(placeholder);
+            result = replace(result, a, placeholder, "all");
+            i++;
+        }
+
+        // Replace raw URLs (http/https only)
+        result = reReplace(result, "(https?://[^\s<]+)", "<a href='\1' class='#arguments.class#' target='#arguments.target#'>\1</a>", "all");
+
+        // Restore original anchor tags
+        for (j = 1; j LTE arrayLen(placeholders); j++) {
+            result = replace(result, placeholders[j], anchors[j], "all");
+        }
+
+        return result;
+    }
+
 }
