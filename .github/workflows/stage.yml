@@ -14,15 +14,13 @@ jobs:
         id: Checkout-Repository
         uses: actions/checkout@v4
 
-      - name: Create .env File
-        id: Create-Env-File
+      - name: Create Environment Files
+        id: Create-Environment-Files
         run: |
-          mv .env-stage .env
-
-      - name: Create server.json File
-        id: Create-Server-json-File
-        run: |
-          mv server.json-stage server.json
+          mv ./.setting/stage/.env .env
+          mv ./.setting/stage/server.json server.json
+          mv ./.setting/stage/docker-compose.yml docker-compose.yml
+          mv ./.setting/stage/dockerfile dockerfile
 
       - name: Install Dependencies
         id: Install-Dependencies
