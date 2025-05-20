@@ -3,8 +3,8 @@
     <div class="w-100 h-600 position-relative feature-blog">
         <div class="position-absolute mx-auto container start-0 end-0 bottom-50px">
             <p class="text-white fs-18 pb-2">Featured</p>
-            <p class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</p>
-            <p class="text-white opacity-50 fs-18">Build apps quickly with an organized, Ruby on Rails-inspired
+            <p id="blogAuthorHeading" class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</p>
+            <p id="blogAuthorSubheading" class="text-white opacity-50 fs-18">Build apps quickly with an organized, Ruby on Rails-inspired
             structure. Get up and running in no time!</p>
         </div>
     </div>
@@ -13,7 +13,7 @@
             <div class="pt-5">
                 <div class="row">
                     <div class="col-lg-4 col-12">
-                        <input placeholder="Search" type="text" hx-get="/blog/Search" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-3 rounded-18">
+                        <input id="blogSearchInput" placeholder="Search" type="text" hx-get="/blog/Search" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-3 rounded-18">
                     </div>
                     <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                         <div class="d-flex blogs align-items-center justify-content-end gap-3 flex-wrap">
@@ -171,4 +171,48 @@
         document.getElementById(type).classList.remove('d-none');
     }
 }
+document.body.addEventListener("htmx:afterSwap", function(evt) {
+    if (evt.target.id === "blogsContainer") {
+        const authorInfo = document.getElementById("blogAuthorInfo");
+
+        const heading = document.getElementById("blogAuthorHeading");
+        const subheading = document.getElementById("blogAuthorSubheading");
+        const searchInput = document.getElementById("blogSearchInput");
+
+        // Default values
+        const defaultHeading = "Wheels The Fast & Fun CFML Framework!";
+        const defaultSubheading = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!";
+        const defaultPlaceholder = "Search in blog...";
+
+        if (authorInfo) {
+        const fullName = authorInfo.dataset.authorName;
+        const totalComments = authorInfo.dataset.totalComments;
+        const totalPosts = authorInfo.dataset.totalPosts;
+        const profilePicture = authorInfo.dataset.profilePicture;
+
+        if (heading) {
+            heading.innerHTML = profilePicture + ' <span>' + fullName + '</span>';
+        }
+
+        if (subheading) {
+            subheading.textContent = totalPosts + ' blog posts' +' - ' + totalComments +' comments';
+        }
+
+        if (searchInput) {
+            searchInput.value = `${fullName}`;
+        }
+        } else {
+        // Revert to original content
+        if (heading) heading.textContent = defaultHeading;
+        if (subheading) subheading.textContent = defaultSubheading;
+            if (searchInput){
+                searchInput.value = "";
+                searchInput.placeholder = defaultPlaceholder;
+            }
+        }
+
+        // Scroll to top after content swap
+        window.scrollTo({ top: 50, behavior: "smooth" });
+    }
+});
 </script>
