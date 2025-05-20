@@ -30,10 +30,6 @@
         </div>
         <div class="row justify-content-center align-items-center mt-5 gy-3 text-center gx-5">
             <div class="col-md-auto">
-                <img src="/images/github.png" class="img-fluid" width="174">
-            </div>
-            <div class="col-md-auto">
-                <img src="/images/google.png" class="img-fluid" width="151">
             </div>
         </div>
     </div>
