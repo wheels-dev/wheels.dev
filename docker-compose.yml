@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   wheels-dev:
-    image: 10.100.10.116:5000/wheels-img
+    image: 10.100.10.116:5000/wheels-dev-stage
     deploy:
       replicas: 3
       restart_policy:

@@ -35,13 +35,13 @@ jobs:
       - name: Push Docker Image
         id: Push-Docker-Image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-stage-img .
-          docker push ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-stage-img
+          docker build -t ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage .
+          docker push ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
 
       - name: Deploy to Docker Swarm
         id: Deploy-to-Docker-Swarm
         run: |
-          docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-stage-img
+          docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
           docker stack deploy --with-registry-auth -c docker-compose.yml stage
 
       - name: Post Slack Message
