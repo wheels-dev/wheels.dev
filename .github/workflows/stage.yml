@@ -20,7 +20,7 @@ jobs:
           mv .env-stage .env
 
       - name: Create server.json File
-        id: Create-Server.json-File
+        id: Create-Server-json-File
         run: |
           mv server.json-stage server.json
 
