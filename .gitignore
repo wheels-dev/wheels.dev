@@ -29,5 +29,6 @@ settings.xml
 /public/files/*
 
 # But keep the json folder inside public/files
+!public/files/
 !/public/files/json/
 !/public/files/json/**
