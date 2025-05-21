@@ -669,20 +669,20 @@ component extends="app.Controllers.Controller" {
     public function getBlogsByCategory(required string categoryName) {
         // Get category ID from name
         var category = model("Category").findOne(where="name = '#arguments.categoryName#'");
-        if (!isObject(category)) return [];
+        if (!isObject(category)) return queryNew("");
 
         // Get all blog-category mappings with that category
         var blogCategoryQuery = model("BlogCategory")
             .findAll(where="categoryId = #category.id#", returnAs="query");
 
-        if (blogCategoryQuery.recordCount == 0) return [];
+        if (blogCategoryQuery.recordCount == 0) return queryNew("");
 
         // Extract blogIds
         var blogIds = blogCategoryQuery.columnData("blogId");
 
         // Get blog posts with matching IDs
         return model("Blog").findAll(
-            where="id IN (#arrayToList(blogIds)#) AND category_id = '#category.id#'",
+            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished='true'",
             order="createdAt DESC",
             include="User,BlogCategory",
             returnAs="query"
