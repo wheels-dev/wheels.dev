@@ -20,8 +20,14 @@ WEB-INF
 settings.json
 settings.xml
 *.db
-/public/files
 /app/lib
 *.log
 /public/images
 /plu
+
+# Exclude everything in public/files
+/public/files/*
+
+# But keep the json folder inside public/files
+!/public/files/json/
+!/public/files/json/**
