@@ -20,7 +20,6 @@ WEB-INF
 settings.json
 settings.xml
 *.db
-.env
 /public/files
 /app/lib
 *.log
