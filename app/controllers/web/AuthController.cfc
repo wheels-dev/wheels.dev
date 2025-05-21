@@ -888,7 +888,6 @@ component extends="app.Controllers.Controller" {
                 }
             );
         } catch (any e) {
-            writeDump(e); abort;
             model("Log").log(
                 category = "wheels.auth",
                 level = "ERROR",
