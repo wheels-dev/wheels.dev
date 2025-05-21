@@ -153,6 +153,9 @@
 			.get(name="admin-newsletter-search", pattern="admin/newsletter/search", to="admin.NewsletterController##search")
 			.get(name="admin-newsletter-export", pattern="admin/newsletter/export", to="admin.NewsletterController##export")
 			
+			// settings routes
+			.get(name="admin-settings", pattern="admin/settings", to="admin.settingsController##index")
+			.post(name="admin-testimonial-settings", pattern="admin/enableTestimonials", to="admin.settingsController##enableTestimonials")
 			// error routes
 			.get(name = "error403", pattern = "error403", to = "errorController##error403")
 		.end()
