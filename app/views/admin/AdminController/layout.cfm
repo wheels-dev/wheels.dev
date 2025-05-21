@@ -114,6 +114,12 @@
                                     </div>
                                 </a>
                             </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link label-1" href="/admin/settings" role="button" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-gear-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Settings</span></span>
+                                    </div>
+                                </a>
+                            </div>
                         </li>
                     </ul>
                 </div>
