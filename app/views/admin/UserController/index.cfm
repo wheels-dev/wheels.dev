@@ -64,7 +64,7 @@
         var confirmation = confirm("Are you sure you want to delete this user?");
         if (confirmation) {
             // Redirect to the delete URL if confirmed
-            window.location.href = "user/delete?id=" + userId;
+            window.location.href = "admin/user/delete?id=" + userId;
         }
         return false; // Prevent the default action (following the link)
     }
@@ -82,7 +82,7 @@
 
     document.body.addEventListener("htmx:afterRequest", function(event) {
         const xhr = event.detail.xhr;
-        if (xhr.status === 200 && xhr.responseURL.includes("/user/delete/")) {
+        if (xhr.status === 200 && xhr.responseURL.includes("/admin/user/delete/")) {
             document.querySelector("#flash-message").innerHTML = `
             <div class="alert alert-subtle-success alert-dismissible fade show" role="alert">
                 User deleted successfully!
@@ -94,7 +94,7 @@
                 const alert = document.querySelector("#flash-message .alert");
                 if (alert) alert.classList.remove("show");
             }, 5000);
-        }else if(xhr.status === 500 && xhr.responseURL.includes("/user/delete/")){
+        }else if(xhr.status === 500 && xhr.responseURL.includes("/admin/user/delete/")){
             document.querySelector("#flash-message").innerHTML = `
             <div class="alert alert-subtle-danger alert-dismissible fade show" role="alert">
                 Error: User not deleted!

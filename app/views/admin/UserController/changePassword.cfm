@@ -4,7 +4,7 @@
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Change Password</h1>
 
-                <form class="pt-3 px-1 needs-validation" id="changePasswordForm" novalidate hx-post="/user/update-Password" hx-validate="true">
+                <form class="pt-3 px-1 needs-validation" id="changePasswordForm" novalidate hx-post="/admin/user/update-Password" hx-validate="true">
                     <div class="mb-3">
                         <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
                             <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none"

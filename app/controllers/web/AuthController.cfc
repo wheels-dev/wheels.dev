@@ -182,7 +182,7 @@ component extends="app.Controllers.Controller" {
             
             // Determine redirect URL based on role or saved URL
             if (isObject(user.role) && user.role.name == 'Admin') {
-                redirectUrl = urlFor(route="admin-dashboard");
+                redirectUrl = urlFor(route="adminDashboard");
                 model("Log").log(
                     category = "wheels.auth",
                     level = "INFO",
@@ -849,25 +849,58 @@ component extends="app.Controllers.Controller" {
     }
 
     private void function sendResetEmail(required string email, required string token) {
-        var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
-        var emailparams = {
-            "content" = "We received a request to reset the password for your account associated with this email address.",
-            "URl" = resetUrl,
-            "Footer" = "If you did not request reset password, you can safely ignore this email."
-        };
-        var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-        cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-        cfmail( 
-            to = "#arguments.email#", 
-            from = "#application.env.mail_from#", 
-            subject = "Reset Your Password", 
-            server = "#application.env.smtp_host#", 
-            port = "#application.env.smtp_port#", 
-            username = "#application.env.smtp_username#", 
-            password = "#application.env.smtp_password#", 
-            type = "html"
-        ) { 
-            writeOutput(emailContent);
-        };
+        try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Sending password reset email",
+                details = {
+                    "email": email,
+                    "token": token
+                }
+            );
+            var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
+            var emailparams = {
+                "content" = "We received a request to reset the password for your account associated with this email address.",
+                "URl" = resetUrl,
+                "Footer" = "If you did not request reset password, you can safely ignore this email."
+            };
+            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#arguments.email#", 
+                from = "#application.env.mail_from#", 
+                subject = "Reset Your Password", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
+                writeOutput(emailContent);
+            };
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Password reset email sent",
+                details = {
+                    "email": email
+                }
+            );
+        } catch (any e) {
+            writeDump(e); abort;
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error sending password reset email",
+                details = {
+                    "email": email,
+                    "token": token,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            throw e;
+        }
     }
 }
