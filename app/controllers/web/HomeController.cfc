@@ -32,7 +32,7 @@ component extends="app.Controllers.Controller" {
             onlyFeatured = true,
             perPage = 3
         );
-
+        settings = model("Setting").findAll();
         renderView();
     }
 
