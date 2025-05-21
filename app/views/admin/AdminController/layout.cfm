@@ -66,7 +66,7 @@
                         <li class="nav-item">
                             <div class="nav-item-wrapper mb-3">
                             <cfoutput>
-                                <a class="nav-link label-1" href="#urlFor(route='admin-dashboard')#" role="button" data-bs-toggle="" aria-expanded="false">
+                                <a class="nav-link label-1" href="#urlFor(route='adminDashboard')#" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-bar-chart-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Dashboard</span></span>
                                     </div>
                                 </a>
