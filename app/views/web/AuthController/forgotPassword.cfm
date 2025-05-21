@@ -134,7 +134,7 @@
             if (xhr.responseText && xhr.responseText.trim() !== '' && xhr.responseURL.includes("/auth/send-reset-link")) {
                 if (event.detail.successful) {
                     if (xhr.status === 200 && xhr.responseURL.includes("/auth/send-reset-link")) {
-                        notifier.show('Success!', 'Reset instructions have been sent to your email.', 'success', '', 4000);
+                        notifier.show('Success!', xhr.responseText, 'success', '', 4000);
                             setTimeout(() => {
                                 window.location.href = "/login";
                             }, 3000);
