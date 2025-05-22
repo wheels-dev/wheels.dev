@@ -2,7 +2,7 @@
     <!-- Blog filter -->
     <div class="w-100 h-600 position-relative feature-blog">
         <div class="position-absolute mx-auto container start-0 end-0 bottom-50px">
-            <p class="text-white fs-18 pb-2">Featured</p>
+            <p id="featureBlogHeading" class="text-white fs-18 pb-2">Featured</p>
             <p id="blogAuthorHeading" class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</p>
             <p id="blogAuthorSubheading" class="text-white opacity-50 fs-18">Build apps quickly with an organized, Ruby on Rails-inspired
             structure. Get up and running in no time!</p>
@@ -18,7 +18,7 @@
                     <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                         <div class="d-flex blogs align-items-center justify-content-end gap-3 flex-wrap">
 
-                            <cfif isLoggedInUser()>
+                            <cfif isEditor>
                                 <a href="/blog/create"
                                     class="bg--primary text-white text-center d-none py-2 fs-16 rounded-3 col-4">Create
                                     Blog</a>
@@ -175,6 +175,7 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
     if (evt.target.id === "blogsContainer") {
         const authorInfo = document.getElementById("blogAuthorInfo");
 
+        const feature = document.getElementById("featureBlogHeading");
         const heading = document.getElementById("blogAuthorHeading");
         const subheading = document.getElementById("blogAuthorSubheading");
         const searchInput = document.getElementById("blogSearchInput");
@@ -190,6 +191,11 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
         const totalPosts = authorInfo.dataset.totalPosts;
         const profilePicture = authorInfo.dataset.profilePicture;
 
+        if(feature) {
+            // add class display-none to the feature element
+            feature.classList.add('d-none');
+        }
+
         if (heading) {
             heading.innerHTML = profilePicture + ' <span>' + fullName + '</span>';
         }
@@ -203,6 +209,10 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
         }
         } else {
         // Revert to original content
+        if(feature) {
+            // remove class display-none to the feature element
+            feature.classList.remove('d-none');
+        }
         if (heading) heading.textContent = defaultHeading;
         if (subheading) subheading.textContent = defaultSubheading;
             if (searchInput){
