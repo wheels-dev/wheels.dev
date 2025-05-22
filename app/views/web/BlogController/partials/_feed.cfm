@@ -18,11 +18,13 @@
     <language>en-US</language>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     <sy:updateFrequency>1</sy:updateFrequency>
-    <generator>https://wheels.dev</generator>
+    <generator>#application.env.application_host#</generator>
     <image>
-        <url>#application.env.application_host#/images/wheels-logo-black.png</url>
+        <url>#application.env.application_host#/images/wheels-logo-mark.png</url>
         <title>Wheels.dev Blog</title>
         <link>#application.env.application_host#/blog</link>
+				<width>32</width>
+				<height>32</height>
     </image>
 
     <cfloop query="#blogPosts#">
