@@ -391,6 +391,7 @@ component extends="app.Controllers.Controller" {
     function publishblog(){
         try{
             var message = blogPublish(params);
+            renderText("#message.message#");
         } catch(e) {
             cfheader(statusCode=500);
             return;
@@ -429,42 +430,54 @@ component extends="app.Controllers.Controller" {
         var user = model("user").findByKey(blog.createdby);
 
         if (!isNull(blog)) {
-            blog.isPublished = isPublished;
-            blog.publishedat = now();         
+            if(blog.status == "Approved"){
+                blog.isPublished = isPublished;
+                blog.publishedat = now();         
+            }
             if (blog.save()) {
                 var siteurl = "";
-                if(isPublished){
-                    var siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
+                if(isPublished && blog.status == "Approved"){
+                    siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
+                    var emailparams = {
+                        "name" = user.fullname,
+                        "buttonTitle" = "View Your Post",
+                        "content" = "Thank you for writing a blog post. Your post '#blog.title#' has been published on the Wheels website.",
+                        "URl" = siteurl,
+                        "Footer" = "If you did not write blog post, you can safely ignore this email."
+                    };
+                    emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+                    cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+                    cfmail( 
+                        to = "#user.email#", 
+                        from = "#application.env.mail_from#", 
+                        subject = "Your blog post has been published", 
+                        server = "#application.env.smtp_host#", 
+                        port = "#application.env.smtp_port#", 
+                        username = "#application.env.smtp_username#", 
+                        password = "#application.env.smtp_password#", 
+                        type = "html"
+                    ) { 
+                        writeOutput(emailContent);
+                    };
+                    return {
+                        success = true,
+                        message = "Blog Published successfully!"
+                    };
+                }else{
+                    return {
+                        success = true,
+                        message = "Blog UnPublished successfully!"
+                    };
                 }
-                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been published on the Wheels website.";
-                var footer = "If you did not write blog, you can safely ignore this email.";
-                var emailContent = generateApprovalEmail(siteurl, message, footer);
-                cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                cfmail( 
-                    to = "#user.email#", 
-                    from = "#application.env.mail_from#", 
-                    subject = "Your blog post has been published", 
-                    server = "#application.env.smtp_host#", 
-                    port = "#application.env.smtp_port#", 
-                    username = "#application.env.smtp_username#", 
-                    password = "#application.env.smtp_password#", 
-                    type = "html"
-                ) { 
-                    writeOutput(emailContent);
-                };
-                return {
-                    success = true,
-                    message = "Blog Published successfully!"
-                };
             } else {
                 return {
                     success = false,
                     errors = blog.allErrors(),
-                    message = "Failed to publish blog!"
+                    message = "Failed to publish/unPublish blog!"
                 };
             }
         }
-        
+
         return {
             success = false,
             message = "Blog not found"
@@ -780,10 +793,15 @@ component extends="app.Controllers.Controller" {
         if(!isNull(comment)){
             comment.isPublished = true;
             if(comment.save()){
-                var siteurl = "http://#cgi.http_host#/blog/#comment.blog.slug#";
-                var message = "Thanks for commenting on our blog post. Your comment is now live on the Wheels site.";
-                var footer = "If you did not write comment, you can safely ignore this email.";
-                emailContent = generateApprovalEmail(siteurl, message, footer);
+                siteurl = urlFor(route="blog-detail",slug=comment.blog.slug ,onlyPath=false);
+                var emailparams = {
+                    "name" = user.fullname,
+                    "buttonTitle" = "View Your Comment",
+                    "content" = "Thanks for commenting on our blog post. Your comment is now live on the Wheels site.",
+                    "URl" = siteurl,
+                    "Footer" = "If you did not write comment, you can safely ignore this email."
+                };
+                emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfmail( 
                     to = "#user.email#", 
                     from = "#application.env.mail_from#", 
@@ -822,23 +840,6 @@ component extends="app.Controllers.Controller" {
             
             blog.status = "Approved"; //approved            
             if (blog.save()) {
-                var siteurl = "";
-                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been approved.";
-                var footer = "If you did not write blog, you can safely ignore this email.";
-                var emailContent = generateApprovalEmail(siteurl, message, footer);
-                cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                cfmail( 
-                    to = "#user.email#", 
-                    from = "#application.env.mail_from#", 
-                    subject = "Your blog post has been approved and published", 
-                    server = "#application.env.smtp_host#", 
-                    port = "#application.env.smtp_port#", 
-                    username = "#application.env.smtp_username#", 
-                    password = "#application.env.smtp_password#", 
-                    type = "html"
-                ) { 
-                    writeOutput(emailContent);
-                };
                 return {
                     success = true,
                     message = "Blog approved successfully!"
@@ -865,12 +866,16 @@ component extends="app.Controllers.Controller" {
         if (!isNull(blog)) {
             
             blog.status = "Rejected"; //reject
-            
+            blog.isPublished = false;
             if (blog.save()) {
-                siteurl = "http://#cgi.http_host#/blog/#blog.slug#";
-                var message = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected.";
-                var footer = "If you did not write blog, you can safely ignore this email.";
-                emailContent = generateRejectEmail(siteurl, message, footer);
+                var emailparams = {
+                    "name" = user.fullname,
+                    "buttonTitle" = "View Your Post",
+                    "content" = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected.",
+                    "URl" = "",
+                    "Footer" = "If you did not write blog post, you can safely ignore this email."
+                };
+                emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
                 cfmail( 
                     to = "#user.email#", 
@@ -901,147 +906,6 @@ component extends="app.Controllers.Controller" {
             success = false,
             message = "Blog not found"
         };
-    }
-
-    private string function generateApprovalEmail(required string siteurl, required string message, required string footer) {
-        var buttonHTML = "";
-        if (len(trim(arguments.siteurl))) {
-            buttonHTML = '<a href="' & arguments.siteurl & '" class="button">View Your Post</a>';
-        }
-        return '
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Approve blog post</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: ##f4f4f4;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 40px auto;
-                        background: ##ffffff;
-                        padding: 20px;
-                        border-radius: 8px;
-                        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                        text-align: center;
-                    }
-                    .logo {
-                        width: 120px;
-                        margin-bottom: 20px;
-                    }
-                    h1 {
-                        color: ##333;
-                        font-size: 24px;
-                    }
-                    p {
-                        color: ##666;
-                        font-size: 16px;
-                        line-height: 1.5;
-                    }
-                    .button {
-                        display: inline-block;
-                        background-color: ##007BFF;
-                        color: ##ffffff;
-                        text-decoration: none;
-                        font-size: 18px;
-                        padding: 12px 20px;
-                        border-radius: 6px;
-                        margin-top: 20px;
-                    }
-                    .footer {
-                        margin-top: 30px;
-                        font-size: 14px;
-                        color: ##999;
-                    }
-                </style>
-            </head>
-            <body>
-
-                <div class="container">
-                    <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
-                    <h1>Welcome to Wheels.dev!</h1>
-                    <p>'&message&'</p>
-                    ' & buttonHTML & '
-                    <p class="footer">'&footer&'</p>
-                </div>
-
-            </body>
-            </html>
-        ';
-    }
-
-    private string function generateRejectEmail(required string siteurl, required string message, required string footer) {
-        return '
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Reject blog post</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: ##f4f4f4;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 40px auto;
-                        background: ##ffffff;
-                        padding: 20px;
-                        border-radius: 8px;
-                        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                        text-align: center;
-                    }
-                    .logo {
-                        width: 120px;
-                        margin-bottom: 20px;
-                    }
-                    h1 {
-                        color: ##333;
-                        font-size: 24px;
-                    }
-                    p {
-                        color: ##666;
-                        font-size: 16px;
-                        line-height: 1.5;
-                    }
-                    .button {
-                        display: inline-block;
-                        background-color: ##007BFF;
-                        color: ##ffffff;
-                        text-decoration: none;
-                        font-size: 18px;
-                        padding: 12px 20px;
-                        border-radius: 6px;
-                        margin-top: 20px;
-                    }
-                    .footer {
-                        margin-top: 30px;
-                        font-size: 14px;
-                        color: ##999;
-                    }
-                </style>
-            </head>
-            <body>
-
-                <div class="container">
-                    <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
-                    <h1>Welcome to Wheels.dev!</h1>
-                    <p>'&message&'</p>
-                    <p class="footer">'&footer&'</p>
-                </div>
-
-            </body>
-            </html>
-        ';
     }
 
     public void function importData() {
