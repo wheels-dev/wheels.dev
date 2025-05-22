@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy-to-docker-swarm:
     runs-on: [self-hosted, Linux, pai]
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
       - name: Checkout Repository
