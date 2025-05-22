@@ -57,7 +57,6 @@
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")
-			.post(name = "Author-profile", pattern = "blog/author-profile", to="web.BlogController##AuthorProfileBlogs")			
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
