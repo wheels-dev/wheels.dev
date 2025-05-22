@@ -14,6 +14,7 @@
                             class="author-filter-link" 
                             hx-get="/blog/list/author/#blogs.createdby#" 
                             hx-target="##blogsContainer" 
+                            hx-push-url="/blog/author/#blogs.username#"
                             hx-swap="innerHTML" 
                             hx-indicator="##loader-wrapper"
                             data-author-id="#blogs.createdby#" 
@@ -27,6 +28,7 @@
                         <div
                             hx-get="/blog/list/author/#blogs.createdby#" 
                             hx-target="##blogsContainer" 
+                            hx-push-url="/blog/author/#blogs.username#"
                             hx-swap="innerHTML" 
                             hx-indicator="##loader-wrapper"
                             data-author-id="#blogs.createdby#" 
