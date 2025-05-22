@@ -122,10 +122,11 @@ component extends="app.Controllers.Controller" {
                             blogs = getAllByTag(params.filterValue);
                             break;
                         case "author":
-                            blogs = getBlogsByAuthor(params.filterValue);
+                            authorId = getBlogAuthorId(params.filterValue);
+                            blogs = getBlogsByAuthor(authorId);
                             author.totalposts = blogs.recordCount;
                             author.totalcomments = model("Comment").count(
-                                where="authorId = #params.filterValue#");
+                                where="authorId = #authorId#");
                             break;
                         default:
                             blogs = getAllBlogs(); // fallback in case of unknown filterType
@@ -156,12 +157,35 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    private function getBlogsByAuthor(required numeric authorId) {
-        return model("Blog").findAll(
-            where="statusid <> 1 AND status ='Approved' AND isPublished='true' AND createdBy = #authorId#",
+    private function getBlogsByAuthor(required authorId) {
+        var blogs = model("Blog").findAll(
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy = #authorId#",
             include="User",
-            order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
+            order="COALESCE(post_created_date, blog_posts.createdat) DESC"
         );
+
+        if (blogs.recordCount == 0) {
+           redirectTo(route="blog");
+        }
+
+        return blogs;
+    }
+
+    private function getBlogAuthorId(required authorParam) {
+		// Check if authorParam is numeric (ID) or string (username)
+		if (isNumeric(authorParam)) {
+			return val(authorParam);
+		} else {
+			// Lookup user by username
+			var user = model("user").findOne(where="username = '#authorParam#'");
+			if (isObject(user)) {
+				return user.id;
+			} else {
+				// User not found, redirect
+				redirectTo(route="blog");
+				return false;
+			}
+		}
     }
 
     function blogSearch(){
@@ -195,12 +219,6 @@ component extends="app.Controllers.Controller" {
         renderPartial(partial="partials/categorylist");
     }
 
-    function AuthorProfileBlogs(){
-        blogs = model("blog").findAll(where="status = 'Approved' AND createdby = '#params.author#' AND  isPublished = 'true'");
-        author = model("user").findAll(select="fullName, email, profilePicture, name, profileUrl", include = "Role", where = "id ='#params.author#'");
-        comments = model("comment").findAll(where="authorId = '#params.author#' AND  isPublished = '1'")
-        return true;
-    }
     // Function to show the create blog form
     function create() {
         if (!hasEditorAccess()) {
