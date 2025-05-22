@@ -19,7 +19,6 @@ services:
       - HEALTHCHECK_URI=http://127.0.0.1:60150/
       - JVM_HEAPSIZE=1024
       - BOX_SERVER_DEBUG=true
-      - COMMANDBOX_LOG_DIR=/data/logs
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:60150/"]
       interval: 1m
