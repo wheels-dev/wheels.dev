@@ -460,7 +460,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function validateCredentials(required string email, required string password) {
-        var user = model("User").findOne(where="email='#email#'", include="Role");
+        var user = model("User").findOne(where="email='#email#' AND status='True'", include="Role");
         if (!isObject(user)) {
             return false; // User not found
         }
@@ -524,8 +524,16 @@ component extends="app.Controllers.Controller" {
 
     private function sendVerificationEmail(required string email, required string token) {
         var user = model("User").findOne(where="email='#email#'");
-        verifyUrl = "http://#cgi.http_host#/verify?token=#token#";
-        emailContent = generateVerifyEmail(verifyUrl);
+        verifyUrl = urlFor(action="verify", onlyPath=false);
+        verifyUrl = verifyUrl & "?token=" & token;
+        var emailparams = {
+            "name" = user.fullname,
+            "buttonTitle" = "Verify Your Account",
+            "content" = "Thank you for signing up. Please click the button below to verify your account and get started.",
+            "URl" = verifyUrl,
+            "Footer" = "If you did not request reset password, you can safely ignore this email."
+        };
+        emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
         
         if (isObject(user)){
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -562,75 +570,6 @@ component extends="app.Controllers.Controller" {
             message = "false";
         }
         return message;
-    }
-
-    private string function generateVerifyEmail(required string verifyUrl) {
-            return '
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Verify Your Account</title>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-color: ##f4f4f4;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 40px auto;
-                            background: ##ffffff;
-                            padding: 20px;
-                            border-radius: 8px;
-                            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                            text-align: center;
-                        }
-                        .logo {
-                            width: 120px;
-                            margin-bottom: 20px;
-                        }
-                        h1 {
-                            color: ##333;
-                            font-size: 24px;
-                        }
-                        p {
-                            color: ##666;
-                            font-size: 16px;
-                            line-height: 1.5;
-                        }
-                        .button {
-                            display: inline-block;
-                            background-color: ##007BFF;
-                            color: ##ffffff;
-                            text-decoration: none;
-                            font-size: 18px;
-                            padding: 12px 20px;
-                            border-radius: 6px;
-                            margin-top: 20px;
-                        }
-                        .footer {
-                            margin-top: 30px;
-                            font-size: 14px;
-                            color: ##999;
-                        }
-                    </style>
-                </head>
-                <body>
-
-                    <div class="container">
-                        <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
-                        <h1>Welcome to Wheels.dev!</h1>
-                        <p>Thank you for signing up. Please click the button below to verify your account and get started.</p>
-                        <a href="' & verifyUrl & '" class="button">Verify Your Account</a>
-                        <p class="footer">If you did not sign up, you can safely ignore this email.</p>
-                    </div>
-
-                </body>
-                </html>
-            ';
     }
 
     private boolean function isRateLimited(required string ipAddress) {
@@ -708,9 +647,8 @@ component extends="app.Controllers.Controller" {
                     token = token,
                     expiresAt = dateAdd("h", 1, now())
                 );
-                
                 // Send reset email
-                sendResetEmail(user.email, token);
+                sendResetEmail(user.email, user.fullName, token);
                 
                 data = {
                     "success" = true,
@@ -848,7 +786,7 @@ component extends="app.Controllers.Controller" {
         return hash(createUUID() & now(), "SHA-256");
     }
 
-    private void function sendResetEmail(required string email, required string token) {
+    private void function sendResetEmail(required string email, required string name, required string token) {
         try {
             model("Log").log(
                 category = "wheels.auth",
@@ -861,7 +799,9 @@ component extends="app.Controllers.Controller" {
             );
             var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
             var emailparams = {
-                "content" = "We received a request to reset the password for your account associated with this email address.",
+                "name" = name,
+                "buttonTitle" = "Reset Password",
+                "content" = "We received a request to reset the password for your account associated with this email address. If you made this request please click the button below to create a new password",
                 "URl" = resetUrl,
                 "Footer" = "If you did not request reset password, you can safely ignore this email."
             };
