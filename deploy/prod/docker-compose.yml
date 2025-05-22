@@ -17,6 +17,13 @@ services:
     environment:
       - PORT=60150
       - HEALTHCHECK_URI=http://127.0.0.1:60150/
+      - JVM_HEAPSIZE=1024
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:60150/"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - wheels-net
     volumes:
