@@ -151,7 +151,9 @@
 									<i class="bi bi-plus-circle text--secondary fs-5 text-white"></i>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
+								<cfif hasEditorAccess()>
 									<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
+								</cfif>
 									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
 									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
 								</ul>
@@ -207,7 +209,9 @@
 										<i class="bi bi-plus-circle text--secondary fs-5 text-white"></i>
 									</a>
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
+									<cfif hasEditorAccess()>
 										<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
+									</cfif>
 										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
 										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
 									</ul>
@@ -362,7 +366,7 @@
 							<div>
 								<p class="p-0 m-0 fs-12 text--secondary">
 										&copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
-										Wheels is licensed under the Apache License, Version 3.0.
+										Wheels is licensed under the Apache License, Version 2.0.
 								</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
