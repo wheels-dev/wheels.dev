@@ -104,7 +104,7 @@
                         <div>
                             <p class="p-0 m-0 fs-12 text--secondary">
                                     &copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
-                                    Wheels is licensed under the Apache License, Version 3.0.
+                                    Wheels is licensed under the Apache License, Version 2.0.
                             </p>
                         </div>
                         <div class="d-flex justify-content-center gap-3">

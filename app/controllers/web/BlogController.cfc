@@ -10,6 +10,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to list all blogs
     public void function index() {
+       isEditor = hasEditorAccess();
         model("Log").log(
             category = "wheels.blog",
             level = "INFO",
@@ -26,8 +27,8 @@ component extends="app.Controllers.Controller" {
     public void function edit() {
         try {
             // Check if user is logged in
-            if (!structKeyExists(session, "userID")) {
-                redirectTo(route="login");
+            if (!hasEditorAccess()) {
+                redirectTo(route="blog");
                 return;
             }
 
@@ -40,7 +41,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Check if user has permission to edit this post
-            if (session.role != "admin" && blog.userId != session.userID) {
+            if (!hasEditorAccess() && blog.userId != session.userID) {
                 throw("You don't have permission to edit this post", "UnauthorizedAccess");
             }
 
@@ -202,6 +203,10 @@ component extends="app.Controllers.Controller" {
     }
     // Function to show the create blog form
     function create() {
+        if (!hasEditorAccess()) {
+            redirectTo(route="blog");
+            return;
+        }
         categories = model("Category").findAll(order="name ASC");
         postTypes = model("PostType").findAll(order="name ASC");
         model("Log").log(
@@ -222,6 +227,10 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var blogModel = model("Blog");
         try {
+            // Check if user has editor access
+            if (!hasEditorAccess()) {
+                throw("You don't have permission to create a blog post", "UnauthorizedAccess");
+            }
             model("Log").log(
                 category = "wheels.blog",
                 level = "INFO",
@@ -637,7 +646,6 @@ component extends="app.Controllers.Controller" {
 
     }
 
-
     // Business Logic
 
     private function getAll() {
@@ -1032,6 +1040,22 @@ component extends="app.Controllers.Controller" {
     public void function comment() {
         var commentModel = model("Comment");
         try {
+            // Check if user can comment using helper function
+            if (!canUserComment()) {
+                model("Log").log(
+                    category = "wheels.blog",
+                    level = "WARN",
+                    message = "Unauthorized comment attempt",
+                    details = {
+                        "userId": GetSignedInUserId(),
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
+                // Do not allow commenting
+                renderText("Comments are closed");
+                return;
+            }
+
             blog = getBlogById(params.blogId);
             if (params.content.trim() == "" || params.content.trim() == "<p> </p>" || params.content.trim() == "<p><br></p>") {
                 response = {};
