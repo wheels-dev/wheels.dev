@@ -20,10 +20,9 @@ WEB-INF
 settings.json
 settings.xml
 *.db
-/app/lib
 *.log
-/public/images
-/plu
+/app/plugins
+/app/lib
 
 # Exclude everything in public/files
 /public/files/*
@@ -34,3 +33,4 @@ settings.xml
 !/public/files/json/**
 /.env
 /server.json
+public/images/Headshot.jpg
