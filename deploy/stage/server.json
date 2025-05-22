@@ -7,6 +7,7 @@
             "port":"60151"
         },
         "webroot":"public",
+        "directoryBrowsing":false,
         "rewrites":{
             "enable":true,
             "config":"public/urlrewrite.xml"
