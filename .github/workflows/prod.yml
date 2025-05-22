@@ -8,8 +8,6 @@ on:
 jobs:
   build-and-deploy-to-docker-swarm:
     runs-on: [self-hosted, Linux, pai]
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
       - name: Checkout Repository
@@ -48,6 +46,7 @@ jobs:
         id: Post-Slack-Message
         uses: act10ns/slack@v2
         with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
           channel: '#it_builds'
