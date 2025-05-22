@@ -41,12 +41,3 @@ jobs:
         run: |
           docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
           docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-stage
-
-      - name: Post Slack Message
-        id: Post-Slack-Message
-        uses: act10ns/slack@v2
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#it_builds'
-        if: always()
