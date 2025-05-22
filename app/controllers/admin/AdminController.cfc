@@ -124,7 +124,7 @@ component extends="app.Controllers.Controller" {
                 userId = structKeyExists(session, "userID") ? session.userID : 0
             );
 
-            redirectTo(route="admin-blog", success="Blog post updated successfully!");
+            redirectTo(route="adminBlog", success="Blog post updated successfully!");
         } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",
@@ -141,7 +141,7 @@ component extends="app.Controllers.Controller" {
                 userId = structKeyExists(session, "userID") ? session.userID : 0
             );
             // Handle error
-            redirectTo(action="admin-blog", error="Failed to update blog post!");
+            redirectTo(route="adminBlog", error="Failed to update blog post!");
         }
     }
 

@@ -380,100 +380,102 @@
         </div>
     </div>
     <!-- Testimonial Popup Modal -->
-    <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold fs-18 text--primary" id="testimonialPromptModalLabel">Share Your Experience!</h5>
-                <button type="button" class="btn-close text--primary" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-2">We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
-
-                <!--- HTMX Target Area --->
-                <div id="testimonial-form-container"
-                    hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
-                    hx-target="this"
-                    hx-trigger="load"
-                    hx-swap="innerHTML">
-                    <!--- Optional: Loading indicator --->
-                    <div class="text-center p-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading form...</span>
-                        </div>
-                        <p class="mt-2">Loading form...</p>
-                    </div>
-                    <!--- The form content from TestimonialController::new will be loaded here --->
+    <cfif settings.enableTestimonial>
+        <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold fs-18 text--primary" id="testimonialPromptModalLabel">Share Your Experience!</h5>
+                    <button type="button" class="btn-close text--primary" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <p class="mb-2">We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
 
-            </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <!--- The submit button will be part of the loaded form --->
+                    <!--- HTMX Target Area --->
+                    <div id="testimonial-form-container"
+                        hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
+                        hx-target="this"
+                        hx-trigger="load"
+                        hx-swap="innerHTML">
+                        <!--- Optional: Loading indicator --->
+                        <div class="text-center p-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading form...</span>
+                            </div>
+                            <p class="mt-2">Loading form...</p>
+                        </div>
+                        <!--- The form content from TestimonialController::new will be loaded here --->
+                    </div>
+
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <!--- The submit button will be part of the loaded form --->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <cfif structKeyExists(session, "promptForTestimonial") AND showTestimonialPopup>
-        <script>
-            // This script block only renders if the session flag exists and showTestimonialPopup is true.
+        <cfif structKeyExists(session, "promptForTestimonial") AND showTestimonialPopup>
+            <script>
+                // This script block only renders if the session flag exists and showTestimonialPopup is true.
 
-            // Get modal element immediately
-            var testimonialModalElement = document.getElementById('testimonialPromptModal');
-            var testimonialModalInstance = null;
-            // Flag to ensure the 'shown.bs.modal' listener is attached only once
-            let formLoadListenerAttached = false;
+                // Get modal element immediately
+                var testimonialModalElement = document.getElementById('testimonialPromptModal');
+                var testimonialModalInstance = null;
+                // Flag to ensure the 'shown.bs.modal' listener is attached only once
+                let formLoadListenerAttached = false;
 
-            if (testimonialModalElement) {
-                // Get or create the Bootstrap modal instance right away
-                testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
-                
-                // Automatically show the modal on page load
-                window.addEventListener('DOMContentLoaded', function() {
-                    console.log('DOM loaded, showing testimonial modal automatically');
-                    setTimeout(function() {
+                if (testimonialModalElement) {
+                    // Get or create the Bootstrap modal instance right away
+                    testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
+                    
+                    // Automatically show the modal on page load
+                    window.addEventListener('DOMContentLoaded', function() {
+                        console.log('DOM loaded, showing testimonial modal automatically');
+                        setTimeout(function() {
+                            if (testimonialModalInstance) {
+                                testimonialModalInstance.show();
+                            }
+                        }, 1000); // Small delay to ensure everything is loaded
+                    });
+
+                    document.body.addEventListener('showTestimonialModal', function handleShowTrigger() {
+                        console.log('Received showTestimonialModal trigger from backend.');
                         if (testimonialModalInstance) {
                             testimonialModalInstance.show();
-                        }
-                    }, 1000); // Small delay to ensure everything is loaded
-                });
-
-                document.body.addEventListener('showTestimonialModal', function handleShowTrigger() {
-                    console.log('Received showTestimonialModal trigger from backend.');
-                    if (testimonialModalInstance) {
-                        testimonialModalInstance.show();
-                    } else {
-                        var currentModalInstance = bootstrap.Modal.getInstance(testimonialModalElement);
-                        if (currentModalInstance) {
-                            currentModalInstance.show();
                         } else {
-                            console.error("Modal instance not found when trying to show via HX-Trigger.");
-                        }
-                    }
-                }, { once: true });
-
-                if (!formLoadListenerAttached && testimonialModalInstance) {
-                    testimonialModalElement.addEventListener('shown.bs.modal', function handleModalShown() {
-                        var formContainer = testimonialModalElement.querySelector('#testimonial-form-container');
-                        if (formContainer) {
-                            var isLoadingIndicatorPresent = formContainer.querySelector('.spinner-border');
-                            if (isLoadingIndicatorPresent || formContainer.innerHTML.trim() === '') {
-                                console.log('Modal shown, processing HTMX for form container.');
-                                htmx.process(formContainer); // Trigger the hx-get on the container
+                            var currentModalInstance = bootstrap.Modal.getInstance(testimonialModalElement);
+                            if (currentModalInstance) {
+                                currentModalInstance.show();
                             } else {
-                                console.log('Modal shown, form container already has content.');
+                                console.error("Modal instance not found when trying to show via HX-Trigger.");
                             }
-                        } else {
-                            console.error('Form container #testimonial-form-container not found inside modal.');
                         }
-                    });
-                    formLoadListenerAttached = true; // Mark that this listener has been attached.
-                    console.log('Attached shown.bs.modal listener.');
+                    }, { once: true });
+
+                    if (!formLoadListenerAttached && testimonialModalInstance) {
+                        testimonialModalElement.addEventListener('shown.bs.modal', function handleModalShown() {
+                            var formContainer = testimonialModalElement.querySelector('#testimonial-form-container');
+                            if (formContainer) {
+                                var isLoadingIndicatorPresent = formContainer.querySelector('.spinner-border');
+                                if (isLoadingIndicatorPresent || formContainer.innerHTML.trim() === '') {
+                                    console.log('Modal shown, processing HTMX for form container.');
+                                    htmx.process(formContainer); // Trigger the hx-get on the container
+                                } else {
+                                    console.log('Modal shown, form container already has content.');
+                                }
+                            } else {
+                                console.error('Form container #testimonial-form-container not found inside modal.');
+                            }
+                        });
+                        formLoadListenerAttached = true; // Mark that this listener has been attached.
+                        console.log('Attached shown.bs.modal listener.');
+                    }
+                } else {
+                    console.error("Testimonial prompt modal element not found when initializing script.");
                 }
-            } else {
-                console.error("Testimonial prompt modal element not found when initializing script.");
-            }
-        </script>
+            </script>
+        </cfif>
     </cfif>
 </main>
