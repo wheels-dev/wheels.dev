@@ -17,6 +17,8 @@ services:
     environment:
       - PORT=60151
       - HEALTHCHECK_URI=http://127.0.0.1:60151/
+#      - JVM_HEAPSIZE=1024
+#      - BOX_SERVER_DEBUG=true
     networks:
       - wheels-net
     volumes:
