@@ -28,5 +28,7 @@
 	// Reload your application with ?reload=true&password=wheels.fw
 	set(reloadPassword="wheels.fw");
 
+	set(autoMigrateDatabase=true) // Set to false to disable auto migration
+
 	// CLI-Appends-Here
 </cfscript>
