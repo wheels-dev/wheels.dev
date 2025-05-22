@@ -109,6 +109,26 @@ component extends="testbox.system.BaseSpec" {
                 expect(response.status_code).toBe(200);
                 expect(response.error).toBe("false");
             });
+            it("It return not account found and status 200", function() {
+                var response = "";
+                cfhttp(url = "#resetPassword#", method = "POST", result = "local.response");
+
+                // Assert
+                expect(response.status_code).toBe(200);
+                expect(response.filecontent).toContain("No account found with that email address.");
+                expect(response.error).toBe("false");
+            });
+            it("It should return Password reset instructions have been sent to your email and status 200", function() {
+                var response = "";
+                cfhttp(url = "#resetPassword#", method = "POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="test@pai.com");
+                };
+
+                // Assert
+                expect(response.status_code).toBe(200);
+                expect(response.filecontent).toContain("Password reset instructions have been sent to your email.");
+                expect(response.error).toBe("false");
+            });
         });
     }
 }
