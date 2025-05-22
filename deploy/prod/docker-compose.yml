@@ -15,7 +15,7 @@ services:
     ports:
       - "50150:60150"
     environment:
-      - PORT=60151
+      - PORT=60150
       - HEALTHCHECK_URI=http://127.0.0.1:60150/
     networks:
       - wheels-net
