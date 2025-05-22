@@ -68,7 +68,7 @@
             <div class="col-lg-12 space-y-3 text-center col-12">
                 <p class="fs-60 line-height-70 fw-bold">Welcome to Our Community</p>
                 <p class="fs-18 fw-medium text-center position-relative">
-                    Welcome to Our Community - a place where hike-minded people connect, share ideas, <br> and grow
+                    Welcome to Our Community - a place where like-minded people connect, share ideas, <br> and grow
                     together in a positive and supportive environment.
                 </p>
                 <a href="/community" class="bg--primary d-block w-max mx-auto fs-16 px-3 py-2 rounded-18 text-white">
@@ -267,7 +267,7 @@
                             <img src="/images/testi.png">
                         </div>
                     </div>
-                </div> 
+                </div>
                 <div class="swiper-slide overflow-hidden rounded-30">
                     <div class="p-5 bg-white overflow-hidden d-flex row">
                         <div class="col-lg-8 col-12">
@@ -429,7 +429,7 @@
                 if (testimonialModalElement) {
                     // Get or create the Bootstrap modal instance right away
                     testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
-                    
+
                     // Automatically show the modal on page load
                     window.addEventListener('DOMContentLoaded', function() {
                         console.log('DOM loaded, showing testimonial modal automatically');
