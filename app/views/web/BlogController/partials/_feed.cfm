@@ -18,7 +18,7 @@
     <language>en-US</language>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     <sy:updateFrequency>1</sy:updateFrequency>
-    <generator>https://wheels.dev</generator>
+    <generator>#application.env.application_host#</generator>
     <image>
         <url>#application.env.application_host#/images/wheels-logo-mark.png</url>
         <title>Wheels.dev Blog</title>
