@@ -47,7 +47,7 @@ component extends="app.Models.Model" {
         return blogs;
     }
     
-    // Fetch all latest blog posts with corresponding users
+    // Fetch ten latest blog posts with corresponding users
     public function getTenLatest() {
         var blogs = findAll(
             where='statusid <> 1', 

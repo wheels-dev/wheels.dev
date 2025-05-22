@@ -10,6 +10,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to list all blogs
     public void function index() {
+       isEditor = hasEditorAccess();
         model("Log").log(
             category = "wheels.blog",
             level = "INFO",
@@ -26,8 +27,8 @@ component extends="app.Controllers.Controller" {
     public void function edit() {
         try {
             // Check if user is logged in
-            if (!structKeyExists(session, "userID")) {
-                redirectTo(route="login");
+            if (!hasEditorAccess()) {
+                redirectTo(route="blog");
                 return;
             }
 
@@ -40,7 +41,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Check if user has permission to edit this post
-            if (session.role != "admin" && blog.userId != session.userID) {
+            if (!hasEditorAccess() && blog.userId != session.userID) {
                 throw("You don't have permission to edit this post", "UnauthorizedAccess");
             }
 
@@ -121,10 +122,11 @@ component extends="app.Controllers.Controller" {
                             blogs = getAllByTag(params.filterValue);
                             break;
                         case "author":
-                            blogs = getBlogsByAuthor(params.filterValue);
+                            authorId = getBlogAuthorId(params.filterValue);
+                            blogs = getBlogsByAuthor(authorId);
                             author.totalposts = blogs.recordCount;
                             author.totalcomments = model("Comment").count(
-                                where="authorId = #params.filterValue#");
+                                where="authorId = #authorId#");
                             break;
                         default:
                             blogs = getAllBlogs(); // fallback in case of unknown filterType
@@ -155,12 +157,35 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    private function getBlogsByAuthor(required numeric authorId) {
-        return model("Blog").findAll(
-            where="statusid <> 1 AND status ='Approved' AND isPublished='true' AND createdBy = #authorId#",
+    private function getBlogsByAuthor(required authorId) {
+        var blogs = model("Blog").findAll(
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy = #authorId#",
             include="User",
-            order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
+            order="COALESCE(post_created_date, blog_posts.createdat) DESC"
         );
+
+        if (blogs.recordCount == 0) {
+           redirectTo(route="blog");
+        }
+
+        return blogs;
+    }
+
+    private function getBlogAuthorId(required authorParam) {
+		// Check if authorParam is numeric (ID) or string (username)
+		if (isNumeric(authorParam)) {
+			return val(authorParam);
+		} else {
+			// Lookup user by username
+			var user = model("user").findOne(where="username = '#authorParam#'");
+			if (isObject(user)) {
+				return user.id;
+			} else {
+				// User not found, redirect
+				redirectTo(route="blog");
+				return false;
+			}
+		}
     }
 
     function blogSearch(){
@@ -194,14 +219,12 @@ component extends="app.Controllers.Controller" {
         renderPartial(partial="partials/categorylist");
     }
 
-    function AuthorProfileBlogs(){
-        blogs = model("blog").findAll(where="status = 'Approved' AND createdby = '#params.author#' AND  isPublished = 'true'");
-        author = model("user").findAll(select="fullName, email, profilePicture, name, profileUrl", include = "Role", where = "id ='#params.author#'");
-        comments = model("comment").findAll(where="authorId = '#params.author#' AND  isPublished = '1'")
-        return true;
-    }
     // Function to show the create blog form
     function create() {
+        if (!hasEditorAccess()) {
+            redirectTo(route="blog");
+            return;
+        }
         categories = model("Category").findAll(order="name ASC");
         postTypes = model("PostType").findAll(order="name ASC");
         model("Log").log(
@@ -222,6 +245,10 @@ component extends="app.Controllers.Controller" {
         // Get request parameters
         var blogModel = model("Blog");
         try {
+            // Check if user has editor access
+            if (!hasEditorAccess()) {
+                throw("You don't have permission to create a blog post", "UnauthorizedAccess");
+            }
             model("Log").log(
                 category = "wheels.blog",
                 level = "INFO",
@@ -637,7 +664,6 @@ component extends="app.Controllers.Controller" {
 
     }
 
-
     // Business Logic
 
     private function getAll() {
@@ -1032,6 +1058,22 @@ component extends="app.Controllers.Controller" {
     public void function comment() {
         var commentModel = model("Comment");
         try {
+            // Check if user can comment using helper function
+            if (!canUserComment()) {
+                model("Log").log(
+                    category = "wheels.blog",
+                    level = "WARN",
+                    message = "Unauthorized comment attempt",
+                    details = {
+                        "userId": GetSignedInUserId(),
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
+                // Do not allow commenting
+                renderText("Comments are closed");
+                return;
+            }
+
             blog = getBlogById(params.blogId);
             if (params.content.trim() == "" || params.content.trim() == "<p> </p>" || params.content.trim() == "<p><br></p>") {
                 response = {};

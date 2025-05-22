@@ -58,7 +58,7 @@
                                     <td>#categoryNames#</td>
                                     <td>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" id="isPublished-#blogs.id[i]#" name="isPublished-#blogs.id[i]#" type="checkbox" <cfif blogs.isPublished[i]> checked </cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                            <input class="form-check-input" id="isPublished-#blogs.id[i]#" name="isPublished-#blogs.id[i]#" type="checkbox" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif blogs.isPublished[i]> checked </cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
                                         </div>
                                     </td>
                                     <td>
@@ -222,7 +222,7 @@
                     notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
                 }
                 if (xhr.status === 200 && xhr.responseURL.includes("/admin/publishblog")) {
-                    notifier.show('Success', 'Blog publish successfully!', 'success', '', 5000);
+                    notifier.show('Success', xhr.responseText, 'success', '', 5000);
                 }
                 if (xhr.status === 500 && xhr.responseURL.includes("/admin/closeComments")) {
                     notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
