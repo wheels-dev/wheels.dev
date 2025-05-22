@@ -9,7 +9,7 @@
                             Back
                         </span>
                     </button>
-                    <cfif isLoggedInUser() AND (session.role EQ "Admin" OR session.userID EQ blog.createdBy)>
+                    <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
                         <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
                             <i class="bi bi-pencil"></i> Edit
                         </a> 
@@ -166,7 +166,7 @@
                                 </cfoutput>
                             </div>
                             
-                            <cfif isLoggedInUser()>
+                            <cfif isLoggedInUser() AND canUserComment()>
                                 <form hx-target="##comment" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                                     <div class="d-flex gap-3 align-items-start">
                                         <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>
@@ -200,6 +200,10 @@
                                         </div>
                                     </div>
                                 </form>
+                            <cfelseif isLoggedInUser()>
+                                <div class="alert alert-primary ms-5 mt-2" role="alert">
+                                    <p>Comments are closed.</p>
+                                </div>
                             <cfelse>
                                 <div class="alert alert-primary ms-5 mt-2" role="alert">
                                     <p>To join this conversation login first! <u><a class="bold" href="/login">Login</a></u></p>
