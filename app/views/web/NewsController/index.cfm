@@ -1,5 +1,5 @@
 <main class="main-bg">
-  <div class="container py-5">
+  <div class="container py-5 word-break">
 
     <!-- Filter Buttons -->
     <div class="d-flex justify-content-center flex-wrap align-items-center gap-4">
