@@ -443,7 +443,9 @@ component extends="app.Controllers.Controller" {
                         "buttonTitle" = "View Your Post",
                         "content" = "Thank you for writing a blog post. Your post '#blog.title#' has been published on the Wheels website.",
                         "URl" = siteurl,
-                        "Footer" = "If you did not write blog post, you can safely ignore this email."
+                        "Footer" = "If you did not write blog post, you can safely ignore this email.",
+                        "footerGreetings" = "Thank you for being a part of Wheels community.",
+                        "isSubscriber" = user.newsletter
                     };
                     emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                     cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -799,7 +801,9 @@ component extends="app.Controllers.Controller" {
                     "buttonTitle" = "View Your Comment",
                     "content" = "Thanks for commenting on our blog post. Your comment is now live on the Wheels site.",
                     "URl" = siteurl,
-                    "Footer" = "If you did not write comment, you can safely ignore this email."
+                    "Footer" = "If you did not write comment, you can safely ignore this email.",
+                    "footerGreetings" = "Thank you for being a part of Wheels community.",
+                    "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfmail( 
@@ -873,7 +877,9 @@ component extends="app.Controllers.Controller" {
                     "buttonTitle" = "View Your Post",
                     "content" = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected.",
                     "URl" = "",
-                    "Footer" = "If you did not write blog post, you can safely ignore this email."
+                    "Footer" = "If you did not write blog post, you can safely ignore this email.",
+                    "footerGreetings" = "Thank you for being a part of Wheels community.",
+                    "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
