@@ -4,17 +4,17 @@ description: How to publish your plugin to forgebox.io via CommandBox
 
 # Publishing Plugins
 
-So, you've created your new magic, world solving plugin, and naturally, you want to share it with the world. CFWheels uses [forgebox.io](https://www.forgebox.io/type/cfwheels-plugins) as a plugins repository. This enables us to our CFWheels application's dependencies, install updates easily via CommandBox and more.
+So, you've created your new magic, world solving plugin, and naturally, you want to share it with the world. Wheels uses [forgebox.io](https://www.forgebox.io/type/cfwheels-plugins) as a plugins repository. This enables us to our Wheels application's dependencies, install updates easily via CommandBox and more.
 
 As a plugin author, it's well worth spending a little time setting yourself up to work with forgebox with the minimum amount of effort. Once done, you'll be able to either publish directly from the commandline, or upload to forgebox manually.
 
-This tutorial makes extensive use of CommandBox, GIT and the CFWheels CLI.
+This tutorial makes extensive use of CommandBox, GIT and the Wheels CLI.
 
 ### Requirements
 
 We strongly recommend always having the latest version of [CommandBox](https://www.ortussolutions.com/products/commandbox).
 
-You'll also want the CFWheels CLI. You can install that in CommandBox via `install cfwheels-cli`. This will also update it if you've got an older version installed.
+You'll also want the Wheels CLI. You can install that in CommandBox via `install cfwheels-cli`. This will also update it if you've got an older version installed.
 
 Some scripted commands also require the git CLI, although these are technically optional.
 
@@ -62,7 +62,7 @@ $ init --wizard
 
 ### Ensure you've set some critical box.json attributes
 
-In order for other CFWheels users to quickly identify and install your plugin via the CFWheels CLI, make sure you set the following `box.json` attributes - whilst a standard `box.json` might only have `name, version,author`, we need a little more information. Here's a template to get you started: (replace the values in CAPS)
+In order for other Wheels users to quickly identify and install your plugin via the Wheels CLI, make sure you set the following `box.json` attributes - whilst a standard `box.json` might only have `name, version,author`, we need a little more information. Here's a template to get you started: (replace the values in CAPS)
 
 {% code title="box.json" %}
 ```json
@@ -122,7 +122,7 @@ Your completed `box.json` might look something like this:
  "type":"cfwheels-plugins",
   // Required: From here is optional but recommended
  "homepage":"https://github.com/neokoenig/cfwheels-shortcodes",
- "shortDescription":"Shortcodes Plugin for CFWheels",
+ "shortDescription":"Shortcodes Plugin for Wheels",
  "keywords":"shortcodes",
  "private":false,
  "scripts":{
@@ -154,7 +154,7 @@ Remember this configuration will "stick", so make sure you change it back afterw
 
 ### Publishing a plugin to forgebox
 
-Both CFWheels CLI and Forgebox are expecting a tagged release with the plugin contents (e.g. zip). So the best way to publish is to...
+Both Wheels CLI and Forgebox are expecting a tagged release with the plugin contents (e.g. zip). So the best way to publish is to...
 
 1. Navigate into the plugin directory
 2. Ensure that directory is authorized to publish the repo (e.g. `git remote -v` should list your fetch/push endpoints)

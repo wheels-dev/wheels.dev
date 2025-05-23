@@ -102,7 +102,7 @@ However, this is not a definite requirement. Wheels associations are completely 
 
 A dependency is when an associated model relies on the existence of its parent. In the example above, a `profile` is dependent on a `user`. When you delete the `user`, you would usually want to delete the `profile` as well.
 
-CFWheels makes this easy for you. When setting up your association, simply add the argument `dependent` with one of the following values, and CFWheels will automatically deal with the dependency.
+Wheels makes this easy for you. When setting up your association, simply add the argument `dependent` with one of the following values, and Wheels will automatically deal with the dependency.
 
 In your `model.cfc` file's `config()` function::
 
@@ -140,9 +140,9 @@ component extends="Model" {
 
 Both the manager and employee are stored in the same `employees` table and share the same `Employee` model.
 
-When you use this association in your code, the `employees` table will be joined to itself using the `managerid` column. CFWheels will handle the aliasing of the (otherwise duplicated) table names. It does this by using the pluralized version of the name you gave the association (in other words "managers" in this case).
+When you use this association in your code, the `employees` table will be joined to itself using the `managerid` column. Wheels will handle the aliasing of the (otherwise duplicated) table names. It does this by using the pluralized version of the name you gave the association (in other words "managers" in this case).
 
-This is important to remember because if you, for example, want to select the manager's name, you will have to do so manually (CFWheels won't do this for you, like it does with normal associations) using the `select` argument.
+This is important to remember because if you, for example, want to select the manager's name, you will have to do so manually (Wheels won't do this for you, like it does with normal associations) using the `select` argument.
 
 Here's an example of how to select both the name of the employee and their manager:
 

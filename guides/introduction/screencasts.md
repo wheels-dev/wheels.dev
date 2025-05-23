@@ -6,30 +6,30 @@ description: >-
 
 # Screencasts
 
-### CFWheels 2.x
+### Wheels 2.x
 
-Create a basic CRUD interface in CFWheels 2.x\
+Create a basic CRUD interface in Wheels 2.x\
 [https://youtu.be/K5HLItTru1g](https://youtu.be/K5HLItTru1g)
 
-Create a basic JSON API in CFWheels 2.x\
+Create a basic JSON API in Wheels 2.x\
 [https://youtu.be/qZr5JzO0vo4](https://youtu.be/qZr5JzO0vo4)
 
-Routing in CFWheels 2.x - Part 1\
+Routing in Wheels 2.x - Part 1\
 [https://youtu.be/BnPGApAvMVQ](https://youtu.be/BnPGApAvMVQ)
 
-Routing in CFWheels 2.x - Part 2\
+Routing in Wheels 2.x - Part 2\
 [https://youtu.be/0CiGxJyJEIQ](https://youtu.be/0CiGxJyJEIQ)
 
-Introduction to Unit Testing in CFWheels 2.x\
+Introduction to Unit Testing in Wheels 2.x\
 [https://youtu.be/XgMuzzmBQ98](https://youtu.be/XgMuzzmBQ98)
 
-Unit Testing Controllers in CFWheels 2.x\
+Unit Testing Controllers in Wheels 2.x\
 [https://youtu.be/cygj9WDqHjY](https://youtu.be/cygj9WDqHjY)
 
-### CFWheels 1.x
+### Wheels 1.x
 
 {% hint style="danger" %}
-Please note that all the webcasts below were created with CFWheels 1.x in mind, and are listed here as they might still be useful to those starting out.
+Please note that all the webcasts below were created with Wheels 1.x in mind, and are listed here as they might still be useful to those starting out.
 {% endhint %}
 
 [View all screencasts on Vimeo](https://vimeo.com/channels/cfwheels/videos)
@@ -37,16 +37,16 @@ Please note that all the webcasts below were created with CFWheels 1.x in mind, 
 #### CRUD series
 
 [Episode 1: "C" Is for "Create" - Basic CRUD](https://vimeo.com/channels/cfwheels/42132402)\
-Learn about basic create operations when building standard CRUD functionality in CFWheels
+Learn about basic create operations when building standard CRUD functionality in Wheels
 
 [Episode 2: "R"; Is for "Read" - Basic CRUD](https://vimeo.com/channels/cfwheels/42573711)\
-Learn about basic read operations when building standard CRUD functionality in CFWheels
+Learn about basic read operations when building standard CRUD functionality in Wheels
 
 [Episode 3: "U" Is for "Update" - Basic CRUD](https://vimeo.com/channels/cfwheels/44346234)\
-Chris Peters demonstrates updating data in a simple CRUD CFWheels application
+Chris Peters demonstrates updating data in a simple CRUD Wheels application
 
 [Episode 4: "D" Is for Delete - Basic CRUD](https://vimeo.com/channels/cfwheels/44534195)\
-Learn how simple it is to delete records in a basic CRUD application using CFWheels
+Learn how simple it is to delete records in a basic CRUD application using Wheels
 
 #### "Building a Social Network"
 
@@ -102,16 +102,16 @@ Peter Amiri walks you through setting up a "Hello World" application using the C
 Chris Peters gives a high level overview of the ORM included with ColdFusion on Wheels
 
 [ColdRoute Plugin](https://vimeo.com/channels/cfwheels/41565391)\
-Chris Peters from Liquifusion demonstrates the ColdRoute plugin for CFWheels
+Chris Peters from Liquifusion demonstrates the ColdRoute plugin for Wheels
 
-[Wirebox Plugin for CFWheels](https://vimeo.com/channels/cfwheels/)\
-Doug Boude demonstrates using his new Wirebox plugin for CFWheels
+[Wirebox Plugin for Wheels](https://vimeo.com/channels/cfwheels/)\
+Doug Boude demonstrates using his new Wirebox plugin for Wheels
 
 [DBMigrate Create Operations](https://vimeo.com/channels/cfwheels/40902756)\
 Chris Peters from Liquifusion demonstrates creating tables and records in the DBMigrate plugin for ColdFusion on Wheels
 
 [CF Meetup, March 10 2011](https://vimeo.com/channels/cfwheels/21863242)\
-Online ColdFusion Meetup (coldfusionmeetup.com) session for March 10 2011, "What's New in CFWheels 1.1", with Chris Peters:
+Online ColdFusion Meetup (coldfusionmeetup.com) session for March 10 2011, "What's New in Wheels 1.1", with Chris Peters:
 
-[CFWheels Textmate Bundle Demo](https://vimeo.com/channels/cfwheels/3271850)\
-A quick demo of the CFWheels Textmate bundle by Russ Johnson
+[Wheels Textmate Bundle Demo](https://vimeo.com/channels/cfwheels/3271850)\
+A quick demo of the Wheels Textmate bundle by Russ Johnson

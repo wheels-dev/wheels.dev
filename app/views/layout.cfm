@@ -20,7 +20,7 @@
 
 <cfif isBlog>
     <cfset blogSlug = listLast(pathInfo, "/")>
-    
+
     <!--- Fetch the blog post by slug --->
     <cfset post = model("Blog").findOne(where="slug = '#blogSlug#'")>
 
@@ -75,8 +75,8 @@
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title><cfoutput>#pageTitle#</cfoutput></title>
-			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
-			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">		
+			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
 			<cfoutput>
 			<meta name="description" content="#metaDescription#">
@@ -111,7 +111,7 @@
 			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
 			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
-			
+
 			<script src="/javascripts/echarts.min.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/dataTables.min.js"></script>
@@ -137,7 +137,7 @@
 				ga('send', 'pageview');
 			</script>
 		</head>
-		<body>			
+		<body>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
@@ -154,8 +154,8 @@
 								<cfif hasEditorAccess()>
 									<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
 								</cfif>
-									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
-									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues">Add Issue</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Add Disscussion</a></li>
 								</ul>
 							</div>
 							<div class="nav-item d-xl-none d-block dropdown navHandlers">
@@ -187,7 +187,7 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary ms-auto mb-2 mb-lg-0 align-items-center">
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1">Source</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1">Source</a>
 							</li>
 							<li class="nav-item px-3">
 								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isDocs>active</cfif>" aria-current="page" href="/docs">Docs</a>
@@ -212,8 +212,8 @@
 									<cfif hasEditorAccess()>
 										<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
 									</cfif>
-										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Add Issue</a></li>
-										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions/new/choose">Add Disscussion</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues">Add Issue</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Add Disscussion</a></li>
 									</ul>
 								</li>
 								<li class="nav-item d-xl-block d-none dropdown px-3 navHandlers">
@@ -281,10 +281,10 @@
 									<li class="mt-2"><a href="https://guides.cfwheels.org/cfwheels-guides/3.0.0-snapshot" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Introduction</a>
 									</li>
-									<li class="mt-2"><a href="https://github.com/cfwheels/wheels-cli" target="_blank"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels-cli" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Command Line
 											Tools</a></li>
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1" target="_blank"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>
 									<li class="mt-2"><a href="https://www.youtube.com/@wheels-dev" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a Tutorial</a></li>
@@ -292,9 +292,9 @@
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Read the Guides</a></li>
 									<li class="mt-2"><a href="/api/v3.0.0"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">API Documentation</a></li>
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/discussions" target="_blank"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/discussions" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Join the Conversation</a></li>
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels" target="_blank"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Contribute to Wheels</a></li>
 								</ul>
 							</div>
@@ -311,16 +311,16 @@
 										</li>
 										<li class="mt-2"><a href="/logout"
 												class="text--secondary fs-14 text-decoration-none cursor-pointer">Logout</a>
-										</li>	
+										</li>
 									<cfelse>
 										<li class="mt-2"><a href="/login"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Login</a>
 										</li>
 										<li class="mt-2"><a href="/register"
 												class="text--secondary fs-14 text-decoration-none cursor-pointer">Register</a>
-										</li>		
+										</li>
 									</cfif>
-									
+
 									<li class="mt-2"><a href="/blog/feed"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Blog Feed</a>
 									</li>
@@ -343,10 +343,10 @@
 							<div class="col-lg-2">
 								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
 								<ul class="list-unstyled">
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/releases/tag/v2.5.1"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Source
 											Code</a></li>
-									<li class="mt-2"><a href="https://github.com/cfwheels/cfwheels/issues"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/issues"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Issue
 											Tracker</a>
 									</li>
@@ -370,7 +370,7 @@
 								</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
-								<a href="https://github.com/cfwheels/" class="text-dark" target="_blank">
+								<a href="https://github.com/wheels-dev/" class="text-dark" target="_blank">
 									<svg width="25" height="24" viewBox="0 0 25 24" fill="none"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
@@ -378,7 +378,7 @@
 											fill="#0C1620" />
 									</svg>
 								</a>
-								<a href="https://github.com/cfwheels/cfwheels/discussions" class="text-dark" target="_blank">
+								<a href="https://github.com/wheels-dev/wheels/discussions" class="text-dark" target="_blank">
 									<svg width="22" height="22" viewBox="0 0 22 22" fill="none"
 										xmlns="http://www.w3.org/2000/svg">
 										<path
