@@ -1,18 +1,18 @@
 ---
 description: >-
-  CFWheels does some magic to help you link to other pages within your app. Read
+  Wheels does some magic to help you link to other pages within your app. Read
   on to learn why you'll rarely use an <a> tag ever again.
 ---
 
 # Linking Pages
 
-CFWheels's built-in [linkTo()](https://api.cfwheels.org/controller.linkto.html) function does all of the heavy lifting involved with linking the different pages of your application together. You'll generally be using [linkTo()](https://api.cfwheels.org/controller.linkto.html) within your view code.
+Wheels's built-in [linkTo()](https://api.cfwheels.org/controller.linkto.html) function does all of the heavy lifting involved with linking the different pages of your application together. You'll generally be using [linkTo()](https://api.cfwheels.org/controller.linkto.html) within your view code.
 
 As you'll soon realize, the [linkTo()](https://api.cfwheels.org/controller.linkto.html) function accepts a whole bunch of arguments. We won't go over all of them here, so don't forget to have a look at the [documentation](https://api.cfwheels.org/controller.linkto.html) for the complete details.
 
 ### Default Wildcard Linking
 
-When installing CFWheels, if you open the file at `app/config/routes.cfm`, you'll see something like this:
+When installing Wheels, if you open the file at `app/config/routes.cfm`, you'll see something like this:
 
 {% code title="app/config/routes.cfm" %}
 ```javascript
@@ -39,7 +39,7 @@ That would generally produce this HTML markup:
 
 ### Linking to Routes
 
-If you're developing a non-trivial CFWheels application, you'll quickly grow out of the wildcard-based routing. You'll likely need to link to URLs containing primary keys, URL-friendly slugged titles, and nested subfolders. Now would be a good time to take a deep dive into the [Routing](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) chapter and learn the concepts.
+If you're developing a non-trivial Wheels application, you'll quickly grow out of the wildcard-based routing. You'll likely need to link to URLs containing primary keys, URL-friendly slugged titles, and nested subfolders. Now would be a good time to take a deep dive into the [Routing](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) chapter and learn the concepts.
 
 When you're using [linkTo()](https://api.cfwheels.org/controller.linkto.html) to create links to routes, you need to pay attention to 2 pieces of information: the route _name_ and any _parameters_ that the route requires.
 
@@ -125,7 +125,7 @@ mapper()
 
 ### Linking to Resources
 
-Resources are the encouraged routing pattern in CFWheels, and you will likely find yourself using this type of route most often.
+Resources are the encouraged routing pattern in Wheels, and you will likely find yourself using this type of route most often.
 
 Once you setup a resource in `app/config/routes.cfm`, the key is to inspect the routes generated and get a feel for the names and parameters that are expected.
 
@@ -266,7 +266,7 @@ To link to the `pages` resource, you add the parent resource's singular name fir
 
 ### Linking to a Delete Action
 
-CFWheels 2.0 introduced security improvements for actions that change data in your applications (i.e., creating, updating, and deleting database records). CFWheels protects these actions by requiring that they happen along with a form `POST` in the browser.
+Wheels 2.0 introduced security improvements for actions that change data in your applications (i.e., creating, updating, and deleting database records). Wheels protects these actions by requiring that they happen along with a form `POST` in the browser.
 
 A common UI pattern is to have a link to delete a record, usually in an admin area. Unfortunately, links can only trigger `GET` requests, so we need to work around this.
 
@@ -296,7 +296,7 @@ If we were to use all of the parameters for [linkTo()](https://api.cfwheels.org/
 
 ```html
 #linkTo(
-    text='<i class="rock-fist"></i> CFWheels Rocks!',
+    text='<i class="rock-fist"></i> Wheels Rocks!',
     route="cfwheelsRocks",
     key=55,
     params="rocks=yes&referral=cfwheels.org",
@@ -311,7 +311,7 @@ If we were to use all of the parameters for [linkTo()](https://api.cfwheels.org/
 Which would generate this HTML (or something like it):
 
 ```html
-<a href="https://www.example.co.uk/cfwheels/rocks/55?rocks=yes&amp;amp;referral=cfwheels.org#rockin"><i class="rock-fist"></i> CFWheels Rocks!</a>
+<a href="https://www.example.co.uk/cfwheels/rocks/55?rocks=yes&amp;amp;referral=cfwheels.org#rockin"><i class="rock-fist"></i> Wheels Rocks!</a>
 ```
 
 ### Images and Other Embedded HTML in Link Texts
@@ -345,7 +345,7 @@ If you decide to opt out of encoding, be careful. Any dynamic data passed in to 
 
 ### Adding Additional Attributes Like class, rel, and id
 
-Like many of the other CFWheels view helpers, any additional arguments that you pass to [linkTo()](https://api.cfwheels.org/controller.linkto.html) will be added to the generated `<a>` tag as attributes.
+Like many of the other Wheels view helpers, any additional arguments that you pass to [linkTo()](https://api.cfwheels.org/controller.linkto.html) will be added to the generated `<a>` tag as attributes.
 
 For example, if you'd like to add a `class` attribute value of button to your link, here's what the call to [linkTo()](https://api.cfwheels.org/controller.linkto.html) would look like:
 
@@ -357,7 +357,7 @@ The same goes for any other argument that you pass, including but not limited to
 
 ### What If I Don't Have URL Rewriting Enabled?
 
-CFWheels will handle linking to pages without URL rewriting for you automatically. Let's pretend that you still have CFWheels installed in your site root, but you do not have URL rewriting on. How you write your [linkTo()](https://api.cfwheels.org/controller.linkto.html) call will not change:
+Wheels will handle linking to pages without URL rewriting for you automatically. Let's pretend that you still have Wheels installed in your site root, but you do not have URL rewriting on. How you write your [linkTo()](https://api.cfwheels.org/controller.linkto.html) call will not change:
 
 ```
 #linkTo(
@@ -367,15 +367,15 @@ CFWheels will handle linking to pages without URL rewriting for you automaticall
 )#
 ```
 
-CFWheels will still correctly build the link markup:
+Wheels will still correctly build the link markup:
 
 ```html
 <a href="/index.cfm/products/3">This link isn't as pretty, but it still works</a>
 ```
 
-### Linking in a Subfolder Deployment of CFWheels
+### Linking in a Subfolder Deployment of Wheels
 
-The same would be true if you had CFWheels installed in a subfolder, thus perhaps eliminating your ability to use [URL Rewriting](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/url-rewriting) (depending on what web server you have). The same [linkTo()](https://api.cfwheels.org/controller.linkto.html) code above may generate this HTML if you had CFWheels installed in a subfolder called `foo`:
+The same would be true if you had Wheels installed in a subfolder, thus perhaps eliminating your ability to use [URL Rewriting](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/url-rewriting) (depending on what web server you have). The same [linkTo()](https://api.cfwheels.org/controller.linkto.html) code above may generate this HTML if you had Wheels installed in a subfolder called `foo`:
 
 ```html
 <a
@@ -388,9 +388,9 @@ The same would be true if you had CFWheels installed in a subfolder, thus perhap
 
 An `<a>` tag is easy enough, isn't it? Why would we need to use a function to do this mundane task? It turns out that there are some advantages. Here's the deal.
 
-CFWheels gives you a good amount of structure for your applications. With this, instead of thinking of URLs in the "old way," we think in terms of what route we're sending the user to.
+Wheels gives you a good amount of structure for your applications. With this, instead of thinking of URLs in the "old way," we think in terms of what route we're sending the user to.
 
-What's more, CFWheels is smart enough to build URLs for you. And it'll do this for you based on your situation with URL rewriting. Are you using URL rewriting in your app? Great. CFWheels will build your URLs accordingly. Not fortunate enough to have URL rewriting capabilities in your development or production environments? That's fine too because CFWheels will handle that automatically. Are you using CFWheels in a subfolder on your site, thus eliminating your ability to use URL rewriting? CFWheels handles that for you too.
+What's more, Wheels is smart enough to build URLs for you. And it'll do this for you based on your situation with URL rewriting. Are you using URL rewriting in your app? Great. Wheels will build your URLs accordingly. Not fortunate enough to have URL rewriting capabilities in your development or production environments? That's fine too because Wheels will handle that automatically. Are you using Wheels in a subfolder on your site, thus eliminating your ability to use URL rewriting? Wheels handles that for you too.
 
 If you see the pattern, this gives your application a good deal of portability. For example, you could later enable URL rewriting or move your application to a different subfolder. As long as you're using [linkTo()](https://api.cfwheels.org/controller.linkto.html) to build your links, you won't need to change anything extra to your code in order to accommodate this change.
 

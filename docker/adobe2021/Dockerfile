@@ -1,6 +1,6 @@
 FROM ortussolutions/commandbox:latest
 
-LABEL maintainer "CFWheels Core Team"
+LABEL maintainer "Wheels Core Team"
 
 ENV APP_DIR                 "/cfwheels-test-suite"
 ENV HEALTHCHECK_URI         "http://127.0.0.1:8080/"

@@ -1,16 +1,16 @@
 ---
 description: >-
   A quick tutorial that demonstrates how quickly you can get database
-  connectivity up and running with CFWheels.
+  connectivity up and running with Wheels.
 ---
 
 # Beginner Tutorial: Hello Database
 
-CFWheels's built in model provides your application with some simple and powerful functionality for interacting with databases. To get started, you will make some simple configurations, call some functions within your controllers, and that's it. Best yet, you will rarely ever need to write SQL code to get those redundant CRUD tasks out of the way.
+Wheels's built in model provides your application with some simple and powerful functionality for interacting with databases. To get started, you will make some simple configurations, call some functions within your controllers, and that's it. Best yet, you will rarely ever need to write SQL code to get those redundant CRUD tasks out of the way.
 
 ### Our Sample Application: User Management
 
-We'll learn by building part of a sample user management application. This tutorial will teach you the basics of setting up a resource that interacts with the CFWheels ORM.
+We'll learn by building part of a sample user management application. This tutorial will teach you the basics of setting up a resource that interacts with the Wheels ORM.
 
 {% hint style="info" %}
 **Download source code**
@@ -20,7 +20,7 @@ You can download all the source code for this sample application from [https://g
 
 ### Setting up the Data Source
 
-By default, CFWheels will connect to a data source `wheels.fw`. To change this default behavior, open the file at `app/config/settings.cfm`. In a fresh install of CFWheels, you'll see the follwing code:
+By default, Wheels will connect to a data source `wheels.fw`. To change this default behavior, open the file at `app/config/settings.cfm`. In a fresh install of Wheels, you'll see the follwing code:
 
 {% code title="app/config/settings.cfm" %}
 ```html
@@ -43,7 +43,7 @@ By default, CFWheels will connect to a data source `wheels.fw`. To change this d
     // set(dataSourcePassword="");
 
 	/*
-		If you comment out the following line, CFWheels will try to determine the URL rewrite capabilities automatically.
+		If you comment out the following line, Wheels will try to determine the URL rewrite capabilities automatically.
 		The "URLRewriting" setting can bet set to "on", "partial" or "off".
 		To run with "partial" rewriting, the "cgi.path_info" variable needs to be supported by the web server.
 		To run with rewriting set to "on", you need to apply the necessary rewrite rules on the web server first.
@@ -58,7 +58,7 @@ By default, CFWheels will connect to a data source `wheels.fw`. To change this d
 ```
 {% endcode %}
 
-These lines provide CFWheels with the necessary information about the data source, URL rewriting, and reload password for your application, and include the appropriate values. This may include values for `dataSourceName`, `dataSourceUserName`, and `dataSourcePassword`. More on URL rewriting and reload password later.
+These lines provide Wheels with the necessary information about the data source, URL rewriting, and reload password for your application, and include the appropriate values. This may include values for `dataSourceName`, `dataSourceUserName`, and `dataSourcePassword`. More on URL rewriting and reload password later.
 
 {% code title="app/config/settings.cfm" %}
 ```warpscript
@@ -70,7 +70,7 @@ set(dataSourceName="back2thefuture");
 
 ### Our Sample Data Structure
 
-CFWheels supports MySQL, SQL Server, PostgreSQL, and H2. It doesn't matter which DBMS you use for this tutorial; we will all be writing the same CFML code to interact with the database. CFWheels does everything behind the scenes that needs to be done to work with each DBMS.
+Wheels supports MySQL, SQL Server, PostgreSQL, and H2. It doesn't matter which DBMS you use for this tutorial; we will all be writing the same CFML code to interact with the database. Wheels does everything behind the scenes that needs to be done to work with each DBMS.
 
 That said, here's a quick look at a table that you'll need in your database, named `users`:
 
@@ -86,7 +86,7 @@ Note a couple things about this `users` table:
 1. The table name is plural.
 2. The table has an auto-incrementing primary key named `id`.
 
-These are database [conventions](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/working-with-cfwheels/conventions) used by CFWheels. This framework strongly encourages that everyone follow _convention over configuration_. That way everyone is doing things mostly the same way, leading to less maintenance and training headaches down the road.
+These are database [conventions](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/working-with-cfwheels/conventions) used by Wheels. This framework strongly encourages that everyone follow _convention over configuration_. That way everyone is doing things mostly the same way, leading to less maintenance and training headaches down the road.
 
 Fortunately, there are ways of going outside of these conventions when you really need it. But let's learn the conventional way first. Sometimes you need to learn the rules before you can know how to break them.
 
@@ -103,9 +103,9 @@ mapper()
 ```
 {% endcode %}
 
-We are going to create a section of our application for listing, creating, updating, and deleting user records. In CFWheels routing, this requires a plural resource, which we'll name `users`.
+We are going to create a section of our application for listing, creating, updating, and deleting user records. In Wheels routing, this requires a plural resource, which we'll name `users`.
 
-Because a `users` resource is more specific than the "generic" routes provided by CFWheels, we'll list it first in the chain of mapper method calls:
+Because a `users` resource is more specific than the "generic" routes provided by Wheels, we'll list it first in the chain of mapper method calls:
 
 {% code title="app/config/routes.cfm" %}
 ```javascript
@@ -128,9 +128,9 @@ This will create URL endpoints for creating, reading, updating, and deleting use
 | user     | PATCH  | /users/\[id]      | Form posts an existing user record to be updated |
 | user     | DELETE | /users/\[id]      | Deletes a user record                            |
 
-* _Name_ is referenced in your code to tell CFWheels where to point forms and links.
-* _Method_ is the HTTP verb that CFWheels listens for to match up the request.
-* _URL Path_ is the URL that CFWheels listens for to match up the request.
+* _Name_ is referenced in your code to tell Wheels where to point forms and links.
+* _Method_ is the HTTP verb that Wheels listens for to match up the request.
+* _URL Path_ is the URL that Wheels listens for to match up the request.
 
 {% hint style="info" %}
 **Don't forget to reload**
@@ -140,7 +140,7 @@ You will need to reload your application after adding new routes!
 
 ### Creating Users
 
-First, let's create a simple form for adding a new user to the `users` table. To do this, we will use CFWheels's _form helper_ functions. CFWheels includes a whole range of functions that simplifies all of the tasks that you need to display forms and communicate errors to the user.
+First, let's create a simple form for adding a new user to the `users` table. To do this, we will use Wheels's _form helper_ functions. Wheels includes a whole range of functions that simplifies all of the tasks that you need to display forms and communicate errors to the user.
 
 #### Creating the Form
 
@@ -212,9 +212,9 @@ component extends="Controller" {
 ```
 {% endcode %}
 
-Notice how we have prefixed the [model()](https://api.cfwheels.org/controller.model.html) function with `application.wo`. This is because, in CFWheels, all the global functions and functions for your controller reside in the `application.wo` structure. So, whenever you need to call a global function or a function for your controller, you have to prefix them with `application.wo`. You will see its use throughout the documentation wherever required.
+Notice how we have prefixed the [model()](https://api.cfwheels.org/controller.model.html) function with `application.wo`. This is because, in Wheels, all the global functions and functions for your controller reside in the `application.wo` structure. So, whenever you need to call a global function or a function for your controller, you have to prefix them with `application.wo`. You will see its use throughout the documentation wherever required.
 
-CFWheels will automatically know that we're talking about the `users` database table when we instantiate a `user` model. The convention: database tables are plural and their corresponding CFWheels models are singular.
+Wheels will automatically know that we're talking about the `users` database table when we instantiate a `user` model. The convention: database tables are plural and their corresponding Wheels models are singular.
 
 Why is our model name singular instead of plural? When we're talking about a single record in the `users` database, we represent that with an individual model object. So the `users` table contains many `user` objects. It just works better in conversation.
 
@@ -354,7 +354,7 @@ In the view at `app/views/users/index.cfm`, it's as simple as looping through th
 
 You'll see references to `EncodeForHtml` in some of our examples that output data. This helps escape HTML code in data that attackers could use to embed inject harmful JavaScript. (This is commonly referred to as an "XSS attack," short for "Cross-site Scripting attack.")
 
-A rule of thumb: you do not need to use `EncodeForHtml` when passing values into CFWheels helpers like `linkTo`, `buttonTo`, `startFormTag`, `textField`, etc. However, you need to escape data that is displayed directly onto the page without a CFWheels helper.
+A rule of thumb: you do not need to use `EncodeForHtml` when passing values into Wheels helpers like `linkTo`, `buttonTo`, `startFormTag`, `textField`, etc. However, you need to escape data that is displayed directly onto the page without a Wheels helper.
 {% endhint %}
 
 ### Editing Users
@@ -515,6 +515,6 @@ We simply load the user using the model's [findByKey()](https://api.cfwheels.org
 
 ### Database Says Hello
 
-We've shown you quite a few of the basics in getting a simple user database up and running. We hope that this has whet your appetite to see some of the power packed into the CFWheels framework. There's plenty more.
+We've shown you quite a few of the basics in getting a simple user database up and running. We hope that this has whet your appetite to see some of the power packed into the Wheels framework. There's plenty more.
 
-Be sure to read on to some of the related chapters listed below to learn more about working with CFWheels's ORM.
+Be sure to read on to some of the related chapters listed below to learn more about working with Wheels's ORM.

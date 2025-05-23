@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://cfwheels.org/favicon.ico">
-    <title>CFWheels Test UI</title>
+    <title>Wheels Test UI</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
@@ -12,7 +12,7 @@
 	<div>
 		<nav class="navbar navbar-light bg-light navbar-expand-sm">
 			<button type="button" class="navbar-toggler collapsed" style="overflow-anchor: none;"><span class="navbar-toggler-icon"></span></button>
-			<div class="navbar-brand">CFWheels</div>
+			<div class="navbar-brand">Wheels</div>
 			<div class="navbar-collapse collapse" style="display: none;">
 				<ul class="navbar-nav">
 					<li class="navbar-text">Test Suite</li>
@@ -28,7 +28,7 @@
 							<div class="card-header">Run Tests:</div>
 							<div class="list-group" id="test-section">
 							</div>
-                            
+
                             <!-- Execution Order -->
                             <fieldset class="form-group m-3">
                                 <legend tabindex="-1" class="bv-no-focus-ring col-form-label pt-0">Execution Order</legend>
@@ -45,7 +45,7 @@
                                     </div>
                                 </div>
                             </fieldset>
-							
+
 						</div>
 						<div class="card mt-3">
 							<!--Server Section-->
@@ -124,17 +124,17 @@
     let testSection = document.getElementById('test-section');
     let requestStatus = document.getElementsByClassName('request-status');
     let requestList = [];
-    
+
     window.onload = function(){
         //Tests Section
         let arrayTests = [];
         let tempTests;
 
-        for(let i = 0; i < testsuites.length; i++){     
+        for(let i = 0; i < testsuites.length; i++){
             tempTests = `<button title="Add Test to Queue" type="button" class="test list-group-item list-group-item-action"><svg viewBox="0 0 16 16" width="1em" height="1em" focusable="false" role="img" aria-label="plus circle" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi-plus-circle b-icon bi"><g><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path></g></svg> ${testsuites[i].displayname} </button>`;
             arrayTests.push(tempTests);
         }
-        
+
         arrayTests = arrayTests.join('');
         testSection.innerHTML = arrayTests;
 
@@ -147,14 +147,14 @@
             tempServer = `<a title="Open Server in New Window" href="${servers[i].server}" target="_blank" class="list-group-item list-group-item-action"> ${servers[i].servername} <svg viewBox="0 0 16 16" width="1em" height="1em" focusable="false" role="img" aria-label="box arrow up right" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi-box-arrow-up-right b-icon bi"><g><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"></path><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"></path></g></svg></a>`;
             arrayServers.push(tempServer);
         }
-        
+
         arrayServers = arrayServers.join('');
         serverSection.innerHTML = arrayServers;
-        
+
         //Select Test
         const tests = document.getElementsByClassName('test');
         const queueSection = document.getElementById('queue-section');
-        
+
         for(let i = 0; i < tests.length; i++){
             tests[i].addEventListener('click',function(){
                 clearSection(queueSection);
@@ -186,7 +186,7 @@
             for(let i = 0; i < requestList.length; i++){
                 let currentServer = servers.find((server) => server.servername === requestList[i].trim().split(':')[0]);
                 let currentDatabase = databases.find((database) => database.databasename === requestList[i].trim().split(':')[1].trim());
-                
+
                 requestUrl = `${currentServer.server}/wheels/testbox?format=json&sort=${execOrder}&db=${currentDatabase.database}`;
                 clearSection(document.getElementById('console-section'));
                 document.getElementById('console-section').insertAdjacentHTML('beforeend', `<div class="row p-1"><div class="col-md-1"><span class="badge badge-info">${gettime()}</span></div><div class="col-md-11 text-left">Test Started -${requestList[i]}</div></div>`);
@@ -213,7 +213,7 @@
             document.getElementById('clear-queue').disabled = '';
         }
     })
-    
+
     //API call
     async function API_call(requestUrl, request_server, requestStatus,spinner,index){
         try{
