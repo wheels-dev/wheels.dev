@@ -222,7 +222,9 @@ component extends="app.Controllers.Controller" {
                     "buttonTitle" = "View Your Testimonial",
                     "content" = "Thank you for writing a testimonial. Your testimonial has been approved and published on the Wheels website.",
                     "URl" = siteurl,
-                    "Footer" = "If you did not write testinomial, you can safely ignore this email."
+                    "Footer" = "If you did not write testinomial, you can safely ignore this email.",
+                    "footerGreetings" = "Thank you for being a part of Wheels community.",
+                    "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
