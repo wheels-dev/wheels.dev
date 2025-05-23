@@ -528,10 +528,12 @@ component extends="app.Controllers.Controller" {
         verifyUrl = verifyUrl & "?token=" & token;
         var emailparams = {
             "name" = user.fullname,
+            "welcomeMessage" = "Welcome to Wheels.dev!",
             "buttonTitle" = "Verify Your Account",
             "content" = "Thank you for signing up. Please click the button below to verify your account and get started.",
             "URl" = verifyUrl,
-            "Footer" = "If you did not request reset password, you can safely ignore this email."
+            "Footer" = "If you did not request reset password, you can safely ignore this email.",
+            "footerGreetings" = "Thank you for becoming a part of Wheels community."
         };
         emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
         
@@ -540,7 +542,7 @@ component extends="app.Controllers.Controller" {
             cfmail( 
                 to = "#user.email#", 
                 from = "#application.env.mail_from#", 
-                subject = "Verify Your Email", 
+                subject = "Verify Your Account", 
                 server = "#application.env.smtp_host#", 
                 port = "#application.env.smtp_port#", 
                 username = "#application.env.smtp_username#", 
@@ -655,9 +657,10 @@ component extends="app.Controllers.Controller" {
                     "message" = "Password reset instructions have been sent to your email."
                 };
             } else {
+                sendSignUpEmail(params.email);
                 data = {
-                    "success" = false,
-                    "message" = "No account found with that email address."
+                    "success" = true,
+                    "message" = "Password reset instructions have been sent to your email."
                 };
             }
             
@@ -803,7 +806,8 @@ component extends="app.Controllers.Controller" {
                 "buttonTitle" = "Reset Password",
                 "content" = "We received a request to reset the password for your account associated with this email address. If you made this request please click the button below to create a new password",
                 "URl" = resetUrl,
-                "Footer" = "If you did not request reset password, you can safely ignore this email."
+                "Footer" = "If you did not request reset password, you can safely ignore this email.",
+                "footerGreetings" = "Thank you for being a part of Wheels community."
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -832,6 +836,65 @@ component extends="app.Controllers.Controller" {
                 category = "wheels.auth",
                 level = "ERROR",
                 message = "Error sending password reset email",
+                details = {
+                    "email": email,
+                    "token": token,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            throw e;
+        }
+    }
+
+    private void function sendSignUpEmail(required string email) {
+        try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Account not found sending signup reset email",
+                details = {
+                    "email": email
+                }
+            );
+            var signUpUrl = urlFor(action="register", onlyPath=false);
+            var emailparams = {
+                "name" = "User",
+                "buttonTitle" = "Register here",
+                "content" = "content" = "We noticed you tried to reset your password using this email address, but it looks like there's no account associated with it.
+                No worries &mdash; it happens! If you're new to Wheels, we would love to have you on board.
+                <br><br>Click below to create your free account and start building powerful ColdFusion applications with ease.",
+                "URl" = signUpUrl,
+                "Footer" = "If you believe this is a mistake or you already have an account with a different email, feel free to try again or contact our support team for help.<br><br>If you did not request reset password, you can safely ignore this email.",
+                "footerGreetings" = ""
+            };
+            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#arguments.email#", 
+                from = "#application.env.mail_from#", 
+                subject = "No Account Found : Get Started with Wheels Today!", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
+                writeOutput(emailContent);
+            };
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Sign up email sent",
+                details = {
+                    "email": email
+                }
+            );
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error sending sign up email on account not found",
                 details = {
                     "email": email,
                     "token": token,
