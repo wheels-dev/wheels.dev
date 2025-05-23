@@ -1,18 +1,18 @@
 ---
 description: >-
-  Use CFWheels to send files to your users securely and with better control of
+  Use Wheels to send files to your users securely and with better control of
   the user experience.
 ---
 
 # Sending Files
 
-Sending files?! Is that really a necessary feature of CFWheels? Can't I just place the file on my web server and link to it? You are correct, there is absolutely no need to use CFWheels to send files. Your web server will do a fine job of sending out files to your users.
+Sending files?! Is that really a necessary feature of Wheels? Can't I just place the file on my web server and link to it? You are correct, there is absolutely no need to use Wheels to send files. Your web server will do a fine job of sending out files to your users.
 
 However, if you want a little more control over the way the user's browser handles the download or be able to secure access to your files then you might find the [sendFile()](https://api.cfwheels.org/controller.sendfile.html) function useful.
 
 ### Sending Files with the sendFile() Function
 
-The convention in CFWheels is to place all files you want users to be able to download in the `public/files` folder.
+The convention in Wheels is to place all files you want users to be able to download in the `public/files` folder.
 
 Assuming you've placed a file named `wheels_tutorial_20081028_J657D6HX.pdf` in that folder, here is a quick example of how you can deliver that file to the user. Let's start with creating a link to the action that will handle the sending of the file first.
 
@@ -22,7 +22,7 @@ Assuming you've placed a file named `wheels_tutorial_20081028_J657D6HX.pdf` in t
 </p>
 ```
 
-Now let's send the file to the user in the `sendTutorial` controller action. Just like the rendering functions in CFWheels, the [sendFile()](https://api.cfwheels.org/controller.sendfile.html) function should be placed as the very last thing you do in your action code.
+Now let's send the file to the user in the `sendTutorial` controller action. Just like the rendering functions in Wheels, the [sendFile()](https://api.cfwheels.org/controller.sendfile.html) function should be placed as the very last thing you do in your action code.
 
 In this case, that's the only thing we are doing, but perhaps you want to track how many times the file is being downloaded, for example. In that case, the tracking code needs to be placed _before_ the [sendFile()](https://api.cfwheels.org/controller.sendfile.html) function.
 
@@ -75,7 +75,7 @@ You can even send files which are stored in `ram://` - this is particularly usef
 // Create the PDF.
 cfwheels = cfdocument(format='pdf') {
  writeOutput(Now());
-}; 
+};
 
 // Write the file to RAM.
 fileWrite("ram://cfwheels.pdf", cfwheels);
@@ -96,7 +96,7 @@ browser. Although users would need to guess the file names to be able to access 
 
 There are two solutions to this.
 
-The easiest one is to just lock down access to the folder using your web server. CFWheels won't be affected by it since it gets the file from the file system.
+The easiest one is to just lock down access to the folder using your web server. Wheels won't be affected by it since it gets the file from the file system.
 
 If that is not an option, the other option is simply to move the files folder out of the web root, thus making it inaccessible. If you move the folder, you'll need to accommodate for this in your code by changing your [sendFile()](https://api.cfwheels.org/controller.sendfile.html) calls to specify the path as well, like this:
 

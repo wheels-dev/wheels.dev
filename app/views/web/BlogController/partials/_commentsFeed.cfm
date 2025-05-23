@@ -14,14 +14,14 @@
     <title>Comments on Wheels.dev Blog</title>
     <atom:link href="#application.env.application_host#/blog/comments/feed/" rel="self" type="application/rss+xml" />
     <link>#application.env.application_host#/blog</link>
-    <description><![CDATA[Latest comments on the CFWheels blog]]></description>
+    <description><![CDATA[Latest comments on the Wheels blog]]></description>
     <language>en-US</language>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     <sy:updateFrequency>1</sy:updateFrequency>
     <generator>#application.env.application_host#</generator>
 
     <cfloop array="#comments#" item="comment">
-        <cfsilent> 
+        <cfsilent>
             <cfset blogSlug = comment.Blog.slug>
             <cfset blogTitle = comment.Blog.title>
             <cfset commentBody = comment.content>

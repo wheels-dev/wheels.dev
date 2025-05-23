@@ -1,7 +1,7 @@
 ---
 description: >-
-  CFWheels ties your application's forms together with your model layer
-  elegantly. With CFWheels form conventions, you'll find yourself spending less
+  Wheels ties your application's forms together with your model layer
+  elegantly. With Wheels form conventions, you'll find yourself spending less
   time writing repetitive markup.
 ---
 
@@ -9,7 +9,7 @@ description: >-
 
 The majority of applications are not all about back-end. There is a great deal of work to perform on the front-end as well. It can be argued that most of your users will think of the interface _as_ the application.
 
-CFWheels is here to take you to greener pastures with its form helper functions. Let's get visual with some code examples.
+Wheels is here to take you to greener pastures with its form helper functions. Let's get visual with some code examples.
 
 ### Simple Example: The Old Way
 
@@ -43,7 +43,7 @@ Here is a simple form for editing a user profile. Normally, you would code your 
             </cfloop>
         </select>
     </div>
-    
+
     <div>
         <input type="submit" value="Save Changes">
     </div>
@@ -57,11 +57,11 @@ Then you would write a script for the form that validates the data submitted, ha
 
 We know that you are quite familiar with the drudgery of typing this sort of code over and over again. Let's not even mention the pain associated with debugging it or adding new fields and business logic!
 
-### Making Life Easier: CFWheels Form Helpers
+### Making Life Easier: Wheels Form Helpers
 
-The good news is that CFWheels simplifies this quite a bit for you. At first, it looks a little different using these conventions. But you'll quickly see how it all ties together and saves you some serious time.
+The good news is that Wheels simplifies this quite a bit for you. At first, it looks a little different using these conventions. But you'll quickly see how it all ties together and saves you some serious time.
 
-### Rewriting the Form with CFWheels Conventions
+### Rewriting the Form with Wheels Conventions
 
 Let's rewrite and then explain.
 
@@ -107,11 +107,11 @@ Let's rewrite and then explain.
 ```
 {% endcode %}
 
-I know what you are thinking. 9 lines of code can't replace all that work, right? In fact, they do. The HTML output will be very nearly the same as the previous example. By using CFWheels conventions, you are saving yourself a lot of key strokes and a great deal of time.
+I know what you are thinking. 9 lines of code can't replace all that work, right? In fact, they do. The HTML output will be very nearly the same as the previous example. By using Wheels conventions, you are saving yourself a lot of key strokes and a great deal of time.
 
 ### Linking up the Form's Action with startFormTag
 
-The first helper you'll notice in the CFWheels-ified version of the form is [startFormTag()](https://api.cfwheels.org/controller.startFormTag.html). This helper allows you to easily link up the form to the action that it's posting to in a secure way.
+The first helper you'll notice in the Wheels-ified version of the form is [startFormTag()](https://api.cfwheels.org/controller.startFormTag.html). This helper allows you to easily link up the form to the action that it's posting to in a secure way.
 
 You'll need to configure the `route` and `method` arguments, depending on the route that you're sending the form to. Also, if the route expects any parameters, you must pass those in as arguments to startFormTag as well. If you haven't already, read up about routes in the [Routing](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) chapter.
 
@@ -124,7 +124,7 @@ As we said, when linking a form to a route, there are 3 pieces of information th
 {% hint style="info" %}
 #### Use Routes for Form Posts
 
-CFWheels's default wildcard `controller/action`-based URLs will not accept form posts for security reasons. This is due to an attack known as [Cross Site Request Forgery (CSRF)](https://owasp.org/www-community/attacks/csrf). We strongly recommend configuring [routes](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) to post your forms to.
+Wheels's default wildcard `controller/action`-based URLs will not accept form posts for security reasons. This is due to an attack known as [Cross Site Request Forgery (CSRF)](https://owasp.org/www-community/attacks/csrf). We strongly recommend configuring [routes](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) to post your forms to.
 {% endhint %}
 
 Most of the time, you'll probably be working with a resource. Your `app/config/routes.cfm` may look something like this:
@@ -215,9 +215,9 @@ You would link up the form like so:
 
 ### A Note About PATCH and DELETE Requests
 
-Browsers (even the modern ones) tend to only work well with `GET` and `POST` requests, so how does CFWheels also enable `PATCH` and `DELETE` requests?
+Browsers (even the modern ones) tend to only work well with `GET` and `POST` requests, so how does Wheels also enable `PATCH` and `DELETE` requests?
 
-To keep things secure, CFWheels will still use `method="post"` on the form to send `PATCH` and `DELETE` requests. But the CFWheels router will recognize a `PATCH` or `DELETE` request if a form variable called `_method` is also sent, specifying the `PATCH` or `DELETE` method.
+To keep things secure, Wheels will still use `method="post"` on the form to send `PATCH` and `DELETE` requests. But the Wheels router will recognize a `PATCH` or `DELETE` request if a form variable called `_method` is also sent, specifying the `PATCH` or `DELETE` method.
 
 Under the hood, [startFormTag()](https://api.cfwheels.org/controller.startFormTag.html) will also generate a hidden field called `_method` that passes the request method along with the form `POST`.
 
@@ -232,7 +232,7 @@ So the `<form>` tag generated along with a `method` of `patch` will look somethi
 
 You'll notice that [startFormTag()](https://api.cfwheels.org/controller.startFormTag.html) will also add another hidden field along with `POST`ed requests called `authenticityToken`, which helps prevent against [Cross-Site Request Forgery (CSRF) attacks](https://owasp.org/www-community/attacks/csrf).
 
-The moral of the story: [startFormTag()](https://api.cfwheels.org/controller.startFormTag.html) takes care of all of this for you. If you for some reason decide to wire up your own custom `<form>` tag that must `POST` data, be sure to add your own hidden fields for `_method` and use the [authenticityTokenField()](https://api.cfwheels.org/controller.authenticityTokenField.html) helper to generate the hidden field for the `authenticityToken` that CFWheels will require on the `POST`.
+The moral of the story: [startFormTag()](https://api.cfwheels.org/controller.startFormTag.html) takes care of all of this for you. If you for some reason decide to wire up your own custom `<form>` tag that must `POST` data, be sure to add your own hidden fields for `_method` and use the [authenticityTokenField()](https://api.cfwheels.org/controller.authenticityTokenField.html) helper to generate the hidden field for the `authenticityToken` that Wheels will require on the `POST`.
 
 ### Refactoring Common Settings with Global Defaults
 
@@ -292,7 +292,7 @@ If you pass the form an empty instance named `profile` (for example, created by 
 
 If you look at the previous examples, there is one other bit of configuration that we can clean up: the `label` arguments passed to [textField()](https://api.cfwheels.org/controller.textField.html) and [select()](https://api.cfwheels.org/controller.select.html).
 
-Because we've named `firstName`, `lastName`, and `departmentId` in conventional ways (camel case), CFWheels will generate the labels for us automatically:
+Because we've named `firstName`, `lastName`, and `departmentId` in conventional ways (camel case), Wheels will generate the labels for us automatically:
 
 {% code title="app/views/profiles/edit.cfm" %}
 ```html
@@ -301,7 +301,7 @@ Because we've named `firstName`, `lastName`, and `departmentId` in conventional 
 #startFormTag(route="profile", method="patch")#
     #textField(objectName="profile", property="firstName")#
     #textField(objectName="profile", property="lastName")#
-    
+
     #select(
         objectName="profile",
         property="departmentId",
@@ -317,7 +317,7 @@ Because we've named `firstName`, `lastName`, and `departmentId` in conventional 
 ```
 {% endcode %}
 
-You'll notice that CFWheels is even smart enough to translate the `departmentId` property to `Department`.
+You'll notice that Wheels is even smart enough to translate the `departmentId` property to `Department`.
 
 If you ever need to override a label, you can do so in the model's initializer using the `label` argument of the [property()](https://api.cfwheels.org/model.property.html)method:
 
@@ -335,11 +335,11 @@ component extends="Model" {
 
 If you really want to secure a form, you need to do it server side. Sure, you can add JavaScript here and there to validate your web form. Unfortunately, disabling JavaScript (and thus your JavaScript-powered form validation) is simple in web browsers, and malicious bots tend not to listen to JavaScript.
 
-Securing the integrity of your web forms in CFWheels on the server side is very easy. Assuming that you have read the chapter on [Object Validation](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/database-interaction-through-models/object-validation), you can rest assured that your code is a lot more secure now.
+Securing the integrity of your web forms in Wheels on the server side is very easy. Assuming that you have read the chapter on [Object Validation](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/database-interaction-through-models/object-validation), you can rest assured that your code is a lot more secure now.
 
 ### Displaying a List of Model Validation Errors
 
-CFWheels provides you with a tool set of Helper Functions just for displaying error messages as well.
+Wheels provides you with a tool set of Helper Functions just for displaying error messages as well.
 
 In the controller, let's say that this just happened. Your model includes validations that require the presence of both `firstName` and `lastName`. The user didn't enter either. So in the controller's `update` action, it loads the model object, sets the values that the user submitted, sees that there was a validation error after calling [update()](https://api.cfwheels.org/model.update.html), and displays the form view again.
 
@@ -395,7 +395,7 @@ Let's take the previous form example and add some visual indication to the user 
 ```
 {% endcode %}
 
-How about that? With just that line of code (and the required validations on your object model), CFWheels will do the following:
+How about that? With just that line of code (and the required validations on your object model), Wheels will do the following:
 
 * Generate an HTML unordered list with a HTML class name of `errorMessages`.
 * Display all the error messages on your `profile` object as list items in that unordered list.
@@ -405,7 +405,7 @@ There is no longer the need to manually code error logic in your form markup.
 
 ### Showing Individual Fields' Error Messages
 
-Let's say that would rather display the error messages just below the failed fields (or anywhere else, for that matter). CFWheels has that covered too. All that it takes is a simple line of code for each form field that could end up displaying feedback to the user.
+Let's say that would rather display the error messages just below the failed fields (or anywhere else, for that matter). Wheels has that covered too. All that it takes is a simple line of code for each form field that could end up displaying feedback to the user.
 
 Let's add some error message handlers for the `firstName`, `lastName`, and `departmentId` fields:
 
@@ -442,7 +442,7 @@ And the error messages won't even display if there aren't any. That way you can 
 
 ### Types of Form Helpers
 
-There is a CFWheels form helper for basically every type of form element available in HTML. And they all have the ability to be bound to CFWheels model instances to make displaying values and errors easier. Here is a brief description of each helper.
+There is a Wheels form helper for basically every type of form element available in HTML. And they all have the ability to be bound to Wheels model instances to make displaying values and errors easier. Here is a brief description of each helper.
 
 ### Text, Password, and TextArea Fields
 
@@ -505,11 +505,11 @@ Each data type has its advantages and disadvantages:
 * **Structs** allow you to build out static or dynamic values using whatever data that you please, but there is no guarantee that your CFML engine will honor the order in which you add the elements.
 * **Arrays** also allow you to build out static or dynamic values, and there is a guarantee that your CFML engine will honor the order. But arrays are a tad more verbose to work with.
 
-CFWheels will examine the data passed to `options` and intelligently pick out elements to populate for the `<option>`s' values and text.
+Wheels will examine the data passed to `options` and intelligently pick out elements to populate for the `<option>`s' values and text.
 
-* **Query**: CFWheels will try to pick out the first numeric column for `value` and the first non-numeric column for the display text. The order of the columns is determined how you have them defined in your database.
-* **Struct**: CFWheels will use the keys as the `value` and the values as the display text.
-* **Array**: CFWheels will react depending on how many dimensions there are. If it's only a single dimension, it will populate both the `value` and display text with the elements. When it's a 2D array, CFWheels will use each item's first element as the `value` and each element's second element as the display text. For anything larger than 2 dimensions, CFWheels only uses the first 2 sub-elements and ignores the rest.
+* **Query**: Wheels will try to pick out the first numeric column for `value` and the first non-numeric column for the display text. The order of the columns is determined how you have them defined in your database.
+* **Struct**: Wheels will use the keys as the `value` and the values as the display text.
+* **Array**: Wheels will react depending on how many dimensions there are. If it's only a single dimension, it will populate both the `value` and display text with the elements. When it's a 2D array, Wheels will use each item's first element as the `value` and each element's second element as the display text. For anything larger than 2 dimensions, Wheels only uses the first 2 sub-elements and ignores the rest.
 
 Here's an example of how you might use each option:
 
@@ -610,7 +610,7 @@ If `profile.eyeColorId`'s value were already set to `1`, the rendered HTML would
 </fieldset>
 ```
 
-Note that if you don't specify `labelPlacement="after"` in your calls to [radioButton()](https://api.cfwheels.org/controller.radiobutton.html), CFWheels will place the labels before the form controls.
+Note that if you don't specify `labelPlacement="after"` in your calls to [radioButton()](https://api.cfwheels.org/controller.radiobutton.html), Wheels will place the labels before the form controls.
 
 ### Check Boxes
 
@@ -705,7 +705,7 @@ Here is a list of the "tag" helpers for your reference:
 
 ### Passing Extra Arguments for HTML Attributes
 
-Much like CFWheels's [linkTo()](https://api.cfwheels.org/controller.linkto.html) function, any extra arguments that you pass to form helpers will be passed to the corresponding HTML tag as attributes.
+Much like Wheels's [linkTo()](https://api.cfwheels.org/controller.linkto.html) function, any extra arguments that you pass to form helpers will be passed to the corresponding HTML tag as attributes.
 
 For example, if we wanted to define a `class` on our starting form tag, we just pass that as an extra argument to [startFormTag()](https://api.cfwheels.org/controller.startformtag.html):
 
@@ -719,13 +719,13 @@ Which would produce this HTML:
 <form action="/posts" method="post" class="login-form">
 ```
 
-When a form helper creates more than one HTML element you can typically pass in extra arguments to be set on that element as well. One common example of this is when you need to set a `class` for a `label` element; you can do so by passing in `labelClass="class-name"`. CFWheels will detect that your argument starts with "label" and assume it should go on the `label` element and not the `input` element (or whatever "main" element the form helper creates). This means you could also pass in `labelId="my-id"` to set the `id` on the `label` for example.
+When a form helper creates more than one HTML element you can typically pass in extra arguments to be set on that element as well. One common example of this is when you need to set a `class` for a `label` element; you can do so by passing in `labelClass="class-name"`. Wheels will detect that your argument starts with "label" and assume it should go on the `label` element and not the `input` element (or whatever "main" element the form helper creates). This means you could also pass in `labelId="my-id"` to set the `id` on the `label` for example.
 
 ### Boolean Attributes
 
 HTML includes many boolean attributes like `novalidate`, `disabled`, `required`, etc.
 
-If you want for a CFWheels view helper to render one of these attributes, just pass the name of the attribute as an extra argument, set it to `true`, and CFWheels will include the boolean attribute:
+If you want for a Wheels view helper to render one of these attributes, just pass the name of the attribute as an extra argument, set it to `true`, and Wheels will include the boolean attribute:
 
 ```html
 #textField(objectName="post", property="title", required=true)#
@@ -740,9 +740,9 @@ If you want for a CFWheels view helper to render one of these attributes, just p
 <input type="submit" value="Submit" data-ajax-url="/contacts/send.js">
 ```
 
-Because ColdFusion arguments cannot contain any hyphens, we have constructed a workaround for you for CFWheels view helpers.
+Because ColdFusion arguments cannot contain any hyphens, we have constructed a workaround for you for Wheels view helpers.
 
-Let's say you want a `data-ajax-url` HTML attribute as depicted above. All you need to do is pass in an argument named `dataAjaxUrl`, and CFWheels will convert that attribute name to the hyphenated version in the HTML output.
+Let's say you want a `data-ajax-url` HTML attribute as depicted above. All you need to do is pass in an argument named `dataAjaxUrl`, and Wheels will convert that attribute name to the hyphenated version in the HTML output.
 
 ```html
 #submitTag(
@@ -756,7 +756,7 @@ As an alternative, you can pass in `data_ajax_url` instead if you prefer undersc
 
 ### Special Form Helpers
 
-CFWheels provides a few extra form helpers that make it easier for you to generate accessible fields for dates and/or times. These also bind to properties that are of type `DATE, TIMESTAMP, DATETIME`, etc.
+Wheels provides a few extra form helpers that make it easier for you to generate accessible fields for dates and/or times. These also bind to properties that are of type `DATE, TIMESTAMP, DATETIME`, etc.
 
 We won't go over these in detail, but here is a list of the date and time form helpers available:
 

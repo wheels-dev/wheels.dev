@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!-- ======================================================================
-     CFWheels Core Build
+     Wheels Core Build
      ====================================================================== -->
 <project name="cfwheels-core-build" default="build.all" basedir="../">
 	<description>
-		Build a new distribution of CFWheels
+		Build a new distribution of Wheels
 	</description>
 
 	<!-- UPDATE ON EACH VERSION CYCLE -->
@@ -79,13 +79,13 @@
 	<!-- Build All Releases -->
 	<target
 		name="build.all"
-		description="Builds CFWheels"
+		description="Builds Wheels"
 		depends="build.cfwheels.core,build.cfwheels.base">
 	</target>
 
   <!-- ================================ -->
-	<!-- Build CFWheels Core Distribution -->
-	<target name="build.cfwheels.core" description="Build a new CFWheels Core distribution" depends="init">
+	<!-- Build Wheels Core Distribution -->
+	<target name="build.cfwheels.core" description="Build a new Wheels Core distribution" depends="init">
 		<!-- Cleanup + Init -->
 		<property name="dir.build.core" value="${basedir}/build-cfwheels-core"/>
 		<delete dir="${dir.build.core}" />
@@ -138,7 +138,7 @@
 			</else>
 		</if>
 
-		<!-- Zip CFWheels Bundle -->
+		<!-- Zip Wheels Bundle -->
 		<zip destfile="${dir.cfwheels.exports}/${cfwheels.core.slug}-${cfwheels.version}.zip" basedir="${dir.build.core}/cfwheels" />
 
 		<!-- Build Checksum -->
@@ -162,8 +162,8 @@
   <!-- ================================ -->
 
   <!-- ================================ -->
-	<!-- Build CFWheels Base Distribution -->
-	<target name="build.cfwheels.base" description="Build a new CFWheels Base distribution" depends="init">
+	<!-- Build Wheels Base Distribution -->
+	<target name="build.cfwheels.base" description="Build a new Wheels Base distribution" depends="init">
 		<!-- Cleanup build dir -->
 		<property name="dir.build.base" value="${basedir}/build-cfwheels-base"/>
 		<delete dir="${dir.build.base}" />
@@ -227,7 +227,7 @@
 			</else>
 		</if>
 
-		<!-- Zip CFWheels Bundle -->
+		<!-- Zip Wheels Bundle -->
 		<zip destfile="${dir.cfwheels.exports}/${cfwheels.base.slug}-${cfwheels.version}.zip" basedir="${dir.build.base}/cfwheels" />
 
 		<!-- Build Checksum -->

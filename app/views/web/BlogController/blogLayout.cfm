@@ -43,7 +43,7 @@
 			<!-- Navigation -->
 			<cfset navBg = "nav-bg">
 			<cfset isGuide = cgi.path_info EQ "/guides">
-			
+
 			<cfoutput>
 				<nav class="navbar sticky-top navbar-expand-lg py-2 #isGuide ? 'bg--secondary' : 'nav-bg'#">
 					<div class="container">
@@ -67,17 +67,17 @@
 									<a class="nav-link py-lg-0 py-2 fs-16" aria-current="page" href="/blog">Blog</a>
 								</li>
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/discussions">Discussions</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/wheels-dev/wheels/discussions">Discussions</a>
 								</li>
 								<li class="nav-item px-3">
-									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/cfwheels/cfwheels/issues">Issue Tracker</a>
+									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://github.com/wheels-dev/wheels/issues">Issue Tracker</a>
 								</li>
 								<li class="nav-item px-3">
 									<a class="nav-link #isGuide ? 'text-white' : ''# py-lg-0 py-2 fs-16" aria-current="page" target="_blank" href="https://www.forgebox.io/type/cfwheels-plugins">Plugins</a>
 								</li>
 							</ul>
 							<div class="d-lg-block d-none">
-								<a href="https://github.com/cfwheels" target="_blank">
+								<a href="https://github.com/wheels-dev" target="_blank">
 									<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<rect width="40" height="39.4186" rx="10" fill="##EF3B2D" />
 										<path

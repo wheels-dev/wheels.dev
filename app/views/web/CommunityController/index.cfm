@@ -22,8 +22,8 @@
                     <div>
                         <p class="text-center text--primary fs-32 pb-2 fw-bold">Top Contributors</p>
                         <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
-                            <a href="https://github.com/cfwheels/cfwheels/graphs/contributors" target="_blank">
-                                <img src="https://contrib.rocks/image?repo=cfwheels/cfwheels" style="max-width: 100%;">
+                            <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
+                                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;">
                             </a>
                         </div>
                     </div>
