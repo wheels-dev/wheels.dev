@@ -4,7 +4,7 @@
     <!-- Filter Buttons -->
     <div class="d-flex justify-content-center flex-wrap align-items-center gap-4">
       <a href="/news" class="px-4 fs-16 py-2 rounded-3 border border--primary bg--primary text-white active">Everything</a>
-      <a href="https://github.com/cfwheels/cfwheels/releases" target="_blank" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Releases</a>
+      <a href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Releases</a>
       <a href="/blog" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Blogs</a>
     </div>
 

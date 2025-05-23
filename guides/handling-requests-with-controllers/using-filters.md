@@ -6,7 +6,7 @@ description: Stop repeating yourself with the use of before and after filters.
 
 If you find the need to run a piece of code before or after several controller actions, then you can use _filters_ to accomplish this without needing to explicitly call the code inside each action in question.
 
-This is similar to using the `onRequestStart` / `onRequestEnd` functions in CFML's `Application.cfc` file, with the difference being that filters tie in better with your CFWheels controller setup.
+This is similar to using the `onRequestStart` / `onRequestEnd` functions in CFML's `Application.cfc` file, with the difference being that filters tie in better with your Wheels controller setup.
 
 ### An Example: Authenticating Users
 
@@ -88,7 +88,7 @@ component extends="Controller" {
 }
 ```
 
-Much better! But CFWheels can take this process of avoiding repetition one step further. By placing a [filters()](https://api.cfwheels.org/controller.filters.html) call in the `config()` function of the controller, you can tell CFWheels what function to run before any desired action(s).
+Much better! But Wheels can take this process of avoiding repetition one step further. By placing a [filters()](https://api.cfwheels.org/controller.filters.html) call in the `config()` function of the controller, you can tell Wheels what function to run before any desired action(s).
 
 ```javascript
 component extends="Controller" {
@@ -155,7 +155,7 @@ private function translate() {
 
 ### Including and Excluding Actions From Executing Filters
 
-By default, filters apply to all actions in a controller. If that's not what you want, you can tell CFWheels to only run the filter on the actions you specify with the `only` argument. Or you can tell it to run the filter on all actions except the ones you specify with the `except` argument.
+By default, filters apply to all actions in a controller. If that's not what you want, you can tell Wheels to only run the filter on the actions you specify with the `only` argument. Or you can tell it to run the filter on all actions except the ones you specify with the `except` argument.
 
 Here are some examples showing how to setup filtering in your controllers. Remember, these calls go inside the `config()` function of your controller file.
 
@@ -174,10 +174,10 @@ filters(through="authorize", byIP=true);
 
 Now the `byIP` argument will be available in the `authorize` function.
 
-To help you avoid any clashing of argument names, CFWheels also supports passing in the arguments in a struct as well:
+To help you avoid any clashing of argument names, Wheels also supports passing in the arguments in a struct as well:
 
 ```javascript
-// The `through` argument would clash here if it wasn't stored within a struct 
+// The `through` argument would clash here if it wasn't stored within a struct
 args.byIP = true;
 args.through = true;
 filters(through="authorize", authorizeArguments=args);
@@ -187,17 +187,17 @@ filters(through="authorize", authorizeArguments=args);
 
 Because your controller's `config()` function only runs once per application start, the passing of arguments can also be written as expressions to be evaluated at runtime. This is helpful if you need for the value to be dynamic from request to request.
 
-For example, this code would only evaluate the value for `request.region` on the very first request, and CFWheels will store that particular value in memory for all subsequent requests:
+For example, this code would only evaluate the value for `request.region` on the very first request, and Wheels will store that particular value in memory for all subsequent requests:
 
 ```javascript
-// This is probably not what you intended  
+// This is probably not what you intended
 filters(through="authorize", byIP=true, region=request.region);
 ```
 
 To avoid this hard-coding of values from request to request, you can instead pass an expression. (The double pound signs are necessary to escape dynamic values within the string. We only want to store a string representation of the expression to be evaluated.)
 
 ```javascript
-// This is probably more along the lines of what you intended 
+// This is probably more along the lines of what you intended
 filters(through="authorize", byIP=true, region="##request.region##");
 ```
 

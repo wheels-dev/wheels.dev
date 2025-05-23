@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div class="col-md-auto text-center">
-                    <a href="https://github.com/cfwheels/cfwheels/releases" class="" target="_blank">
+                    <a href="https://github.com/wheels-dev/wheels/releases" class="" target="_blank">
                         <button
                             class="fs-16 fw-semibold bg--success w-200 py-2 rounded-4 text--secondary">Download</button>
                     </a>
@@ -148,8 +148,8 @@
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contributors</p>
         </div>
         <div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
-            <a href="https://github.com/cfwheels/cfwheels/graphs/contributors" target="_blank">
-                <img src="https://contrib.rocks/image?repo=cfwheels/cfwheels" style="max-width: 100%;">
+            <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
+                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;">
             </a>
         </div>
     </div>

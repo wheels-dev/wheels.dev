@@ -153,7 +153,7 @@ That leaves you with this code:
 ```javascript
 component extends="Controller" {
 
-    function products() { 
+    function products() {
     }
 
 }
@@ -166,7 +166,7 @@ this code?
 
 {% code title="Shop.cfc" %}
 ```javascript
-component extends="Controller" { 
+component extends="Controller" {
 
 }
 ```
@@ -227,14 +227,14 @@ of all that for the [Form Helpers and Showing Errors](https://guides.cfwheels.or
 
 ### JSON as part of the request body
 
-If you're constructing a JSON API, you're inevitably going to come across how to deal with "incoming" json packets to your routing endpoints. Instead of having to test each request with whether it's valid json etc, CFWheels will automatically map the JSON body in a request to the params struct, as long as it has `application/json` as it's mime type.
+If you're constructing a JSON API, you're inevitably going to come across how to deal with "incoming" json packets to your routing endpoints. Instead of having to test each request with whether it's valid json etc, Wheels will automatically map the JSON body in a request to the params struct, as long as it has `application/json` as it's mime type.
 
 So in the same way that the `url` and `form` scopes are merged, so a valid `json` body would be. The exception to the rule is when a javascript array is the root element, where it's then added to `params._json` to follow Rails conventions. (For obvious reasons, we can't merge an array into a struct!)
 
 {% hint style="info" %}
 #### NOTE
 
-The mapping of a json array to params.\_json was introduced in CFWheels 2.1
+The mapping of a json array to params.\_json was introduced in Wheels 2.1
 {% endhint %}
 
 ### Routing

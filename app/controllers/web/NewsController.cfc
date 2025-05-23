@@ -15,7 +15,7 @@ component extends="app.Controllers.Controller" {
         try {
             // GitHub requires a User-Agent header or it may reject the request
             cfhttp(
-                url="https://api.github.com/repos/cfwheels/cfwheels/releases" 
+                url="https://api.github.com/repos/wheels-dev/wheels/releases"
                 method="GET"
                 result="httpResult"){
                 cfhttpparam(type="header" name="User-Agent" value="Wheels-dev-App")
