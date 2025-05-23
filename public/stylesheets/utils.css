@@ -267,3 +267,7 @@
 .w-35-col { width: 35%; }
 .w-20-col { width: 20%; }
 .w-5-col { width: 5%; }
+
+.word-break{
+    word-break: break-word;
+}

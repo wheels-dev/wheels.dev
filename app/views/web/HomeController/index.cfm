@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center align-items-center mt-5 gy-3 text-center gx-5">
+        <div class="row justify-content-center align-items-center mt-5 gy-3 text-center gx-sm-5">
             <div class="col-md-auto">
             </div>
         </div>
@@ -36,14 +36,14 @@
 
     <!-- Cards -->
     <div class="container pb-5">
-        <div class="row g-5" id="features-container" hx-get="/home/loadFeatures" hx-trigger="load"
+        <div class="row gy-3 gy-sm-5 gx-sm-5" id="features-container" hx-get="/home/loadFeatures" hx-trigger="load"
             hx-target="#features-container" hx-swap="innerHTML">
             <!-- Features will be loaded here via HTMX -->
         </div>
     </div>
 
     <!-- Latest blogs -->
-    <div class="pt-5 blog-main">
+    <div class="pt-5 px-2 blog-main">
         <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load"
@@ -94,11 +94,11 @@
                     </p>
                 </div>
                 <!-- Swiper container -->
-                <div class="col-12 pb-5 testimonialsSwiper swiper">
+                <div class="col-12 pb-5 px-2 testimonialsSwiper swiper">
                     <div class="w-100 gap-lg-5 gap-0 swiper-wrapper">
                         <cfloop query="testimonials">
                             <div class="d-flex row swiper-slide">
-                                <div class="col-lg-3 col-12">
+                                <div class="col-lg-3 col-12 pb-2 pb-sm-0">
                                     <img src="#len(testimonials.logoPath) gt 0 ? testimonials.logoPath : '/images/testi.png'#" class="img-fluid" alt="#encodeForHtml(testimonials.companyName)#" style="width: 330px; height: 290px;">
                                 </div>
                                 <div class="col-lg-9 col-12">
