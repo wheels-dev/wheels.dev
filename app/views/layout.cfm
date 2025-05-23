@@ -254,7 +254,7 @@
 
 			<footer class="bg-white <cfif isAuthPage>d-none</cfif> pt-5 pb-3 border-top">
 					<div class="container">
-						<div class="row gy-lg-0 gy-3 gx-5">
+						<div class="row gy-lg-0 gy-3 gx-sm-5">
 							<div class="col-lg-4">
 								<img src="/images/wheels-logo.png" width="284" alt="">
 								<div class="mt-3">
