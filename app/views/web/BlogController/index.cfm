@@ -69,39 +69,19 @@
                 </div>
                 <div class="row justify-content-center justify-content-lg-between">
                     <cfoutput>
-                        <!--- Set up the blog URL based on any filtering parameters --->
-                        <cfif isDefined("params.filterType") AND isDefined("params.filterValue")>
-                            <cfset encodedFilterType = params.filterType>
-                            <cfset encodedFilterValue = params.filterValue>
-                            <cfset blogUrl = "/blog/list/#encodedFilterType#/#encodedFilterValue#">
-                        <cfelse>
-                            <cfset blogUrl = "/blog/list">
+                        <!-- Detect if filtering via route (e.g. blog/year/month or blog/category/tag) -->
+                        <cfif isDefined("params.filterType") and isDefined("params.filterValue")>
+                            <cfset blogUrl="/blog/list/#params.filterType#/#params.filterValue#">
+                            <cfelse>
+                            <cfset blogUrl="/blog/list">
                         </cfif>
-
-                        <!--- Initial HTMX loader to fetch first set of blogs --->
-                        <div id="hxLoader" 
-                             hx-get="#blogUrl#?page=1&perPage=6&infiniteScroll=true"
-                             hx-trigger="load"
-                             hx-target="#blogsContainer"
-                             hx-indicator="##loader-wrapper">
+                        
+                        <!-- wrapper that triggers the HTMX call -->
+                        <div id="hxLoader" hx-get="#blogUrl#" hx-trigger="load" hx-target="##blogsContainer"
+                            hx-swap="innerHTML" hx-indicator="##loader-wrapper">
                         </div>
-
-                        <!--- Blog list container --->
-                        <div id="blogsContainer" class="blog-list-container">
-                            <!--- Initial blogs will be loaded here via HTMX --->
-                        </div>
-
-                        <!--- Infinite scroll trigger --->
-                        <div id="infiniteScrollTrigger"
-                             class="infinite-scroll-trigger w-100"
-                             hx-get="#blogUrl#?page=2&perPage=6&infiniteScroll=true"
-                             hx-trigger="revealed"
-                             hx-target="#blogsContainer"
-                             hx-swap="beforeend"
-                             hx-indicator="##loader-wrapper"
-                             style="height: 1px;"
-                             aria-hidden="true">
-                            <span class="visually-hidden">Loading more posts...</span>
+                        <!-- blog list container -->
+                        <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-3 row-cols-1">
                         </div>
                     </cfoutput>
                     <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
