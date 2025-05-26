@@ -10,7 +10,7 @@ component extends="app.Controllers.Controller" {
 
     // Function to list all blogs
     public void function index() {
-       isEditor = hasEditorAccess();
+        isEditor = hasEditorAccess();
         model("Log").log(
             category = "wheels.blog",
             level = "INFO",
@@ -21,6 +21,202 @@ component extends="app.Controllers.Controller" {
             },
             userId = GetSignedInUserId()
         );
+    }
+
+    public void function blogs() {
+
+        // Initialize default values and sanitize inputs
+        filterType = sanitizeParam(structKeyExists(params, "filterType") ? params.filterType : "", "");
+        filterValue = sanitizeParam(structKeyExists(params, "filterValue") ? params.filterValue : "", "");
+        page = structKeyExists(params, "page") ? max(1, val(sanitizeParam(params.page, 1))) : 1;
+        perPage = structKeyExists(params, "perPage") ? max(1, min(24, val(sanitizeParam(params.perPage, 6)))) : 6;
+        isInfiniteScroll = structKeyExists(params, "infiniteScroll") ? params.infiniteScroll : false;
+        userId = GetSignedInUserId();
+        
+        // Log request details
+        logBlogRequest(filterType, filterValue, page, perPage, userId);
+        
+        try {
+            var result = getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll);
+            
+            // Set template variables
+            blogs = result.query;
+            hasMore = result.hasMore;
+            totalCount = result.totalCount;
+            
+            // Set author info if filtering by author
+            if (structKeyExists(result, "author")) {
+                author = result.author;
+            }
+            
+            renderPartial(partial="partials/blogList");
+            
+        } catch (any e) {
+            handleBlogError(e, userId, page, perPage, isInfiniteScroll);
+        }
+    }
+
+    // Helper function to sanitize parameters
+    private string function sanitizeParam(param, defaultValue) {
+        if (!structKeyExists(arguments, "param") || !len(trim(arguments.param))) {
+            return arguments.defaultValue;
+        }
+        return trim(arguments.param);
+    }
+
+    // Helper function to log blog requests
+    private void function logBlogRequest(filterType, filterValue, page, perPage, userId) {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "DEBUG", 
+            message = "Blog listing page accessed",
+            details = {
+                "filter_type": arguments.filterType,
+                "filter_value": arguments.filterValue,
+                "page": arguments.page,
+                "per_page": arguments.perPage,
+                "ip_address": cgi.REMOTE_ADDR,
+                "user_agent": cgi.HTTP_USER_AGENT,
+                "timestamp": now()
+            },
+            userId = arguments.userId
+        );
+    }
+
+    // Main data retrieval logic
+    private struct function getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll) {
+        var result = {};
+        
+        // Handle special cases first
+        if (len(arguments.filterType) && len(arguments.filterValue)) {
+            // Normalize filter value (convert hyphens to dots)
+            arguments.filterValue = replace(arguments.filterValue, "-", ".", "all");
+            
+            // Handle date archive filtering (year/month)
+            if (isNumeric(arguments.filterType) && isNumeric(arguments.filterValue)) {
+                return getBlogsByMonthYear(arguments.filterType, arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+            }
+            
+            // Handle content filtering
+            switch (lcase(arguments.filterType)) {
+                case "category":
+                    return getBlogsByCategory(arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+                    
+                case "tag":
+                    return getAllByTag(arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+                    
+                case "author":
+                    return getBlogsWithAuthorData(arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+                    
+                default:
+                    // Invalid filter type, fallback to all blogs
+                    logInvalidFilter(arguments.filterType, arguments.filterValue);
+                    return getAllBlogs(arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+            }
+        }
+        
+        // Default: return all blogs
+        return getAllBlogs(arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+    }
+
+    // Optimized author blog retrieval with author data
+    private struct function getBlogsWithAuthorData(authorIdentifier, page, perPage, isInfiniteScroll) {
+        var authorId = getBlogAuthorId(arguments.authorIdentifier);
+        var result = getBlogsByAuthor(authorId, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
+        
+        // Get author statistics in a single optimized query if possible
+        var authorStats = getAuthorStatistics(authorId);
+        
+        result.author = {
+            "id": authorId,
+            "totalposts": authorStats.totalPosts,
+            "totalcomments": authorStats.totalComments
+        };
+        
+        return result;
+    }
+
+    // author statistics retrieval
+    private struct function getAuthorStatistics(authorId) {
+        // Try to get both stats in one query if your database supports it
+        try {
+            return {
+                "totalPosts": model("Blog").count(where="createdBy = #arguments.authorId#"),
+                "totalComments": model("Comment").count(where="authorId = #arguments.authorId#")
+            };
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error retrieving author statistics",
+                details = {
+                    "error_message": e.message,
+                    "author_id": arguments.authorId,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = GetSignedInUserId()
+            );
+            return {
+                "totalPosts": 0,
+                "totalComments": 0
+            };
+        }
+    }
+
+    // Log invalid filter attempts
+    private void function logInvalidFilter(filterType, filterValue) {
+        model("Log").log(
+            category = "wheels.blog",
+            level = "WARN",
+            message = "Invalid filter type attempted",
+            details = {
+                "invalid_filter_type": arguments.filterType,
+                "filter_value": arguments.filterValue,
+                "ip_address": cgi.REMOTE_ADDR
+            },
+            userId = GetSignedInUserId()
+        );
+    }
+
+    // Centralized error handling
+    private void function handleBlogError(error, userId, page, perPage, isInfiniteScroll) {
+        // Log the error
+        model("Log").log(
+            category = "wheels.blog",
+            level = "ERROR",
+            message = "Error in blogs(): #arguments.error.message#",
+            details = {
+                "error_message": arguments.error.message,
+                "error_detail": arguments.error.detail ?: "",
+                "error_type": arguments.error.type ?: "",
+                "stack_trace": arguments.error.stackTrace ?: "",
+                "ip_address": cgi.REMOTE_ADDR,
+                "timestamp": now()
+            },
+            userId = arguments.userId
+        );
+        
+        // Provide fallback data
+        try {
+            var fallbackResult = getAllBlogs(1, arguments.perPage, arguments.isInfiniteScroll);
+            blogs = fallbackResult.query;
+            hasMore = fallbackResult.hasMore;
+            totalCount = fallbackResult.totalCount;
+            
+            // Set error flag for template
+            hasError = true;
+            errorMessage = "We're experiencing some technical difficulties. Showing recent posts instead.";
+            
+        } catch (any fallbackError) {
+            // If even fallback fails, create empty result
+            blogs = queryNew("id,title,slug,createdby,postDate,fullName,username,profilePicture", "integer,varchar,varchar,integer,date,varchar,varchar,varchar");
+            hasMore = false;
+            totalCount = 0;
+            hasError = true;
+            errorMessage = "Unable to load blog posts at this time. Please try again later.";
+        }
+        
+        renderPartial(partial="partials/blogList");
     }
 
     // Function to edit a blog post
@@ -89,86 +285,29 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    public void function blogs() {
-        try {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "DEBUG",
-                message = "Blog listing page accessed",
-                details = {
-                    "filter_type": structKeyExists(params, "filterType") ? params.filterType : "",
-                    "filter_value": structKeyExists(params, "filterValue") ? params.filterValue : "",
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = GetSignedInUserId()
-            );
+    private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
+        var result = {
+            query = model("Blog").findAll(
+                where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy = #authorId#",
+                include="User",
+                order="postDate DESC",
+                page = arguments.page,
+                perPage = arguments.perPage
+            ),
+            hasMore = false,
+            totalCount = 0
+        };
 
-            var blogModel = model("Blog"); // Load model
-
-            // --- Filter by category, tag, or author ---
-            if (structKeyExists(params, "filterType") && structKeyExists(params, "filterValue")) {
-                // Normalize value (e.g., convert "design-ui" to "design.ui")
-                params.filterValue = replace(params.filterValue, "-", ".", "all");
-
-                // If filterType is a year and filterValue is a month (numeric), handle as archive
-                if (isNumeric(params.filterType) && isNumeric(params.filterValue)) {
-                    blogs = getBlogsByMonthYear(params.filterType, params.filterValue);
-                } else {
-                    switch (lcase(params.filterType)) {
-                        case "category":
-                            blogs = getBlogsByCategory(params.filterValue);
-                            break;
-                        case "tag":
-                            blogs = getAllByTag(params.filterValue);
-                            break;
-                        case "author":
-                            authorId = getBlogAuthorId(params.filterValue);
-                            blogs = getBlogsByAuthor(authorId);
-                            author.totalposts = blogs.recordCount;
-                            author.totalcomments = model("Comment").count(
-                                where="authorId = #authorId#");
-                            break;
-                        default:
-                            blogs = getAllBlogs(); // fallback in case of unknown filterType
-                    }
-                }
-            } else {
-                blogs = getAllBlogs(); // default listing
-            }
-
-            renderPartial(partial="partials/blogList");
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Error in blogs(): #e.message#",
-                details = {
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type,
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = GetSignedInUserId()
-            );
-
-            // Optionally show fallback
-            blogs = getAllBlogs(); // fallback content
-            renderPartial(partial="partials/blogList");
-        }
-    }
-
-    private function getBlogsByAuthor(required authorId) {
-        var blogs = model("Blog").findAll(
-            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy = #authorId#",
-            include="User",
-            order="COALESCE(post_created_date, blog_posts.createdat) DESC"
+        result.totalCount = model("Blog").count(
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy = #authorId#"
         );
+        result.hasMore = (page * perPage) < result.totalCount;
 
-        if (blogs.recordCount == 0) {
+        if (result.query.recordCount == 0) {
            redirectTo(route="blog");
         }
 
-        return blogs;
+        return result;
     }
 
     private function getBlogAuthorId(required authorParam) {
@@ -188,19 +327,45 @@ component extends="app.Controllers.Controller" {
 		}
     }
 
-    function blogSearch(){
+    function blogSearch() {
         param name="params.searchTerm" default="";
+        param name="params.page" default="1";
+        param name="params.perPage" default="6";
+        param name="params.infiniteScroll" default="false";
+        
         var searchTerm = params.searchTerm;
+        var page = params.page;
+        var perPage = params.perPage;
+        var isInfiniteScroll = params.infiniteScroll;
 
         if (len(trim(searchTerm))) {
-            blogs = model("blog").findAll(where="status ='Approved' AND isPublished='true'
-            AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')",
-            include="User, PostStatus, PostType",
-            order = "COALESCE(post_created_date, blog_posts.createdat) DESC");
+            var query = model("blog").findAll(
+                where="status ='Approved' AND isPublished='true'
+                AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')",
+                include="User, PostStatus, PostType",
+                order = "postDate DESC",
+                page = page,
+                perPage = perPage
+            );
+            
+            if (isInfiniteScroll) {
+                var totalCount = model("blog").count(
+                    where="status ='Approved' AND isPublished='true'
+                    AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')"
+                );
+                var hasMore = (page * perPage) < totalCount;
+                
+                query.addColumn("hasMore", "boolean");
+                query.addColumn("totalCount", "integer");
+                query.hasMore = hasMore;
+                query.totalCount = totalCount;
+            }
+            
+            blogs = query;
             renderPartial(partial="partials/blogList");
-        }else{
-            // return all publish blogs.
-            blogs = getAllBlogs();
+        } else {
+            // return all publish blogs with pagination
+            blogs = getAllBlogs(page, perPage, isInfiniteScroll);
             renderPartial(partial="partials/blogList");
         }
     }
@@ -615,7 +780,7 @@ component extends="app.Controllers.Controller" {
         blogPosts = model("Blog").findAll(
             where="status = 'Approved' AND isPublished = 'true'",
             include="User",
-            order="COALESCE(post_Created_Date, blog_posts.createdAt) DESC"
+            order="postDate DESC"
         );
 
         // Render the feed view
@@ -670,59 +835,108 @@ component extends="app.Controllers.Controller" {
         return model("Blog").findAll();
     }
 
-    private function getAllBlogs() {
-        return model("Blog").findAll(
-            where="statusid <> 1 AND status ='Approved' AND isPublished='true'",
-            include="User, PostStatus, PostType",
-            order = "COALESCE(post_created_date, blog_posts.createdat) DESC"
+    private function getAllBlogs(numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
+        var result = {
+            query = model("Blog").findAll(
+                where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'",
+                include="User",
+                order="postDate DESC",
+                page = arguments.page,
+                perPage = arguments.perPage
+            ),
+            hasMore = false,
+            totalCount = 0
+        };
+
+        result.totalCount = model("Blog").count(
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'"
         );
+        result.hasMore = (page * perPage) < result.totalCount;
+
+        return result;
     }
 
-    private function getBlogsByMonthYear(required numeric year, required string month) {
+    private function getBlogsByMonthYear(required numeric year, required string month, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         // Create start and end date for the selected month
         var startdate = "#year#-#NumberFormat(month, '00')#-01 00:00:00";
         var enddate = "#year#-#NumberFormat(month, '00')#-#DaysInMonth('#year#-#NumberFormat(month, '00')#-01')# 23:59:59";
 
-        return model("Blog").findAll(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'",
-            order="createdat DESC",
-            include="User",
-            returnAs="query"
+        var result = {
+            query = model("Blog").findAll(
+                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'",
+                order="createdat DESC",
+                include="User",
+                returnAs="query",
+                page = arguments.page,
+                perPage = arguments.perPage
+            ),
+            hasMore = false,
+            totalCount = 0
+        };
+
+        result.totalCount = model("Blog").count(
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'"
         );
+        result.hasMore = (page * perPage) < result.totalCount;
+
+        return result;
     }
 
     // Fetch Blogs by Category
-    public function getBlogsByCategory(required string categoryName) {
+    public function getBlogsByCategory(required string categoryName, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         // Get category ID from name
         var category = model("Category").findOne(where="name = '#arguments.categoryName#'");
-        if (!isObject(category)) return queryNew("");
+        if (!isObject(category)) return {query=queryNew(""), hasMore=false, totalCount=0};
 
         // Get all blog-category mappings with that category
         var blogCategoryQuery = model("BlogCategory")
             .findAll(where="categoryId = #category.id#", returnAs="query");
 
-        if (blogCategoryQuery.recordCount == 0) return queryNew("");
+        if (blogCategoryQuery.recordCount == 0) return {query=queryNew(""), hasMore=false, totalCount=0};
 
         // Extract blogIds
         var blogIds = blogCategoryQuery.columnData("blogId");
 
-        // Get blog posts with matching IDs
-        return model("Blog").findAll(
-            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished='true'",
-            order="createdAt DESC",
-            include="User,BlogCategory",
-            returnAs="query"
+        var result = {
+            query = model("Blog").findAll(
+                where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished='true'",
+                order="createdAt DESC",
+                include="User,BlogCategory",
+                returnAs="query",
+                page = arguments.page,
+                perPage = arguments.perPage
+            ),
+            hasMore = false,
+            totalCount = 0
+        };
+
+        result.totalCount = model("Blog").count(
+            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished='true'"
         );
+        result.hasMore = (page * perPage) < result.totalCount;
+
+        return result;
     }
 
     // Fetch Blogs by Tag
-    private function getAllByTag(required string tag){
-        return model("Blog").findAll(
-            where="name = '#tag#'",
-            order="createdAt DESC",
-            include="User,tag",
-            returnAs="query"
-        );
+    private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
+        var result = {
+            query = model("Blog").findAll(
+                where="name = '#tag#'",
+                order="createdAt DESC",
+                include="User,tag",
+                returnAs="query",
+                page = arguments.page,
+                perPage = arguments.perPage
+            ),
+            hasMore = false,
+            totalCount = 0
+        };
+
+        result.totalCount = model("Blog").count(where="name = '#tag#'");
+        result.hasMore = (page * perPage) < result.totalCount;
+
+        return result;
     }
 
     private function getBlogById(required numeric id) {

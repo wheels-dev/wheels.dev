@@ -43,7 +43,7 @@ component extends="app.Models.Model" {
 
     // Fetch all latest blog posts with corresponding users
     public function getAll() {
-        var blogs = findAll(where='statusid <> 1', include="User", order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
+        var blogs = findAll(where='statusid <> 1', include="User", order = "postDate DESC");
         return blogs;
     }
     
@@ -53,7 +53,7 @@ component extends="app.Models.Model" {
             where='statusid <> 1', 
             include="User", 
             maxRows=10,
-            order="COALESCE(post_created_date, blog_posts.createdAt) DESC"
+            order="postDate DESC"
         );
         return blogs;
     }
