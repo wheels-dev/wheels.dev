@@ -175,6 +175,10 @@
 
 			// settings routes
 			.get(name="settings", pattern="settings", to="settingsController##index")
+			.get(name="email-templates", pattern="email-content", to="EmailTemplatesController##index")
+			.get(name="email-view", pattern="email/edit/[id]", to="EmailTemplatesController##edit")
+			.get(name="email-edit", pattern="email/view/[id]", to="EmailTemplatesController##view")
+			.post(name="email-save", pattern="email/save", to="EmailTemplatesController##save")
 			.post(name="testimonial-settings", pattern="enableTestimonials", to="settingsController##enableTestimonials")
 		.end()
 

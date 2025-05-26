@@ -391,3 +391,6 @@ main.main-bg {
         background-size: auto !important;
     }
 }
+.navbar-vertical .nav-item-wrapper:has(.active) .dropdown-indicator.label-1.collapsed .nav-link-text, .navbar-vertical .nav-item-wrapper:has(.active) .dropdown-indicator.label-1.collapsed .nav-link-icon{
+    color: var(--primary) !important;
+}

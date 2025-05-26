@@ -170,8 +170,10 @@
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 									<!-- Profile (expandable section) -->
 									<li class="dropdown-item-text fw-bold">Profile</li>
-									<li><a class="dropdown-item fw-normal ps-4" href="/user/change-password">Change Password</a></li>
-									<li><a class="dropdown-item fw-normal ps-4" href="/user/update-profile-pic">Update Profile Pic</a></li>
+									<cfoutput>
+										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='adminuser-changePassword')#">Change Password</a></li>
+										<li><a class="dropdown-item fw-normal ps-4" href="#urlfor(route="adminUser-update-profile-pic")#">Update Profile Pic</a></li>
+									</cfoutput>
 
 									<li><hr class="dropdown-divider"></li>
 									<li><a class="dropdown-item fw-normal" href="/logout">Logout</a></li>
@@ -228,8 +230,10 @@
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 										<!-- Profile (expandable section) -->
 										<li class="dropdown-item-text fw-bold">Profile</li>
-										<li><a class="dropdown-item fw-normal ps-4" href="/user/change-password">Change Password</a></li>
-										<li><a class="dropdown-item fw-normal ps-4" href="/user/update-profile-pic">Update Profile Pic</a></li>
+										<cfoutput>
+											<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='adminuser-changePassword')#">Change Password</a></li>
+											<li><a class="dropdown-item fw-normal ps-4" href="#urlfor(route="adminUser-update-profile-pic")#">Update Profile Pic</a></li>
+										</cfoutput>
 
 										<li><hr class="dropdown-divider"></li>
 										<li><a class="dropdown-item fw-normal" href="/logout">Logout</a></li>
@@ -366,7 +370,7 @@
 							<div>
 								<p class="p-0 m-0 fs-12 text--secondary">
 										&copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
-										Wheels is licensed under the Apache License, Version 2.0.
+										Wheels is licensed under the Apache License, Version 3.0.
 								</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
