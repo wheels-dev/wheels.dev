@@ -441,10 +441,10 @@ component extends="app.Controllers.Controller" {
                     var emailparams = {
                         "name" = user.fullname,
                         "buttonTitle" = "View Your Post",
-                        "content" = "Thank you for writing a blog post. Your post '#blog.title#' has been published on the Wheels website.",
+                        "content" = "Thank you for contributing to the Wheels.dev community. Your blog post '#blog.title#' has been published and is now live on our platform.",
                         "URl" = siteurl,
-                        "Footer" = "If you did not write blog post, you can safely ignore this email.",
-                        "footerGreetings" = "Thank you for being a part of Wheels community.",
+                        "Footer" = "If you haven't published a blog post, please disregard this email.",
+                        "footerGreetings" = "Thank you for being part of the Wheels.dev community.",
                         "isSubscriber" = user.newsletter
                     };
                     emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
@@ -799,10 +799,10 @@ component extends="app.Controllers.Controller" {
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = "View Your Comment",
-                    "content" = "Thanks for commenting on our blog post. Your comment is now live on the Wheels site.",
+                    "content" = "Thank you for engaging with our community. Your comment has been published and is now visible on the Wheels.dev platform.",
                     "URl" = siteurl,
-                    "Footer" = "If you did not write comment, you can safely ignore this email.",
-                    "footerGreetings" = "Thank you for being a part of Wheels community.",
+                    "Footer" = "If you haven't submitted a comment, please disregard this email.",
+                    "footerGreetings" = "Thank you for being part of the Wheels.dev community.",
                     "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
@@ -875,10 +875,10 @@ component extends="app.Controllers.Controller" {
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = "View Your Post",
-                    "content" = "Thank you for writing a blog post. Your post '#blog.title#' has been rejected.",
+                    "content" = "Thank you for your contribution to the Wheels.dev community. After careful review, we regret to inform you that your blog post '#blog.title#' has not been approved for publication at this time.",
                     "URl" = "",
-                    "Footer" = "If you did not write blog post, you can safely ignore this email.",
-                    "footerGreetings" = "Thank you for being a part of Wheels community.",
+                    "Footer" = "If you haven't submitted a blog post, please disregard this email.",
+                    "footerGreetings" = "Thank you for being part of the Wheels.dev community.",
                     "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
