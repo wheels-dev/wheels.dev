@@ -375,3 +375,19 @@ main.main-bg {
 .comment-wrapper .ql-hidden{
     display: none !important;
 }
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 4rem 0 1rem;
+    }
+    .icon-container {
+        display: none !important;
+    }
+    .h-sm-400{
+        height: 400px !important;
+    }
+    .feature-blog{
+        background-position: right !important;
+        background-size: auto !important;
+    }
+}

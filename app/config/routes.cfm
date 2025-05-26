@@ -103,6 +103,13 @@
 		.namespace("admin")
 			// Admin Controls
 			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")
+
+			// FeatureController routes
+			.get(name = "feature", pattern = "feature", to = "FeatureController##index")
+			.get(name = "addFeature", pattern = "feature/add", to = "FeatureController##addFeature")
+			.get(name = "editFeature", pattern = "feature/edit/[id]", to = "FeatureController##addFeature")
+			.post(name = "storeFeature", pattern = "feature/store", to = "FeatureController##store")
+			.get(name = "deleteFeature", pattern = "feature/delete/[id]", to = "FeatureController##delete")
 			.get(name = "blog", pattern = "blog", to = "AdminController##blog")
 			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "AdminController##editBlog")
 			.put(name = "blog-update", pattern = "blog/blogUpdate/[id]", to = "AdminController##update")
