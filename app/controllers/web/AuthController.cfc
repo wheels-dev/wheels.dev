@@ -57,7 +57,7 @@ component extends="app.Controllers.Controller" {
                 );
                 data = {
                     "success" = false,
-                    "message" = "Account locked due to too many failed attempts. Please contact an administrator to reset your account."
+                    "message" = "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account."
                 };
                 renderWith(data=data, hideDebugInformation=true, status=423, layout='/responseLayout');
                 return;
@@ -139,7 +139,7 @@ component extends="app.Controllers.Controller" {
                 // Return JSON error response with 401 status code
                 data={
                     "success" = false,
-                    "message" = "Invalid login credentials. " & (remainingAttempts > 0 ? "You have #remainingAttempts# attempt(s) remaining." : "Account will be locked after next failed attempt.")
+                    "message" = "Invalid login credentials. " & (remainingAttempts > 0 ? "You have #remainingAttempts# attempt(s) remaining." : "Your account will be locked after the next failed attempt.")
                 };
                 renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
                 return;
@@ -158,7 +158,7 @@ component extends="app.Controllers.Controller" {
             // Return a generic JSON error response with 500 status code
             data={
                 "success" = false,
-                "message" = "An unexpected error occurred during login. Please try again."
+                "message" = "An unexpected error occurred during the login process. Please try again later."
             };
             renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
             return;
@@ -503,16 +503,16 @@ component extends="app.Controllers.Controller" {
 
                     // Send verification email
                     if(sendVerificationEmail(newUser.email, verificationToken)){
-                        message = "Sign Up successfull. Please check your email to verify your account.";
+                        message = "Registration successful. Please check your email to verify your account.";
                     }else{
-                        message = "Error sending verification email.";
+                        message = "Unable to send verification email. Please try again or contact support.";
                     }
                 }else{
-                    message = "Error! user not created.";
+                    message = "Unable to create user account. Please try again or contact support.";
                 }
 
             } else {
-                message = "A user with the same email already exists.";
+                message = "An account with this email address already exists.";
             }
             
         } catch (any e) {
@@ -528,11 +528,11 @@ component extends="app.Controllers.Controller" {
         verifyUrl = verifyUrl & "?token=" & token;
         var emailparams = {
             "name" = user.fullname,
-            "welcomeMessage" = "Welcome to Wheels.dev!",
+            "welcomeMessage" = "Welcome to the Wheels.dev Community!",
             "buttonTitle" = "Verify Your Account",
-            "content" = "Thank you for signing up. Please click the button below to verify your account and get started.",
+            "content" = "Thank you for joining the Wheels.dev community. Please click the button below to verify your account and start your journey with us.",
             "URl" = verifyUrl,
-            "Footer" = "If you did not request reset password, you can safely ignore this email.",
+            "Footer" = "If you haven't created an account, please disregard this email.",
             "footerGreetings" = "Thank you for becoming a part of Wheels community."
         };
         emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
@@ -654,13 +654,13 @@ component extends="app.Controllers.Controller" {
                 
                 data = {
                     "success" = true,
-                    "message" = "Password reset instructions have been sent to your email."
+                    "message" = "Password reset instructions have been sent to your email address."
                 };
             } else {
                 sendSignUpEmail(params.email);
                 data = {
                     "success" = true,
-                    "message" = "Password reset instructions have been sent to your email."
+                    "message" = "Password reset instructions have been sent to your email address."
                 };
             }
             
@@ -678,7 +678,7 @@ component extends="app.Controllers.Controller" {
             
             data = {
                 "success" = false,
-                "message" = "An error occurred while processing your request. Please try again."
+                "message" = "An error occurred while processing your request. Please try again or contact our support team."
             };
             renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
         }
@@ -728,7 +728,7 @@ component extends="app.Controllers.Controller" {
             if (!isObject(reset)) {
                 data = {
                     "success" = false,
-                    "message" = "Invalid or expired reset token."
+                    "message" = "Invalid or expired reset token. Please request a new password reset link."
                 };
                 renderText("#data.message#"); 
                 return;
@@ -738,7 +738,7 @@ component extends="app.Controllers.Controller" {
             if (params.password != params.confirmPassword) {
                 data = {
                     "success" = false,
-                    "message" = "Passwords do not match."
+                    "message" = "The passwords you entered do not match. Please try again."
                 };
                 renderText("#data.message#"); 
                 return;
@@ -747,7 +747,7 @@ component extends="app.Controllers.Controller" {
             if (len(params.password) < 8) {
                 data = {
                     "success" = false,
-                    "message" = "Password must be at least 8 characters long."
+                    "message" = "Password must be at least 8 characters long. Please choose a stronger password."
                 };
                 renderText("#data.message#"); 
                 return;
@@ -761,7 +761,7 @@ component extends="app.Controllers.Controller" {
             
             data = {
                 "success" = true,
-                "message" = "Password has been reset successfully. You can now login with your new password.",
+                "message" = "Your password has been successfully reset. You can now log in with your new password.",
                 "redirectUrl" = urlFor(action="login")
             };
             renderText("#data.message#"); 
@@ -779,7 +779,7 @@ component extends="app.Controllers.Controller" {
             
             data = {
                 "success" = false,
-                "message" = "An error occurred while resetting your password. Please try again."
+                "message" = "An error occurred while resetting your password. Please try again or contact our support team."
             };
             renderText("#data.message#"); 
         }
@@ -804,10 +804,10 @@ component extends="app.Controllers.Controller" {
             var emailparams = {
                 "name" = name,
                 "buttonTitle" = "Reset Password",
-                "content" = "We received a request to reset the password for your account associated with this email address. If you made this request please click the button below to create a new password",
+                "content" = "We received a request to reset the password for your Wheels.dev account. If you initiated this request, please click the button below to create a new password.",
                 "URl" = resetUrl,
-                "Footer" = "If you did not request reset password, you can safely ignore this email.",
-                "footerGreetings" = "Thank you for being a part of Wheels community."
+                "Footer" = "If you haven't requested a password reset, please disregard this email.",
+                "footerGreetings" = "Thank you for being part of the Wheels.dev community."
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
@@ -860,12 +860,11 @@ component extends="app.Controllers.Controller" {
             var signUpUrl = urlFor(action="register", onlyPath=false);
             var emailparams = {
                 "name" = "User",
-                "buttonTitle" = "Register here",
-                "content" = "content" = "We noticed you tried to reset your password using this email address, but it looks like there's no account associated with it.
-                No worries &mdash; it happens! If you're new to Wheels, we would love to have you on board.
-                <br><br>Click below to create your free account and start building powerful ColdFusion applications with ease.",
+                "buttonTitle" = "Join Wheels.dev",
+                "content" = "We noticed you attempted to reset your password using this email address, but no account was found. If you're new to Wheels.dev, we'd love to welcome you to our community!
+                <br><br>Click below to create your free account and start building powerful web applications with our framework.",
                 "URl" = signUpUrl,
-                "Footer" = "If you believe this is a mistake or you already have an account with a different email, feel free to try again or contact our support team for help.<br><br>If you did not request reset password, you can safely ignore this email.",
+                "Footer" = "If you haven't requested a password reset, please disregard this email.",
                 "footerGreetings" = ""
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
