@@ -438,13 +438,17 @@ component extends="app.Controllers.Controller" {
                 var siteurl = "";
                 if(isPublished && blog.status == "Approved"){
                     siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
+                    var emaildata = model("emailTemplate").findAll(where="title = '#trim("Publish Blog")#'");
                     var emailparams = {
                         "name" = user.fullname,
-                        "buttonTitle" = "View Your Post",
-                        "content" = "Thank you for contributing to the Wheels.dev community. Your blog post '#blog.title#' has been published and is now live on our platform.",
+                        "buttonTitle" = emaildata.buttonTitle,
+                        "content" = emaildata.message,
+                        "welcomeMessage"= emaildata.welcomeMessage,
                         "URl" = siteurl,
-                        "Footer" = "If you haven't published a blog post, please disregard this email.",
-                        "footerGreetings" = "Thank you for being part of the Wheels.dev community.",
+                        "footerNote" = emaildata.footerNote,
+                        "footerGreetings" = emaildata.footerGreating,
+                        "closingRemark" = emaildata.closingRemark,
+                        "teamSignature" = emaildata.teamSignature,
                         "isSubscriber" = user.newsletter
                     };
                     emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
@@ -452,7 +456,7 @@ component extends="app.Controllers.Controller" {
                     cfmail( 
                         to = "#user.email#", 
                         from = "#application.env.mail_from#", 
-                        subject = "Your blog post has been published", 
+                        subject = "#emaildata.subject#", 
                         server = "#application.env.smtp_host#", 
                         port = "#application.env.smtp_port#", 
                         username = "#application.env.smtp_username#", 
@@ -796,20 +800,24 @@ component extends="app.Controllers.Controller" {
             comment.isPublished = true;
             if(comment.save()){
                 siteurl = urlFor(route="blog-detail",slug=comment.blog.slug ,onlyPath=false);
+                var emaildata = model("emailTemplate").findAll(where="title = '#trim("Publish comment")#'");
                 var emailparams = {
                     "name" = user.fullname,
-                    "buttonTitle" = "View Your Comment",
-                    "content" = "Thank you for engaging with our community. Your comment has been published and is now visible on the Wheels.dev platform.",
+                    "buttonTitle" = emaildata.buttonTitle,
+                    "content" = emaildata.message,
+                    "welcomeMessage"= emaildata.welcomeMessage,
                     "URl" = siteurl,
-                    "Footer" = "If you haven't submitted a comment, please disregard this email.",
-                    "footerGreetings" = "Thank you for being part of the Wheels.dev community.",
+                    "footerNote" = emaildata.footerNote,
+                    "footerGreetings" = emaildata.footerGreating,
+                    "closingRemark" = emaildata.closingRemark,
+                    "teamSignature" = emaildata.teamSignature,
                     "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfmail( 
                     to = "#user.email#", 
                     from = "#application.env.mail_from#", 
-                    subject = "Your comment post has been published", 
+                    subject = "#emaildata.subject#", 
                     server = "#application.env.smtp_host#", 
                     port = "#application.env.smtp_port#", 
                     username = "#application.env.smtp_username#", 
@@ -872,13 +880,17 @@ component extends="app.Controllers.Controller" {
             blog.status = "Rejected"; //reject
             blog.isPublished = false;
             if (blog.save()) {
+                var emaildata = model("emailTemplate").findAll(where="title = '#trim("Reject blog")#'");
                 var emailparams = {
                     "name" = user.fullname,
-                    "buttonTitle" = "View Your Post",
-                    "content" = "Thank you for your contribution to the Wheels.dev community. After careful review, we regret to inform you that your blog post '#blog.title#' has not been approved for publication at this time.",
+                    "buttonTitle" = emaildata.buttonTitle,
+                    "content" = emaildata.message,
+                    "welcomeMessage"= emaildata.welcomeMessage,
                     "URl" = "",
-                    "Footer" = "If you haven't submitted a blog post, please disregard this email.",
-                    "footerGreetings" = "Thank you for being part of the Wheels.dev community.",
+                    "footerNote" = emaildata.footerNote,
+                    "footerGreetings" = emaildata.footerGreating,
+                    "closingRemark" = emaildata.closingRemark,
+                    "teamSignature" = emaildata.teamSignature,
                     "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
@@ -886,7 +898,7 @@ component extends="app.Controllers.Controller" {
                 cfmail( 
                     to = "#user.email#", 
                     from = "#application.env.mail_from#", 
-                    subject = "Your blog post has been Rejected to publish", 
+                    subject = "#emaildata.subject#", 
                     server = "#application.env.smtp_host#", 
                     port = "#application.env.smtp_port#", 
                     username = "#application.env.smtp_username#", 

@@ -12,7 +12,7 @@
                         #imageTag(source = '#session.profilePic#', alt="user profile pic", height="150", width="150", class="rounded-circle")#
                     </cfoutput>
                 </div>
-                <form class="pt-3 px-1 needs-validation" id="profilePicForm" enctype="multipart/form-data" novalidate hx-post="/user/upload-profile-pic" hx-validate="true">
+                <form class="pt-3 px-1 needs-validation" id="profilePicForm" enctype="multipart/form-data" novalidate hx-post="/admin/user/upload-profile-pic" hx-validate="true">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Profile Picture</label>
                         <input type="file" id="imageInput" class="form-control" name="profilePic" accept="image/*" required>
