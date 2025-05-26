@@ -115,10 +115,29 @@
                                 </a>
                             </div>
                             <div class="nav-item-wrapper mb-3">
-                                <a class="nav-link label-1" href="/admin/settings" role="button" data-bs-toggle="" aria-expanded="false">
-                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-gear-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Settings</span></span>
+                                <a class="nav-link dropdown-indicator label-1" href="#nv-setting" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-setting">
+                                    <div class="d-flex align-items-center">
+                                        <div class="dropdown-indicator-icon-wrapper"><span class="fas fa-caret-right dropdown-indicator-icon"></span></div><span class="nav-link-icon"><i class="bi bi-gear-fill fs-18 ms-1"></i></span><span class="nav-link-text fs-14">Settings</span>
                                     </div>
                                 </a>
+                                <div class="parent-wrapper label-1">
+                                    <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-setting">
+                                        <li class="nav-item">
+                                            <cfoutput>
+                                                <a class="nav-link" href="#urlFor(route="adminemail-templates")#">
+                                                    <div class="d-flex align-items-center"><span class="nav-link-text fs-14">Email Templates</span></span></div>
+                                                </a>
+                                            </cfoutput>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/admin/settings">
+                                                <div class="d-flex align-items-center"><span class="nav-link-text fs-14">General Setting</span></span></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
                             </div>
                         </li>
                     </ul>

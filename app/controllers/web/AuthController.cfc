@@ -524,16 +524,19 @@ component extends="app.Controllers.Controller" {
 
     private function sendVerificationEmail(required string email, required string token) {
         var user = model("User").findOne(where="email='#email#'");
+        var emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
         verifyUrl = urlFor(action="verify", onlyPath=false);
         verifyUrl = verifyUrl & "?token=" & token;
         var emailparams = {
             "name" = user.fullname,
-            "welcomeMessage" = "Welcome to the Wheels.dev Community!",
-            "buttonTitle" = "Verify Your Account",
-            "content" = "Thank you for joining the Wheels.dev community. Please click the button below to verify your account and start your journey with us.",
+            "buttonTitle" = emaildata.buttonTitle,
+            "content" = emaildata.message,
+            "welcomeMessage"= emaildata.welcomeMessage,
             "URl" = verifyUrl,
-            "Footer" = "If you haven't created an account, please disregard this email.",
-            "footerGreetings" = "Thank you for becoming a part of Wheels community."
+            "footerNote" = emaildata.footerNote,
+            "footerGreetings" = emaildata.footerGreating,
+            "closingRemark" = emaildata.closingRemark,
+            "teamSignature" = emaildata.teamSignature
         };
         emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
         
@@ -542,7 +545,7 @@ component extends="app.Controllers.Controller" {
             cfmail( 
                 to = "#user.email#", 
                 from = "#application.env.mail_from#", 
-                subject = "Verify Your Account", 
+                subject = "#emaildata.subject#", 
                 server = "#application.env.smtp_host#", 
                 port = "#application.env.smtp_port#", 
                 username = "#application.env.smtp_username#", 
@@ -801,20 +804,24 @@ component extends="app.Controllers.Controller" {
                 }
             );
             var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
+            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Reset Password")#'");
             var emailparams = {
                 "name" = name,
-                "buttonTitle" = "Reset Password",
-                "content" = "We received a request to reset the password for your Wheels.dev account. If you initiated this request, please click the button below to create a new password.",
+                "buttonTitle" = emaildata.buttonTitle,
+                "content" = emaildata.message,
+                "welcomeMessage"= emaildata.welcomeMessage,
                 "URl" = resetUrl,
-                "Footer" = "If you haven't requested a password reset, please disregard this email.",
-                "footerGreetings" = "Thank you for being part of the Wheels.dev community."
+                "footerNote" = emaildata.footerNote,
+                "footerGreetings" = emaildata.footerGreating,
+                "closingRemark" = emaildata.closingRemark,
+                "teamSignature" = emaildata.teamSignature
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             cfmail( 
                 to = "#arguments.email#", 
                 from = "#application.env.mail_from#", 
-                subject = "Reset Your Password", 
+                subject = "#emaildata.subject#", 
                 server = "#application.env.smtp_host#", 
                 port = "#application.env.smtp_port#", 
                 username = "#application.env.smtp_username#", 
@@ -858,21 +865,24 @@ component extends="app.Controllers.Controller" {
                 }
             );
             var signUpUrl = urlFor(action="register", onlyPath=false);
+            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Register Your Account")#'");
             var emailparams = {
                 "name" = "User",
-                "buttonTitle" = "Join Wheels.dev",
-                "content" = "We noticed you attempted to reset your password using this email address, but no account was found. If you're new to Wheels.dev, we'd love to welcome you to our community!
-                <br><br>Click below to create your free account and start building powerful web applications with our framework.",
+                "buttonTitle" = emaildata.buttonTitle,
+                "content" = emaildata.message,
+                "welcomeMessage"= emaildata.welcomeMessage,
                 "URl" = signUpUrl,
-                "Footer" = "If you haven't requested a password reset, please disregard this email.",
-                "footerGreetings" = ""
+                "footerNote" = emaildata.footerNote,
+                "footerGreetings" = emaildata.footerGreating,
+                "closingRemark" = emaildata.closingRemark,
+                "teamSignature" = emaildata.teamSignature
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             cfmail( 
                 to = "#arguments.email#", 
                 from = "#application.env.mail_from#", 
-                subject = "No Account Found : Get Started with Wheels Today!", 
+                subject = "#emaildata.subject#", 
                 server = "#application.env.smtp_host#", 
                 port = "#application.env.smtp_port#", 
                 username = "#application.env.smtp_username#", 
