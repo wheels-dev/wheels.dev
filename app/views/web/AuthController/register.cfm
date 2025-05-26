@@ -1,5 +1,5 @@
 <main class="w-100 vh-100 position-relative">
-    <div class="row w-100 h-100 m-lg-auto">
+    <div class="row w-100 g-0 h-100 m-lg-auto">
         <div class="col-lg-6 bg-white col-12">
             <div class="flex-column d-flex py-4 justify-content-center h-100 gap-3 align-items-center">
                 <h1 class="fs-36 mb-0 fw-bold text--secondary">Welcome to</h1>
@@ -13,7 +13,7 @@
             </div>
         </div>
         <div
-            class="col-lg-6 p-lg-auto p-0 main-login col-12 d-flex flex-column justify-content-center align-items-center">
+            class="col-lg-6 mt-lg-0 mt-5 px-lg-0 px-2 p-lg-auto main-login col-12 d-flex flex-column justify-content-center align-items-center">
             <div class="bg-white p-4 border rounded-4 w-100 max-w-570 mx-auto">
                 <div>
                     <h1 class="fs-24 mb-0 fw-bold text--secondary">Sign Up</h1>

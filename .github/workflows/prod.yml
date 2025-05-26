@@ -42,12 +42,12 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-prod
           docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-prod
 
-      - name: Post Slack Message
-        id: Post-Slack-Message
-        uses: act10ns/slack@v2
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#wheels-dev'
-        if: always()
+#      - name: Post Slack Message
+#        id: Post-Slack-Message
+#        uses: act10ns/slack@v2
+#        with:
+#          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+#          status: ${{ job.status }}
+#          steps: ${{ toJson(steps) }}
+#          channel: '#wheels-dev'
+#        if: always()

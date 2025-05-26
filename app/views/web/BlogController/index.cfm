@@ -1,6 +1,6 @@
 <div>
     <!-- Blog filter -->
-    <div class="w-100 h-600 position-relative feature-blog">
+    <div class="w-100 h-600 h-sm-400 position-relative feature-blog">
         <div class="position-absolute mx-auto container start-0 end-0 bottom-50px">
             <p id="featureBlogHeading" class="text-white fs-18 pb-2">Featured</p>
             <p id="blogAuthorHeading" class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</p>
@@ -75,9 +75,10 @@
                             <cfelse>
                             <cfset blogUrl="/blog/list">
                         </cfif>
+                        
                         <!-- wrapper that triggers the HTMX call -->
                         <div id="hxLoader" hx-get="#blogUrl#" hx-trigger="load" hx-target="##blogsContainer"
-                            hx-swap="innerHTML"  hx-indicator="##loader-wrapper">
+                            hx-swap="innerHTML" hx-indicator="##loader-wrapper">
                         </div>
                         <!-- blog list container -->
                         <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-3 row-cols-1">
@@ -186,43 +187,45 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
         const defaultPlaceholder = "Search in blog...";
 
         if (authorInfo) {
-        const fullName = authorInfo.dataset.authorName;
-        const totalComments = authorInfo.dataset.totalComments;
-        const totalPosts = authorInfo.dataset.totalPosts;
-        const profilePicture = authorInfo.dataset.profilePicture;
+            const fullName = authorInfo.dataset.authorName;
+            const totalComments = authorInfo.dataset.totalComments;
+            const totalPosts = authorInfo.dataset.totalPosts;
+            const profilePicture = authorInfo.dataset.profilePicture;
 
-        if(feature) {
-            // add class display-none to the feature element
-            feature.classList.add('d-none');
-        }
+            if(feature) {
+                // add class display-none to the feature element
+                feature.classList.add('d-none');
+            }
 
-        if (heading) {
-            heading.innerHTML = profilePicture + ' <span>' + fullName + '</span>';
-        }
+            if (heading) {
+                heading.innerHTML = profilePicture + ' <span>' + fullName + '</span>';
+            }
 
-        if (subheading) {
-            subheading.textContent = totalPosts + ' blog posts' +' - ' + totalComments +' comments';
-        }
+            if (subheading) {
+                subheading.textContent = totalPosts + ' blog posts' +' - ' + totalComments +' comments';
+            }
 
-        if (searchInput) {
-            searchInput.value = `${fullName}`;
-        }
+            if (searchInput) {
+                searchInput.value = `${fullName}`;
+            }
         } else {
-        // Revert to original content
-        if(feature) {
-            // remove class display-none to the feature element
-            feature.classList.remove('d-none');
-        }
-        if (heading) heading.textContent = defaultHeading;
-        if (subheading) subheading.textContent = defaultSubheading;
+            // Revert to original content
+            if(feature) {
+                // remove class display-none to the feature element
+                feature.classList.remove('d-none');
+            }
+            if (heading) heading.textContent = defaultHeading;
+            if (subheading) subheading.textContent = defaultSubheading;
             if (searchInput){
                 searchInput.value = "";
                 searchInput.placeholder = defaultPlaceholder;
             }
         }
 
-        // Scroll to top after content swap
-        window.scrollTo({ top: 50, behavior: "smooth" });
+        if(authorInfo && authorInfo.dataset.page === 1) {
+            // Scroll to top after content swap
+            window.scrollTo({ top: 50, behavior: "smooth" });
+        }
     }
 });
 </script>
