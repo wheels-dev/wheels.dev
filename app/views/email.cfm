@@ -116,7 +116,7 @@
                     <a href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="button-download"> Download </a>
                 </div>
                 <p style="font-size: 14px;">Happy Reporting,</p>
-                <h5 style="margin-top: 5px !important; font-size: 14px;">The Team Wheels<h5>
+                <h5 style="margin-top: 5px !important; font-size: 14px;">The Wheels Team<h5>
                 <div class="signatureBox">
                     <p class="signature">&copy;2005-2025 Wheels.Dev. All rights are reserved.<br>Wheels is licensed under the Apache License, Version 3.0.</p>
                     <cfif structKeyExists(params, "isSubscriber") AND params.isSubscriber eq true>
