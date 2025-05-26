@@ -217,13 +217,17 @@ component extends="app.Controllers.Controller" {
             Testimonial.isApproved = true;           
             if (Testimonial.save()) {
                 siteurl = urlFor(route="home", onlyPath=false);
+                var emaildata = model("emailTemplate").findAll(where="title = '#trim("Publish Testimonial")#'");
                 var emailparams = {
                     "name" = user.fullname,
-                    "buttonTitle" = "View Your Testimonial",
-                    "content" = "Thank you for writing a testimonial. Your testimonial has been approved and published on the Wheels website.",
+                    "buttonTitle" = emaildata.buttonTitle,
+                    "content" = emaildata.message,
+                    "welcomeMessage"= emaildata.welcomeMessage,
                     "URl" = siteurl,
-                    "Footer" = "If you did not write testinomial, you can safely ignore this email.",
-                    "footerGreetings" = "Thank you for being a part of Wheels community.",
+                    "footerNote" = emaildata.footerNote,
+                    "footerGreetings" = emaildata.footerGreating,
+                    "closingRemark" = emaildata.closingRemark,
+                    "teamSignature" = emaildata.teamSignature,
                     "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
@@ -231,7 +235,7 @@ component extends="app.Controllers.Controller" {
                 cfmail( 
                     to = "#user.email#", 
                     from = "#application.env.mail_from#", 
-                    subject = "Your testimonial has been approved and published", 
+                    subject = "#emaildata.subject#", 
                     server = "#application.env.smtp_host#", 
                     port = "#application.env.smtp_port#", 
                     username = "#application.env.smtp_username#", 
