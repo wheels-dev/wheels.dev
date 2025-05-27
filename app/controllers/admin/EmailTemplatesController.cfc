@@ -42,18 +42,17 @@ component extends="app.Controllers.Controller" {
                 } else {
                     message = "Email not found for editing.";
                 }
-                // renderText("#message#");
-                redirectto(route="#urlFor(route="adminemail-templates")#", success=message);
+                redirectto(route="adminEmail-templates", success=message);
                 return;
             }else{
-                message="Something went wrong email content not updated correctly";
-                redirectto(route="adminemail-templates", error=message);
+                message="Something went wrong email content not updated correctly!";
+                redirectto(route="adminEmail-templates", error=message);
             }
 
         }catch(any e){
             // handle exception
-            message="Something went wrong email content not updated correctly";
-            redirectto(route="adminemail-templates", error=message);
+            message="Something went wrong email content not updated correctly!";
+            redirectto(action="adminEmail-templates", error=message);
         }
     }
 }
