@@ -125,7 +125,7 @@
                 <h5 class="mt-4 mb-4 fs-14">The Team Wheels<h5>
             </cfif>
             <div class="signatureBox">
-                <p class="signature">&copy;2005-2025 Wheels.Dev. All rights are reserved.<br>Wheels is licensed under the Apache License, Version 3.0.</p>
+                <p class="signature">&copy;2005-2025 Wheels.Dev. All rights are reserved.<br>Wheels is licensed under the Apache License, Version 2.0.</p>
                 <cfif structKeyExists(email, "isSubscriber") AND email.isSubscriber eq true>
                     <p class="footer" style="color: 707070 !important; margin: 5px !important; font-size: 12px;">You're receiving this email because you're part of the Wheels community. If you'd like to manage your preferences or unsubscribe, click <a href="javascript:void(0)">here</a>.</p>
                 </cfif>
