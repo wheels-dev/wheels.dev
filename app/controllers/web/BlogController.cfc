@@ -1215,7 +1215,18 @@ component extends="app.Controllers.Controller" {
                 }
             }
         } catch (any e) {
-            local.exception = e;
+    model("Log").log(
+        category = "wheels.blog.tags",
+        level = "ERROR",
+        message = "Failed to save blog tags for blogId: #blogId#",
+        details = {
+            "blog_id": blogId,
+            "error_message": e.message,
+            "error_detail": e.detail,
+            "error_type": e.type
+        },
+        userId = GetSignedInUserId()
+    );
         }
     }
 

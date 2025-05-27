@@ -33,6 +33,8 @@ component extends="app.Controllers.Controller" {
             perPage = 3
         );
         settings = model("Setting").findAll();
+        blogs = model('Blog').getTenLatest(); // Get blog list
+        features = getAllFeatures();
         renderView();
     }
 

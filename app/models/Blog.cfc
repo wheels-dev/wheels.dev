@@ -53,7 +53,7 @@ component extends="app.Models.Model" {
             where='statusid <> 1', 
             include="User", 
             maxRows=10,
-            order="postDate DESC"
+            order="random"
         );
         return blogs;
     }
