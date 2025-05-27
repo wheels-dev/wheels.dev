@@ -35,9 +35,9 @@
                                         fill="white" />
                                 </svg>
                             </button>
-                            <button onclick="handleBlogFilter('Archives', this)"
+                            <button onclick="handleBlogFilter('Categories', this)"
                                 class="px-4 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
-                                Archives
+                                Categories
                                 <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -45,9 +45,9 @@
                                         fill="white" />
                                 </svg>
                             </button>
-                            <button onclick="handleBlogFilter('Categories', this)"
+                            <button onclick="handleBlogFilter('Archives', this)"
                                 class="px-4 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
-                                Categories
+                                Archives
                                 <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -60,7 +60,6 @@
                 </div>
             </div>
             <div class="pt-4">
-                <p class="fs-22 pb-4 fw-medium">Recent blog posts</p>
                 <!-- Loader Element -->
                 <div class="d-flex justify-content-center" id="loader-wrapper">
                     <div style="width: 2rem; height: 2rem;" class="spinner-border my-5 text--primary" role="status">
@@ -81,7 +80,7 @@
                             hx-swap="innerHTML" hx-indicator="##loader-wrapper">
                         </div>
                         <!-- blog list container -->
-                        <div id="blogsContainer" class="row mt-lg-0 mt-3 col-lg-12 col-12 h-max row-cols-lg-3 row-cols-1">
+                        <div id="blogsContainer" class="col-lg-12 col-12 h-max">
                         </div>
                     </cfoutput>
                     <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
@@ -91,7 +90,7 @@
                         <cfset currentMonth=month(now())>
                         <cfset months=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August" , "September" , "October" , "November" , "December" ]>
 
-                        <div class="d-none bg-white p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto" id="Archives">
+                        <div class="d-none bg-white mb-4 p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto" id="Archives">
                             <!-- Archives Button -->
                             <cfoutput>
                                 <cfloop index="year" from="#currentYear#" to="#startYear#" step="-1">
@@ -109,7 +108,7 @@
                                 </cfloop>
                             </cfoutput>
                         </div>
-                        <div class="d-none bg-white p-3 text-center rounded-18" id="Categories"
+                        <div class="d-none bg-white mb-4 p-3 text-center rounded-18" id="Categories"
                             hx-get="/blog/Categories" hx-trigger="load" hx-target="#Categories"
                             hx-swap="innerHTML">
                         </div>
@@ -184,7 +183,7 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
         // Default values
         const defaultHeading = "Wheels The Fast & Fun CFML Framework!";
         const defaultSubheading = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!";
-        const defaultPlaceholder = "Search in blog...";
+        const defaultPlaceholder = "Search by author name, post title, year or category";
 
         if (authorInfo) {
             const fullName = authorInfo.dataset.authorName;
@@ -217,7 +216,7 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
             if (heading) heading.textContent = defaultHeading;
             if (subheading) subheading.textContent = defaultSubheading;
             if (searchInput){
-                searchInput.value = "";
+                // searchInput.value = "";
                 searchInput.placeholder = defaultPlaceholder;
             }
         }
@@ -228,4 +227,14 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
         }
     }
 });
+function setActive(clickedElement) {
+    // Remove 'active' from all category items
+    document.querySelectorAll('.category-item').forEach(function(el) {
+        el.classList.remove('active');
+    });
+
+    // Add 'active' to the clicked one
+    clickedElement.classList.add('active');
+
+}
 </script>
