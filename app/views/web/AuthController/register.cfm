@@ -16,7 +16,7 @@
             class="col-lg-6 mt-lg-0 mt-5 px-lg-0 px-2 p-lg-auto main-login col-12 d-flex flex-column justify-content-center align-items-center">
             <div class="bg-white p-4 border rounded-4 w-100 max-w-570 mx-auto">
                 <div>
-                    <h1 class="fs-24 mb-0 fw-bold text--secondary">Sign Up</h1>
+                    <h2 class="fs-24 mb-0 fw-bold text--secondary">Sign Up</h2>
                     <p class="fs-16 text--secondary fw-medium pt-2">Register your account</p>
 
                     <form class="pt-3 needs-validation" id="registrationForm" novalidate hx-post="/auth/store"
