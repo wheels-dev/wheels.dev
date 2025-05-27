@@ -1,66 +1,88 @@
 <!--- Place HTML here that should be used as the default layout of your application. --->
 <!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
+<cfsilent>
+	<cfset pathInfo = trim(cgi.path_info)>
+	<cfset isBlog = find("/blog", pathInfo)>
+	<cfset isApi = find("/api", pathInfo)>
+	<cfset isLogin = find("/login", pathInfo)>
+	<cfset isRegister = find("/register", pathInfo)>
+	<cfset isForgotPassword = find("/forgot-password", pathInfo)>
+	<cfset isResetPassword = find("/reset-password", pathInfo)>
+	<cfset isDocs = find("/docs", pathInfo) or isApi>
+	<cfset isCommunity = find("/community", pathInfo)>
+	<cfset isNews = find("/news", pathInfo) or isBlog and !find("/blog/create", pathInfo)>
+	<cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword OR isResetPassword)>
 
-<cfset pathInfo = trim(cgi.path_info)>
-<cfset isBlog = find("/blog", pathInfo)>
-<cfset isApi = find("/api", pathInfo)>
-<cfset isLogin = find("/login", pathInfo)>
-<cfset isRegister = find("/register", pathInfo)>
-<cfset isForgotPassword = find("/forgot-password", pathInfo)>
-<cfset isResetPassword = find("/reset-password", pathInfo)>
-<cfset isDocs = find("/docs", pathInfo) or isApi>
-<cfset isCommunity = find("/community", pathInfo)>
-<cfset isNews = find("/news", pathInfo) or isBlog and !find("/blog/create", pathInfo)>
-<cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword OR isResetPassword)>
+	<cfset pageTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
+	<cfset ogTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
+	<cfset metaDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev’s intuitive MVC architecture.">
+	<cfset ogDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev’s intuitive MVC architecture.">
 
-<cfset pageTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">
-<cfset ogTitle = "Wheels - an open source CFML framework inspired by Ruby on Rails">
-<cfset metaDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
-<cfset ogDescription = "Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
+	<cfif isBlog>
+		<cfset blogSlug = listLast(pathInfo, "/")>
 
-<cfif isBlog>
-    <cfset blogSlug = listLast(pathInfo, "/")>
+		<!--- Fetch the blog post by slug --->
+		<cfset post = model("Blog").findOne(where="slug = '#blogSlug#'")>
 
-    <!--- Fetch the blog post by slug --->
-    <cfset post = model("Blog").findOne(where="slug = '#blogSlug#'")>
+		<cfif isStruct(post) && structKeyExists(post, "id")>
+			<cfset metaDescription = this.generateMetaDescription(post.content)>
 
-    <cfif isStruct(post) && structKeyExists(post, "id")>
-		<cfset metaDescription = this.generateMetaDescription(post.content)>
+			<cfset pageTitle = post.title & " - Wheels">
+			<cfset ogTitle = post.title>
+			<cfset ogDescription = metaDescription>
+			<cfset ogImage = ''>
+		<cfelse>
+			<cfset pageTitle = "Blogs - Wheels">
+			<cfset metaDescription = "Explore our latest blogs on Wheels.">
+			<cfset ogTitle = pageTitle>
+			<cfset ogDescription = metaDescription>
+		</cfif>
+	</cfif>
 
-        <cfset pageTitle = post.title & " - Wheels">
-		<cfset ogTitle = post.title>
+	<cfif isApi>
+		<cfset apiPath = listLast(pathInfo, "/")>
+		<cfset pageTitle = apiPath & " - Wheels API ">
+	</cfif>
+
+	<cfif isDocs>
+		<cfset docsPath = listLast(pathInfo, "/")>
+		<cfset docsPath = uCase(left(docsPath, 1)) & mid(docsPath, 2)>
+		<cfset pageTitle = docsPath & " - Wheels ">
+	</cfif>
+
+	<cfif isCommunity>
+		<cfset communityPath = listLast(pathInfo, "/")>
+		<cfset communityPath = uCase(left(communityPath, 1)) & mid(communityPath, 2)>
+		<cfset pageTitle = communityPath & " - Wheels ">
+	</cfif>
+
+	<cfif isNews>
+		<cfset newsPath = listLast(pathInfo, "/")>
+		<cfset newsPath = uCase(left(newsPath, 1)) & mid(newsPath, 2)>
+		<cfset pageTitle = newsPath & " - Wheels ">
+	</cfif>
+	
+	<cfif isLogin>
+		<cfset pageTitle = "Login to Your Account | Wheels.dev - CFML Framework Access">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Access your Wheels.dev account to manage and contribute to the community, and explore documentation. Secure login for developers.">
 		<cfset ogDescription = metaDescription>
-		<cfset ogImage = ''>
-    <cfelse>
-        <cfset pageTitle = "Blogs - Wheels">
-        <cfset metaDescription = "Explore our latest blogs on Wheels.">
-        <cfset ogTitle = pageTitle>
-        <cfset ogDescription = metaDescription>
-    </cfif>
-</cfif>
+	</cfif>
 
-<cfif isApi>
-    <cfset apiPath = listLast(pathInfo, "/")>
-    <cfset pageTitle = apiPath & " - Wheels API ">
-</cfif>
+	<cfif isRegister>
+		<cfset pageTitle = "Sign Up for Wheels.dev | Free Account for Wheels Community">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Create your free account on Wheels.dev and start building web applications with our powerful CFML framework. Join the community today!">
+		<cfset ogDescription = metaDescription>
+	</cfif>
 
-<cfif isDocs>
-	<cfset docsPath = listLast(pathInfo, "/")>
-	<cfset docsPath = uCase(left(docsPath, 1)) & mid(docsPath, 2)>
-	<cfset pageTitle = docsPath & " - Wheels ">
-</cfif>
-
-<cfif isCommunity>
-	<cfset communityPath = listLast(pathInfo, "/")>
-	<cfset communityPath = uCase(left(communityPath, 1)) & mid(communityPath, 2)>
-	<cfset pageTitle = communityPath & " - Wheels ">
-</cfif>
-
-<cfif isNews>
-	<cfset newsPath = listLast(pathInfo, "/")>
-	<cfset newsPath = uCase(left(newsPath, 1)) & mid(newsPath, 2)>
-	<cfset pageTitle = newsPath & " - Wheels ">
-</cfif>
+	<cfif isResetPassword or isForgotPassword>
+		<cfset pageTitle = "Reset Your Password | Wheels.dev - CFML Web Framework">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Forgot your password? Quickly reset it and regain access to your Wheels.dev account, the modern CFML framework for rapid web development.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+</cfsilent>
 
 <cfif application.contentOnly>
 	<cfoutput>
@@ -86,7 +108,6 @@
 				<meta property="og:image" content="#ogImage#">
 			</cfif>
 			</cfoutput>
-			<meta property="og:description" content="Build apps quickly with an organized, Ruby on Rails-inspired structure. Get up and running in no time!">
 			<meta property="og:url" content="https://wheels.dev/">
 			<meta property="og:site_name" content="Wheels">
 			<!-- Bootstrap CSS -->
@@ -307,7 +328,7 @@
 								<ul class="list-unstyled">
 									<cfif isLoggedInUser()>
 										<li class="mt-2">
-											<a href="#" class="text--secondary fs-14 text-decoration-none cursor-pointer">
+											<a class="text--secondary fs-14 text-decoration-none cursor-pointer">
 												<cfoutput>
 													#session.username#
 												</cfoutput>
@@ -332,7 +353,7 @@
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Comments
 											Feed</a>
 									</li>
-									<li class="mt-2"><a href="#"
+									<li class="mt-2"><a
 											class="text--secondary fs-14 text-decoration-none cursor-pointer"></a>
 									</li>
 								</ul>

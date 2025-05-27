@@ -44,7 +44,7 @@
 
     <!-- Latest blogs -->
     <div class="pt-5 px-2 blog-main">
-        <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
+        <h2 class="text-center fw-bold fs-60">Latest Blog Posts</h2>
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load"
                 hx-target="#blogs-container" hx-swap="innerHTML">
@@ -55,7 +55,7 @@
 
     <!-- our guide  -->
     <div class="gudie-main py-5 d-none">
-        <h1 class="text-center text-white fs-60 fw-bold">Our Guide</h1>
+        <h2 class="text-center text-white fs-60 fw-bold">Our Guide</h2>
         <div class="container mt-5" id="guides-container" hx-get="/home/loadGuides" hx-trigger="load"
             hx-target="#guides-container" hx-swap="innerHTML">
             <!-- Guides will be loaded here via HTMX -->
