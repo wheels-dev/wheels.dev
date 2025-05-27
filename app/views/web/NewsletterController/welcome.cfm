@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Wheels.dev Newsletter</title>
+    <title>Welcome to the Wheels.dev Community</title>
     <style>
         body {
             font-family: Arial, sans-serif;
