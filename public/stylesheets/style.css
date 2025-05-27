@@ -85,7 +85,7 @@ main.main-bg {
 }
 
 .hero-section {
-    padding: 10rem 0 6rem
+    padding: 6rem 10rem 2rem 10rem;
 }
 
 .hero-section::after,
