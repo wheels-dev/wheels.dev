@@ -10,7 +10,7 @@
         <div class="col-lg-4 bg-white col-12 position-relative mx-auto p-4 border rounded-4 shadow-sm">
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Welcome Back</h1>
-                <p class="fs-16 text--secondary fw-medium pt-2">Please login to your account</p>
+                <p class="fs-16 text--secondary fw-medium pt-2">Please login to continue</p>
 
                 <form hx-boost="true" class="pt-4 needs-validation" id="loginForm" novalidate
                     hx-post="/auth/authenticate" hx-swap="none" aria-label="Login Form">
@@ -29,7 +29,7 @@
                                         stroke-linejoin="round" />
                                 </g>
                             </svg>
-                            <input type="email" placeholder="Enter your email"
+                            <input type="email" placeholder="Email Address"
                                 class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="email"
                                 name="email" required autocomplete="email" aria-label="Email Address">
                         </div>
@@ -55,7 +55,7 @@
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </g>
                             </svg>
-                            <input type="password" placeholder="Enter your password"
+                            <input type="password" placeholder="Password"
                                 class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="password"
                                 name="password" required minlength="8" autocomplete="current-password" aria-label="Password">
                             <button type="button" class="btn btn-link p-0" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
@@ -86,7 +86,7 @@
                         <div class="text-center">
                             <p class="fs-14 text--secondary fw-medium">
                                 Don't have an account?
-                                <a href="/register" class="text--primary hover:text-primary" data-hx-boost="false">Register here</a>
+                                <a href="/register" class="text--primary hover:text-primary" data-hx-boost="false">Register</a>
                             </p>
                         </div>
                     </div>
