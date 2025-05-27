@@ -151,8 +151,10 @@ main.main-bg {
 
 #filtersContainer #Archives p.active,
 #filtersContainer #Categories p.active {
-    background-color: rgba(179, 179, 179, .12);
-    font-weight: 700 !important
+    background-color:var(--primary);
+    font-weight: 700 !important;
+    color: white;
+    border-radius: 0.5rem;
 }
 
 .gudie-main {

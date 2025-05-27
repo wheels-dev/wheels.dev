@@ -184,7 +184,7 @@
 						<div class="text-muted d-flex justify-content-between align-items-center">
 							<div>
 								<p class="p-0 m-0 fs-12">&copy; 2025 Wheels. All rights reserved.</p>
-								<p class="fs-12">Wheels is licensed under the Apache License, Version 3.0.</p>
+								<p class="fs-12">Wheels is licensed under the Apache License, Version 2.0.</p>
 								<p class="fs-12">ColdFusion hosting provided by Vivio Technologies.</p>
 							</div>
 							<div class="d-flex justify-content-center gap-3">
