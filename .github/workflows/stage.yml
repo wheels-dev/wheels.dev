@@ -36,6 +36,38 @@ jobs:
           docker build -t ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage .
           docker push ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
 
+      - name: Run container and verify it starts
+        id: Run-Container-Test
+        run: |
+          IMAGE=${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT }}/wheels-dev-stage
+          CONTAINER_NAME=wheels-dev-stage-test
+
+          echo "Running test container from image: $IMAGE"
+          docker run -d --name $CONTAINER_NAME $IMAGE
+
+          echo "Waiting for container to reach 'running' state..."
+
+          TIMEOUT=60
+          INTERVAL=5
+          elapsed=0
+
+          while [ $elapsed -lt $TIMEOUT ]; do
+            status=$(docker inspect -f '{{.State.Status}}' $CONTAINER_NAME)
+            if [ "$status" = "running" ]; then
+              echo "✅ Container is running."
+              docker rm -f $CONTAINER_NAME
+              exit 0
+            fi
+            sleep $INTERVAL
+            elapsed=$((elapsed + INTERVAL))
+          done
+
+          echo "❌ Container failed to reach 'running' state within $TIMEOUT seconds."
+          echo "::error::Image did not produce a healthy container."
+          docker logs $CONTAINER_NAME || true
+          docker rm -f $CONTAINER_NAME || true
+          exit 1
+
       - name: Deploy to Docker Swarm
         id: Deploy-to-Docker-Swarm
         run: |
