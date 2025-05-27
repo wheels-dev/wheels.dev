@@ -174,7 +174,7 @@
         </div>
     </div>
 
-    <div class="container d-none mt-5 py-5">
+    <!-- <div class="container d-none mt-5 py-5">
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Our Top Contributer</p>
         </div>
@@ -398,7 +398,7 @@
             <div class="swiper-button-next end-0"></div>
             <div class="swiper-button-prev start-0"></div>
         </div>
-    </div>
+    </div> -->
     <!-- Testimonial Popup Modal -->
     <cfif settings.enableTestimonial>
         <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
