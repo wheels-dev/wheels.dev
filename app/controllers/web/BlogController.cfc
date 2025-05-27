@@ -39,8 +39,16 @@ component extends="app.Controllers.Controller" {
         try {
             var result = getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll);
             
+            if (result.query.recordCount == 0) {
+                // Show fallback blogs
+                var fallback = getBlogData("", "", 1, perPage, isInfiniteScroll);
+                blogs = fallback.query;
+                isFallback = true;
+            } else {
+                blogs = result.query;
+                isFallback = false;
+            }
             // Set template variables
-            blogs = result.query;
             hasMore = result.hasMore;
             totalCount = result.totalCount;
             
