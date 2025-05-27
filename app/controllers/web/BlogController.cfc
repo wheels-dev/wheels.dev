@@ -39,8 +39,16 @@ component extends="app.Controllers.Controller" {
         try {
             var result = getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll);
             
+            if (result.query.recordCount == 0) {
+                // Show fallback blogs
+                var fallback = getBlogData("", "", 1, perPage, isInfiniteScroll);
+                blogs = fallback.query;
+                isFallback = true;
+            } else {
+                blogs = result.query;
+                isFallback = false;
+            }
             // Set template variables
-            blogs = result.query;
             hasMore = result.hasMore;
             totalCount = result.totalCount;
             
@@ -1207,7 +1215,18 @@ component extends="app.Controllers.Controller" {
                 }
             }
         } catch (any e) {
-            local.exception = e;
+    model("Log").log(
+        category = "wheels.blog.tags",
+        level = "ERROR",
+        message = "Failed to save blog tags for blogId: #blogId#",
+        details = {
+            "blog_id": blogId,
+            "error_message": e.message,
+            "error_detail": e.detail,
+            "error_type": e.type
+        },
+        userId = GetSignedInUserId()
+    );
         }
     }
 

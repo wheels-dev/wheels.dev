@@ -10,7 +10,7 @@
         <div class="col-lg-4 bg-white col-12 position-relative mx-auto p-4 border rounded-4 shadow-sm">
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Reset Password</h1>
-                <p class="fs-16 text--secondary fw-medium pt-2">Enter your email to receive reset instructions</p>
+                <p class="fs-16 text--secondary fw-medium pt-2">Enter your email to get a password reset link</p>
 
                 <form hx-boost="true" class="pt-4 needs-validation" id="forgotPasswordForm" novalidate
                     hx-post="/auth/send-reset-link" hx-swap="none" aria-label="Forgot Password Form">
@@ -40,13 +40,13 @@
                     <div class="space-y-3">
                         <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16 hover:bg-primary-dark transition-all" aria-label="Send Reset Link">
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span class="button-text">Send Reset Link</span>
+                            <span class="button-text">Send Link</span>
                         </button>
 
                         <div class="text-center">
                             <p class="fs-14 text--secondary fw-medium">
                                 Remember your password?
-                                <a href="/login" class="text--primary hover:text-primary" data-hx-boost="false">Login here</a>
+                                <a href="/login" class="text--primary hover:text-primary" data-hx-boost="false">Login</a>
                             </p>
                         </div>
                     </div>

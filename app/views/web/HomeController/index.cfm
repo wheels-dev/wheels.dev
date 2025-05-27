@@ -36,33 +36,48 @@
 
     <!-- Cards -->
     <div class="container pb-5">
-        <div class="row gy-3 gy-sm-5 gx-sm-5" id="features-container" hx-get="/home/loadFeatures" hx-trigger="load"
-            hx-target="#features-container" hx-swap="innerHTML">
-            <!-- Features will be loaded here via HTMX -->
+        <div class="row gy-3 gy-sm-5 gx-sm-5" id="features-container">
+            <cfoutput query="features">
+                <div class="col-lg-4">
+                    <div class="px-4 py-4 bg-white border-transparent border-2 cards rounded-5 cursor-pointer shadow-sm">
+                        <div class="icon-container d-flex justify-content-center align-items-center">
+                            #features.image#
+                        </div>
+                        <div class="mt-3">
+                            <p class="fw-bold fs-24 text--secondary">#features.title#</p>
+                            <p class="fs-18 text--secondary/70 pt-1 line-clamp-2">#features.description#</p>
+                        </div>
+                    </div>
+                </div>
+            </cfoutput>
         </div>
     </div>
 
     <!-- Latest blogs -->
     <div class="pt-5 px-2 blog-main">
-        <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
+        <h1 class="text-center fw-bold fs-60">Latest From the Wheels Dev Blog</h1>
         <div class="swiper py-5 blogSwiper h-max">
-            <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load"
-                hx-target="#blogs-container" hx-swap="innerHTML">
-                <!-- Blogs will be loaded here via HTMX -->
+            <div class="swiper-wrapper" id="blogs-container">
+                <cfoutput query= "blogs">
+                    <div class="p-4 bg-white rounded-5 shadow-sm swiper-slide">
+                        <a href="/blog/#slug#" class="">
+                            <div>
+                                <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
+                            </div>
+                        
+                            <div class="d-flex gap-2 justify-content-between align-items-center">
+                                <p class="fs-16 truncate fw-medium text--lightGray">#dateformat(blogs.postDate, 'MMMM DD, YYYY')# by #blogs.fullName#</p>
+                                <button class="bg--primary text-nowrap fs-16 text-white rounded-2 px-3 py-1">Learn more</button>
+                            </div>
+                        </a>
+                    </div>
+                </cfoutput>
             </div>
         </div>
     </div>
 
-    <!-- our guide  -->
-    <div class="gudie-main py-5 d-none">
-        <h1 class="text-center text-white fs-60 fw-bold">Our Guide</h1>
-        <div class="container mt-5" id="guides-container" hx-get="/home/loadGuides" hx-trigger="load"
-            hx-target="#guides-container" hx-swap="innerHTML">
-            <!-- Guides will be loaded here via HTMX -->
-        </div>
-    </div>
-
     <!-- welcome community -->
+    <cfoutput>
     <div class="container py-5 mt-5">
         <div class="row align-items-center gy-5">
             <div class="col-lg-12 space-y-3 text-center col-12">
@@ -71,15 +86,16 @@
                     Welcome to Our Community - a place where like-minded people connect, share ideas, <br> and grow
                     together in a positive and supportive environment.
                 </p>
-                <a href="/community" class="bg--primary d-block w-max mx-auto fs-16 px-3 py-2 rounded-18 text-white">
+                <a href="#urlFor(route='community')#" class="bg--primary d-block w-max mx-auto fs-16 px-3 py-2 rounded-18 text-white">
                     <span>Explore community</span>
                 </a>
             </div>
             <div class="text-center col-12">
-                <img src="/images/community.png" class="img-fluid" alt="Community">
+                    #imageTag(source="community.png", class="img-fluid", alt="Wheels.dev Community")#
             </div>
         </div>
     </div>
+    </cfoutput>
 
     <!-- Testimonials -->
     <cfoutput>
@@ -99,7 +115,11 @@
                         <cfloop query="testimonials">
                             <div class="d-flex row swiper-slide">
                                 <div class="col-lg-3 col-12 pb-2 pb-sm-0">
-                                    <img src="#len(testimonials.logoPath) gt 0 ? testimonials.logoPath : '/images/testi.png'#" class="img-fluid" alt="#encodeForHtml(testimonials.companyName)#" style="width: 330px; height: 290px;">
+                                    <cfset imgSrc = testimonials.logoPath>
+                                    <cfif !len(trim(imgSrc))>
+                                        <cfset imgSrc = "testi.png">
+                                    </cfif>
+                                    #imageTag(source=imgSrc, class="img-fluid", alt=encodeForHtml(testimonials.companyName), style="width: 330px; height: 290px;")#
                                 </div>
                                 <div class="col-lg-9 col-12">
                                     <div class="d-flex flex-column justify-content-between h-100">
@@ -108,9 +128,9 @@
                                             #encodeForHtml(testimonials.testimonialText)#
                                         </p>
                                         <p class="fs-18 text--secondary fw-medium border-top pt-4">
-                                            <cfif structKeyExists(variables, "user_fullName") AND len(trim(user_fullName))>
-                                                #encodeForHtml(user_fullName)#
-                                            <cfelseif len(trim(testimonials.companyName))>
+                                            <cfif structKeyExists(testimonials, "authorName") AND len(trim(testimonials.authorName))>
+                                                #encodeForHtml(testimonials.authorName)#
+                                            <cfelseif structKeyExists(testimonials, "companyName") AND len(trim(testimonials.companyName))>
                                                 #encodeForHtml(testimonials.companyName)#
                                             <cfelse>
                                                 Anonymous
@@ -149,12 +169,12 @@
         </div>
         <div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
             <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
-                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;">
+                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;" alt="GitHub Contributors for CFWheels">
             </a>
         </div>
     </div>
 
-    <div class="container d-none mt-5 py-5">
+    <!-- <div class="container d-none mt-5 py-5">
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Our Top Contributer</p>
         </div>
@@ -378,7 +398,7 @@
             <div class="swiper-button-next end-0"></div>
             <div class="swiper-button-prev start-0"></div>
         </div>
-    </div>
+    </div> -->
     <!-- Testimonial Popup Modal -->
     <cfif settings.enableTestimonial>
         <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
