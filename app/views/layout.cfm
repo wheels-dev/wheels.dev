@@ -166,7 +166,7 @@
 			</cfoutput>
 			</script>
 
-			<cfif isBlog>
+			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")>
 			<script type="application/ld+json">
 			<cfoutput>
 			{
