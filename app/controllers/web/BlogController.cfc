@@ -373,7 +373,8 @@ component extends="app.Controllers.Controller" {
             renderPartial(partial="partials/blogList");
         } else {
             // return all publish blogs with pagination
-            blogs = getAllBlogs(page, perPage, isInfiniteScroll);
+            result = getAllBlogs(page, perPage, isInfiniteScroll);
+            blogs = result.query;
             renderPartial(partial="partials/blogList");
         }
     }
