@@ -40,7 +40,7 @@
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
 			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "web.BlogController##Edit")
 			
-			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
+			.get(name = "downloads", pattern = "downloads", to = "web.HomeController##downloads")
 
 			// New routes for loading categories, statuses, and post types
 			.get(name = "blog-Search", pattern = "blog/Search", to = "web.BlogController##blogSearch")
@@ -96,6 +96,9 @@
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/.[format]", to="web.ApiController##show")
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/", to="web.ApiController##show")
 			.get(name="docVersion", pattern="api/*[version]/", to="web.ApiController##index")
+
+			// SEO Routes
+			.get(name="sitemap", pattern="generate-sitemap", to="web.HomeController##sitemap")
 
 			// error routes
 			.get(name = "error403", pattern = "error403", to = "errorController##error403")

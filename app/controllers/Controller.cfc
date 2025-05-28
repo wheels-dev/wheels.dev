@@ -213,4 +213,7 @@ component extends="wheels.Controller" {
         return result;
     }
 
+    public function getBaseUrl() {
+        return application.env.application_host;
+     }
 }
