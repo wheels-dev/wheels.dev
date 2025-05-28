@@ -898,8 +898,7 @@ component extends="app.Controllers.Controller" {
 
         // Get all blog-category mappings with that category
         var blogCategoryQuery = model("BlogCategory")
-            .findAll(where="categoryId = #category.id#", returnAs="query");
-
+            .findAll(where="categoryId = '#category.id#'", returnAs="query");
         if (blogCategoryQuery.recordCount == 0) return {query=queryNew(""), hasMore=false, totalCount=0};
 
         // Extract blogIds
@@ -919,7 +918,8 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished='true'"
+            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished='true'",
+            include="User,BlogCategory"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
