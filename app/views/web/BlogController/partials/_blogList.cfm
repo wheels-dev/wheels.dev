@@ -1,13 +1,11 @@
 <cfoutput>
     <cfif isFallback>
-        <cfif isFallback>
-            <div class="row mb-3">
-                <div class="col-12">
-                    <p class="fs-16 ms-2 fw-medium">Oops! looks like there's nothing here yet.</p>
-                    <p class="fs-22 ms-2 mb-3 mt-3 fw-medium">Relative Posts</p>
-                </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <p class="fs-16 ms-2 fw-medium">Oops! looks like there's nothing here yet.</p>
+                <p class="fs-22 ms-2 mb-3 mt-3 fw-medium">Relative Posts</p>
             </div>
-        </cfif>
+        </div>
     </cfif>
     <div class="row mt-lg-0 mt-3 row-cols-lg-3 row-cols-1">
         <cfloop query="blogs">
