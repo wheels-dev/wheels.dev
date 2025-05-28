@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,create,loadFeatures,loadBlogs,loadGuides,loadTestimonials", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,loadFeatures,loadBlogs,loadGuides,loadTestimonials,sitemap,downloads", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
 
@@ -277,5 +277,145 @@ component extends="app.Controllers.Controller" {
         } else {
             return "File not found: " & absolutePath;
         }
+    }
+
+    function sitemap() {
+        try {
+            model("Log").log(
+                category = "wheels.seo",
+                level = "DEBUG",
+                message = "Generating sitemap.xml",
+                details = {
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            
+            // Get all public URLs that should be in sitemap
+            var urls = [];
+            
+            // Add static pages
+            arrayAppend(urls, {
+                loc: getBaseUrl(),
+                lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                changefreq: "daily",
+                priority: "1.0"
+            });
+            
+            // Add blog posts
+            var blogPosts = model("Blog").findAll(where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'");
+            for (var post in blogPosts) {
+                arrayAppend(urls, {
+                    loc: getBaseUrl() & "/blog/" & post.slug,
+                    lastmod: dateFormat(post.updatedAt, "yyyy-mm-dd"),
+                    changefreq: "weekly",
+                    priority: "0.8"
+                });
+            }
+            
+            // Add blog author pages
+            var authors = model("Blog").findAll(
+                select="username",
+                include="User",
+                distinct="true",
+                where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy IS NOT NULL"
+            );
+            // writeDump(authors); abort;
+            for (var author in authors) {
+                arrayAppend(urls, {
+                    loc: getBaseUrl() & "/blog/author/" & author.username,
+                    lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                    changefreq: "weekly",
+                    priority: "0.7"
+                });
+            }
+            
+            // Add other public pages
+            var publicPages = [
+                "/blog",
+                "/docs",
+                "/community",
+                "/news",
+                "/downloads",
+                "/api/v3.0.0",
+                "/api/v2.5.0",
+                "/api/v2.4.0",
+                "/api/v2.3.0",
+                "/api/v2.2.0",
+                "/api/v2.1.0",
+                "/api/v2.0.0",
+                "/api/v1.4.5",
+                "/login",
+                "/register",
+                "/verify",
+                "/api",
+                "/blog/feed",
+                "/comment/feed"
+            ];
+            
+            for (var page in publicPages) {
+                arrayAppend(urls, {
+                    loc: getBaseUrl() & page,
+                    lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                    changefreq: "weekly",
+                    priority: "0.7"
+                });
+            }
+            
+            // Generate XML
+            var xml = '<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+            
+            for (var link in urls) {
+                xml &= '
+    <url>
+        <loc>#link.loc#</loc>
+        <lastmod>#link.lastmod#</lastmod>
+        <changefreq>#link.changefreq#</changefreq>
+        <priority>#link.priority#</priority>
+    </url>';
+            }
+            
+            xml &= '
+</urlset>';
+            
+            // Save the sitemap to the public directory
+            fileWrite(expandPath("/sitemap.xml"), xml);
+            
+            // Log success
+            model("Log").log(
+                category = "wheels.seo",
+                level = "INFO",
+                message = "Sitemap generated successfully",
+                details = {
+                    "urls_count": arrayLen(urls),
+                    "generated_at": now()
+                }
+            );
+            
+            // Show success message with link to sitemap
+            renderText(text="Sitemap generated successfully! <a href='/sitemap.xml'>View Sitemap</a>");
+            
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.seo",
+                level = "ERROR",
+                message = "Failed to generate sitemap.xml",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            // Show error message
+            renderText(text="Failed to generate sitemap. Please try again later.");
+        }
+    }
+    
+    function downloads() {
+        redirectTo(url="https://github.com/wheels-dev/wheels/releases", statusCode=301);
+    }
+
+    private string function getBaseUrl() {
+       return application.env.application_host;
     }
 }
