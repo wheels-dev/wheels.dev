@@ -70,6 +70,10 @@
     min-height: 200px
 }
 
+.h-300{
+    height: 300px;
+}
+
 .size-320 {
     width: 320px;
     height: 320px
