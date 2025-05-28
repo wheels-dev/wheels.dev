@@ -1,5 +1,5 @@
 <cfoutput>
-    <cfif isFallback>
+    <cfif isDefined("isFallback") AND isFallback>
         <div class="row mb-3">
             <div class="col-12">
                 <p class="fs-16 ms-2 fw-medium">Oops! looks like there's nothing here yet.</p>

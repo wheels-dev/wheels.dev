@@ -59,7 +59,7 @@
         </div>
     </div>
     <div class="d-flex pb-5 justify-content-center">
-        <div id="loader" style="display:none; width: 4rem; height: 4rem;" class="spinner-border text--primary" role="status">
+        <div id="loader" style="display:none; width: 2rem; height: 2rem;" class="spinner-border text--primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>

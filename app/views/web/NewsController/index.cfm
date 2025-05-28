@@ -46,7 +46,7 @@
 
     <!-- Loader -->
     <div id="loader" class="text-center mt-4" style="display: none;">
-      <div class="spinner-border text-primary" role="status">
+      <div class="spinner-border text--primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
