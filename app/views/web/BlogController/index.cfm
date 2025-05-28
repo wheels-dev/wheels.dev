@@ -1,6 +1,6 @@
 <div>
     <!-- Blog filter -->
-    <div class="w-100 h-600 h-sm-400 position-relative feature-blog">
+    <div class="w-100 h-300 h-sm-400 position-relative feature-blog">
         <div class="position-absolute mx-auto container start-0 end-0 bottom-50px">
             <p id="featureBlogHeading" class="text-white fs-18 pb-2">Featured</p>
             <h1 id="blogAuthorHeading" class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</h1>
@@ -91,21 +91,44 @@
 
                         <div class="d-none bg-white mb-4 p-3 text-center rounded-18 no-scrollbar h-70vh overflow-y-auto" id="Archives">
                             <!-- Archives Button -->
-                            <cfoutput>
-                                <cfloop index="year" from="#currentYear#" to="#startYear#" step="-1">
-                                    <cfset monthLimit=(year EQ currentYear) ? currentMonth : 12>
-                                    <cfset startLimit=(year EQ startYear) ? startMonth : 1>
+                            <div class="accordion mb-4" id="archiveAccordion">
+                                <cfoutput>
+                                    <cfset isFirst = true>
+                                    <cfloop index="year" from="#currentYear#" to="#startYear#" step="-1">
+                                        <cfset monthLimit = (year EQ currentYear) ? currentMonth : 12>
+                                        <cfset startLimit = (year EQ startYear) ? startMonth : 1>
+                                        <cfset accordionId = "year#year#">
+                                        
+                                        <cfset showClass = isFirst ? "show" : "">
+                                        <cfset collapsedClass = isFirst ? "" : "collapsed">
+                                        <cfset ariaExpanded = isFirst ? "true" : "false">
 
-                                    <cfloop index="month" from="#monthLimit#" to="#startLimit#"
-                                        step="-1">
-                                        <p hx-get="/blog/list/#year#/#NumberFormat(month, '00')#"
-                                            hx-target="##blogsContainer" hx-swap="innerHTML"
-                                            class="fs-14 border-bottom mb-0 py-2 cursor-pointer fw-normal text--secondary">
-                                            #months[month]# #year#
-                                        </p>
+                                        <div class="accordion-item bg-transparent border-0 mb-2">
+                                            <h2 class="accordion-header section text-white" id="heading#accordionId#">
+                                                <button class="accordion-button #collapsedClass# fs-14 fw-normal shadow-none bg--input p-2 rounded-3 text--secondary" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="##collapse#accordionId#"
+                                                    aria-expanded="#ariaExpanded#" aria-controls="collapse#accordionId#">
+                                                    #year#
+                                                </button>
+                                            </h2>
+                                            <div id="collapse#accordionId#" class="accordion-collapse collapse #showClass#" aria-labelledby="heading#accordionId#" data-bs-parent="##archiveAccordion">
+                                                <div class="accordion-body px-4">
+                                                    <cfloop index="month" from="#monthLimit#" to="#startLimit#" step="-1">
+                                                        <cfset hasBorder = (month NEQ startLimit) ? " border-bottom" : "">
+                                                        <p onclick="setActive(this)" hx-get="/blog/list/#year#/#NumberFormat(month, '00')#"
+                                                        hx-target="##blogsContainer" hx-swap="innerHTML"
+                                                        class="fs-14 py-2 cursor-pointer text--secondary #hasBorder# py-1 archive-item">
+                                                            #months[month]# #year#
+                                                        </p>
+                                                    </cfloop>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <cfset isFirst = false> <!--- Only first item will be open --->
                                     </cfloop>
-                                </cfloop>
-                            </cfoutput>
+                                </cfoutput>
+                            </div>
                         </div>
                         <div class="d-none bg-white mb-4 p-3 text-center rounded-18" id="Categories"
                             hx-get="/blog/Categories" hx-trigger="load" hx-target="#Categories"
@@ -215,7 +238,36 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
             if (heading) heading.textContent = defaultHeading;
             if (subheading) subheading.textContent = defaultSubheading;
             if (searchInput){
-                // searchInput.value = "";
+                const rawPath = evt.detail.pathInfo.finalRequestPath;
+                const path = rawPath.split('?')[0]; // remove query params
+                const parts = path.split('/').filter(Boolean);
+                let result = "";
+
+                if (path.includes("blog/list/category")) {
+                    // Category path: get last part
+                    const category = parts[parts.length - 1];
+                    result = category;
+                } else if (!isNaN(parts[parts.length - 1]) && !isNaN(parts[parts.length - 2])) {
+                    // Numeric path: get year and month
+                    const month = parseInt(parts[parts.length - 1]);
+                    const year = parts[parts.length - 2];
+                    const monthName = getMonthName(month);
+                    result = `${monthName} ${year}`;
+                }
+
+                if (!path.includes("searchTerm=")) {
+                    searchInput.value = result;
+                }
+                if (path === "/blog/list") {
+                    // Remove 'active' from all category items
+                    document.querySelectorAll('.category-item').forEach(function(el) {
+                        el.classList.remove('active');
+                    });
+                    // Remove 'active' from all archive items
+                    document.querySelectorAll('.archive-item').forEach(function(el) {
+                        el.classList.remove('active');
+                    });
+                }
                 searchInput.placeholder = defaultPlaceholder;
             }
         }
@@ -226,12 +278,22 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
         }
     }
 });
+function getMonthName(monthNumber) {
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    return months[monthNumber - 1] || "Invalid Month";
+}
 function setActive(clickedElement) {
     // Remove 'active' from all category items
     document.querySelectorAll('.category-item').forEach(function(el) {
         el.classList.remove('active');
     });
-
+    // Remove 'active' from all archive items
+    document.querySelectorAll('.archive-item').forEach(function(el) {
+        el.classList.remove('active');
+    });
     // Add 'active' to the clicked one
     clickedElement.classList.add('active');
 
