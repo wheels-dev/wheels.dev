@@ -7,8 +7,12 @@ component extends="app.Controllers.Controller" {
 
     public void function index() {
         releases = getGitHubReleases();
+        blogs = getBlogs();
     }
 
+    private function getBlogs() {
+        return model("Blog").findAll(select= "title,content,postCreatedDate", where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'", order="createdAt DESC");
+    }
     private array function getGitHubReleases() {
         var result = [];
 

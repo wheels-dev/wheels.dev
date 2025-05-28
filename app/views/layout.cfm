@@ -15,14 +15,17 @@
 
 	<cfset pageTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
 	<cfset ogTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
-	<cfset metaDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev’s intuitive MVC architecture.">
-	<cfset ogDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev’s intuitive MVC architecture.">
+	<cfset metaDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev's intuitive MVC architecture.">
+	<cfset ogDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev's intuitive MVC architecture.">
 
 	<cfif isBlog>
 		<cfset blogSlug = listLast(pathInfo, "/")>
 
 		<!--- Fetch the blog post by slug --->
-		<cfset post = model("Blog").findOne(where="slug = '#blogSlug#'")>
+		<cfset post = model("Blog").findOne(
+			where="slug = '#blogSlug#'",
+			include="User"
+		)>
 
 		<cfif isStruct(post) && structKeyExists(post, "id")>
 			<cfset metaDescription = this.generateMetaDescription(post.content)>
@@ -30,7 +33,7 @@
 			<cfset pageTitle = post.title & " - Wheels">
 			<cfset ogTitle = post.title>
 			<cfset ogDescription = metaDescription>
-			<cfset ogImage = ''>
+			<cfset ogImage = "#getBaseUrl()#/images/wheels-logo.png">
 		<cfelse>
 			<cfset pageTitle = "Blogs - Wheels">
 			<cfset metaDescription = "Explore our latest blogs on Wheels.">
@@ -102,14 +105,180 @@
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
 			<cfoutput>
 			<meta name="description" content="#metaDescription#">
+			
+			<!--- Open Graph Tags --->
 			<meta property="og:title" content="#ogTitle#">
 			<meta property="og:description" content="#ogDescription#">
+			<meta property="og:type" content="<cfif isBlog>article<cfelse>website</cfif>">
+			<meta property="og:url" content="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
+			<meta property="og:site_name" content="Wheels">
 			<cfif isDefined("ogImage")>
 				<meta property="og:image" content="#ogImage#">
+			<cfelse>
+				<meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png">
 			</cfif>
+			<meta property="og:locale" content="en_US">
 			</cfoutput>
-			<meta property="og:url" content="https://wheels.dev/">
-			<meta property="og:site_name" content="Wheels">
+
+			<!--- Canonical URL --->
+			<cfoutput>
+			<link rel="canonical" href="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
+			</cfoutput>
+
+			<!--- Hreflang Tags --->
+			<link rel="alternate" hreflang="x-default" href="https://wheels.dev/">
+			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
+			<link rel="alternate" hreflang="en-us" href="https://wheels.dev/">
+
+			<!--- Schema.org Markup --->
+			<script type="application/ld+json">
+			<cfoutput>
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"name": "Wheels.dev",
+				"url": "https://wheels.dev",
+				"logo": "https://wheels.dev/images/wheels-logo.png",
+				"description": "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev's intuitive MVC architecture.",
+				"sameAs": [
+					"https://github.com/wheels-dev/wheels",
+					"https://twitter.com/CFonWheels",
+					"https://www.facebook.com/cfwheels",
+					"https://github.com/wheels-dev/wheels/discussions"
+				]
+			}
+			</cfoutput>
+			</script>
+
+			<script type="application/ld+json">
+			<cfoutput>
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "Wheels.dev",
+				"url": "https://wheels.dev",
+				"potentialAction": {
+					"@type": "SearchAction",
+					"target": "https://wheels.dev/search?q={search_term_string}",
+					"query-input": "required name=search_term_string"
+				}
+			}
+			</cfoutput>
+			</script>
+
+			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")>
+			<script type="application/ld+json">
+			<cfoutput>
+			{
+				"@context": "https://schema.org",
+				"@type": "BlogPosting",
+				"headline": "#post.title#",
+				"description": "#metaDescription#",
+				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/images/wheels-logo.png</cfif>",
+				"datePublished": "#dateFormat(post.postDate, "yyyy-mm-dd")#",
+				"dateModified": "#dateFormat(post.updatedAt, "yyyy-mm-dd")#",
+				"author": {
+					"@type": "Person",
+					"name": "#post.user.fullName#"
+				},
+				"publisher": {
+					"@type": "Organization",
+					"name": "Wheels.dev",
+					"logo": {
+						"@type": "ImageObject",
+						"url": "https://wheels.dev/images/wheels-logo.png"
+					}
+				},
+				"mainEntityOfPage": {
+					"@type": "WebPage",
+					"@id": "#getBaseUrl()##cgi.path_info#"
+				}
+			}
+			</cfoutput>
+			</script>
+			</cfif>
+
+			<cfif isDocs>
+			<script type="application/ld+json">
+			<cfoutput>
+			{
+				"@context": "https://schema.org",
+				"@type": "SoftwareApplication",
+				"name": "Wheels.dev",
+				"applicationCategory": "Web development framework",
+				"operatingSystem": "Cross-platform",
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
+				},
+				"programmingLanguage": "CFML",
+				"description": "#metaDescription#"
+			}
+			</cfoutput>
+			</script>
+			</cfif>
+
+			<!--- Breadcrumb Schema --->
+			<script type="application/ld+json">
+			<cfoutput>
+			{
+				"@context": "https://schema.org",
+				"@type": "BreadcrumbList",
+				"itemListElement": [
+					{
+						"@type": "ListItem",
+						"position": 1,
+						"name": "Home",
+						"item": "https://wheels.dev"
+					}
+					<cfif isBlog>
+					,{
+						"@type": "ListItem",
+						"position": 2,
+						"name": "Blog",
+						"item": "https://wheels.dev/blog"
+					}
+					<cfif isStruct(post) && structKeyExists(post, "id")>
+					,{
+						"@type": "ListItem",
+						"position": 3,
+						"name": "#post.title#",
+						"item": "#getBaseUrl()##cgi.path_info#"
+					}
+					</cfif>
+					<cfelseif isApi>
+					,{
+						"@type": "ListItem",
+						"position": 2,
+						"name": "API",
+						"item": "https://wheels.dev/api"
+					}
+					,{
+						"@type": "ListItem",
+						"position": 3,
+						"name": "#apiPath#",
+						"item": "#getBaseUrl()##cgi.path_info#"
+					}
+					<cfelseif isDocs>
+					,{
+						"@type": "ListItem",
+						"position": 2,
+						"name": "Documentation",
+						"item": "https://wheels.dev/docs"
+					}
+					,{
+						"@type": "ListItem",
+						"position": 3,
+						"name": "#docsPath#",
+						"item": "#getBaseUrl()##cgi.path_info#"
+					}
+					</cfif>
+				]
+			}
+			</cfoutput>
+			</script>
+
 			<!-- Bootstrap CSS -->
 			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
