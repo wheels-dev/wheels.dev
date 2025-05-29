@@ -342,9 +342,9 @@ component extends="app.Controllers.Controller" {
         param name="params.infiniteScroll" default="false";
         
         var searchTerm = params.searchTerm;
-        var page = params.page;
-        var perPage = params.perPage;
-        var isInfiniteScroll = params.infiniteScroll;
+        page = params.page;
+        perPage = params.perPage;
+        isInfiniteScroll = params.infiniteScroll;
 
         if (len(trim(searchTerm))) {
             var query = model("blog").findAll(
@@ -358,6 +358,7 @@ component extends="app.Controllers.Controller" {
             
             if (isInfiniteScroll) {
                 var totalCount = model("blog").count(
+                    include="User, PostStatus, PostType",
                     where="status ='Approved' AND isPublished='true'
                     AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')"
                 );
@@ -365,16 +366,21 @@ component extends="app.Controllers.Controller" {
                 
                 query.addColumn("hasMore", "boolean");
                 query.addColumn("totalCount", "integer");
-                query.hasMore = hasMore;
-                query.totalCount = totalCount;
             }
-            
+
             blogs = query;
+            if(blogs.recordCount == 0) {
+                isFallBack = true;
+                result = getAllBlogs(page, perPage, isInfiniteScroll);
+                blogs = result.query;
+            }
             renderPartial(partial="partials/blogList");
         } else {
             // return all publish blogs with pagination
             result = getAllBlogs(page, perPage, isInfiniteScroll);
             blogs = result.query;
+            hasMore = result.hasMore;
+            totalCount = result.totalCount;
             renderPartial(partial="partials/blogList");
         }
     }
