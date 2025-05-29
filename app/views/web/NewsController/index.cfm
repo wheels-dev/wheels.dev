@@ -25,7 +25,13 @@
                 </p>
               </a>
               <p class="text--secondary fs-18 pt-2">
-                #replace((this.convertMarkdownToHtml(release.body)), chr(10), "<br>", "all")#
+                <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
+                    <div class="markdown-content">
+                        <cfoutput>#encodeForHTML(release.body)#</cfoutput>
+                    </div>
+                <cfelse>
+                    #replace(release.body, chr(10), "<br>", "all")#
+                </cfif>
               </p>
 
               <!-- Show asset download links if available -->
@@ -100,5 +106,19 @@
 
     // Scroll event
     $(window).on('scroll', onScroll);
+
+    marked.setOptions({
+          gfm: true,
+        breaks: true,
+        headerIds: true,
+        mangle: false
+    });
+
+    // Render markdown content
+    const markdownContents = document.querySelectorAll('.markdown-content');
+    markdownContents.forEach(content => {
+        const text = content.textContent.trim();
+        content.innerHTML = marked.parse(text);
+    });
   });
 </script>
