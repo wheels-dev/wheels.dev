@@ -74,7 +74,13 @@
                         </div>
 
                         <div class="col-12">
-                            #this.autoLink(blog.content,"text--primary")#
+                            <cfif findNoCase("```", blog.content) OR findNoCase("##", blog.content) OR findNoCase("**", blog.content) OR findNoCase("__", blog.content) OR findNoCase(">", blog.content)>
+                                <div class="markdown-content">
+                                    <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
+                                </div>
+                            <cfelse>
+                                #this.autoLink(blog.content,"text--primary")#
+                            </cfif>
                         </div>
                     </div>
                     <cfif not blog.isCommentClosed>
@@ -293,5 +299,22 @@
     $(document).on('click', '.cancel-reply', function () {
         var commentId = $(this).data('commentid');
         $('#reply-form-' + commentId).hide();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize marked with GitHub-like options
+        marked.setOptions({
+            gfm: true,
+            breaks: true,
+            headerIds: true,
+            mangle: false
+        });
+
+        // Render markdown content
+        const markdownContent = document.querySelector('.markdown-content');
+        if (markdownContent) {
+            const content = markdownContent.textContent.trim();
+            markdownContent.innerHTML = marked.parse(content);
+        }
     });
 </script>
