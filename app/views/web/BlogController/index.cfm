@@ -255,7 +255,7 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
                     result = `${monthName} ${year}`;
                 }
 
-                if (!path.includes("searchTerm=")) {
+                if (!rawPath.includes("searchTerm=")) {
                     searchInput.value = result;
                 }
                 if (path === "/blog/list") {
