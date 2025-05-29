@@ -25,7 +25,11 @@
                 </p>
               </a>
               <p class="text--secondary fs-18 pt-2">
-                #replace((this.convertMarkdownToHtml(release.body)), chr(10), "<br>", "all")#
+                <cfif structKeyExists(release, "isBlog")>
+                  #this.autoLink(release.body,"text--primary")#
+                <cfelse>
+                  #replace((this.convertMarkdownToHtml(release.body)), chr(10), "<br>", "all")#
+                </cfif>
               </p>
 
               <!-- Show asset download links if available -->
@@ -37,6 +41,14 @@
                     </a>
                   </cfloop>
                 </div>
+              <cfelse>
+                <cfif structKeyExists(release, "isBlog")>
+                  <div class="pt-3">
+                    <a href="#release.html_url#" class="btn btn-sm btn-outline-primary me-2" target="_blank">
+                      Learn More <i class="bi bi-arrow-right mt-1"></i>
+                    </a>
+                  </div>
+                </cfif>
               </cfif>
             </cfoutput>
           </div>

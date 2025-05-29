@@ -206,7 +206,7 @@
                                 </div>
                             <cfelse>
                                 <div class="alert alert-primary ms-5 mt-2" role="alert">
-                                    <p>To join this conversation login first! <u><a class="bold" href="/login">Login</a></u></p>
+                                    <p>Please log in to join the conversation! <u><a class="bold" href="/login">Login</a></u></p>
                                 </div>
                             </cfif>
                         </div>
