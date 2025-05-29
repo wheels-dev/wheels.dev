@@ -1021,6 +1021,8 @@ component extends="app.Controllers.Controller" {
                     newBlog.createdBy = GetSignedInUserId();
                     if(blogData.postCreatedDate neq " "){
                         newBlog.postCreatedDate = blogData.postCreatedDate;
+                    } else {
+                        newBlog.postCreatedDate = now();
                     }
                     newBlog.save();
 
