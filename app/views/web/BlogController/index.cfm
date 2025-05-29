@@ -13,7 +13,7 @@
             <div class="pt-5">
                 <div class="row">
                     <div class="col-lg-4 col-12">
-                        <input id="blogSearchInput" placeholder="Search articles..." type="text" hx-get="/blog/Search" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-3 rounded-18">
+                        <input id="blogSearchInput" placeholder="Search articles..." type="text" hx-get="/blog/Search?infiniteScroll=true" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-3 rounded-18">
                     </div>
                     <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
                         <div class="d-flex blogs align-items-center justify-content-end gap-3 flex-wrap">
@@ -59,12 +59,6 @@
                 </div>
             </div>
             <div class="pt-4">
-                <!-- Loader Element -->
-                <div class="d-flex justify-content-center" id="loader-wrapper">
-                    <div style="width: 2rem; height: 2rem;" class="spinner-border my-5 text--primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
                 <div class="row justify-content-center justify-content-lg-between">
                     <cfoutput>
                         <!-- Detect if filtering via route (e.g. blog/year/month or blog/category/tag) -->
@@ -83,7 +77,7 @@
                         </div>
                     </cfoutput>
                     <div id="filtersContainer" class="col-lg-2 order-lg-0 order-first col-12 p-lg-0 d-none">
-                        <cfset startYear=2000>
+                        <cfset startYear=2005>
                         <cfset startMonth=12>
                         <cfset currentYear=year(now())>
                         <cfset currentMonth=month(now())>
@@ -135,6 +129,11 @@
                             hx-swap="innerHTML">
                         </div>
                     </div>
+                    <div class="d-flex justify-content-center d-none" id="loader-wrapper">
+                        <div style="width: 2rem; height: 2rem;" class="spinner-border my-5 text--primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,14 +141,11 @@
 </div>
 <script>
     const loader = document.getElementById("loader-wrapper");
-
     let isLoading = false;
 
     document.body.addEventListener("htmx:beforeRequest", function (evt) {
-        if (evt.target.id === "hxLoader" && !isLoading) {
-            isLoading = true;
-            loader.classList.remove("d-none"); // show loader by removing d-none
-        }
+        isLoading = true;
+        loader.classList.remove("d-none"); // show loader by removing d-none
     });
 
     document.body.addEventListener("htmx:afterSwap", function (evt) {
@@ -255,18 +251,13 @@ document.body.addEventListener("htmx:afterSwap", function(evt) {
                     result = `${monthName} ${year}`;
                 }
 
-                if (!rawPath.includes("searchTerm=")) {
+                if (!rawPath.includes("searchTerm=") && !rawPath.includes("page")) {
                     searchInput.value = result;
+                }else{
+                    removeActive();
                 }
                 if (path === "/blog/list") {
-                    // Remove 'active' from all category items
-                    document.querySelectorAll('.category-item').forEach(function(el) {
-                        el.classList.remove('active');
-                    });
-                    // Remove 'active' from all archive items
-                    document.querySelectorAll('.archive-item').forEach(function(el) {
-                        el.classList.remove('active');
-                    });
+                    removeActive();
                 }
                 searchInput.placeholder = defaultPlaceholder;
             }
@@ -286,6 +277,12 @@ function getMonthName(monthNumber) {
     return months[monthNumber - 1] || "Invalid Month";
 }
 function setActive(clickedElement) {
+    removeActive();
+    // Add 'active' to the clicked one
+    clickedElement.classList.add('active');
+
+}
+function removeActive(){
     // Remove 'active' from all category items
     document.querySelectorAll('.category-item').forEach(function(el) {
         el.classList.remove('active');
@@ -294,8 +291,5 @@ function setActive(clickedElement) {
     document.querySelectorAll('.archive-item').forEach(function(el) {
         el.classList.remove('active');
     });
-    // Add 'active' to the clicked one
-    clickedElement.classList.add('active');
-
 }
 </script>
