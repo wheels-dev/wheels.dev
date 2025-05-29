@@ -310,6 +310,7 @@
 			<script src="/javascripts/quill.min.js"></script>
 			<script src="/javascripts/bootstrap.js"></script>
 			<script src="/javascripts/config.js"></script>
+
 			<cfoutput>
 				#javascriptIncludeTag(source="anchor.min.js")#
 				#javascriptIncludeTag(source="all.min.js")#
@@ -326,6 +327,10 @@
 				ga('create', 'UA-3914949-1', 'auto');
 				ga('send', 'pageview');
 			</script>
+			<!-- Add EasyMDE files -->
+			<link rel="stylesheet" href="/stylesheets/lib/easymde.min.css">
+			<script src="/javascripts/lib/easymde.min.js"></script>
+			<script src="/javascripts/lib/marked.min.js"></script>
 		</head>
 		<body>
 

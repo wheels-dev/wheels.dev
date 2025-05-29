@@ -74,7 +74,13 @@
                         </div>
 
                         <div class="col-12">
-                            #this.autoLink(blog.content,"text--primary")#
+                            <cfif findNoCase("```", blog.content) OR findNoCase("##", blog.content) OR findNoCase("**", blog.content) OR findNoCase("__", blog.content) OR findNoCase(">", blog.content)>
+                                <div class="markdown-content">
+                                    <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
+                                </div>
+                            <cfelse>
+                                #this.autoLink(blog.content,"text--primary")#
+                            </cfif>
                         </div>
                     </div>
                     <cfif not blog.isCommentClosed>
@@ -206,7 +212,7 @@
                                 </div>
                             <cfelse>
                                 <div class="alert alert-primary ms-5 mt-2" role="alert">
-                                    <p>To join this conversation login first! <u><a class="bold" href="/login">Login</a></u></p>
+                                    <p>Please log in to join the conversation! <u><a class="bold" href="/login">Login</a></u></p>
                                 </div>
                             </cfif>
                         </div>
@@ -293,5 +299,22 @@
     $(document).on('click', '.cancel-reply', function () {
         var commentId = $(this).data('commentid');
         $('#reply-form-' + commentId).hide();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize marked with GitHub-like options
+        marked.setOptions({
+            gfm: true,
+            breaks: true,
+            headerIds: true,
+            mangle: false
+        });
+
+        // Render markdown content
+        const markdownContent = document.querySelector('.markdown-content');
+        if (markdownContent) {
+            const content = markdownContent.textContent.trim();
+            markdownContent.innerHTML = marked.parse(content);
+        }
     });
 </script>
