@@ -8,11 +8,66 @@ component extends="app.Controllers.Controller" {
     public void function index() {
         releases = getGitHubReleases();
         blogs = getBlogs();
+        // Merge blogs into releases
+        for (var blog in blogs) {
+            arrayAppend(releases, blog);
+        }
+        // Optional: sort by published_at (descending)
+        arraySort(releases, function(a, b) {
+            return compare(
+                parseDateTime(b.published_at),
+                parseDateTime(a.published_at)
+            );
+        });
     }
 
-    private function getBlogs() {
-        return model("Blog").findAll(select= "title,content,postCreatedDate", where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'", order="createdAt DESC");
+    private array function getBlogs() {
+        var blogQuery = model("Blog").findAll(
+            select = "title, slug, content, postCreatedDate",
+            where  = "statusid <> 1 AND status = 'Approved' AND isPublished = 'true'",
+            order  = "createdAt DESC"
+        );
+
+        var blogsArray = [];
+
+        for (var i = 1; i <= blogQuery.recordCount; i++) {
+            // Convert to UTC
+            var localDate = blogQuery.postCreatedDate[i];
+            var utcDate = dateConvert("local2utc", localDate);
+
+            // Format to ISO 8601: yyyy-mm-ddTHH:MM:SSZ
+            var isoDate = dateFormat(utcDate, "yyyy-mm-dd") & "T" & timeFormat(utcDate, "HH:mm:ss") & "Z";
+            <!--- Original HTML content --->
+            htmlContent = blogQuery.content[i];
+
+            <!--- 1. Strip HTML comments and tags --->
+            plainText = reReplace(htmlContent, "<!--.*?-->", "", "all");
+            plainText = reReplace(plainText, "<[^>]*>", "", "all");
+
+            <!--- 3. Normalize whitespace --->
+            plainText = replace(plainText, chr(10), " ", "all");
+            plainText = trim(plainText);
+
+            <!--- 4. Shorten to 200 characters safely --->
+            if (len(plainText) GT 250){
+                shortBody = left(plainText, 250) & "...";
+            }else{
+                shortBody = plainText;
+            }
+
+            arrayAppend(blogsArray, {
+                name         = blogQuery.title[i],
+                body         = shortBody,
+                published_at = isoDate,
+                html_url     = urlFor(route="blog-detail",slug=blogQuery.slug[i] ,onlyPath=false),
+                isblog       = true,
+                assets       = [] // empty array
+            });
+        }
+
+        return blogsArray;
     }
+
     private array function getGitHubReleases() {
         var result = [];
 
