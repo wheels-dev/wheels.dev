@@ -25,12 +25,16 @@
                 </p>
               </a>
               <p class="text--secondary fs-18 pt-2">
-                <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
-                    <div class="markdown-content">
-                        <cfoutput>#encodeForHTML(release.body)#</cfoutput>
-                    </div>
+                <cfif structKeyExists(release, "isBlog")>
+                  #this.autoLink(release.body,"text--primary")#
                 <cfelse>
-                    #replace(release.body, chr(10), "<br>", "all")#
+                  <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
+                      <div class="markdown-content">
+                          <cfoutput>#encodeForHTML(release.body)#</cfoutput>
+                      </div>
+                  <cfelse>
+                      #replace(release.body, chr(10), "<br>", "all")#
+                  </cfif>
                 </cfif>
               </p>
 
@@ -43,6 +47,14 @@
                     </a>
                   </cfloop>
                 </div>
+              <cfelse>
+                <cfif structKeyExists(release, "isBlog")>
+                  <div class="pt-3">
+                    <a href="#release.html_url#" class="btn btn-sm btn-outline-primary me-2" target="_blank">
+                      Learn More <i class="bi bi-arrow-right mt-1"></i>
+                    </a>
+                  </div>
+                </cfif>
               </cfif>
             </cfoutput>
           </div>
