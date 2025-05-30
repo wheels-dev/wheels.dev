@@ -24,7 +24,7 @@
                             </cfif>
 
                             <button onclick="handleBlogFilter('All', this)" hx-swap="innerHTML"
-                                hx-get="/blog/list" hx-target="#blogsContainer"
+                                hx-get="/blog/list" hx-push-url="/blog" hx-target="#blogsContainer"
                                 class="active px-4 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
                                 All
                                 <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"

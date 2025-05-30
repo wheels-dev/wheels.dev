@@ -59,7 +59,7 @@ component extends="app.Controllers.Controller" {
                 name         = blogQuery.title[i],
                 body         = shortBody,
                 published_at = isoDate,
-                html_url     = urlFor(route="blog-detail",slug=blogQuery.slug[i] ,onlyPath=false),
+                html_url     = urlFor(route="blog-detail",slug=blogQuery.slug[i]),
                 isblog       = true,
                 assets       = [] // empty array
             });
