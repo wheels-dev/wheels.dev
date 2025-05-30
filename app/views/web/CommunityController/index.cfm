@@ -23,7 +23,7 @@
                         <p class="text-center text--primary fs-32 pb-2 fw-bold">Top Contributors</p>
                         <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
                             <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
-                                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;">
+                                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" alt="Wheels.dev contributors" style="max-width: 100%;">
                             </a>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                                     <div>
                                         <div
                                             class="p-2 mx-auto size-100 border-2 border--lightGray hover:border--primary rounded-circle">
-                                            <img src="#member.image#" alt="#member.name#" width="80" height="80"><br>
+                                            <img src="#member.image#" alt="#member.name# - wheels.dev" width="80" height="80"><br>
                                         </div>
                                         <p class="pt-2 fw-bold text-decoration-underline fs-18">
                                             #member.name#

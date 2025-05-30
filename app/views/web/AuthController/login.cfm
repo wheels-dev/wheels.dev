@@ -93,10 +93,10 @@
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
-                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" alt="Decorative Vector" />
+                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
-                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" alt="Decorative Vector" />
+                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" alt="Wheels.dev auth" />
             </div>
         </div>
     </div>
