@@ -7,7 +7,7 @@ writeOutput('
   </div>
 </div>
 <div class="d-flex align-items-center gap-3 mt-3">
-  <a href="" class="docreset load-more-trigger fw-bold text--primary" hx-get="/api/#currentVersion#/functions" hx-trigger="click" hx-target="##main" hx-swap="innerHTML">
+  <a class="docreset load-more-trigger fw-bold text--primary" hx-get="/api/#currentVersion#/functions" hx-trigger="click" hx-target="##main" hx-swap="innerHTML">
     <span class="fs-14 cursor-pointer">All</span>
   </a>
   <button class="fw-bold showSections text--secondary bg-transparent outline-none">

@@ -15,7 +15,7 @@
                         <div class="testimonial-card h-100 p-4 shadow-sm rounded">
                             <div class="d-flex align-items-center mb-3">
                                 <cfif len(testimonials.logoPath)>
-                                    <img src="#testimonials.logoPath#" alt="#testimonials.companyName# logo" class="testimonial-logo me-3" style="max-width: 60px; max-height: 60px;">
+                                    <img src="#testimonials.logoPath#" alt="wheels.dev testimonial logo" class="testimonial-logo me-3" style="max-width: 60px; max-height: 60px;">
                                 <cfelse>
                                     <div class="testimonial-initials me-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
                                         #left(testimonials.companyName, 1)#

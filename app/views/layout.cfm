@@ -337,7 +337,7 @@
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
-						<img src="/images/wheels-logo.png" alt="Bootstrap" width="200">
+						<img src="/images/wheels-logo.png" alt="Wheels.dev Logo" width="200">
 					</a>
 					<div class="d-flex align-items-center justify-content-end flex-xl-grow-0 flex-grow-1 gap-2">
 						<cfif isLoggedInUser()>
@@ -455,7 +455,7 @@
 					<div class="container">
 						<div class="row gy-lg-0 gy-3 gx-sm-5">
 							<div class="col-lg-4">
-								<img src="/images/wheels-logo.png" width="284" alt="">
+								<img src="/images/wheels-logo.png" width="284" alt="wheels.dev Logo">
 								<div class="mt-3">
 									<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
 									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the
