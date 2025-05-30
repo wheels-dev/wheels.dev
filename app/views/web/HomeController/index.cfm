@@ -169,7 +169,7 @@
         </div>
         <div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
             <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
-                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;" alt="GitHub Contributors for CFWheels">
+                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;" alt="GitHub Contributors for Wheels">
             </a>
         </div>
     </div>

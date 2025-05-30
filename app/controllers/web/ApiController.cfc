@@ -43,7 +43,11 @@ component extends="app.Controllers.Controller" {
 		// Find this function by slug
 		docFunction=getFunctionFromDocs(docs, params.slug);
 		if(structIsEmpty(docFunction)){
-			redirectTo(route="docVersion", error="Unknown Function", version="#params.version#");
+			slug = params.slug & "." & params.format;
+			docFunction=getFunctionFromDocs(docs, slug);
+			if(structIsEmpty(docFunction)){
+				redirectTo(route="docVersion", error="Unknown Function", version="#params.version#");
+			}
 		}
 		// Set pagetitle/meta data
 		request.pagetitle=docFunction.name & "()" & ' | ' &  params.version;

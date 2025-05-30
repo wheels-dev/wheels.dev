@@ -14,7 +14,7 @@
                 <th>Logo:</th>
                 <td>
                     <cfif Testimonial.logoPath neq "" AND !isNull(Testimonial.logoPath) >
-                       <img alt="company-logo" width="200" src="#Testimonial.logoPath#">
+                       <img alt="wheels.dev logo" width="200" src="#Testimonial.logoPath#">
                     <cfelse>
                         #Testimonial.logoPath#
                     </cfif>
