@@ -340,8 +340,9 @@ component extends="app.Controllers.Controller" {
         param name="params.page" default="1";
         param name="params.perPage" default="6";
         param name="params.infiniteScroll" default="false";
-        
-        var searchTerm = params.searchTerm;
+        param name="params.isSearched" default="false";
+
+        searchTerm = params.searchTerm;
         page = params.page;
         perPage = params.perPage;
         isInfiniteScroll = params.infiniteScroll;
@@ -357,13 +358,14 @@ component extends="app.Controllers.Controller" {
             );
             
             if (isInfiniteScroll) {
-                var totalCount = model("blog").count(
+                totalCount = model("blog").count(
                     include="User, PostStatus, PostType",
                     where="status ='Approved' AND isPublished='true'
                     AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')"
                 );
-                var hasMore = (page * perPage) < totalCount;
-                
+                hasMore = (page * perPage) < totalCount;
+                isSearched = true;
+
                 query.addColumn("hasMore", "boolean");
                 query.addColumn("totalCount", "integer");
             }
