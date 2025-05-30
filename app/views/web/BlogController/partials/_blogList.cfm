@@ -105,17 +105,32 @@
     </cfif>
 
     <cfif isDefined('hasMore') AND hasMore>
-        <div id="infiniteScrollTrigger"
-            class="infinite-scroll-trigger w-100"
-            data-page="#page#"
-            hx-get="#blogUrl#?page=#page + 1#&perPage=#perPage#&infiniteScroll=true"
-            hx-trigger="revealed"
-            hx-target="##blogsContainer"
-            hx-swap="beforeend"
-            hx-indicator="##loader-wrapper"
-            style="height: 1px;"
-            aria-hidden="true">
-            <span class="visually-hidden">Loading more posts...</span>
-        </div>
+        <cfif isDefined('isSearched') AND isSearched>
+            <div id="infiniteScrollTrigger"
+                class="infinite-scroll-trigger w-100"
+                data-page="#page#"
+                hx-get="#urlFor(route="blog-Search")#?searchTerm=#searchTerm#&page=#page + 1#&perPage=#perPage#&infiniteScroll=true"
+                hx-trigger="revealed"
+                hx-target="##blogsContainer"
+                hx-swap="beforeend"
+                hx-indicator="##loader-wrapper"
+                style="height: 1px;"
+                aria-hidden="true">
+                <span class="visually-hidden">Loading more posts...</span>
+            </div>
+        <cfelse>
+            <div id="infiniteScrollTrigger"
+                class="infinite-scroll-trigger w-100"
+                data-page="#page#"
+                hx-get="#blogUrl#?page=#page + 1#&perPage=#perPage#&infiniteScroll=true"
+                hx-trigger="revealed"
+                hx-target="##blogsContainer"
+                hx-swap="beforeend"
+                hx-indicator="##loader-wrapper"
+                style="height: 1px;"
+                aria-hidden="true">
+                <span class="visually-hidden">Loading more posts...</span>
+            </div>
+        </cfif>
     </cfif>
 </cfoutput>
