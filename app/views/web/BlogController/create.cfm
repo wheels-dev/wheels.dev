@@ -84,10 +84,10 @@
     
                         <input type="hidden" name="isDraft" id="isDraft" value="0">
                         <div class="text-end">
-                            <a href="/blog" class="btn btn-outline-secondary px-3 py-2 rounded fs-14 me-2">
+                            <a href="/blog" class="btn btn-secondary px-3 py-2 rounded fs-14 me-2">
                                 Cancel
                             </a>
-                            <button type="button" class="btn btn-outline-dark px-3 py-2 rounded fs-14" id="saveDraftBtn">
+                            <button type="button" class="btn btn-dark px-3 py-2 rounded fs-14" id="saveDraftBtn">
                                 Save as Draft
                             </button>
                             <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
