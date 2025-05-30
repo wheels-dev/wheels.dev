@@ -402,7 +402,7 @@
     <!-- Testimonial Popup Modal -->
     <cfif settings.enableTestimonial>
         <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-dialog">
                 <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold fs-18 text--primary" id="testimonialPromptModalLabel">Share Your Experience!</h5>
@@ -410,25 +410,14 @@
                 </div>
                 <div class="modal-body">
                     <p class="mb-2">We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
-
-                    <!--- HTMX Target Area --->
-                    <div id="testimonial-form-container"
-                        hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
-                        hx-target="this"
-                        hx-trigger="load"
-                        hx-swap="innerHTML">
-                        <!--- Optional: Loading indicator --->
-                        <div class="text-center p-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading form...</span>
-                            </div>
-                            <p class="mt-2">Loading form...</p>
-                        </div>
-                        <!--- The form content from TestimonialController::new will be loaded here --->
-                    </div>
-
                 </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn bg--primary text-white" 
+                        hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
+                        hx-target="main"
+                        hx-trigger="click"
+                        hx-push-url="true"
+                        hx-swap="outerHTML" data-bs-dismiss="modal">Share Now</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <!--- The submit button will be part of the loaded form --->
                     </div>
