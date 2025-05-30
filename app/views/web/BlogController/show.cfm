@@ -3,12 +3,12 @@
             <!-- Blog filter -->
             <div class="container pt-4 pb-5">
                 <div class="d-flex justify-content-between align-items-center">
-                    <button onclick="history.back()" class="py-2 px-3 bg-white shadow-sm rounded-3">
+                    <a href="#urlFor(route="blog")#" class="py-2 px-3 bg-white shadow-sm rounded-3">
                         <i class="bi bi-arrow-left"></i>
                         <span class="fs-14 text--secondary">
                             Back
                         </span>
-                    </button>
+                    </a>
                     <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
                         <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
                             <i class="bi bi-pencil"></i> Edit
@@ -51,7 +51,17 @@
                                             </cfoutput>
                                         </p>
                                     </cfif>
-
+                                    <p class="fw-medium fs-12 text--lightGray mb-0">
+                                        Posted By: 
+                                        <strong 
+                                            class="text--primary"
+                                            style="cursor: pointer;"
+                                            hx-get="/blog/author/#blog.userusername#" 
+                                            hx-target="body"
+                                            hx-push-url="true"
+                                            hx-swap="outerHTML"
+                                        >#blog.userfullName#</strong>
+                                    </p>
                                     <!-- Tags -->
                                     <cfif tags.recordCount GT 0>
                                         <p class="fw-medium fs-12 text--lightGray mb-0">

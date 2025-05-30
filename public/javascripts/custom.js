@@ -1,6 +1,5 @@
-let swiperInstance = null;
-
 function initSwiper() {
+    let swiperInstance = null;
     if (window.innerWidth >= 768 && !swiperInstance) {
         swiperInstance = new Swiper(".blogSwiper", {
             spaceBetween: 30,
