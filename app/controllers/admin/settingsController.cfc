@@ -1,7 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,enableTestimonials,checkAdminAccess,checkRoleExistance", params="key", paramsTypes="integer");
+        verifies(except="index,enableTestimonials,updateSlackInvite,checkAdminAccess,checkRoleExistance", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -18,6 +18,16 @@ component extends="app.Controllers.Controller" {
         }else{
             model("setting").updateAll(enableTestimonial=false);
             message = "Testimonials disabled";
+        }
+        renderText(message);
+    }
+
+    function updateSlackInvite(){
+        if(structKeyExists(params, "slackInviteLink")){
+            model("setting").updateAll(slackInviteLink=params.slackInviteLink);
+            message = "Slack invite link updated successfully";
+        }else{
+            message = "No Slack invite link provided";
         }
         renderText(message);
     }
