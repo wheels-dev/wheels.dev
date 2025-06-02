@@ -55,7 +55,7 @@
 
     <!-- Latest blogs -->
     <div class="pt-5 px-2 blog-main">
-        <h1 class="text-center fw-bold fs-60">Latest From the Wheels Dev Blog</h1>
+        <h2 class="text-center fw-bold fs-60">Latest From the Wheels Dev Blog</h2>
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container">
                 <cfoutput query= "blogs">
