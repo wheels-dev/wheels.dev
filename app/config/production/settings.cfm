@@ -3,7 +3,7 @@
 // A variable set in this file will override the one in "app/config/settings.cfm".
 
 // Setup automatic migrations
-set(autoMigrateDatabase="true");
+set(autoMigrateDatabase=true);
 
 // Example:
 // set(errorEmailAddress="someone@somewhere.com");
