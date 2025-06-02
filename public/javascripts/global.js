@@ -1,0 +1,519 @@
+var controller = document.body.dataset.controller;
+var action = document.body.dataset.action;
+
+console.log(controller);
+console.log(action);
+
+if (controller === "web.AuthController" && action === "Login") {
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const submitButton = loginForm.querySelector('button[type="submit"]');
+        const spinner = submitButton.querySelector('.spinner-border');
+        const buttonText = submitButton.querySelector('.button-text');
+
+        function togglePasswordVisibility() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            const button = passwordInput.nextElementSibling;
+            button.setAttribute('aria-label', type === 'password' ? 'Show Password' : 'Hide Password');
+        }
+
+        function clearBootstrapValidationStyles() {
+            loginForm.classList.remove('was-validated');
+            const errorMessages = loginForm.querySelectorAll('.invalid-feedback');
+            errorMessages.forEach(function(el) {
+                el.style.display = 'none';
+            });
+            emailInput.classList.remove('is-invalid');
+            passwordInput.classList.remove('is-invalid');
+        }
+
+        function showBootstrapValidationError(inputElement) {
+            inputElement.classList.add('is-invalid');
+            const errorSelector = `.invalid-feedback[data-field-error="${inputElement.name}"]`;
+            const errorDiv = inputElement.closest('.mb-3').querySelector(errorSelector);
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        loginForm.addEventListener('htmx:beforeRequest', function(event) {
+            const requestPath = event.detail.requestConfig.path;
+            const formAction = loginForm.getAttribute('hx-post');
+
+            if (requestPath !== formAction) {
+                return;
+            }
+
+            clearBootstrapValidationStyles();
+            let formIsValid = true;
+            let notificationShown = false;
+
+            // Validate Email
+            const emailValue = emailInput.value.trim();
+            if (emailValue === '') {
+                notifier.show('Required', 'Email field cannot be empty!', 'danger', '', 4000);
+                emailInput.classList.add('is-invalid');
+                formIsValid = false;
+                notificationShown = true;
+            } else if (!emailInput.checkValidity()) {
+                showBootstrapValidationError(emailInput);
+                formIsValid = false;
+            }
+
+            // Validate Password
+            const passwordValue = passwordInput.value.trim();
+            if (passwordValue === '') {
+                if (!notificationShown) {
+                    notifier.show('Required', 'Password field cannot be empty!', 'danger', '', 4000);
+                    notificationShown = true;
+                }
+                passwordInput.classList.add('is-invalid');
+                formIsValid = false;
+            } else if (!passwordInput.checkValidity()) {
+                showBootstrapValidationError(passwordInput);
+                formIsValid = false;
+            }
+
+            if (!formIsValid) {
+                event.preventDefault();
+                if (!notificationShown) {
+                    loginForm.classList.add('was-validated');
+                }
+            } else {
+                submitButton.disabled = true;
+                spinner.classList.remove('d-none');
+                buttonText.textContent = 'Logging in...';
+            }
+        });
+
+        loginForm.addEventListener('htmx:afterRequest', function (event) {
+            submitButton.disabled = false;
+            spinner.classList.add('d-none');
+            buttonText.textContent = 'Login';
+            
+            const xhr = event.detail.xhr;
+            clearBootstrapValidationStyles();
+
+            try {
+                if (xhr.responseText && xhr.responseText.trim() !== '') {
+                    const response = JSON.parse(xhr.responseText);
+
+                    if (event.detail.successful) {
+                        if (response.success) {
+                            notifier.show('Success!', response.message || 'Login successful!', 'success', '', 4000);
+                            if (response.redirectUrl) {
+                                setTimeout(() => {
+                                    window.location.href = response.redirectUrl;
+                                }, 100);
+                            }
+                        } else {
+                            notifier.show('Login Failed', response.message || 'Invalid credentials.', 'warning', '', 4000);
+                            passwordInput.value = '';
+                        }
+                    } else {
+                        notifier.show('Login Failed', response.message || 'Invalid credentials or server error.', 'danger', '', 4000);
+                        passwordInput.value = '';
+                    }
+                } else {
+                    notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
+                    passwordInput.value = '';
+                }
+            } catch (e) {
+                let errorMsg = 'An unexpected error occurred. Please try again.';
+                if (xhr.responseText && xhr.responseText.trim() !== '') {
+                    errorMsg = 'Error processing server response. Please try again.';
+                } else if (xhr.status === 0) {
+                    errorMsg = 'Network error or request cancelled. Please check connection.';
+                }
+                notifier.show('Error', errorMsg, 'danger', '', 4000);
+                passwordInput.value = '';
+            }
+        });
+    // document.body.addEventListener('htmx:afterSwap', function(evt) {
+    //     const xhr = evt.detail.xhr;
+    //     // Check if it's for the responseMessage target
+    //     if (evt.detail.target.id === "form-messages") {
+    //         notifier.show('Success!', xhr.responseText, 'success', '', 4000);
+    //         setTimeout(function() {
+    //             window.location.href = "/"; 
+    //         }, 4000); // 4 seconds delay
+    //     }
+    // });
+}
+
+if (controller === "web.AuthController" && action === "forgotPassword") {
+    document.addEventListener('DOMContentLoaded', function () {
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+        const emailInput = document.getElementById('email');
+        const submitButton = forgotPasswordForm.querySelector('button[type="submit"]');
+        const spinner = submitButton.querySelector('.spinner-border');
+        const buttonText = submitButton.querySelector('.button-text');
+
+        function clearBootstrapValidationStyles() {
+            forgotPasswordForm.classList.remove('was-validated');
+            const errorMessages = forgotPasswordForm.querySelectorAll('.invalid-feedback');
+            errorMessages.forEach(function(el) {
+                el.style.display = 'none';
+            });
+            emailInput.classList.remove('is-invalid');
+        }
+
+        function showBootstrapValidationError(inputElement) {
+            inputElement.classList.add('is-invalid');
+            const errorSelector = `.invalid-feedback[data-field-error="${inputElement.name}"]`;
+            const errorDiv = inputElement.closest('.mb-3').querySelector(errorSelector);
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        forgotPasswordForm.addEventListener('htmx:beforeRequest', function(event) {
+            const requestPath = event.detail.requestConfig.path;
+            const formAction = forgotPasswordForm.getAttribute('hx-post');
+
+            if (requestPath !== formAction) {
+                return;
+            }
+
+            clearBootstrapValidationStyles();
+            let formIsValid = true;
+            let notificationShown = false;
+
+            // Validate Email
+            const emailValue = emailInput.value.trim();
+            if (emailValue === '') {
+                notifier.show('Required', 'Email field cannot be empty!', 'danger', '', 4000);
+                emailInput.classList.add('is-invalid');
+                formIsValid = false;
+                notificationShown = true;
+            } else if (!emailInput.checkValidity()) {
+                showBootstrapValidationError(emailInput);
+                formIsValid = false;
+            }
+
+            if (!formIsValid) {
+                event.preventDefault();
+                if (!notificationShown) {
+                    forgotPasswordForm.classList.add('was-validated');
+                }
+            } else {
+                submitButton.disabled = true;
+                spinner.classList.remove('d-none');
+                buttonText.textContent = 'Sending...';
+            }
+        });
+
+        forgotPasswordForm.addEventListener('htmx:afterRequest', function (event) {
+            submitButton.disabled = false;
+            spinner.classList.add('d-none');
+            buttonText.textContent = 'Send Reset Link';
+            
+            const xhr = event.detail.xhr;
+            clearBootstrapValidationStyles();
+            if (xhr.responseText && xhr.responseText.trim() !== '' && xhr.responseURL.includes("/auth/send-reset-link")) {
+                if (event.detail.successful) {
+                    if (xhr.status === 200 && xhr.responseURL.includes("/auth/send-reset-link")) {
+                        notifier.show('Success!', xhr.responseText, 'success', '', 4000);
+                            setTimeout(() => {
+                                window.location.href = "/login";
+                            }, 3000);
+                    } else {
+                        notifier.show('Error', 'No account found with that email address.', 'warning', '', 4000);
+                    }
+                } else {
+                    notifier.show('Error', 'An error occurred. Please try again.', 'danger', '', 4000);
+                }
+            } else {
+                notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
+            }
+        });
+    });
+}
+
+if (controller === "web.AuthController" && action === "Register") {
+    (function () {
+        'use strict'
+        const form = document.getElementById('registrationForm');
+
+        const fields = {
+            firstName: {
+                validator: value => value.length >= 3 && value.length <= 20,
+                message: 'First name must be between 3 and 20 characters long.'
+            },
+            lastName: {
+                validator: value => value.length >= 3 && value.length <= 20,
+                message: 'Last name must be between 3 and 20 characters long.'
+            },
+            email: {
+                validator: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                message: 'Please enter a valid email address format (e.g., name@example.com).'
+            },
+            passwordHash: {
+                validator: value => value.length >= 8,
+                message: 'Your password should be at least 8 characters.'
+            },
+            confirmPassword: {
+                validator: (value, form) => value === form.passwordHash.value,
+                message: 'Passwords must match.'
+            },
+            termsCheck: {
+                validator: checked => checked,
+                message: 'You must agree to the terms and privacy policy to continue.'
+            }
+        };
+
+        form.addEventListener('submit', function (event) {
+            let hasErrors = false;
+            clearAllErrors();
+
+            for (const fieldId in fields) {
+                const input = form[fieldId];
+                const { validator, message } = fields[fieldId];
+                const isValid = validator(input.type === 'checkbox' ? input.checked : input.value, form);
+
+                if (!isValid) {
+                    showError(input, message);
+                    hasErrors = true;
+                }
+            }
+
+            if (hasErrors) {
+                event.preventDefault();
+            }
+
+            // Optionally validate CAPTCHA
+            // const captchaResponse = grecaptcha.getResponse();
+            // if (captchaResponse.length === 0) {
+            //     event.preventDefault();
+            //     document.getElementById('captchaError').style.display = 'block';
+            // } else {
+            //     document.getElementById('captchaError').style.display = 'none';
+            // }
+        });
+
+        function showError(input, message) {
+            const errorDiv = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.parentElement.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+            input.classList.add('is-invalid');
+        }
+
+        function clearAllErrors() {
+            const errorFields = form.querySelectorAll('.is-invalid');
+            errorFields.forEach(input => input.classList.remove('is-invalid'));
+
+            const errorDivs = form.querySelectorAll('.invalid-feedback');
+            errorDivs.forEach(div => {
+                div.textContent = '';
+                div.style.display = 'none';
+            });
+
+        }
+    })();
+
+    function validateInput(input, condition, message) {
+        const icon = document.getElementById('icon-' + input.id);
+        if (condition) {
+        input.classList.remove("input-invalid");
+        input.classList.add("input-valid");
+        icon.innerHTML = "<i class='bi bi-check-circle-fill text-success'></i>"; 
+        hideError(input);
+        } else {
+        input.classList.remove("input-valid");
+        input.classList.add("input-invalid");
+        icon.innerHTML = "<i class='bi bi-x-circle-fill text-danger'></i>";
+        showError(input, message);
+        }
+    }
+
+    function showError(input, message) {
+        const errorDiv = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.parentElement.querySelector('.invalid-feedback');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        input.classList.add('is-invalid');
+    }
+    function hideError(input) {
+        const errorDiv = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.parentElement.querySelector('.invalid-feedback');
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+        }
+        input.classList.remove('is-invalid');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const firstName = document.getElementById("firstName");
+        const lastName = document.getElementById("lastName");
+        const email = document.getElementById("email");
+        const password = document.getElementById("passwordHash");
+        const confirmPassword = document.getElementById("confirmPassword");
+
+        firstName.addEventListener("input", () => {
+        validateInput(firstName, firstName.value.length >= 3 && firstName.value.length <= 20, 'First name must be between 3 and 20 characters long.');
+        });
+
+        lastName.addEventListener("input", () => {
+        validateInput(lastName, lastName.value.length >= 3 && lastName.value.length <= 20, 'Last name must be between 3 and 20 characters long.');
+        });
+
+        email.addEventListener("input", () => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        validateInput(email, emailPattern.test(email.value), 'Please enter a valid email address format (e.g., name@example.com).');
+        });
+
+        password.addEventListener("input", () => {
+        validateInput(password, password.value.length >= 8, 'Your password should be at least 8 characters.');
+        });
+
+        confirmPassword.addEventListener("input", () => {
+        validateInput(confirmPassword, confirmPassword.value.length >= 8 && confirmPassword.value === password.value, 'Passwords must match.');
+        });
+    });
+}
+
+if (controller === "web.AuthController" && action === "resetPassword") {
+    (function () {
+        'use strict'
+        const form = document.getElementById('forgotPasswordForm');
+
+        const fields = {
+            password: {
+                validator: value => value.length >= 8,
+                message: 'Password must be at least 8 characters long.'
+            },
+            confirmPassword: {
+                validator: (value, form) => value === form.password.value,
+                message: 'Passwords must match.'
+            }
+        };
+
+        form.addEventListener('submit', function (event) {
+            let hasErrors = false;
+            clearAllErrors();
+
+            for (const fieldId in fields) {
+                const input = form[fieldId];
+                const { validator, message } = fields[fieldId];
+                const isValid = validator(input.value, form);
+
+                if (!isValid) {
+                    showError(input, message);
+                    hasErrors = true;
+                }
+            }
+
+            if (hasErrors) {
+                event.preventDefault();
+            }
+        });
+
+        function showError(input, message) {
+            const errorDiv = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.parentElement.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+            input.classList.add('is-invalid');
+        }
+
+        function clearAllErrors() {
+            const errorFields = form.querySelectorAll('.is-invalid');
+            errorFields.forEach(input => input.classList.remove('is-invalid'));
+
+            const errorDivs = form.querySelectorAll('.invalid-feedback');
+            errorDivs.forEach(div => {
+                div.textContent = '';
+                div.style.display = 'none';
+            });
+
+        }
+    })();
+
+    forgotPasswordForm.addEventListener('htmx:afterRequest', function (event) {
+            
+        const xhr = event.detail.xhr;
+        if (xhr.responseText && xhr.responseText.trim() !== '' && xhr.responseURL.includes("/auth/update-password")) {
+            if (event.detail.successful) {
+                if (xhr.status === 200 && xhr.responseURL.includes("/auth/update-password")) {
+                    notifier.show('Success!', xhr.responseText, 'success', '', 4000);
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 3000);
+                } else {
+                    notifier.show('Error', 'No account found with that email address.', 'warning', '', 4000);
+                }
+            } else {
+                notifier.show('Error', 'An error occurred. Please try again.', 'danger', '', 4000);
+            }
+        } else {
+            notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
+        }
+    });
+}
+
+if (controller === "web.NewsController" && action === "index"){
+    $(document).ready(function () {
+        let items = $('.items');
+        let itemsPerPage = 5;
+        let currentIndex = 0;
+        let loading = false;
+    
+        if (items.length <= itemsPerPage) {
+          items.show(); // Show all if 5 or fewer
+          $('#loader').hide();
+          return;
+        }
+    
+        items.hide();
+    
+        function showNextItems() {
+          let nextItems = items.slice(currentIndex, currentIndex + itemsPerPage);
+          nextItems.fadeIn();
+          currentIndex += itemsPerPage;
+    
+          if (currentIndex >= items.length) {
+            $(window).off('scroll', onScroll);
+          }
+    
+          loading = false;
+        }
+    
+        function onScroll() {
+          if (loading) return;
+    
+          if ($(window).scrollTop() + $(window).height() >= $(document).height() - 500) {
+            loading = true;
+            $('#loader').show();
+            setTimeout(() => {
+              showNextItems();
+              $('#loader').hide();
+            }, 1000);
+          }
+        }
+    
+        // Load first 5 items
+        showNextItems();
+    
+        // Scroll event
+        $(window).on('scroll', onScroll);
+    
+        marked.setOptions({
+              gfm: true,
+            breaks: true,
+            headerIds: true,
+            mangle: false
+        });
+    
+        // Render markdown content
+        const markdownContents = document.querySelectorAll('.markdown-content');
+        markdownContents.forEach(content => {
+            const text = content.textContent.trim();
+            content.innerHTML = marked.parse(text);
+        });
+    });
+}
