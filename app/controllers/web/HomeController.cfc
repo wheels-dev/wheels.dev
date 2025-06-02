@@ -319,10 +319,46 @@ component extends="app.Controllers.Controller" {
                 distinct="true",
                 where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true' AND createdBy IS NOT NULL"
             );
-            // writeDump(authors); abort;
             for (var author in authors) {
                 arrayAppend(urls, {
                     loc: getBaseUrl() & "/blog/author/" & author.username,
+                    lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                    changefreq: "weekly",
+                    priority: "0.7"
+                });
+            }
+            
+            // Add blog categories
+            var blogCategories = model("BlogCategory").getAll();
+            var distinctCategories = {};
+            for (var i=1; i LTE blogCategories.recordCount; i++) {
+                var categoryName = blogCategories.name[i];
+                if (!structKeyExists(distinctCategories, categoryName)) {
+                    distinctCategories[categoryName] = true;
+                }
+            }
+            for (var categoryName in structKeyArray(distinctCategories)) {
+                var sanitizedCategoryName = replace(categoryName, ".", "-", "all");
+                sanitizedCategoryName = replace(sanitizedCategoryName, " ", "-", "all");
+                arrayAppend(urls, {
+                    loc: getBaseUrl() & "/blog/category/" & sanitizedCategoryName,
+                    lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                    changefreq: "weekly",
+                    priority: "0.7"
+                });
+            }
+            
+            // Add blog tags
+            var tags = model("Tag").getAll();
+            var distinctTags = {};
+            for (var tag in tags) {
+                var tagName = replace(tag.name, ".", "-", "all");
+                tagName = replace(tagName, " ", "-", "all");
+                distinctTags[tagName] = true;
+            }
+            for (var tagName in structKeyArray(distinctTags)) {
+                arrayAppend(urls, {
+                    loc: getBaseUrl() & "/blog/tag/" & tagName,
                     lastmod: dateFormat(now(), "yyyy-mm-dd"),
                     changefreq: "weekly",
                     priority: "0.7"
@@ -377,9 +413,39 @@ component extends="app.Controllers.Controller" {
             
             xml &= '
 </urlset>';
+
+            // Debug path resolution
+            var debugInfo = {
+                "expandPath_root": expandPath("/sitemap.xml"),
+                "expandPath_relative": expandPath("./sitemap.xml"),
+                "getCurrentTemplatePath": getCurrentTemplatePath(),
+                "template_directory": getDirectoryFromPath(getCurrentTemplatePath()),
+                "app_directory": expandPath("./"),
+                "public_directory": expandPath("public/")
+            };
+            
+            model("Log").log(
+                category = "wheels.seo",
+                level = "DEBUG",
+                message = "Path debugging info",
+                details = debugInfo
+            );
+
+            var sitemapPath = expandPath("/sitemap.xml");
+            model("Log").log(
+                category = "wheels.seo",
+                level = "DEBUG", 
+                message = "Attempting to write sitemap",
+                details = {
+                    "resolved_path": sitemapPath,
+                    "directory_exists": directoryExists(getDirectoryFromPath(sitemapPath)),
+                    "current_template_path": getCurrentTemplatePath()
+                }
+            );
+
             
             // Save the sitemap to the public directory
-            fileWrite(expandPath("/sitemap.xml"), xml);
+            fileWrite(sitemapPath, xml);
             
             // Log success
             model("Log").log(
