@@ -169,9 +169,12 @@
                                                             <div>
                                                                 #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
                                                             </div>  
-                                                            <div class="p-3 rounded-4 bg-light">
+                                                            <div class="p-3 rounded-4 min-w-300 bg-light">
                                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                                 <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                                <div class="d-flex cursor-pointer align-items-center justify-content-end gap-2">
+                                                                    <p class="fs-14 text--primary mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
