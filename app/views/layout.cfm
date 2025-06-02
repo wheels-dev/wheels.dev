@@ -332,7 +332,7 @@
 			<script src="/javascripts/lib/easymde.min.js"></script>
 			<script src="/javascripts/lib/marked.min.js"></script>
 		</head>
-		<body>
+		<body <cfoutput> data-controller="#params.controller#" data-action="#params.action#" </cfoutput>>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
@@ -621,6 +621,7 @@
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
 			<script src="/javascripts/select2.min.js"></script>
 			<script src="/javascripts/notifier.min.js"></script>
+			<script src="/javascripts/global.js"></script>
 		</body>
 	</html>
 </cfif>

@@ -281,8 +281,8 @@ component extends="app.Controllers.Controller" {
                 );
 
                 // Clear remember me token if exists
-                if (cfcookie.keyExists("remember_me")) {
-                    var token = cfcookie.remember_me;
+                if (structKeyExists(cookie, "remember_me")) {
+                    var token = cookie.remember_me;
                     var rememberToken = model("RememberToken").findOne(where="token='#token#'");
                     if (isObject(rememberToken)) {
                         rememberToken.delete();
@@ -587,7 +587,7 @@ component extends="app.Controllers.Controller" {
             var token = hash(createUUID() & user.id & now());
             var rememberToken = model("RememberToken").new();
             rememberToken.token = token;
-            rememberToken.user_id = user.id;
+            rememberToken.userId = user.id;
             rememberToken.expiresAt = dateAdd("d", 30, now());
             
             if (rememberToken.save()) {
@@ -817,6 +817,7 @@ component extends="app.Controllers.Controller" {
                 "teamSignature" = emaildata.teamSignature
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            writeDump(emailcontent);abort;
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             cfmail( 
                 to = "#arguments.email#", 
