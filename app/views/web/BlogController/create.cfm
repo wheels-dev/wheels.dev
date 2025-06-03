@@ -12,9 +12,10 @@
                             </div>
                         </div>
                     </cfif>
-                    <form id="blogForm" hx-post="#isEdit ? '/blog/update/#blog.id#' : '/blog/store'#" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data" <cfif isEdit>onsubmit="document.getElementById('editLoader').style.display = 'block';"</cfif>>
+                    <form id="blogForm" hx-post="#isEdit ? '/blog/update/#blog.id#' : '/blog/store'#" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data" onsubmit="if (document.getElementById('editLoader')) { document.getElementById('editLoader').style.display = 'block'; }">
                         <input type="hidden" name="_method" value="#isEdit ? 'PUT' : 'POST'#">
                         <input class="form-control" type="hidden" name="id" id="id" value="#isEdit ? blog.id : ''#">
+                        <input type="hidden" name="content" id="content" value="">
     
                         <div class="mb-3">
                             <label class="form-label mb-1 fs-14 fw-medium">
@@ -79,7 +80,7 @@
                             <label class="form-label mb-1 fs-14 fw-medium">
                                 Content <span class="text-danger">*</span>
                             </label>
-                            <textarea id="editor" name="content"><cfif isEdit>#blog.content#</cfif></textarea>
+                            <textarea id="editor" name="editor_content"><cfif isEdit>#blog.content#</cfif></textarea>
                         </div>
     
                         <input type="hidden" name="isDraft" id="isDraft" value="0">

@@ -52,14 +52,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Add event listener for EasyMDE changes
+    easyMDE.codemirror.on("change", function() {
+        const content = easyMDE.value();
+        document.getElementById('content').value = content;
+    });
+
+    document.addEventListener('htmx:configRequest', function(evt) {
+        if (evt.detail.elt.id === 'blogForm') {
+            const content = easyMDE.value();
+            const formData = evt.detail.parameters;
+            
+            // Ensure content is in the form data
+            formData.content = content;
+        }
+    });
+
+    document.getElementById('blogForm').addEventListener('htmx:beforeRequest', function(evt) {
+        const content = easyMDE.value();
+        const formData = new FormData(this);
+        formData.set('content', content);
+    });
+
     // Handle draft saving
     document.getElementById("saveDraftBtn").addEventListener("click", function() {
+        // Force sync before setting draft flag
+        if (typeof easyMDE !== 'undefined') {
+            easyMDE.codemirror.save();
+        }
         document.getElementById("isDraft").value = "1";
         document.getElementById("blogForm").requestSubmit();
     });
 
     // Form validation
     document.getElementById('blogForm').addEventListener("submit", function(event) {
+        // Force sync EasyMDE content before validation
+        let content = "";
+        if (typeof easyMDE !== 'undefined') {
+            content = easyMDE.value();
+            document.getElementById('content').value = content;
+        }
+
         var isValid = true;
         const title = document.getElementById('title');
         const categoryId = document.getElementById('categoryId');
@@ -101,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tagInput.classList.add("is-invalid");
                 tagInput.classList.remove("border-0");
             }
-            if (easyMDE.value().trim() === "") {
+            if (content.trim() === "") {
                 isValid = false;
                 editor.classList.add("border-danger");
             }
@@ -112,59 +145,11 @@ document.addEventListener('DOMContentLoaded', function() {
             notifier.show('Error!', 'Please fill out all required fields.', '', '/images/high_priority-48.png', 4000);
             return false;
         }
+
+        // Ensure content is set in the form before submission
+        const formData = new FormData(this);
+        formData.set('content', content);
     });
-
-    // Live preview logic
-    // function updatePreview() {
-    //     // Title
-    //     const title = document.getElementById("title").value;
-    //     document.getElementById("previewTitle").innerText = title || "Blog Title Preview";
-
-    //     // Content
-    //     document.getElementById("previewBody").innerHTML = marked.parse(easyMDE.value()) || "<p>Your blog content will appear here...</p>";
-
-    //     // Categories
-    //     const categorySelect = document.getElementById("categoryId");
-    //     const selectedCategories = Array.from(categorySelect.selectedOptions).map(opt => opt.text);
-    //     const previewCategories = document.getElementById("previewCategories");
-    //     previewCategories.innerHTML = '';
-        
-    //     if (selectedCategories.length > 0) {
-    //         selectedCategories.forEach(cat => {
-    //             if (cat !== "Select Category") {
-    //                 const badge = document.createElement("span");
-    //                 badge.className = "badge bg-primary me-1 mb-1";
-    //                 badge.textContent = cat;
-    //                 previewCategories.appendChild(badge);
-    //             }
-    //         });
-    //     } else {
-    //         previewCategories.innerHTML = '<span class="text-muted fs-13">No categories selected</span>';
-    //     }
-
-    //     // Tags
-    //     const previewTags = document.getElementById("previewTags");
-    //     previewTags.innerHTML = '';
-        
-    //     if (tags.length > 0) {
-    //         tags.forEach(tag => {
-    //             const badge = document.createElement("span");
-    //             badge.className = "badge bg-secondary me-1 mb-1";
-    //             badge.textContent = tag;
-    //             previewTags.appendChild(badge);
-    //         });
-    //     } else {
-    //         previewTags.innerHTML = '<span class="text-muted fs-13">No tags added</span>';
-    //     }
-    // }
-
-    // Initialize preview on page load
-    // updatePreview();
-
-    // Event listeners for preview updates
-    // document.getElementById("title").addEventListener("input", updatePreview);
-    // document.getElementById("categoryId").addEventListener("change", updatePreview);
-    // easyMDE.codemirror.on("change", updatePreview);
 
     // Select2 initialization after HTMX swap
     document.addEventListener("htmx:afterSwap", function(evt) {
@@ -207,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 addTag(tagText);
                 updateHiddenTags();
                 tagInput.value = "";
-                // updatePreview(); // Update preview when tag is added
             }
         } else if (tags.length >= 5) {
             event.preventDefault();
@@ -221,7 +205,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         tagElement.querySelector(".remove-tag").addEventListener("click", function () {
             removeTag(tagText);
-            // updatePreview(); // Update preview when tag is removed
         });
 
         tagContainer.insertBefore(tagElement, tagInput);
