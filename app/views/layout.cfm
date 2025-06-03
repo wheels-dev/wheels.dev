@@ -289,11 +289,8 @@
 			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
-			<link href="/stylesheets/font.css" rel="stylesheet">
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
-			<link href="/stylesheets/color.css" rel="stylesheet">
 			<link href="/stylesheets/style.css" rel="stylesheet">
-			<link href="/stylesheets/utils.css" rel="stylesheet">
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
 			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
@@ -302,21 +299,12 @@
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
 			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
 
-			<script src="/javascripts/echarts.min.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/dataTables.min.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/highlighter.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
 			<script src="/javascripts/bootstrap.js"></script>
-			<script src="/javascripts/config.js"></script>
-
-			<cfoutput>
-				#javascriptIncludeTag(source="anchor.min.js")#
-				#javascriptIncludeTag(source="all.min.js")#
-				#javascriptIncludeTag(source="lodash.min.js")#
-				#javascriptIncludeTag(source="phoenix.js")#
-			</cfoutput>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
