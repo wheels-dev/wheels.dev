@@ -94,7 +94,7 @@
 	</cfoutput>
 <cfelse>
 	<!DOCTYPE html>
-	<html>
+	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
@@ -126,9 +126,7 @@
 			</cfoutput>
 
 			<!--- Hreflang Tags --->
-			<link rel="alternate" hreflang="x-default" href="https://wheels.dev/">
 			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
-			<link rel="alternate" hreflang="en-us" href="https://wheels.dev/">
 
 			<!--- Schema.org Markup --->
 			<script type="application/ld+json">
@@ -203,18 +201,44 @@
 			<cfoutput>
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareApplication",
+				"@type": "SoftwareSourceCode",
 				"name": "Wheels.dev",
-				"applicationCategory": "Web development framework",
-				"operatingSystem": "Cross-platform",
-				"offers": {
-					"@type": "Offer",
-					"price": "0",
-					"priceCurrency": "USD"
+				"alternateName": "Wheels",
+				"url": "https://wheels.dev",
+				"codeRepository": "https://github.com/wheels-dev/wheels",
+				"license": "https://opensource.org/licenses/MIT",
+				"version": "3.0.0",
+				"programmingLanguage": {
+					"@type": "ComputerLanguage",
+					"name": "CFML",
+					"url": "https://en.wikipedia.org/wiki/ColdFusion_Markup_Language"
 				},
-				"programmingLanguage": "CFML",
-				"description": "#metaDescription#"
+				"isAccessibleForFree": true,
+				"description": "Wheels.dev is a free, open-source web application framework for CFML, inspired by Ruby on Rails. It offers a modern MVC structure, clean syntax, and developer-friendly features to rapidly build maintainable web applications.",
+				"keywords": [
+					"CFML",
+					"ColdFusion",
+					"MVC Framework",
+					"Web Development",
+					"Open Source",
+					"Wheels.dev",
+					"CFWheels"
+				],
+				"dateCreated": "2005-01-01",
+				"dateModified": "2025-06-03",
+				"creator": {
+					"@type": "Organization",
+					"name": "Wheels Community",
+					"url": "https://wheels.dev"
+				},
+				"targetProduct": {
+					"@type": "SoftwareApplication",
+					"name": "CFML Framework",
+					"operatingSystem": "Cross-platform",
+					"applicationCategory": "Web development"
+				}
 			}
+
 			</cfoutput>
 			</script>
 			</cfif>
