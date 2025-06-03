@@ -817,7 +817,6 @@ component extends="app.Controllers.Controller" {
                 "teamSignature" = emaildata.teamSignature
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-            writeDump(emailcontent);abort;
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             cfmail( 
                 to = "#arguments.email#", 
