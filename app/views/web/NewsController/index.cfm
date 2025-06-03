@@ -63,7 +63,7 @@
     </div>
 
     <!-- Loader -->
-    <div id="loader" class="text-center mt-4" style="display: none;">
+    <div id="loader" class="text-center mt-4">
       <div class="spinner-border text--primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
