@@ -25,22 +25,20 @@
                     <!-- Slack Invite Link Setting -->
                     <div class="mb-4">
                         <h6 class="mb-3">Slack Community</h6>
-                        <div class="row g-3">
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="slackInviteLink" 
-                                    placeholder="Enter Slack Invite Link" 
-                                    value="#settings.slackInviteLink#">
+                        <form hx-post="/admin/settings/updateSlackInvite" hx-swap="none">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="slackInviteLink" 
+                                        placeholder="Enter Slack Invite Link" 
+                                        value="#settings.slackInviteLink#">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Update Slack Link
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <button type="button" class="btn btn-primary" 
-                                    hx-post="/admin/settings/updateSlackInvite"
-                                    hx-include="[name='slackInviteLink']"
-                                    hx-swap="none"
-                                    name="slackInviteLink">
-                                    Update Slack Link
-                                </button>
-                            </div>
-                        </div>
+                        </form>
                         <small class="text-muted mt-2 d-block">
                             The Slack invite link expires after 30 days. Make sure to update it regularly.
                         </small>
