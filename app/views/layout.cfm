@@ -198,7 +198,6 @@
 	</cfoutput>
 <cfelse>
 	<!DOCTYPE html>
-	<html>
 	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
