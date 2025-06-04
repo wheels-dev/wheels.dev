@@ -26,7 +26,13 @@
               </a>
               <p class="text--secondary fs-18 pt-2">
                 <cfif structKeyExists(release, "isBlog")>
-                  #this.autoLink(release.body,"text--primary")#
+                  <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
+                      <div class="markdown-content">
+                          <cfoutput>#encodeForHTML(release.body)#</cfoutput>
+                      </div>
+                  <cfelse>
+                      #this.autoLink(release.body,"text--primary")#
+                  </cfif>
                 <cfelse>
                   <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
                       <div class="markdown-content">
