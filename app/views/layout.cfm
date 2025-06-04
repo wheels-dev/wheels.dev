@@ -410,10 +410,6 @@
 			<script src="/js/lib/marked.min.js"></script>			
 			<script src="/js/select2.min.js"></script>
 			</cfif>
-			<script src="/js/swiper.js"></script>
-			<script src="/js/infinite-scroll.pkgd.min.js"></script>
-			<script src="/js/notifier.min.js"></script>
-			<script src="/js/global.js"></script>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -425,7 +421,7 @@
 				ga('send', 'pageview');
 			</script>
 		</head>
-		<body <cfoutput> data-scope="#cgi.path_info#" </cfoutput>>
+		<cfoutput><body data-scope="#cgi.path_info#"></cfoutput>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
@@ -705,6 +701,10 @@
 					</div>
 				</div>
 			</footer>
+			<script src="/js/swiper.js"></script>
+			<script src="/js/infinite-scroll.pkgd.min.js"></script>
+			<script src="/js/notifier.min.js"></script>
+			<script src="/js/global.js"></script>
 		</body>
 	</html>
 </cfif>
