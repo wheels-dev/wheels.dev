@@ -139,4 +139,4 @@
         </div>
     </div>
 </div>
-<script src="/javascripts/blogs.js"></script>
+<script src="/js/blogs.js"></script>

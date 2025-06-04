@@ -248,4 +248,4 @@
     </div>
 </main>
 
-<script src="/javascripts/showBlog.js"></script>
+<script src="/js/showBlog.js"></script>

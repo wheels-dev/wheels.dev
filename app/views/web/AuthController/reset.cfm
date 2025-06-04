@@ -2,7 +2,7 @@
     <div class="row w-100 m-lg-auto m-2">
         <div class="col-lg-5 bg-white col-12 mx-auto p-3 shadow rounded-18">
             <div class="d-flex justify-content-center align-items-center">
-                <img src="/images/wheels-logo.png" alt="wheels.dev Logo" width="180">
+                <img src="/img/wheels-logo.png" alt="wheels.dev Logo" width="180">
             </div>
             <div class="mt-2">
                 <div class="border-bottom text-center pb-3">
