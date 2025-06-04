@@ -86,6 +86,109 @@
 		<cfset metaDescription = "Forgot your password? Quickly reset it and regain access to your Wheels.dev account, the modern CFML framework for rapid web development.">
 		<cfset ogDescription = metaDescription>
 	</cfif>
+
+	<cfif find("/blog/1-1-1-released", pathInfo)>
+		<cfset pageTitle = "Wheels 1.1.1 Released: Bug Fixes & Enhancements">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Discover the latest updates in Wheels 1.1.1, including bug fixes and improvements. Upgrade now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/migration.addForeignKey", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addForeignKey Migration Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Master foreign key constraints in Wheels 3.0 with the addForeignKey function. Learn how to link tables effectively in your CFML applications.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/migration.addColumn", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addColumn Migration Function">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Learn how to use the addColumn function in Wheels 3.0 to add new columns to your database tables with ease. Enhance your CFML applications toda">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/model.accessibleProperties", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: accessible Properties Explained">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Understand how to use accessibleProperties in Wheels 3.0 to manage model property accessibility. Enhance your CFML application's security and fle">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/community", pathInfo)>
+		<cfset pageTitle = "Join the Wheels CFML Community">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Connect with developers on Wheels.dev. Join our Slack, contribute on GitHub, and collaborate with the Core team to enhance the Wheels framework.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/controller.controller", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: controller() Function Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the controller functions in Wheels 3.0 to create controller instances with custom names and parameters. Ideal for testing and dynamic routing.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/news", pathInfo)>
+		<cfset pageTitle = "Latest News & Updates | Wheels CFML Framework">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Stay informed with the latest Wheels CFML framework news, including version releases, tutorials, and community updates to enhance your developme">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/model.addErrorToBase", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addErrorToBase Function Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Learn how to use addErrorToBase in CFWheels 3.0 to add model-level validation errors. Enhance your CFML application's data integrity and user feed">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/controller.model", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: model() Function Overview">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore how to use the model() function in Wheels 3.0 to interact with your application's models efficiently. Enhance your CFML development skills tod">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/model.addError", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addError Function Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Learn how to use the addError function in Wheels 3.0 to add validation errors to your models. Enhance data integrity and user feedback in your CFML">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/docs", pathInfo)>
+		<cfset pageTitle = "Wheels Documentation | Framework Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore comprehensive guides, tutorials, and API references for the Wheels framework. Start building modern web applications with ease.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/version-1-1-2-released-today", pathInfo)>
+		<cfset pageTitle = "Wheels 1.1.2 Released: Bug Fixes & Enhancem">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Discover the latest updates in Wheels 1.1.2, including bug fixes and improvements. Upgrade now to enhance your CFML development experience.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-2-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.2 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.2 maintenance release, addressing bugs and improving functionality. Download now to enhance your CFML development expe">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-3-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.3 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.3 maintenance release, featuring bug fixes and improvements. Download now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-4-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.4 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.4 maintenance release, featuring bug fixes and improvements. Download now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0.0 API Reference | CFML Framework">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "xplore the comprehensive Wheels 3.0.0 API docs—your go-to resource for mastering CFML development with detailed functions, examples, and best p">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-5-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.5 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.5 maintenance release, featuring bug fixes and improvements. Download now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
 </cfsilent>
 
 <cfif application.contentOnly>
@@ -104,36 +207,20 @@
 			<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 			<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
-			<cfoutput>
-			<meta name="description" content="#metaDescription#">
-			
+			<cfoutput><meta name="description" content="#metaDescription#">
 			<!--- Open Graph Tags --->
 			<meta property="og:title" content="#ogTitle#">
 			<meta property="og:description" content="#ogDescription#">
 			<meta property="og:type" content="<cfif isBlog>article<cfelse>website</cfif>">
 			<meta property="og:url" content="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
 			<meta property="og:site_name" content="Wheels">
-			<cfif isDefined("ogImage")>
-				<meta property="og:image" content="#ogImage#">
-			<cfelse>
-				<meta property="og:image" content="#getBaseUrl()#/img/wheels-logo.png">
-			</cfif>
+			<cfif isDefined("ogImage")><meta property="og:image" content="#ogImage#"><cfelse><meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png"></cfif>
 			<meta property="og:locale" content="en_US">
-			</cfoutput>
-
-			<!--- Canonical URL --->
-			<cfoutput>
 			<link rel="canonical" href="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
+			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
 			</cfoutput>
 
-			<!--- Hreflang Tags --->
-			<link rel="alternate" hreflang="x-default" href="https://wheels.dev/">
-			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
-			<link rel="alternate" hreflang="en-us" href="https://wheels.dev/">
-
-			<!--- Schema.org Markup --->
-			<script type="application/ld+json">
-			<cfoutput>
+			<script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "Organization",
@@ -148,11 +235,9 @@
 					"https://github.com/wheels-dev/wheels/discussions"
 				]
 			}
-			</cfoutput>
-			</script>
+			</cfoutput></script>
 
-			<script type="application/ld+json">
-			<cfoutput>
+			<script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "WebSite",
@@ -164,12 +249,8 @@
 					"query-input": "required name=search_term_string"
 				}
 			}
-			</cfoutput>
-			</script>
-
-			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")>
-			<script type="application/ld+json">
-			<cfoutput>
+			</cfoutput></script>
+			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")><script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "BlogPosting",
@@ -195,34 +276,47 @@
 					"@id": "#getBaseUrl()##cgi.path_info#"
 				}
 			}
-			</cfoutput>
-			</script>
-			</cfif>
+			</cfoutput></script></cfif>
 
-			<cfif isDocs>
-			<script type="application/ld+json">
-			<cfoutput>
+			<cfif isDocs><script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "SoftwareApplication",
 				"name": "Wheels.dev",
-				"applicationCategory": "Web development framework",
-				"operatingSystem": "Cross-platform",
-				"offers": {
-					"@type": "Offer",
-					"price": "0",
-					"priceCurrency": "USD"
+				"alternateName": "Wheels",
+				"url": "https://wheels.dev",
+				"codeRepository": "https://github.com/wheels-dev/wheels",
+				"license": "https://opensource.org/license/apache-2-0",
+				"version": "3.0.0",
+				"programmingLanguage": {
+					"@type": "ComputerLanguage",
+					"name": "CFML",
+					"url": "https://en.wikipedia.org/wiki/ColdFusion_Markup_Language"
+				},
+				"isAccessibleForFree": true,
+				"description": "Wheels.dev is a free, open-source web application framework for CFML, inspired by Ruby on Rails. It offers a modern MVC structure, clean syntax, and developer-friendly features to rapidly build maintainable web applications.",
+				"keywords": [
+					"CFML",
+					"ColdFusion",
+					"MVC Framework",
+					"Web Development",
+					"Open Source",
+					"Wheels.dev",
+					"CFWheels"
+				],
+				"dateCreated": "2005-01-01",
+				"dateModified": "2025-06-03",
+				"creator": {
+					"@type": "Organization",
+					"name": "Wheels Community",
+					"url": "https://wheels.dev"
 				},
 				"programmingLanguage": "CFML",
 				"description": "#metaDescription#"
 			}
-			</cfoutput>
-			</script>
-			</cfif>
+			</cfoutput></script></cfif>
 
-			<!--- Breadcrumb Schema --->
-			<script type="application/ld+json">
-			<cfoutput>
+			<script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "BreadcrumbList",
@@ -277,41 +371,33 @@
 					</cfif>
 				]
 			}
-			</cfoutput>
-			</script>
+			</cfoutput></script>
 
-			<!-- Bootstrap CSS -->
-			<link rel="preload" href="/css/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/css/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
-			<link href="/css/bootstrap.css" rel="stylesheet">
-			<link href="/css/style.css" rel="stylesheet">
-			<link href="/css/swiper.css" rel="stylesheet">
-			<link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
-			<link href="/css/notifier.min.css" rel="stylesheet">
-			<cfif !isHome>
-				<link href="/css/quill.snow.css" rel="stylesheet">
-				<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
-				<link href="/css/select2.min.css" rel="stylesheet">
-				<link rel="stylesheet" href="/css/lib/easymde.min.css">
-			</cfif>
+			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
+			<link href="/stylesheets/style.css" rel="stylesheet">
+			<link href="/stylesheets/swiper.css" rel="stylesheet">
+			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
+			<link href="/stylesheets/select2.min.css" rel="stylesheet">
+			<link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
+			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
+			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
+			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
 
-			<script src="/js/jquery.min.js"></script>
-			<script src="/js/htmx.min.js"></script>
-			<script src="/js/highlighter.min.js"></script>
-			<script src="/js/bootstrap.js"></script>
-			<script src="/js/all.min.js"></script>
-			<cfif isBlog or isNews>
-				<script src="/js/quill.min.js"></script>
-				<script src="/js/lib/easymde.min.js"></script>
-				<script src="/js/lib/marked.min.js"></script>
-			</cfif>
+			<script src="/javascripts/jquery.min.js"></script>
+			<script src="/javascripts/dataTables.min.js"></script>
+			<script src="/javascripts/htmx.min.js"></script>
+			<script src="/javascripts/highlighter.min.js"></script>
+			<script src="/javascripts/quill.min.js"></script>
+			<script src="/javascripts/bootstrap.js"></script>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
