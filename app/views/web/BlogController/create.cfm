@@ -12,7 +12,7 @@
                             </div>
                         </div>
                     </cfif>
-                    <form id="blogForm" hx-post="#isEdit ? '/blog/update/#blog.id#' : '/blog/store'#" hx-target="body" hx-swap="outerHTML" hx-push-url="/blog" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data" onsubmit="if (document.getElementById('editLoader')) { document.getElementById('editLoader').style.display = 'block'; }">
+                    <form id="blogForm" hx-post="#isEdit ? '/blog/update/#blog.id#' : '/blog/store'#" hx-swap="none" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data" onsubmit="if (document.getElementById('editLoader')) { document.getElementById('editLoader').style.display = 'block'; }">
                         <input type="hidden" name="_method" value="#isEdit ? 'PUT' : 'POST'#">
                         <input class="form-control" type="hidden" name="id" id="id" value="#isEdit ? blog.id : ''#">
                         <input type="hidden" name="content" id="content" value="">

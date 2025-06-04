@@ -114,7 +114,12 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
             title.classList.add("is-invalid");
         }
-        
+        if (!isValid) {
+            event.preventDefault();
+            event.stopPropagation();
+            notifier.show('Error!', 'A blog post already exist with this title.', '', '/img/high_priority-48.png', 4000);
+            return false;
+        }
         // Validate fields only if it's NOT a draft
         if (!isDraft) {
             if (title.value.trim() === "") {
@@ -272,4 +277,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+ 
+    document.body.addEventListener("htmx:afterRequest", function(event) {
+        const xhr = event.detail.xhr;
+        if (xhr.status === 500 && xhr.responseURL.includes("/blog/store")) {
+            notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
+        }
+        if (xhr.status === 200 && xhr.responseURL.includes("/blog/store")) {
+            notifier.show('Success', xhr.responseText, 'success', '', 5000);
+            setTimeout(function() {
+                window.location.href = "/blog"; 
+            }, 4000);
+        }
+    });
 });
