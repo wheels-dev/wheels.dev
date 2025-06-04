@@ -199,6 +199,7 @@
 <cfelse>
 	<!DOCTYPE html>
 	<html>
+	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
@@ -281,7 +282,7 @@
 			<cfif isDocs><script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareApplication",
+				"@type": "SoftwareSourceCode",
 				"name": "Wheels.dev",
 				"alternateName": "Wheels",
 				"url": "https://wheels.dev",
@@ -311,8 +312,12 @@
 					"name": "Wheels Community",
 					"url": "https://wheels.dev"
 				},
-				"programmingLanguage": "CFML",
-				"description": "#metaDescription#"
+				"targetProduct": {
+					"@type": "SoftwareApplication",
+					"name": "CFML Framework",
+					"operatingSystem": "Cross-platform",
+					"applicationCategory": "Web development"
+				}
 			}
 			</cfoutput></script></cfif>
 
@@ -373,31 +378,27 @@
 			}
 			</cfoutput></script>
 
-			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
-			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
-			<link href="/stylesheets/style.css" rel="stylesheet">
-			<link href="/stylesheets/swiper.css" rel="stylesheet">
-			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
-			<link href="/stylesheets/select2.min.css" rel="stylesheet">
-			<link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
-			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
-			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
-			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
-
-			<script src="/javascripts/jquery.min.js"></script>
-			<script src="/javascripts/dataTables.min.js"></script>
-			<script src="/javascripts/htmx.min.js"></script>
-			<script src="/javascripts/highlighter.min.js"></script>
-			<script src="/javascripts/quill.min.js"></script>
-			<script src="/javascripts/bootstrap.js"></script>
+			<link href="/css/bootstrap.css" rel="stylesheet">
+			<link href="/css/style.css" rel="stylesheet">
+			<link href="/css/swiper.css" rel="stylesheet">
+			<link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
+			<link href="/css/notifier.min.css" rel="stylesheet">
+			<cfif !isHome>
+			<link href="/css/quill.snow.css" rel="stylesheet">
+			<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
+			<link href="/css/select2.min.css" rel="stylesheet">
+			<link rel="stylesheet" href="/css/lib/easymde.min.css">
+			<link rel="stylesheet" href="/css/lib/easymde.min.css">
+			</cfif>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -692,13 +693,21 @@
 				</div>
 			</footer>
 
+			<script src="/js/jquery.min.js"></script>
+			<script src="/js/htmx.min.js"></script>
+			<script src="/js/highlighter.min.js"></script>
+			<script src="/js/bootstrap.js"></script>
+			<script src="/js/all.min.js"></script>
+			<cfif isBlog or isNews>
+			<script src="/js/quill.min.js"></script>
+			<script src="/js/lib/easymde.min.js"></script>
+			<script src="/js/lib/marked.min.js"></script>			
+			<script src="/js/select2.min.js"></script>
+			</cfif>
 			<script src="/js/swiper.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
 			<script src="/js/notifier.min.js"></script>
 			<script src="/js/global.js"></script>
-			<cfif isBlog or isNews>
-				<script src="/js/select2.min.js"></script>
-			</cfif>
 		</body>
 	</html>
 </cfif>
