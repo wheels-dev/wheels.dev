@@ -198,7 +198,6 @@
 	</cfoutput>
 <cfelse>
 	<!DOCTYPE html>
-	<html>
 	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
@@ -400,6 +399,18 @@
 			<link rel="stylesheet" href="/css/lib/easymde.min.css">
 			</cfif>
 
+			<script src="/js/jquery.min.js"></script>
+			<script src="/js/htmx.min.js"></script>
+			<script src="/js/highlighter.min.js"></script>
+			<script src="/js/bootstrap.js"></script>
+			<script src="/js/all.min.js"></script>
+			<cfif isBlog or isNews>
+			<script src="/js/quill.min.js"></script>
+			<script src="/js/lib/easymde.min.js"></script>
+			<script src="/js/lib/marked.min.js"></script>			
+			<script src="/js/select2.min.js"></script>
+			</cfif>
+
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -410,7 +421,7 @@
 				ga('send', 'pageview');
 			</script>
 		</head>
-		<body <cfoutput> data-scope="#cgi.path_info#" </cfoutput>>
+		<cfoutput><body data-scope="#cgi.path_info#"></cfoutput>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
@@ -581,9 +592,7 @@
 									<cfif isLoggedInUser()>
 										<li class="mt-2">
 											<a class="text--secondary fs-14 text-decoration-none cursor-pointer">
-												<cfoutput>
-													#session.username#
-												</cfoutput>
+												<cfoutput>#session.username#</cfoutput>
 											</a>
 										</li>
 										<li class="mt-2"><a href="/logout"
@@ -692,18 +701,6 @@
 					</div>
 				</div>
 			</footer>
-
-			<script src="/js/jquery.min.js"></script>
-			<script src="/js/htmx.min.js"></script>
-			<script src="/js/highlighter.min.js"></script>
-			<script src="/js/bootstrap.js"></script>
-			<script src="/js/all.min.js"></script>
-			<cfif isBlog or isNews>
-			<script src="/js/quill.min.js"></script>
-			<script src="/js/lib/easymde.min.js"></script>
-			<script src="/js/lib/marked.min.js"></script>			
-			<script src="/js/select2.min.js"></script>
-			</cfif>
 			<script src="/js/swiper.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
 			<script src="/js/notifier.min.js"></script>
