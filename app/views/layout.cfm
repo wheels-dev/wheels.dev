@@ -1,7 +1,8 @@
-<!--- Place HTML here that should be used as the default layout of your application. --->
-<!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
 <cfsilent>
+	<!--- Place HTML here that should be used as the default layout of your application. --->
+	<!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
 	<cfset pathInfo = trim(cgi.path_info)>
+	<cfset isHome = (pathInfo EQ "" OR pathInfo EQ "/" OR pathInfo EQ "/index.cfm")>
 	<cfset isBlog = find("/blog", pathInfo)>
 	<cfset isApi = find("/api", pathInfo)>
 	<cfset isLogin = find("/login", pathInfo)>
@@ -33,7 +34,7 @@
 			<cfset pageTitle = post.title & " - Wheels">
 			<cfset ogTitle = post.title>
 			<cfset ogDescription = metaDescription>
-			<cfset ogImage = "#getBaseUrl()#/images/wheels-logo.png">
+			<cfset ogImage = "#getBaseUrl()#/img/wheels-logo.png">
 		<cfelse>
 			<cfset pageTitle = "Blogs - Wheels">
 			<cfset metaDescription = "Explore our latest blogs on Wheels.">
@@ -94,14 +95,14 @@
 	</cfoutput>
 <cfelse>
 	<!DOCTYPE html>
-	<html lang="en">
+	<html>
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title><cfoutput>#pageTitle#</cfoutput></title>
-			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
-			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+			<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+			<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
 			<cfoutput>
 			<meta name="description" content="#metaDescription#">
@@ -115,7 +116,7 @@
 			<cfif isDefined("ogImage")>
 				<meta property="og:image" content="#ogImage#">
 			<cfelse>
-				<meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png">
+				<meta property="og:image" content="#getBaseUrl()#/img/wheels-logo.png">
 			</cfif>
 			<meta property="og:locale" content="en_US">
 			</cfoutput>
@@ -126,7 +127,9 @@
 			</cfoutput>
 
 			<!--- Hreflang Tags --->
+			<link rel="alternate" hreflang="x-default" href="https://wheels.dev/">
 			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
+			<link rel="alternate" hreflang="en-us" href="https://wheels.dev/">
 
 			<!--- Schema.org Markup --->
 			<script type="application/ld+json">
@@ -136,7 +139,7 @@
 				"@type": "Organization",
 				"name": "Wheels.dev",
 				"url": "https://wheels.dev",
-				"logo": "https://wheels.dev/images/wheels-logo.png",
+				"logo": "https://wheels.dev/img/wheels-logo.png",
 				"description": "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev's intuitive MVC architecture.",
 				"sameAs": [
 					"https://github.com/wheels-dev/wheels",
@@ -172,7 +175,7 @@
 				"@type": "BlogPosting",
 				"headline": "#post.title#",
 				"description": "#metaDescription#",
-				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/images/wheels-logo.png</cfif>",
+				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/img/wheels-logo.png</cfif>",
 				"datePublished": "#dateFormat(post.postDate, "yyyy-mm-dd")#",
 				"dateModified": "#dateFormat(post.updatedAt, "yyyy-mm-dd")#",
 				"author": {
@@ -184,7 +187,7 @@
 					"name": "Wheels.dev",
 					"logo": {
 						"@type": "ImageObject",
-						"url": "https://wheels.dev/images/wheels-logo.png"
+						"url": "https://wheels.dev/img/wheels-logo.png"
 					}
 				},
 				"mainEntityOfPage": {
@@ -201,44 +204,18 @@
 			<cfoutput>
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareSourceCode",
+				"@type": "SoftwareApplication",
 				"name": "Wheels.dev",
-				"alternateName": "Wheels",
-				"url": "https://wheels.dev",
-				"codeRepository": "https://github.com/wheels-dev/wheels",
-				"license": "https://opensource.org/licenses/MIT",
-				"version": "3.0.0",
-				"programmingLanguage": {
-					"@type": "ComputerLanguage",
-					"name": "CFML",
-					"url": "https://en.wikipedia.org/wiki/ColdFusion_Markup_Language"
+				"applicationCategory": "Web development framework",
+				"operatingSystem": "Cross-platform",
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
 				},
-				"isAccessibleForFree": true,
-				"description": "Wheels.dev is a free, open-source web application framework for CFML, inspired by Ruby on Rails. It offers a modern MVC structure, clean syntax, and developer-friendly features to rapidly build maintainable web applications.",
-				"keywords": [
-					"CFML",
-					"ColdFusion",
-					"MVC Framework",
-					"Web Development",
-					"Open Source",
-					"Wheels.dev",
-					"CFWheels"
-				],
-				"dateCreated": "2005-01-01",
-				"dateModified": "2025-06-03",
-				"creator": {
-					"@type": "Organization",
-					"name": "Wheels Community",
-					"url": "https://wheels.dev"
-				},
-				"targetProduct": {
-					"@type": "SoftwareApplication",
-					"name": "CFML Framework",
-					"operatingSystem": "Cross-platform",
-					"applicationCategory": "Web development"
-				}
+				"programmingLanguage": "CFML",
+				"description": "#metaDescription#"
 			}
-
 			</cfoutput>
 			</script>
 			</cfif>
@@ -304,31 +281,37 @@
 			</script>
 
 			<!-- Bootstrap CSS -->
-			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
-			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
-			<link href="/stylesheets/style.css" rel="stylesheet">
-			<link href="/stylesheets/swiper.css" rel="stylesheet">
-			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
-			<link href="/stylesheets/select2.min.css" rel="stylesheet">
-			<link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
-			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
-			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
-			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
+			<link href="/css/bootstrap.css" rel="stylesheet">
+			<link href="/css/style.css" rel="stylesheet">
+			<link href="/css/swiper.css" rel="stylesheet">
+			<link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
+			<link href="/css/notifier.min.css" rel="stylesheet">
+			<cfif !isHome>
+				<link href="/css/quill.snow.css" rel="stylesheet">
+				<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
+				<link href="/css/select2.min.css" rel="stylesheet">
+				<link rel="stylesheet" href="/css/lib/easymde.min.css">
+			</cfif>
 
-			<script src="/javascripts/jquery.min.js"></script>
-			<script src="/javascripts/dataTables.min.js"></script>
-			<script src="/javascripts/htmx.min.js"></script>
-			<script src="/javascripts/highlighter.min.js"></script>
-			<script src="/javascripts/quill.min.js"></script>
-			<script src="/javascripts/bootstrap.js"></script>
+			<script src="/js/jquery.min.js"></script>
+			<script src="/js/htmx.min.js"></script>
+			<script src="/js/highlighter.min.js"></script>
+			<script src="/js/bootstrap.js"></script>
+			<script src="/js/all.min.js"></script>
+			<cfif isBlog or isNews>
+				<script src="/js/quill.min.js"></script>
+				<script src="/js/lib/easymde.min.js"></script>
+				<script src="/js/lib/marked.min.js"></script>
+			</cfif>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -339,17 +322,13 @@
 				ga('create', 'UA-3914949-1', 'auto');
 				ga('send', 'pageview');
 			</script>
-			<!-- Add EasyMDE files -->
-			<link rel="stylesheet" href="/stylesheets/lib/easymde.min.css">
-			<script src="/javascripts/lib/easymde.min.js"></script>
-			<script src="/javascripts/lib/marked.min.js"></script>
 		</head>
-		<body <cfoutput> data-controller="#params.controller#" data-action="#params.action#" </cfoutput>>
+		<body <cfoutput> data-scope="#cgi.path_info#" </cfoutput>>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
-						<img src="/images/wheels-logo.png" alt="Wheels.dev Logo" width="200">
+						<img src="/img/wheels-logo.png" alt="Wheels.dev Logo" width="200">
 					</a>
 					<div class="d-flex align-items-center justify-content-end flex-xl-grow-0 flex-grow-1 gap-2">
 						<cfif isLoggedInUser()>
@@ -467,7 +446,7 @@
 					<div class="container">
 						<div class="row gy-lg-0 gy-3 gx-sm-5">
 							<div class="col-lg-4">
-								<img src="/images/wheels-logo.png" width="284" alt="wheels.dev Logo">
+								<img src="/img/wheels-logo.png" width="284" alt="wheels.dev Logo">
 								<div class="mt-3">
 									<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
 									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the
@@ -627,13 +606,13 @@
 				</div>
 			</footer>
 
-			<script src="/javascripts/swiper.js"></script>
-			<script src="/javascripts/custom.js"></script>
-			<script src="/javascripts/infinite-scroll.pkgd.min.js"></script>
-			<link href="/stylesheets/select2.min.css" rel="stylesheet">
-			<script src="/javascripts/select2.min.js"></script>
-			<script src="/javascripts/notifier.min.js"></script>
-			<script src="/javascripts/global.js"></script>
+			<script src="/js/swiper.js"></script>
+			<script src="/js/infinite-scroll.pkgd.min.js"></script>
+			<script src="/js/notifier.min.js"></script>
+			<script src="/js/global.js"></script>
+			<cfif isBlog or isNews>
+				<script src="/js/select2.min.js"></script>
+			</cfif>
 		</body>
 	</html>
 </cfif>

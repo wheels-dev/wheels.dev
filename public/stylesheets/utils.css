@@ -228,7 +228,7 @@
     position: relative;
     width: 100%;
     height: 192px;
-    background: url('/images/blog-default.png') bottom/cover no-repeat;
+    background: url('/img/blog-default.png') bottom/cover no-repeat;
     overflow: hidden
 }
 

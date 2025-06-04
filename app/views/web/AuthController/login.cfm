@@ -2,7 +2,7 @@
     <div class="position-absolute w-100 top-0 start-0">
         <div class="container w-100 px-0 pt-3">
             <a href="/" class="text-decoration-none container">
-                <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
+                <img src="/img/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
             </a>
         </div>
     </div>
@@ -93,10 +93,10 @@
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
-                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
+                <img src="/img/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
-                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" alt="Wheels.dev auth" />
+                <img src="/img/authVector2.png" class="img-fluid" width="150" height="150" alt="Wheels.dev auth" />
             </div>
         </div>
     </div>
