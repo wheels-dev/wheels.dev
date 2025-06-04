@@ -3,7 +3,7 @@
             <!-- Blog filter -->
             <div class="container pt-4 pb-5">
                 <div class="d-flex justify-content-between align-items-center">
-                    <a href="#urlFor(route="blog")#" class="py-2 px-3 bg-white shadow-sm rounded-3">
+                    <a href="javascript:history.back()" class="py-2 px-3 bg-white shadow-sm rounded-3">
                         <i class="bi bi-arrow-left"></i>
                         <span class="fs-14 text--secondary">
                             Back
@@ -248,4 +248,4 @@
     </div>
 </main>
 
-<script src="/javascripts/showBlog.js"></script>
+<script src="/js/showBlog.js"></script>

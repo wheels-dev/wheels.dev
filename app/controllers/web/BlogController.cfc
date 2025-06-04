@@ -483,7 +483,7 @@ component extends="app.Controllers.Controller" {
                 userId = GetSignedInUserId()
             );
 
-            redirectTo(route="blog");
+            renderText(response.message);
         } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",
