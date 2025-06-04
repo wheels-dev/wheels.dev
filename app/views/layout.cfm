@@ -94,7 +94,7 @@
 	</cfoutput>
 <cfelse>
 	<!DOCTYPE html>
-	<html>
+	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
@@ -126,9 +126,7 @@
 			</cfoutput>
 
 			<!--- Hreflang Tags --->
-			<link rel="alternate" hreflang="x-default" href="https://wheels.dev/">
 			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
-			<link rel="alternate" hreflang="en-us" href="https://wheels.dev/">
 
 			<!--- Schema.org Markup --->
 			<script type="application/ld+json">
@@ -203,18 +201,44 @@
 			<cfoutput>
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareApplication",
+				"@type": "SoftwareSourceCode",
 				"name": "Wheels.dev",
-				"applicationCategory": "Web development framework",
-				"operatingSystem": "Cross-platform",
-				"offers": {
-					"@type": "Offer",
-					"price": "0",
-					"priceCurrency": "USD"
+				"alternateName": "Wheels",
+				"url": "https://wheels.dev",
+				"codeRepository": "https://github.com/wheels-dev/wheels",
+				"license": "https://opensource.org/licenses/MIT",
+				"version": "3.0.0",
+				"programmingLanguage": {
+					"@type": "ComputerLanguage",
+					"name": "CFML",
+					"url": "https://en.wikipedia.org/wiki/ColdFusion_Markup_Language"
 				},
-				"programmingLanguage": "CFML",
-				"description": "#metaDescription#"
+				"isAccessibleForFree": true,
+				"description": "Wheels.dev is a free, open-source web application framework for CFML, inspired by Ruby on Rails. It offers a modern MVC structure, clean syntax, and developer-friendly features to rapidly build maintainable web applications.",
+				"keywords": [
+					"CFML",
+					"ColdFusion",
+					"MVC Framework",
+					"Web Development",
+					"Open Source",
+					"Wheels.dev",
+					"CFWheels"
+				],
+				"dateCreated": "2005-01-01",
+				"dateModified": "2025-06-03",
+				"creator": {
+					"@type": "Organization",
+					"name": "Wheels Community",
+					"url": "https://wheels.dev"
+				},
+				"targetProduct": {
+					"@type": "SoftwareApplication",
+					"name": "CFML Framework",
+					"operatingSystem": "Cross-platform",
+					"applicationCategory": "Web development"
+				}
 			}
+
 			</cfoutput>
 			</script>
 			</cfif>
@@ -289,11 +313,8 @@
 			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
-			<link href="/stylesheets/font.css" rel="stylesheet">
 			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
-			<link href="/stylesheets/color.css" rel="stylesheet">
 			<link href="/stylesheets/style.css" rel="stylesheet">
-			<link href="/stylesheets/utils.css" rel="stylesheet">
 			<link href="/stylesheets/swiper.css" rel="stylesheet">
 			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
 			<link href="/stylesheets/select2.min.css" rel="stylesheet">
@@ -302,21 +323,12 @@
 			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
 			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
 
-			<script src="/javascripts/echarts.min.js"></script>
 			<script src="/javascripts/jquery.min.js"></script>
 			<script src="/javascripts/dataTables.min.js"></script>
 			<script src="/javascripts/htmx.min.js"></script>
 			<script src="/javascripts/highlighter.min.js"></script>
 			<script src="/javascripts/quill.min.js"></script>
 			<script src="/javascripts/bootstrap.js"></script>
-			<script src="/javascripts/config.js"></script>
-
-			<cfoutput>
-				#javascriptIncludeTag(source="anchor.min.js")#
-				#javascriptIncludeTag(source="all.min.js")#
-				#javascriptIncludeTag(source="lodash.min.js")#
-				#javascriptIncludeTag(source="phoenix.js")#
-			</cfoutput>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

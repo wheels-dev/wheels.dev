@@ -23,7 +23,7 @@ component extends="app.Controllers.Controller" {
 
     private array function getBlogs() {
         var blogQuery = model("Blog").findAll(
-            select = "title, slug, content, postCreatedDate",
+            select = "title, slug, content, postDate",
             where  = "statusid <> 1 AND status = 'Approved' AND isPublished = 'true'",
             order  = "createdAt DESC"
         );
@@ -32,7 +32,7 @@ component extends="app.Controllers.Controller" {
 
         for (var i = 1; i <= blogQuery.recordCount; i++) {
             // Convert to UTC
-            var localDate = blogQuery.postCreatedDate[i];
+            var localDate = blogQuery.postDate[i];
             var utcDate = dateConvert("local2utc", localDate);
 
             // Format to ISO 8601: yyyy-mm-ddTHH:MM:SSZ
