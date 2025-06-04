@@ -33,7 +33,7 @@
 			<cfset pageTitle = post.title & " - Wheels">
 			<cfset ogTitle = post.title>
 			<cfset ogDescription = metaDescription>
-			<cfset ogImage = "#getBaseUrl()#/images/wheels-logo.png">
+			<cfset ogImage = "#getBaseUrl()#/img/wheels-logo.png">
 		<cfelse>
 			<cfset pageTitle = "Blogs - Wheels">
 			<cfset metaDescription = "Explore our latest blogs on Wheels.">
@@ -100,8 +100,8 @@
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title><cfoutput>#pageTitle#</cfoutput></title>
-			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
-			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+			<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+			<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
 			<cfoutput>
 			<meta name="description" content="#metaDescription#">
@@ -115,7 +115,7 @@
 			<cfif isDefined("ogImage")>
 				<meta property="og:image" content="#ogImage#">
 			<cfelse>
-				<meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png">
+				<meta property="og:image" content="#getBaseUrl()#/img/wheels-logo.png">
 			</cfif>
 			<meta property="og:locale" content="en_US">
 			</cfoutput>
@@ -136,7 +136,7 @@
 				"@type": "Organization",
 				"name": "Wheels.dev",
 				"url": "https://wheels.dev",
-				"logo": "https://wheels.dev/images/wheels-logo.png",
+				"logo": "https://wheels.dev/img/wheels-logo.png",
 				"description": "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev's intuitive MVC architecture.",
 				"sameAs": [
 					"https://github.com/wheels-dev/wheels",
@@ -172,7 +172,7 @@
 				"@type": "BlogPosting",
 				"headline": "#post.title#",
 				"description": "#metaDescription#",
-				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/images/wheels-logo.png</cfif>",
+				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/img/wheels-logo.png</cfif>",
 				"datePublished": "#dateFormat(post.postDate, "yyyy-mm-dd")#",
 				"dateModified": "#dateFormat(post.updatedAt, "yyyy-mm-dd")#",
 				"author": {
@@ -184,7 +184,7 @@
 					"name": "Wheels.dev",
 					"logo": {
 						"@type": "ImageObject",
-						"url": "https://wheels.dev/images/wheels-logo.png"
+						"url": "https://wheels.dev/img/wheels-logo.png"
 					}
 				},
 				"mainEntityOfPage": {
@@ -304,31 +304,31 @@
 			</script>
 
 			<!-- Bootstrap CSS -->
-			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-			<link rel="preload" href="/stylesheets/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Light.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Medium.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-SemiBold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+			<link rel="preload" href="/css/fonts/Sora-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 
-			<link href="/stylesheets/bootstrap.css" rel="stylesheet">
-			<link href="/stylesheets/style.css" rel="stylesheet">
-			<link href="/stylesheets/swiper.css" rel="stylesheet">
-			<link href="/stylesheets/quill.snow.css" rel="stylesheet">
-			<link href="/stylesheets/select2.min.css" rel="stylesheet">
-			<link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
-			<link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
-			<link href="/stylesheets/notifier.min.css" rel="stylesheet">
-			<link href="/stylesheets/dataTables.min.css" rel="stylesheet">
+			<link href="/css/bootstrap.css" rel="stylesheet">
+			<link href="/css/style.css" rel="stylesheet">
+			<link href="/css/swiper.css" rel="stylesheet">
+			<link href="/css/quill.snow.css" rel="stylesheet">
+			<link href="/css/select2.min.css" rel="stylesheet">
+			<link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
+			<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
+			<link href="/css/notifier.min.css" rel="stylesheet">
+			<link href="/css/dataTables.min.css" rel="stylesheet">
 
-			<script src="/javascripts/jquery.min.js"></script>
-			<script src="/javascripts/dataTables.min.js"></script>
-			<script src="/javascripts/htmx.min.js"></script>
-			<script src="/javascripts/highlighter.min.js"></script>
-			<script src="/javascripts/quill.min.js"></script>
-			<script src="/javascripts/bootstrap.js"></script>
+			<script src="/js/jquery.min.js"></script>
+			<script src="/js/dataTables.min.js"></script>
+			<script src="/js/htmx.min.js"></script>
+			<script src="/js/highlighter.min.js"></script>
+			<script src="/js/quill.min.js"></script>
+			<script src="/js/bootstrap.js"></script>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -340,16 +340,16 @@
 				ga('send', 'pageview');
 			</script>
 			<!-- Add EasyMDE files -->
-			<link rel="stylesheet" href="/stylesheets/lib/easymde.min.css">
-			<script src="/javascripts/lib/easymde.min.js"></script>
-			<script src="/javascripts/lib/marked.min.js"></script>
+			<link rel="stylesheet" href="/css/lib/easymde.min.css">
+			<script src="/js/lib/easymde.min.js"></script>
+			<script src="/js/lib/marked.min.js"></script>
 		</head>
 		<body <cfoutput> data-controller="#params.controller#" data-action="#params.action#" </cfoutput>>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
 					<a class="navbar-brand" href="/">
-						<img src="/images/wheels-logo.png" alt="Wheels.dev Logo" width="200">
+						<img src="/img/wheels-logo.png" alt="Wheels.dev Logo" width="200">
 					</a>
 					<div class="d-flex align-items-center justify-content-end flex-xl-grow-0 flex-grow-1 gap-2">
 						<cfif isLoggedInUser()>
@@ -467,7 +467,7 @@
 					<div class="container">
 						<div class="row gy-lg-0 gy-3 gx-sm-5">
 							<div class="col-lg-4">
-								<img src="/images/wheels-logo.png" width="284" alt="wheels.dev Logo">
+								<img src="/img/wheels-logo.png" width="284" alt="wheels.dev Logo">
 								<div class="mt-3">
 									<p class="fs-18 fw-semibold p-0 m-0">Let's Keep in touch</p>
 									<p class="fs-12 fw-semibold">Enter your email to stay up to date with the
@@ -627,13 +627,13 @@
 				</div>
 			</footer>
 
-			<script src="/javascripts/swiper.js"></script>
-			<script src="/javascripts/custom.js"></script>
-			<script src="/javascripts/infinite-scroll.pkgd.min.js"></script>
-			<link href="/stylesheets/select2.min.css" rel="stylesheet">
-			<script src="/javascripts/select2.min.js"></script>
-			<script src="/javascripts/notifier.min.js"></script>
-			<script src="/javascripts/global.js"></script>
+			<script src="/js/swiper.js"></script>
+			<script src="/js/custom.js"></script>
+			<script src="/js/infinite-scroll.pkgd.min.js"></script>
+			<link href="/css/select2.min.css" rel="stylesheet">
+			<script src="/js/select2.min.js"></script>
+			<script src="/js/notifier.min.js"></script>
+			<script src="/js/global.js"></script>
 		</body>
 	</html>
 </cfif>
