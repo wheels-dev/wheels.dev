@@ -71,14 +71,14 @@ component extends="app.Models.Model" {
         return {
             id: this.id,
             companyName: this.companyName ?: "",
-            logoPath: this.logoPath ?: "/images/default-logo.png",
+            logoPath: this.logoPath ?: "/img/default-logo.png",
             testimonialText: this.testimonialText,
             rating: this.rating,
             experienceLevel: this.experienceLevel,
             websiteUrl: this.websiteUrl ?: "",
             socialMediaLinks: this.socialMediaLinks ?: "",
             userFullName: isNull(user) ? "Anonymous" : user.fullName,
-            userProfilePicture: isNull(user) ? "/images/default-user.png" : user.profilePicture,
+            userProfilePicture: isNull(user) ? "/img/default-user.png" : user.profilePicture,
             isFeatured: this.isFeatured,
             submittedOn: this.createdAt
         };
