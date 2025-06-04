@@ -39,4 +39,11 @@ If you do not use Tuckey or Commandbox, this file can be safely deleted.
     <from>^/(.*)\\.(\\w+)$</from>
     <to>/$1?format=$2</to>
   </rule>
+
+  <!-- Rule to serve sitemap.xml from sitemap folder -->
+  <rule enabled="true">
+    <name>Sitemap serve rule</name>
+    <from>^/sitemap\.xml$</from>
+    <to type="forward">/sitemap/sitemap.xml</to>
+  </rule>
 </urlrewrite>
