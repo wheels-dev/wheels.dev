@@ -85,6 +85,109 @@
 		<cfset metaDescription = "Forgot your password? Quickly reset it and regain access to your Wheels.dev account, the modern CFML framework for rapid web development.">
 		<cfset ogDescription = metaDescription>
 	</cfif>
+
+	<cfif find("/blog/1-1-1-released", pathInfo)>
+		<cfset pageTitle = "Wheels 1.1.1 Released: Bug Fixes & Enhancements">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Discover the latest updates in Wheels 1.1.1, including bug fixes and improvements. Upgrade now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/migration.addForeignKey", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addForeignKey Migration Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Master foreign key constraints in Wheels 3.0 with the addForeignKey function. Learn how to link tables effectively in your CFML applications.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/migration.addColumn", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addColumn Migration Function">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Learn how to use the addColumn function in Wheels 3.0 to add new columns to your database tables with ease. Enhance your CFML applications toda">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/model.accessibleProperties", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: accessible Properties Explained">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Understand how to use accessibleProperties in Wheels 3.0 to manage model property accessibility. Enhance your CFML application's security and fle">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/community", pathInfo)>
+		<cfset pageTitle = "Join the Wheels CFML Community">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Connect with developers on Wheels.dev. Join our Slack, contribute on GitHub, and collaborate with the Core team to enhance the Wheels framework.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/controller.controller", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: controller() Function Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the controller functions in Wheels 3.0 to create controller instances with custom names and parameters. Ideal for testing and dynamic routing.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/news", pathInfo)>
+		<cfset pageTitle = "Latest News & Updates | Wheels CFML Framework">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Stay informed with the latest Wheels CFML framework news, including version releases, tutorials, and community updates to enhance your developme">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/model.addErrorToBase", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addErrorToBase Function Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Learn how to use addErrorToBase in CFWheels 3.0 to add model-level validation errors. Enhance your CFML application's data integrity and user feed">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/controller.model", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: model() Function Overview">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore how to use the model() function in Wheels 3.0 to interact with your application's models efficiently. Enhance your CFML development skills tod">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0/model.addError", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0: addError Function Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Learn how to use the addError function in Wheels 3.0 to add validation errors to your models. Enhance data integrity and user feedback in your CFML">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/docs", pathInfo)>
+		<cfset pageTitle = "Wheels Documentation | Framework Guide">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore comprehensive guides, tutorials, and API references for the Wheels framework. Start building modern web applications with ease.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/version-1-1-2-released-today", pathInfo)>
+		<cfset pageTitle = "Wheels 1.1.2 Released: Bug Fixes & Enhancem">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Discover the latest updates in Wheels 1.1.2, including bug fixes and improvements. Upgrade now to enhance your CFML development experience.">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-2-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.2 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.2 maintenance release, addressing bugs and improving functionality. Download now to enhance your CFML development expe">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-3-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.3 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.3 maintenance release, featuring bug fixes and improvements. Download now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-4-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.4 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.4 maintenance release, featuring bug fixes and improvements. Download now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/api/v3.0.0", pathInfo)>
+		<cfset pageTitle = "Wheels 3.0.0 API Reference | CFML Framework">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "xplore the comprehensive Wheels 3.0.0 API docs—your go-to resource for mastering CFML development with detailed functions, examples, and best p">
+		<cfset ogDescription = metaDescription>
+	</cfif>
+	<cfif find("/blog/cfwheels-1-4-5-maintenance-release", pathInfo)>
+		<cfset pageTitle = "Wheels 1.4.5 Maintenance Release: Bug Fixes">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Explore the Wheels 1.4.5 maintenance release, featuring bug fixes and improvements. Download now to enhance your CFML development experience">
+		<cfset ogDescription = metaDescription>
+	</cfif>
 </cfsilent>
 
 <cfif application.contentOnly>
