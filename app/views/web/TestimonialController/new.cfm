@@ -136,4 +136,4 @@
     </div>
 </div>
 
-<script src="/javascripts/testimonialResponse.js"></script>
+<script src="/js/testimonialResponse.js"></script>

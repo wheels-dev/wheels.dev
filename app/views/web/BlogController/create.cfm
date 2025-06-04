@@ -100,5 +100,5 @@
         </div>
     </div>
 </cfoutput>
-    <script src="/javascripts/createBlog.js"></script>
+    <script src="/js/createBlog.js"></script>
 </main>

@@ -64,5 +64,5 @@
         </div>
     </div>
 </main>
-<script src="/javascripts/jquery.min.js"></script>
-<script src="/javascripts/api.index.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/api.index.js"></script>

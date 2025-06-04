@@ -95,7 +95,7 @@
             </span>
         </a>
         <div class="container">
-            <img class="mt-4" src="/images/wheels-logo.png" alt="wheels.dev Logo" width="260">
+            <img class="mt-4" src="/img/wheels-logo.png" alt="wheels.dev Logo" width="260">
             <cfif structKeyExists(email, "welcomeMessage")>
                 <h1 class="mt-4">#email.welcomeMessage#</h1>
             </cfif>
