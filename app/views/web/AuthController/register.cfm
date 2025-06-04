@@ -4,7 +4,7 @@
             <div class="flex-column d-flex py-4 justify-content-center h-100 gap-3 align-items-center">
                 <h1 class="fs-36 mb-0 fw-bold text--secondary">Welcome to</h1>
                 <a href="/">
-                    <img src="/images/wheels-logo.png" width="300" alt="wheels.dev Logo">
+                    <img src="/img/wheels-logo.png" width="300" alt="wheels.dev Logo">
                 </a>
                 <p class="text--secondary fw-medium fs-18 text-center w-100 max-w-450 mx-auto pt-4">
                     Wheels is an open-source CFML framework inspired by Ruby on Rails. It offers fast app development,
