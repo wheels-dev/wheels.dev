@@ -112,11 +112,11 @@
             if (document.getElementById("content").value.trim() === "" || document.getElementById("content").value.trim() === "<p> </p>" || document.getElementById("content").value.trim() === "<p><br></p>") { // 
                 event.preventDefault();
                 editor?.classList.add("border-danger");
-                // notifier.show("Error!", 'Please enter a comment before submitting.', "", "/images/high_priority-48.png", 5000);
+                // notifier.show("Error!", 'Please enter a comment before submitting.', "", "/img/high_priority-48.png", 5000);
                 return false;
             } else {
                 document.getElementById("content").value = quill.root.innerHTML.trim(); 
-                // notifier.show("Success!", 'Comment created successfully.', "", "/images/ok-48.png", 5000);
+                // notifier.show("Success!", 'Comment created successfully.', "", "/img/ok-48.png", 5000);
                 return true;
             }
         });
