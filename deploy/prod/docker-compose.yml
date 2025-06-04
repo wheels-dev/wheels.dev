@@ -24,6 +24,7 @@ services:
     volumes:
       - shared-images:/app/public/images
       - shared-files:/app/public/files
+      - shared-sitemap:/app/public/sitemap
       - wheels-data:/data
 
 networks:
@@ -34,5 +35,7 @@ volumes:
   shared-images:
     external: true
   shared-files:
+    external: true
+  shared-sitemap:
     external: true
   wheels-data:
