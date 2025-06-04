@@ -414,24 +414,7 @@ component extends="app.Controllers.Controller" {
             xml &= '
 </urlset>';
 
-            // Debug path resolution
-            var debugInfo = {
-                "expandPath_root": expandPath("/sitemap.xml"),
-                "expandPath_relative": expandPath("./sitemap.xml"),
-                "getCurrentTemplatePath": getCurrentTemplatePath(),
-                "template_directory": getDirectoryFromPath(getCurrentTemplatePath()),
-                "app_directory": expandPath("./"),
-                "public_directory": expandPath("public/")
-            };
-            
-            model("Log").log(
-                category = "wheels.seo",
-                level = "DEBUG",
-                message = "Path debugging info",
-                details = debugInfo
-            );
-
-            var sitemapPath = expandPath("/sitemap.xml");
+            var sitemapPath = expandPath("/sitemap/sitemap.xml");
             model("Log").log(
                 category = "wheels.seo",
                 level = "DEBUG", 
