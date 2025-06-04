@@ -151,7 +151,7 @@
 
 
     <cfif showTestimonialPopup>
-        <script src="/javascripts/testimonialPopup.js"></script>
+        <script src="/js/testimonialPopup.js"></script>
     </cfif>
 
     <!-- Top contribute -->
@@ -166,231 +166,6 @@
         </div>
     </div>
 
-    <!-- <div class="container d-none mt-5 py-5">
-        <div class="text-center">
-            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Our Top Contributer</p>
-        </div>
-        <div class="swiper contributorsSwiper mt-5">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide overflow-hidden rounded-30">
-                    <div class="p-5 bg-white overflow-hidden d-flex row">
-                        <div class="col-lg-8 col-12">
-                            <p class="fs-36 fw-bold text--secondary">Alex John</p>
-                            <p class="fs-18 text--lightGray fw-medium">Contributed as a Software Developer</p>
-                            <p class="fs-16 pt-4 text--secondary fw-normal">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-                                has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                printer took a galley of type and scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into electronic typesetting,
-                                remaining essentially unchanged.
-                            </p>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <img src="/images/testi.png">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="swiper contributorsSwiperThumb mt-5">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-1.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-2.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-3.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-4.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-5.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-6.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-7.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-8.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-9.jpg" />
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle size-100" src="https://swiperjs.com/demos/images/nature-10.jpg" />
-                </div>
-            </div>
-            <div class="swiper-button-next end-0"></div>
-            <div class="swiper-button-prev start-0"></div>
-        </div>
-    </div> -->
     <!-- Testimonial Popup Modal -->
     <cfif settings.enableTestimonial>
         <div class="modal fade" id="testimonialPromptModal" tabindex="-1" aria-labelledby="testimonialPromptModalLabel" aria-hidden="true">
@@ -406,9 +181,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn bg--primary text-white" 
                         hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
-                        hx-target="main"
+                        hx-target="body"
                         hx-trigger="click"
-                        hx-push-url="true"
                         hx-swap="outerHTML" data-bs-dismiss="modal">Share Now</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <!--- The submit button will be part of the loaded form --->
@@ -418,7 +192,7 @@
         </div>
 
         <cfif structKeyExists(session, "promptForTestimonial") AND showTestimonialPopup>
-            <script src="/javascripts/testimonial.js"></script>
+            <script src="/js/testimonial.js"></script>
         </cfif>
     </cfif>
 </main>
