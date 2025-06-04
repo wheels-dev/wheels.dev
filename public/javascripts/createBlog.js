@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!isValid) {
             event.preventDefault();
-            notifier.show('Error!', 'Please fill out all required fields.', '', '/images/high_priority-48.png', 4000);
+            notifier.show('Error!', 'Please fill out all required fields.', '', '/img/high_priority-48.png', 4000);
             return false;
         }
 

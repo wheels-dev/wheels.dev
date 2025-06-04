@@ -4,26 +4,26 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <mta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
-	<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">		
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <!-- Bootstrap CSS -->
-    <link href="/stylesheets/font.css" rel="stylesheet">
-    <link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="/javascripts/bootstrap.js" type="text/javascript"></script>
+    <link href="/css/font.css" rel="stylesheet">
+    <link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/js/bootstrap.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
-    <link href="/stylesheets/bootstrap.css" rel="stylesheet">
-    <link href="/stylesheets/color.css" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
-    <link href="/stylesheets/utils.css" rel="stylesheet">
-    <link href="/stylesheets/dataTables.min.css" rel="stylesheet">
-    <link href="/stylesheets/notifier.min.css" rel="stylesheet">
-    <link href="/stylesheets/quill.snow.css" rel="stylesheet">
-    <link href="/stylesheets/select2.min.css" rel="stylesheet">
-    <link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/color.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/utils.css" rel="stylesheet">
+    <link href="/css/dataTables.min.css" rel="stylesheet">
+    <link href="/css/notifier.min.css" rel="stylesheet">
+    <link href="/css/quill.snow.css" rel="stylesheet">
+    <link href="/css/select2.min.css" rel="stylesheet">
+    <link href="/css/select2-bootstrap-min.css" rel="stylesheet">
     
-    <script src="/javascripts/notifier.min.js"></script>
-    <script src="/javascripts/htmx.min.js"></script>
-    <script src="/javascripts/highlighter.min.js"></script>
+    <script src="/js/notifier.min.js"></script>
+    <script src="/js/htmx.min.js"></script>
+    <script src="/js/highlighter.min.js"></script>
     <cfoutput>
         #stylesheetLinkTag(source="simplebar.min.css")#
         #stylesheetLinkTag(source="theme-rtl.min.css", id="style-rtl")# 
@@ -50,10 +50,10 @@
         }
     </script>
     <!-- Bootstrap JS -->
-    <script src="/javascripts/quill.min.js"></script>
-    <script src="/javascripts/jquery.min.js"></script>
-    <script src="/javascripts/select2.min.js"></script>
-    <script src="/javascripts/dataTables.min.js"></script>
+    <script src="/js/quill.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/select2.min.js"></script>
+    <script src="/js/dataTables.min.js"></script>
 </head>
 <body>
     <cfset isUserAuth = find("/user/", cgi.path_info)>
