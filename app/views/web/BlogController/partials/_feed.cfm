@@ -20,7 +20,7 @@
     <sy:updateFrequency>1</sy:updateFrequency>
     <generator>#application.env.application_host#</generator>
     <image>
-        <url>#application.env.application_host#/images/wheels-logo-mark.png</url>
+        <url>#application.env.application_host#/img/wheels-logo-mark.png</url>
         <title>Wheels.dev Blog</title>
         <link>#application.env.application_host#/blog</link>
 				<width>32</width>
