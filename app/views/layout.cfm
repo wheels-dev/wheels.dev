@@ -1,7 +1,8 @@
-<!--- Place HTML here that should be used as the default layout of your application. --->
-<!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
 <cfsilent>
+	<!--- Place HTML here that should be used as the default layout of your application. --->
+	<!--- This condition prevents the content to be wrapped in HTML for the Junit, TXT and JSON formats when they are passed in the URL as "format=json","format=txt" and "format=junit" as these formats shouldn't have html wrapped around them --->
 	<cfset pathInfo = trim(cgi.path_info)>
+	<cfset isHome = (pathInfo EQ "" OR pathInfo EQ "/" OR pathInfo EQ "/index.cfm")>
 	<cfset isBlog = find("/blog", pathInfo)>
 	<cfset isApi = find("/api", pathInfo)>
 	<cfset isLogin = find("/login", pathInfo)>
@@ -94,7 +95,7 @@
 	</cfoutput>
 <cfelse>
 	<!DOCTYPE html>
-	<html lang="en">
+	<html>
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
@@ -126,7 +127,9 @@
 			</cfoutput>
 
 			<!--- Hreflang Tags --->
+			<link rel="alternate" hreflang="x-default" href="https://wheels.dev/">
 			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
+			<link rel="alternate" hreflang="en-us" href="https://wheels.dev/">
 
 			<!--- Schema.org Markup --->
 			<script type="application/ld+json">
@@ -201,44 +204,18 @@
 			<cfoutput>
 			{
 				"@context": "https://schema.org",
-				"@type": "SoftwareSourceCode",
+				"@type": "SoftwareApplication",
 				"name": "Wheels.dev",
-				"alternateName": "Wheels",
-				"url": "https://wheels.dev",
-				"codeRepository": "https://github.com/wheels-dev/wheels",
-				"license": "https://opensource.org/licenses/MIT",
-				"version": "3.0.0",
-				"programmingLanguage": {
-					"@type": "ComputerLanguage",
-					"name": "CFML",
-					"url": "https://en.wikipedia.org/wiki/ColdFusion_Markup_Language"
+				"applicationCategory": "Web development framework",
+				"operatingSystem": "Cross-platform",
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
 				},
-				"isAccessibleForFree": true,
-				"description": "Wheels.dev is a free, open-source web application framework for CFML, inspired by Ruby on Rails. It offers a modern MVC structure, clean syntax, and developer-friendly features to rapidly build maintainable web applications.",
-				"keywords": [
-					"CFML",
-					"ColdFusion",
-					"MVC Framework",
-					"Web Development",
-					"Open Source",
-					"Wheels.dev",
-					"CFWheels"
-				],
-				"dateCreated": "2005-01-01",
-				"dateModified": "2025-06-03",
-				"creator": {
-					"@type": "Organization",
-					"name": "Wheels Community",
-					"url": "https://wheels.dev"
-				},
-				"targetProduct": {
-					"@type": "SoftwareApplication",
-					"name": "CFML Framework",
-					"operatingSystem": "Cross-platform",
-					"applicationCategory": "Web development"
-				}
+				"programmingLanguage": "CFML",
+				"description": "#metaDescription#"
 			}
-
 			</cfoutput>
 			</script>
 			</cfif>
@@ -316,19 +293,25 @@
 			<link href="/css/bootstrap.css" rel="stylesheet">
 			<link href="/css/style.css" rel="stylesheet">
 			<link href="/css/swiper.css" rel="stylesheet">
-			<link href="/css/quill.snow.css" rel="stylesheet">
-			<link href="/css/select2.min.css" rel="stylesheet">
 			<link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
-			<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
 			<link href="/css/notifier.min.css" rel="stylesheet">
-			<link href="/css/dataTables.min.css" rel="stylesheet">
+			<cfif !isHome>
+				<link href="/css/quill.snow.css" rel="stylesheet">
+				<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
+				<link href="/css/select2.min.css" rel="stylesheet">
+				<link rel="stylesheet" href="/css/lib/easymde.min.css">
+			</cfif>
 
 			<script src="/js/jquery.min.js"></script>
-			<script src="/js/dataTables.min.js"></script>
 			<script src="/js/htmx.min.js"></script>
 			<script src="/js/highlighter.min.js"></script>
-			<script src="/js/quill.min.js"></script>
 			<script src="/js/bootstrap.js"></script>
+			<script src="/js/all.min.js"></script>
+			<cfif isBlog or isNews>
+				<script src="/js/quill.min.js"></script>
+				<script src="/js/lib/easymde.min.js"></script>
+				<script src="/js/lib/marked.min.js"></script>
+			</cfif>
 
 			<script>
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -339,12 +322,8 @@
 				ga('create', 'UA-3914949-1', 'auto');
 				ga('send', 'pageview');
 			</script>
-			<!-- Add EasyMDE files -->
-			<link rel="stylesheet" href="/css/lib/easymde.min.css">
-			<script src="/js/lib/easymde.min.js"></script>
-			<script src="/js/lib/marked.min.js"></script>
 		</head>
-		<body <cfoutput> data-controller="#params.controller#" data-action="#params.action#" </cfoutput>>
+		<body <cfoutput> data-scope="#cgi.path_info#" </cfoutput>>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">
@@ -628,12 +607,12 @@
 			</footer>
 
 			<script src="/js/swiper.js"></script>
-			<script src="/js/custom.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
-			<link href="/css/select2.min.css" rel="stylesheet">
-			<script src="/js/select2.min.js"></script>
 			<script src="/js/notifier.min.js"></script>
 			<script src="/js/global.js"></script>
+			<cfif isBlog or isNews>
+				<script src="/js/select2.min.js"></script>
+			</cfif>
 		</body>
 	</html>
 </cfif>

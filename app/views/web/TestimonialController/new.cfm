@@ -13,7 +13,12 @@
                     hx-on="htmx:afterOnLoad: handleTestimonialResponse(event)">
                 </cfoutput>
                     <div id="form-messages"></div>
-                    <h1 class="text-center fs-24 fw-bold mb-4">Share Your Experience</h1>
+                    <div class="text-end">
+                        <cfoutput>
+                        <a class="cursor-pointer" hx-get="#urlFor(route="home")#" hx-trigger="click" hx-target="body" hx-swap="outerHTML" ><i class='bi bi-x fs-32 text-danger'></i></a>
+                        </cfoutput>
+                    </div>
+                    <h1 class="text-center fs-24 fw-bold mb-4" >Share Your Experience</h1>
                     <div class="mb-3">
                         <label for="companyName" class="form-label fw-bold">Company Name <span class="text-danger">*</span></label>
                         <input type="text"
@@ -127,7 +132,7 @@
                     <div class="text-end">
                         <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                         <cfoutput>
-                            <a hx-get="#urlFor(route="home")#" hx-trigger="click" hx-target="body" hx-swap="outerHTML" hx-push-url="true" class="btn btn-secondary px-3 py-2 rounded fs-14 me-2">Cancel</a>
+                            <a hx-get="#urlFor(route="home")#" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="btn btn-secondary px-3 py-2 rounded fs-14 me-2">Cancel</a>
                         </cfoutput>
                     </div>
                 </form>
@@ -137,3 +142,4 @@
 </div>
 
 <script src="/js/testimonialResponse.js"></script>
+<script src="/js/notifier.min.js"></script>

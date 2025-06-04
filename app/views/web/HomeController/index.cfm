@@ -181,9 +181,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn bg--primary text-white" 
                         hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
-                        hx-target="main"
+                        hx-target="body"
                         hx-trigger="click"
-                        hx-push-url="true"
                         hx-swap="outerHTML" data-bs-dismiss="modal">Share Now</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <!--- The submit button will be part of the loaded form --->
