@@ -1,9 +1,11 @@
 <cfset coreTeam=[]>
+<cfsilent>
     <cfloop from="10" to="27" index="i">
         <cfset member={ name="Member #i#" , country="USA" , image="https://avatar.iran.liara.run/public/#i#" ,
             since="Since 20#i#" }>
             <cfset arrayAppend(coreTeam, member)>
     </cfloop>
+</cfsilent>
 
     <cfoutput>
     <main class="main-bg">
