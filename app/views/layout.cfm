@@ -206,34 +206,20 @@
 			<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 			<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
-			<cfoutput>
-			<meta name="description" content="#metaDescription#">
-			
+			<cfoutput><meta name="description" content="#metaDescription#">
 			<!--- Open Graph Tags --->
 			<meta property="og:title" content="#ogTitle#">
 			<meta property="og:description" content="#ogDescription#">
 			<meta property="og:type" content="<cfif isBlog>article<cfelse>website</cfif>">
 			<meta property="og:url" content="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
 			<meta property="og:site_name" content="Wheels">
-			<cfif isDefined("ogImage")>
-				<meta property="og:image" content="#ogImage#">
-			<cfelse>
-				<meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png">
-			</cfif>
+			<cfif isDefined("ogImage")><meta property="og:image" content="#ogImage#"><cfelse><meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png"></cfif>
 			<meta property="og:locale" content="en_US">
-			</cfoutput>
-
-			<!--- Canonical URL --->
-			<cfoutput>
 			<link rel="canonical" href="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
+			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
 			</cfoutput>
 
-			<!--- Hreflang Tags --->
-			<link rel="alternate" hreflang="en" href="https://wheels.dev/">
-
-			<!--- Schema.org Markup --->
-			<script type="application/ld+json">
-			<cfoutput>
+			<script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "Organization",
@@ -248,11 +234,9 @@
 					"https://github.com/wheels-dev/wheels/discussions"
 				]
 			}
-			</cfoutput>
-			</script>
+			</cfoutput></script>
 
-			<script type="application/ld+json">
-			<cfoutput>
+			<script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "WebSite",
@@ -264,12 +248,8 @@
 					"query-input": "required name=search_term_string"
 				}
 			}
-			</cfoutput>
-			</script>
-
-			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")>
-			<script type="application/ld+json">
-			<cfoutput>
+			</cfoutput></script>
+			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")><script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "BlogPosting",
@@ -295,13 +275,9 @@
 					"@id": "#getBaseUrl()##cgi.path_info#"
 				}
 			}
-			</cfoutput>
-			</script>
-			</cfif>
+			</cfoutput></script></cfif>
 
-			<cfif isDocs>
-			<script type="application/ld+json">
-			<cfoutput>
+			<cfif isDocs><script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "SoftwareSourceCode",
@@ -309,7 +285,7 @@
 				"alternateName": "Wheels",
 				"url": "https://wheels.dev",
 				"codeRepository": "https://github.com/wheels-dev/wheels",
-				"license": "https://opensource.org/licenses/MIT",
+				"license": "https://opensource.org/license/apache-2-0",
 				"version": "3.0.0",
 				"programmingLanguage": {
 					"@type": "ComputerLanguage",
@@ -341,14 +317,9 @@
 					"applicationCategory": "Web development"
 				}
 			}
+			</cfoutput></script></cfif>
 
-			</cfoutput>
-			</script>
-			</cfif>
-
-			<!--- Breadcrumb Schema --->
-			<script type="application/ld+json">
-			<cfoutput>
+			<script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "BreadcrumbList",
@@ -403,10 +374,8 @@
 					</cfif>
 				]
 			}
-			</cfoutput>
-			</script>
+			</cfoutput></script>
 
-			<!-- Bootstrap CSS -->
 			<link rel="preload" href="/stylesheets/Montserrat.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 			<link rel="preload" href="/stylesheets/fonts/Sora-Thin.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 			<link rel="preload" href="/stylesheets/fonts/Sora-ExtraLight.ttf" as="font" type="font/ttf" crossorigin="anonymous">
