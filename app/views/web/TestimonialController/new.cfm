@@ -3,12 +3,13 @@
         <div class="col-lg-12 col-12">
             <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                 <cfoutput>
-                <form method="post"
+                <form method="post" novalidate class="needs-validation"
                     action="#urlFor(route="create-testimonial")#"
                     enctype="multipart/form-data"
                     hx-post="#urlFor(route="create-testimonial")#"
                     hx-target="##form-messages"
                     hx-swap="none"
+                    hx-validate="true"
                     hx-encoding="multipart/form-data"
                     hx-on="htmx:afterOnLoad: handleTestimonialResponse(event)">
                 </cfoutput>
@@ -26,6 +27,8 @@
                             id="companyName"
                             class="form-control form-check-input-primary "
                             required>
+                            <span class="input-icon" id="icon-companyName"></span>
+                        <div class="invalid-feedback px-3 py-1">Company name must be required.</div>
                     </div>
                 
                     <div class="mb-3">
@@ -37,7 +40,9 @@
                                 required
                                 minlength="20"
                                 maxlength="150"></textarea>
+                                <span class="input-icon" id="icon-title"></span>
                         <div class="form-text">Please write brief summary (20-150 characters).</div>
+                        <div class="invalid-feedback px-3 py-1">Summary must be between 20 to 150 characters long.</div>
                     </div>
                 
                     <div class="mb-3">
@@ -49,7 +54,9 @@
                                 required
                                 minlength="20"
                                 maxlength="500"></textarea>
+                                <span class="input-icon" id="icon-content"></span>
                         <div class="form-text">Please share your experience (20-500 characters).</div>
+                        <div class="invalid-feedback px-3 py-1">Testimonial must be between 20 to 500 characters long.</div>
                     </div>
                 
                     <div class="mb-3">
@@ -76,6 +83,7 @@
                                 <label class="form-check-label" for="rating5">5</label>
                             </div>
                         </div>
+                        <div class="invalid-feedback px-3 py-1" id="ratingErrorMessage">Please choose rating between 1 to 5.</div>
                     </div>
                 
                     <div class="mb-3">
@@ -90,6 +98,8 @@
                             <option value="Advanced">Advanced</option>
                             <option value="Expert">Expert</option>
                         </select>
+                        <span class="input-icon" id="icon-experienceLevel"></span>
+                        <div class="invalid-feedback px-3 py-1">Please choose a experience level.</div>
                     </div>
                 
                     <div class="mb-3">
@@ -117,7 +127,9 @@
                             id="logo"
                             class="form-control form-check-input-primary "
                             accept="image/jpeg, image/png, image/gif, image/webp" required>
+                        <span class="input-icon" id="icon-logo"></span>
                         <div class="form-text">Upload JPG, PNG, GIF, or WEBP.</div>
+                        <div class="invalid-feedback px-3 py-1">Company logo must be required.</div>
                     </div>
                 
                     <div class="mb-3 form-check">
