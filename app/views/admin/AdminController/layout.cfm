@@ -20,20 +20,19 @@
     <link href="/css/quill.snow.css" rel="stylesheet">
     <link href="/css/select2.min.css" rel="stylesheet">
     <link href="/css/select2-bootstrap-min.css" rel="stylesheet">
+    <link href="/css/simplebar.min.css" rel="stylesheet">
+    <link href="/css/theme-rtl.min.css" id="style-rtl" rel="stylesheet">
+    <link href="/css/theme.min.css" id="style-default" rel="stylesheet">
+    <link href="/css/user-rtl.min.css" id="user-style-rtl" rel="stylesheet">
+    <link href="/css/user.min.css" id="user-style-default" rel="stylesheet">
     
     <script src="/js/notifier.min.js"></script>
     <script src="/js/htmx.min.js"></script>
     <script src="/js/highlighter.min.js"></script>
-    <cfoutput>
-        #stylesheetLinkTag(source="simplebar.min.css")#
-        #stylesheetLinkTag(source="theme-rtl.min.css", id="style-rtl")# 
-        #stylesheetLinkTag(source="theme.min.css", id="style-default")#
-        #stylesheetLinkTag(source="user-rtl.min.css", id="user-style-rtl")#
-        #stylesheetLinkTag(source="user.min.css", id="user-style-default")#
-        #javascriptIncludeTag(source="echarts.min.js")#
-        #javascriptIncludeTag(source="simplebar.min.js")#
-        #javascriptIncludeTag(source="config.js")#
-    </cfoutput>
+    <script src="/js/echarts.min.js"></script>
+    <script src="/js/simplebar.min.js"></script>
+    <script src="/js/config.js"></script>
+    
     <script>
         var phoenixIsRTL = window.config.config.phoenixIsRTL;
         if (phoenixIsRTL) {
@@ -282,11 +281,9 @@
         // Run after any HTMX request completes
         document.addEventListener("htmx:afterSettle", updateActiveNavLink);
     </script>
-    <cfoutput>
-        #javascriptIncludeTag(source="anchor.min.js")#
-        #javascriptIncludeTag(source="all.min.js")#
-        #javascriptIncludeTag(source="lodash.min.js")#
-        #javascriptIncludeTag(source="phoenix.js")#
-    </cfoutput>
+    <script src="/js/anchor.min.js"></script>
+    <script src="/js/all.min.js"></script>
+    <script src="/js/lodash.min.js"></script>
+    <script src="/js/phoenix.js"></script>
 </body>
 </html>
