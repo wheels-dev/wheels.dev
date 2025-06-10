@@ -62,7 +62,6 @@ jobs:
             elif [ "$health" = "unhealthy" ]; then
               echo "❌ Container is unhealthy."
               docker logs $CONTAINER_NAME || true
-              docker exec $CONTAINER_NAME cat /usr/local/lib/CommandBox/server/serverHome/lucee-6.2.1.122/WEB-INF/lucee-server/context/logs/application.log || true
               docker rm -f $CONTAINER_NAME || true
               exit 1
             elif [ "$health" = "no-health" ]; then
