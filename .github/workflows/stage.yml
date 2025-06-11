@@ -47,7 +47,7 @@ jobs:
 
           echo "Waiting for container to become healthy..."
 
-          TIMEOUT=80
+          TIMEOUT=60
           INTERVAL=5
           elapsed=0
 
