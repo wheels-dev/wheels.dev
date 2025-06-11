@@ -825,8 +825,10 @@ component extends="app.Controllers.Controller" {
         // Collect unique authorIds
         authorIds = [];
         for (comment in comments) {
-            if (!arrayContains(authorIds, comment.authorId)) {
-                arrayAppend(authorIds, comment.authorId);
+            if (isStruct(comment) and structKeyExists(comment, "authorId")) {
+                if (!arrayContains(authorIds, comment.authorId)) {
+                    arrayAppend(authorIds, comment.authorId);
+                }
             }
         }
 
