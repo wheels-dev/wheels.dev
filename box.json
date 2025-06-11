@@ -37,7 +37,7 @@
         "testbox":"^5",
         "semver":"^1.2.6",
         "logbox":"7.3.1+17",
-        "wheels-core":"3.0.0-SNAPSHOT+747"
+        "wheels-core":"^3.0.0-SNAPSHOT"
     },
     "type":"mvc",
     "private":true,
