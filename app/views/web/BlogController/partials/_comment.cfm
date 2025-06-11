@@ -1,6 +1,6 @@
 
 <cfoutput query="comments">
-    <div class="mt-4">
+    <div class="mt-4 new-comment-block">
         <div class="position-relative"> 
             <cfif commentParentId eq '' or commentParentId eq 0>                              
                 <div class="d-flex align-items-start gap-3">                                   
@@ -9,7 +9,7 @@
                     </div>                                   
                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                         <h6 class="fs-16 fw-bold">#fullName#</h6>
-                        <p class="fs-14 fw-normal text-dark">#content#</p>
+                        <p class="fs-14 fw-normal markdown-content text-dark">#content#</p>
                         <div class="d-flex flex-wrap justify-content-end align-items-center gap-4">
                             <cfif isLoggedInUser()>
                                 <div class="d-flex cursor-pointer align-items-center gap-2">
@@ -31,27 +31,7 @@
                                 <form hx-target="##reply-#Id#" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
                                     <input type="hidden" name="blogId" value="#blog.Id#">
                                     <input type="hidden" name="commentParentId" value="#Id#">
-                                    <div class="editor-wrapper comment-wrapper position-relative">
-                                        <div class="toolbar-container bg-light rounded-top toolbar1">
-                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                <button class="ql-bold"></button>
-                                                <button class="ql-italic"></button>
-                                                <button class="ql-underline"></button>
-                                                <button class="ql-strike"></button>
-                                            </span>
-                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                <select class="ql-color"></select>
-                                                <select class="ql-background"></select>
-                                            </span>
-                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                <button class="ql-list" value="ordered"></button>
-                                                <button class="ql-list" value="bullet"></button>
-                                                <button class="ql-indent" value="-1"></button>
-                                                <button class="ql-indent" value="+1"></button>
-                                            </span>
-                                        </div>
-                                        <div class="editor editor2 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
-                                    </div>
+                                    <textarea class="markdown-editor" placeholder="Write a reply..."></textarea>
                                     <input required class="form-control" type="hidden" name="content" id="content">
                                     <div class="mt-3 text-end">
                                         <button type="button" class="btn btn-light border fs-14 px-3 py-2 rounded-2 cancel-reply" data-commentid="#Id#">Cancel</button>
@@ -72,53 +52,10 @@
                     </div>  
                     <div class="p-3 rounded-4 bg-light">
                         <h6 class="fs-16 fw-bold">#fullName#</h6>
-                        <p class="fs-14 fw-normal text-dark">#content#</p>
+                        <p class="fs-14 fw-normal markdown-content text-dark">#content#</p>
                     </div>
                 </div>
             </cfif>
         </div>
     </div>
 </cfoutput>
-<script>
-    document.querySelectorAll('.editor-wrapper').forEach((wrapper) => {
-        const toolbar = wrapper.querySelector('.toolbar-container');
-        const editor = wrapper.querySelector('.editor');
-
-        const quill = new Quill(editor, {
-            modules: {
-                syntax: true,
-                toolbar: toolbar,
-            },
-            placeholder: 'Add a comment...',
-            theme: 'snow',
-        });
-
-        // Store the Quill instance on the editor element for later use
-        editor.quillInstance = quill;
-    });
-
-    // Handle form submission
-    document.querySelectorAll("#commentForm, .replyCommentForm").forEach(form => {
-        form.addEventListener("submit", function (event) {
-            const contentField = form.querySelector('input[name="content"]');
-            const editor = form.querySelector(".editor");
-            const quill = editor ? Quill.find(editor) : null;
-
-            if (quill) {
-                contentField.value = quill.root.innerHTML.trim();
-                document.getElementById("content").value = quill.root.innerHTML.trim();
-            }
-            
-            if (document.getElementById("content").value.trim() === "" || document.getElementById("content").value.trim() === "<p> </p>" || document.getElementById("content").value.trim() === "<p><br></p>") { // 
-                event.preventDefault();
-                editor?.classList.add("border-danger");
-                // notifier.show("Error!", 'Please enter a comment before submitting.', "", "/img/high_priority-48.png", 5000);
-                return false;
-            } else {
-                document.getElementById("content").value = quill.root.innerHTML.trim(); 
-                // notifier.show("Success!", 'Comment created successfully.', "", "/img/ok-48.png", 5000);
-                return true;
-            }
-        });
-    });
-</script>
