@@ -2,7 +2,7 @@
 <cfoutput>
     <div class="container py-5">
         <div class="row justify-content-center justify-content-lg-between">
-            <div class="col-lg-8 col-12">
+            <div class="col-lg-12 col-12">
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <h1 class="text-center fs-24 fw-bold">#isEdit ? 'Edit' : 'Create'# Blog Post</h1>
                     <cfif isEdit>
@@ -67,56 +67,15 @@
                             <input type="hidden" name="postTags" id="postTags" value="<cfif isEdit>#blog.tags#</cfif>">
                         </div>
     
-                        <div class="mb-3">
+                        <!---<div class="mb-3">
                             <label class="form-label mb-1 fs-14 fw-medium">
                                 Post Create Date
                             </label>
                             <input class="form-control fs-14" type="date" name="postCreatedDate" id="postCreatedDate" value="<cfif isEdit>#dateFormat(blog.postCreatedDate, 'yyyy-mm-dd')#</cfif>">
-                        </div>
+                        </div>--->
     
                         <div class="mb-3">
-                            <div id="toolbar-container" class="border-bottom-0 border rounded-top">
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <select class="ql-size"></select>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <button class="ql-bold"></button>
-                                    <button class="ql-italic"></button>
-                                    <button class="ql-underline"></button>
-                                    <button class="ql-strike"></button>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <select class="ql-color"></select>
-                                    <select class="ql-background"></select>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <button class="ql-header" value="1"></button>
-                                    <button class="ql-header" value="2"></button>
-                                    <button class="ql-header" value="3"></button>
-                                    <button class="ql-blockquote"></button>
-                                    <button class="ql-code-block"></button>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                    <button class="ql-indent" value="-1"></button>
-                                    <button class="ql-indent" value="+1"></button>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <button class="ql-direction" value="rtl"></button>
-                                    <select class="ql-align"></select>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <button class="ql-link"></button>
-                                    <button class="ql-image"></button>
-                                    <button class="ql-video"></button>
-                                    <button class="ql-formula"></button>
-                                </span>
-                                <span class="ql-formats my-1 px-1 me-1 rounded py-1 border">
-                                    <button class="ql-clean"></button>
-                                </span>
-                            </div>
-                            <div class="form-control border border-top-0 rounded-top-0" id="editor" style="height: 300px;"><cfif isEdit>#blog.content#</cfif></div>
+                            <textarea id="editor" name="editor_content"><cfif isEdit>#blog.content#</cfif></textarea>
                             <input class="form-control" type="hidden" name="content" id="content" value="<cfif isEdit>#htmlEditFormat(blog.content)#</cfif>">
                         </div>
     
@@ -131,7 +90,7 @@
                     <div id="message"></div>
                 </div>
             </div>
-            <div class="col-lg-4 col-12">
+            <!---<div class="col-lg-4 col-12">
                 <h4 class="mb-3">Live Preview</h4>
                 <div id="previewContent" class="p-3 border rounded bg-white">
                     <h2 id="previewTitle" class="fs-20 fw-bold mb-3"></h2>
@@ -141,58 +100,93 @@
                     </div>
                     <div id="previewBody" class="border p-3 rounded bg-light"></div>
                 </div>
-            </div>
+            </div>--->
         </div>
     </div>
 </cfoutput>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Quill editor
-        const quill = new Quill('#editor', {
-            modules: {
-                syntax: true,
-                toolbar: '#toolbar-container',
-            },
-            placeholder: 'Compose an epic...',
-            theme: 'snow',
-        });
+            // Initialize EasyMDE configuration
+            const easyMDE = new EasyMDE({
+                element: document.getElementById('editor'),
+                spellChecker: false,
+                status: false,
+                autofocus: true,
+                toolbar: [
+                    "bold", "italic", "heading", "|",
+                    "quote", "unordered-list", "ordered-list", "|",
+                    "link", "image", "code", "|",
+                    "preview", "side-by-side", "fullscreen", "|",
+                    "guide"
+                ],
+                uploadImage: true,
+                imageUploadEndpoint: '/blog/upload',
+                imageMaxSize: 1024 * 1024 * 3, // 3MB
+                imageAccept: 'image/png, image/jpeg, image/gif, image/webp',
+                imageTexts: {
+                    sbInit: 'Upload an image',
+                    sbOnDragEnter: 'Drop image here',
+                    sbOnDrop: 'Uploading...',
+                    sbProgress: 'Uploading...',
+                    sbOnUploaded: 'Uploaded!',
+                    sizeUnits: 'b,Kb,Mb'
+                },
+                previewRender: function(plainText) {
+                    return marked.parse(plainText);
+                },
+                // GitHub-like styling
+                theme: "github-light",
+                sideBySideFullscreen: false,
+                maxHeight: "500px",
+                minHeight: "500px",
+                placeholder: "Write your blog post here...",
+                shortcuts: {
+                    "toggleSideBySide": "Ctrl-Alt-P",
+                    "toggleFullScreen": "Ctrl-Alt-F",
+                    "togglePreview": "Ctrl-Alt-V",
+                    "toggleBold": "Ctrl-B",
+                    "toggleItalic": "Ctrl-I",
+                    "drawLink": "Ctrl-K",
+                    "drawImage": "Ctrl-G",
+                    "drawTable": "Ctrl-T",
+                    "toggleHeadingSmaller": "Ctrl-H",
+                    "toggleHeadingBigger": "Ctrl-Shift-H",
+                    "toggleUnorderedList": "Ctrl-L",
+                    "toggleOrderedList": "Ctrl-Alt-L",
+                    "toggleCodeBlock": "Ctrl-Alt-C",
+                    "toggleBlockquote": "Ctrl-Q",
+                    "togglePreview": "Ctrl-P"
+                }
+            });
 
-        // Load existing content if in edit mode
-        const contentField = document.getElementById('content');
-        if (contentField && contentField.value.trim()) {
-            quill.clipboard.dangerouslyPasteHTML(contentField.value);
-        }
-        
-        function syncQuillContent() {
-            document.getElementById('content').value = quill.root.innerHTML.trim();
-        }
+            // Add event listener for EasyMDE changes
+            easyMDE.codemirror.on("change", function() {
+                const content = easyMDE.value();
+                document.getElementById('content').value = content;
+            });
 
-        // Handle draft saving
-        // document.getElementById("saveDraftBtn").addEventListener("click", function () {
-        //     document.getElementById("isDraft").value = "1"; // Set draft flag
-        //     document.getElementById("blogForm").requestSubmit(); // Trigger form submission
-        // });
-
-        // Form validation
-        document.getElementById('blogForm').addEventListener("submit", function (event) {
-            syncQuillContent();
+        // Form validation   
+        document.getElementById('blogForm').addEventListener("submit", function(event) {
+            // Force sync EasyMDE content before validation
+            let content = "";
+            if (typeof easyMDE !== 'undefined') {
+                content = easyMDE.value();
+                document.getElementById('content').value = content;
+            }
 
             var isValid = true;
             const title = document.getElementById('title');
             const categoryId = document.getElementById('categoryId');
             const posttypeId = document.getElementById('posttypeId');
             const postTags = document.getElementById('postTags');
-            const content = document.getElementById('content');
             const editor = document.getElementById("editor");
             const tagInput = document.getElementById("tagInput");
-            const toolbar = document.getElementById('toolbar-container');
 
             // Check if it's a draft submission
-            // const isDraft = document.getElementById("isDraft").value === "1";
+            const isDraft = document.getElementById("isDraft").value === "1";
 
             // Reset validation styles
             [title, categoryId, posttypeId, tagInput].forEach(field => field.classList.remove("is-invalid"));
-            toolbar.classList.remove("border-danger");
             editor.classList.remove("border-danger");
 
             // Title uniqueness check
@@ -201,13 +195,47 @@
                 isValid = false;
                 title.classList.add("is-invalid");
             }
+            if (!isValid) {
+                event.preventDefault();
+                event.stopPropagation();
+                notifier.show('Error!', 'A blog post already exist with this title.', '', '/img/high_priority-48.png', 4000);
+                return false;
+            }
+            // Validate fields only if it's NOT a draft
+            if (!isDraft) {
+                if (title.value.trim() === "") {
+                    isValid = false;
+                    title.classList.add("is-invalid");
+                }
+                if (categoryId.value.trim() === "") {
+                    isValid = false;
+                    categoryId.classList.add("is-invalid");
+                }
+                if (posttypeId.value.trim() === "") {
+                    isValid = false;
+                    posttypeId.classList.add("is-invalid");
+                }
+                if (postTags.value.trim() === "") {
+                    isValid = false;
+                    tagInput.classList.add("is-invalid");
+                    tagInput.classList.remove("border-0");
+                }
+                if (content.trim() === "") {
+                    isValid = false;
+                    editor.classList.add("border-danger");
+                }
+            }
 
             if (!isValid) {
                 event.preventDefault();
-                notifier.show('Error!', 'Please fill out all required fields.', '', 'images/high_priority-48.png', 4000);
+                notifier.show('Error!', 'Please fill out all required fields.', '', '/img/high_priority-48.png', 4000);
                 return false;
             }
-        });     
+
+            // Ensure content is set in the form before submission
+            const formData = new FormData(this);
+            formData.set('content', content);
+        });
 
         // Select2 initialization after HTMX swap
         document.addEventListener("htmx:afterSwap", function(evt) {
@@ -288,56 +316,56 @@
         }
         
         // Live preview logic
-        function updatePreview() {
-            // Title
-            const title = document.getElementById("title").value;
-            document.getElementById("previewTitle").innerText = title || "Blog Title Preview";
+        // function updatePreview() {
+        //     // Title
+        //     const title = document.getElementById("title").value;
+        //     document.getElementById("previewTitle").innerText = title || "Blog Title Preview";
 
-            // Content
-            document.getElementById("previewBody").innerHTML = quill.root.innerHTML.trim() || "<p>Your blog content will appear here...</p>";
+        //     // Content
+        //     document.getElementById("previewBody").innerHTML = quill.root.innerHTML.trim() || "<p>Your blog content will appear here...</p>";
 
-            // Categories
-            const categorySelect = document.getElementById("categoryId");
-            const selectedCategories = Array.from(categorySelect.selectedOptions).map(opt => opt.text);
-            const previewCategories = document.getElementById("previewCategories");
-            previewCategories.innerHTML = '';
+        //     // Categories
+        //     const categorySelect = document.getElementById("categoryId");
+        //     const selectedCategories = Array.from(categorySelect.selectedOptions).map(opt => opt.text);
+        //     const previewCategories = document.getElementById("previewCategories");
+        //     previewCategories.innerHTML = '';
             
-            if (selectedCategories.length > 0) {
-                selectedCategories.forEach(cat => {
-                    if (cat !== "Select Category") {
-                        const badge = document.createElement("span");
-                        badge.className = "badge bg-primary me-1 mb-1";
-                        badge.textContent = cat;
-                        previewCategories.appendChild(badge);
-                    }
-                });
-            } else {
-                previewCategories.innerHTML = '<span class="text-muted fs-13">No categories selected</span>';
-            }
+        //     if (selectedCategories.length > 0) {
+        //         selectedCategories.forEach(cat => {
+        //             if (cat !== "Select Category") {
+        //                 const badge = document.createElement("span");
+        //                 badge.className = "badge bg-primary me-1 mb-1";
+        //                 badge.textContent = cat;
+        //                 previewCategories.appendChild(badge);
+        //             }
+        //         });
+        //     } else {
+        //         previewCategories.innerHTML = '<span class="text-muted fs-13">No categories selected</span>';
+        //     }
 
-            // Tags
-            const previewTags = document.getElementById("previewTags");
-            previewTags.innerHTML = '';
+        //     // Tags
+        //     const previewTags = document.getElementById("previewTags");
+        //     previewTags.innerHTML = '';
             
-            if (tags.length > 0) {
-                tags.forEach(tag => {
-                    const badge = document.createElement("span");
-                    badge.className = "badge bg-secondary me-1 mb-1";
-                    badge.textContent = tag;
-                    previewTags.appendChild(badge);
-                });
-            } else {
-                previewTags.innerHTML = '<span class="text-muted fs-13">No tags added</span>';
-            }
-        }
+        //     if (tags.length > 0) {
+        //         tags.forEach(tag => {
+        //             const badge = document.createElement("span");
+        //             badge.className = "badge bg-secondary me-1 mb-1";
+        //             badge.textContent = tag;
+        //             previewTags.appendChild(badge);
+        //         });
+        //     } else {
+        //         previewTags.innerHTML = '<span class="text-muted fs-13">No tags added</span>';
+        //     }
+        // }
 
-        // Initialize preview on page load
-        updatePreview();
+        // // Initialize preview on page load
+        // updatePreview();
 
-        // Event listeners for preview updates
-        document.getElementById("title").addEventListener("input", updatePreview);
-        document.getElementById("categoryId").addEventListener("change", updatePreview);
-        quill.on('text-change', updatePreview);
+        // // Event listeners for preview updates
+        // document.getElementById("title").addEventListener("input", updatePreview);
+        // document.getElementById("categoryId").addEventListener("change", updatePreview);
+        // quill.on('text-change', updatePreview);
         
         // Fix the check-title functionality to work with both POST and PUT methods
         const titleInput = document.getElementById('title');
