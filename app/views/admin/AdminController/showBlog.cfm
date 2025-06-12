@@ -35,10 +35,10 @@
                                 </div>
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div>
-                            <h1 class="fs-36 fw-bold text--secondary">
+                            <h1 class="fs-36 fw-bold text--secondary mb-2">
                                 #blog.title#
                             </h1>
-                            <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
+                            <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0">
                                 <p class="fw-medium fs-12 text--lightGray">
                                     <cfif blog.postcreateddate neq ''>
                                         #dateformat(blog.postcreateddate, 'MMMM DD, YYYY')#
@@ -54,17 +54,40 @@
                                     hx-target=".main"
 <!---                                     hx-vals='{"category_id": "#blog.Category.id#"}' --->
                                     >
-                                    #blog.PostStatus.name# in #categoryList#
+                                    #blog.PostStatus.name# in <span class="text--primary">#categoryList#</span>
                                  </p>
-                                <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
+                                <p class="fw-medium fs-12 text--lightGray">Tags: <span class="text--primary">#tagList#</span></p>
                             </div>
                         </div>
 
                         <div class="col-12">
-                            #blog.content#
+                            <cfif findNoCase("```", blog.content) OR findNoCase("##", blog.content) OR findNoCase("**", blog.content) OR findNoCase("__", blog.content) OR findNoCase(">", blog.content)>
+                                <div class="markdown-content">
+                                    <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
+                                </div>
+                            <cfelse>
+                                #this.autoLink(blog.content,"text--primary")#
+                            </cfif>
                         </div>
                     </div>
                 </div>
             </div>
     </cfoutput>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize marked with GitHub-like options
+            marked.setOptions({
+                gfm: true,
+                breaks: true,
+                headerIds: true,
+                mangle: false
+            });
+
+            // Render markdown content
+            document.querySelectorAll('.markdown-content').forEach((el) => {
+                const rawMarkdown = el.textContent.trim();
+                el.innerHTML = marked.parse(rawMarkdown);
+            });
+        });
+    </script>
 </main>

@@ -396,7 +396,6 @@
 			<link href="/css/select2-bootstrap-min.css" rel="stylesheet">
 			<link href="/css/select2.min.css" rel="stylesheet">
 			<link rel="stylesheet" href="/css/lib/easymde.min.css">
-			<link rel="stylesheet" href="/css/lib/easymde.min.css">
 			</cfif>
 
 			<script src="/js/jquery.min.js"></script>
