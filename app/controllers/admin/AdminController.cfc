@@ -545,6 +545,13 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    private function getBlogBySlug(required string slug) {
+        return model("Blog").findOne(
+            where="blog_posts.slug = '#arguments.slug#'",
+            include="User,PostStatus"
+        );
+    }
+
     /**
      * Admin Dashboard
      */

@@ -202,9 +202,26 @@
                 }
                 if (xhr.status === 200 && xhr.responseURL.includes("/admin/reject")) {
                     notifier.show('Success', 'Blogs post rejected successfully!', 'success', '', 5000);
+                    const response = event.detail.elt;
+                    if (response && response.closest("tr")) {
+                        const row = response.closest("tr");
+                        const publishToggle = row.querySelector("input[id^='isPublished-']");
+                        if (publishToggle) {
+                            publishToggle.disabled = true;
+                            publishToggle.checked = false;
+                        }
+                    }
                 }
                 if (xhr.status === 200 && xhr.responseURL.includes("/admin/approve")) {
                     notifier.show('Success', 'Blog post approved successfully!', 'success', '', 5000);
+                    const response = event.detail.elt;
+                    if (response && response.closest("tr")) {
+                        const row = response.closest("tr");
+                        const publishToggle = row.querySelector("input[id^='isPublished-']");
+                        if (publishToggle) {
+                            publishToggle.disabled = false;
+                        }
+                    }
                 }
                 if (xhr.status === 500 && xhr.responseURL.includes("/admin/bulkApprove")) {
                     notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);

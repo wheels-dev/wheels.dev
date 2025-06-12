@@ -21,6 +21,7 @@
     <link href="/css/select2.min.css" rel="stylesheet">
     <link href="/css/select2-bootstrap-min.css" rel="stylesheet">
     <link href="/css/simplebar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/lib/easymde.min.css">
     <link href="/css/theme-rtl.min.css" id="style-rtl" rel="stylesheet">
     <link href="/css/theme.min.css" id="style-default" rel="stylesheet">
     <link href="/css/user-rtl.min.css" id="user-style-rtl" rel="stylesheet">
@@ -32,6 +33,9 @@
     <script src="/js/echarts.min.js"></script>
     <script src="/js/simplebar.min.js"></script>
     <script src="/js/config.js"></script>
+    <script src="/js/lib/easymde.min.js"></script>
+    <script src="/js/lib/marked.min.js"></script>
+
     
     <script>
         var phoenixIsRTL = window.config.config.phoenixIsRTL;
