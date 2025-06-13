@@ -1,10 +1,1 @@
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-    const xhr = evt.detail.xhr;
-    // Check if it's for the responseMessage target
-    if (evt.detail.target.id === "form-messages") {
-        notifier.show('Success!', xhr.responseText, 'success', '', 4000);
-        setTimeout(function() {
-            window.location.href = "/"; 
-        }, 4000); // 4 seconds delay
-    }
-});
+document.body.addEventListener("htmx:afterSwap",(function(e){const t=e.detail.xhr;200===t.status&&"form-messages"===e.detail.target.id?(notifier.show("Success!",t.responseText,"success","",4e3),setTimeout((function(){window.location.href="/"}),4e3)):(notifier.show("Error!","Something went wrong!","danger","",4e3),setTimeout((function(){window.location.href="/"}),4e3))}));
