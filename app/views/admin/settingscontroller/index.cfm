@@ -48,16 +48,4 @@
         </div>
     </div>
 </div>
-
-<script>
-document.body.addEventListener("htmx:afterRequest", function(event) {
-    const xhr = event.detail.xhr;
-    if (xhr.status === 500) {
-        notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
-    }
-    if (xhr.status === 200) {
-        notifier.show('Success', xhr.responseText, 'success', '', 5000);
-    }
-});
-</script>
 </cfoutput>

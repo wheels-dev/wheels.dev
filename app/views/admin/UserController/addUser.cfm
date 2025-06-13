@@ -104,12 +104,12 @@
             </cfif>
 
             <div class="col-12 gy-6">
-                <div class="row g-3 justify-content-end">
-                    <div class="col-auto">
-                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
-                    </div>
+                <div class="row g-2 justify-content-end">
                     <div class="col-auto">
                         <button hx-get="/admin/user" hx-trigger="click" hx-swap="innerHTML" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
                     </div>
                 </div>
             </div>
