@@ -28,7 +28,7 @@
 
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <div class="row gy-4">
-                        <div class="col-lg-7 col-12 d-flex flex-column">
+                        <div class="col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
                                     #imageTag(source="#blog.user.profilePicture#", style="width:3rem; height:3rem", class="bg-body-secondary rounded-5", alt="profile-picture")#
@@ -73,21 +73,4 @@
                 </div>
             </div>
     </cfoutput>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize marked with GitHub-like options
-            marked.setOptions({
-                gfm: true,
-                breaks: true,
-                headerIds: true,
-                mangle: false
-            });
-
-            // Render markdown content
-            document.querySelectorAll('.markdown-content').forEach((el) => {
-                const rawMarkdown = el.textContent.trim();
-                el.innerHTML = marked.parse(rawMarkdown);
-            });
-        });
-    </script>
 </main>
