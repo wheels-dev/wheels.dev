@@ -1,7 +1,1 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var testimonialModalElement = document.getElementById('testimonialPromptModal');
-    if (testimonialModalElement) {
-        var testimonialModalInstance = bootstrap.Modal.getOrCreateInstance(testimonialModalElement);
-        testimonialModalInstance.show();
-    }
-});
+document.addEventListener("DOMContentLoaded",(function(){var t=document.getElementById("testimonialPromptModal");t&&bootstrap.Modal.getOrCreateInstance(t).show()}));
