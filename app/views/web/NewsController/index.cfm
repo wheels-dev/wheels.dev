@@ -2,7 +2,8 @@
   <div class="container py-5 word-break">
 
     <!-- Filter Buttons -->
-    <div class="d-flex justify-content-center flex-wrap align-items-center gap-4">
+    <h1 class="text-center fw-bold fs-60">News<h1>
+    <div class="d-flex justify-content-center flex-wrap align-items-center gap-4 mt-4">
       <a href="/news" class="px-4 fs-16 py-2 rounded-3 border border--primary bg--primary text-white active">Everything</a>
       <a href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Releases</a>
       <a href="/blog" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Blogs</a>
