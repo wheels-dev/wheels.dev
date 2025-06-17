@@ -16,7 +16,7 @@
                         <th>Logo:</th>
                         <td>
                             <cfif Testimonial.logoPath neq "" AND !isNull(Testimonial.logoPath) >
-                                #imageTag(source=Testimonial.logoPath, alt=encodeForHtml(testimonial.companyName), style="width: 200px;")#
+                                <img src="/img/#Testimonial.logoPath#" alt=encodeForHtml(testimonial.companyName) style="width: 200px;">
                             <cfelse>
                                 #Testimonial.logoPath#
                             </cfif>
