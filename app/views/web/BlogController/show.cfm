@@ -102,7 +102,15 @@
                                             <cfif commentParentId eq '' or commentParentId eq 0>                              
                                                 <div class="d-flex align-items-start gap-3">                                   
                                                     <div>
-                                                        #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                                                        <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
+                                                            <div 
+                                                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                                style="width:3rem; height:3rem;">
+                                                                #ucase(left(listLast(fullName, " "), 1))#
+                                                            </div>
+                                                        <cfelse>
+                                                            <img src='/img/#profilePicture#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                                                        </cfif>
                                                     </div>                                   
                                                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                         <h6 class="fs-16 fw-bold">#fullName#</h6>
@@ -151,7 +159,15 @@
                                                     <div class="mt-4">
                                                         <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                                             <div>
-                                                                #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                                                            <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
+                                                                <div 
+                                                                    class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                                    style="width:3rem; height:3rem;">
+                                                                    #ucase(left(listLast(fullName, " "), 1))#
+                                                                </div>
+                                                            <cfelse>
+                                                                <img src='/img/#profilePicture#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                                                            </cfif>
                                                             </div>  
                                                             <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
@@ -177,7 +193,15 @@
                             <cfif isLoggedInUser() AND canUserComment()>
                                 <form hx-target="##comment" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                                     <div class="d-flex gap-3 align-items-start">
-                                        <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>
+                                        <cfif !len(session.PROFILEPIC) OR findNoCase("avatar-rounded", session.PROFILEPIC)>
+                                            <div 
+                                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.USERNAME, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                style="width:3rem; height:3rem;">
+                                                #ucase(left(listLast(session.USERNAME, " "), 1))#
+                                            </div>
+                                        <cfelse>
+                                            <img src='/img/#session.PROFILEPIC#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                                        </cfif>
                                         <div class="flex-grow-1 gap-2 d-flex justify-content-between align-items-center">
                                             <input class="form-control" type="hidden" name="blogId" id="blogId" value="#blog.Id#">
                                             <div class="w-100 position-relative">

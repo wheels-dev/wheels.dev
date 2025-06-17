@@ -183,6 +183,22 @@ component extends="wheels.Controller" {
         return left(meta, 160);
     }
 
+    public function getAvatarColorByLetter(required string letter){
+        var colors = {
+            A: "bg-danger", B: "bg-primary", C: "bg-success", D: "bg-warning", E: "bg-info",
+            F: "bg-secondary", G: "bg-dark", H: "bg-danger", I: "bg-primary", J: "bg-success",
+            K: "bg-warning", L: "bg-info", M: "bg-secondary", N: "bg-dark", O: "bg-danger",
+            P: "bg-primary", Q: "bg-success", R: "bg-warning", S: "bg-info", T: "bg-secondary",
+            U: "bg-dark", V: "bg-danger", W: "bg-primary", X: "bg-success", Y: "bg-warning", Z: "bg-info"
+        };
+        var l = ucase(trim(arguments.letter));
+        if(len(l) EQ 1 AND reFind("^[A-Z]$", l)){
+            return structFind(colors, l, "bg-body-secondary");
+        }else{
+            return "bg-body-secondary";
+        }
+    }
+    
     public function autoLink(required string text, string class = "", string target = "_blank") {
         var result = text;
 

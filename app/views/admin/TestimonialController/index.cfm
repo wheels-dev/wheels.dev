@@ -60,7 +60,7 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <cfif len(testimonials.logoPath)>
-                                                <img src="#testimonials.logoPath#" alt="wheels.dev testimonial logo" class="me-2" style="width: 30px; height: 30px; object-fit: contain;">
+                                                <img src="/img/#testimonials.logoPath#" alt="wheels.dev testimonial logo" class="me-2" style="width: 30px; height: 30px; object-fit: contain;">
                                             </cfif>
                                             #testimonials.companyName#
                                         </div>
