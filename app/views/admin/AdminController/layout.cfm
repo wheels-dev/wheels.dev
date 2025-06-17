@@ -158,7 +158,7 @@
                         <div class="d-flex align-items-center">
                             <div class="d-flex align-items-center">
                                 <cfoutput>
-                                    #imageTag(source = 'wheels-logo.png', alt="wheels-logo", width="200", height="30")#
+                                    <img src = '/img/wheels-logo.png' alt="wheels-logo" width="200" height="30">
                                 </cfoutput>
                             </div>
                         </div>
@@ -176,7 +176,15 @@
                             <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-l ">
                                     <cfoutput>
-                                        #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                        <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
+											<div 
+												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+												style="width:40px; height:40px;">
+												#ucase(left(listLast(session.username, " "), 1))#
+											</div>
+										<cfelse>
+                                            <img src = '/img/#session.profilePic#' class="rounded-circle" alt="user profile picture">
+										</cfif>
                                     </cfoutput>
                                 </div>
                             </a>
@@ -186,7 +194,15 @@
                                     <div class="text-center pt-4 pb-3">
                                     <div class="avatar avatar-xl ">
                                         <cfoutput>
-                                            #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                            <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
+                                                <div 
+                                                    class="d-flex align-items-center fs-24 justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                    style="width:3rem; height:3rem;">
+                                                    #ucase(left(listLast(session.username, " "), 1))#
+                                                </div>
+                                            <cfelse>
+                                                <img src = '/img/#session.profilePic#' class="rounded-circle" alt="profile-picture">
+                                            </cfif>
                                         </cfoutput>
                                     </div>
                                     <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>

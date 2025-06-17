@@ -69,7 +69,7 @@
                             Profile Picture
                         </label>
                         <cfif len(user.profilePicture)>
-                            <img src="#user.profilePicture#" width="100" alt="Wheels.dev Profile Picture">
+                            <img src="/img/#user.profilePicture#" width="100" alt="Wheels.dev Profile Picture">
                         </cfif>
                         <input class="form-control fs-14" type="file" name="profilePicture" accept="image/*">
                     </div>
