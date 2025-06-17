@@ -93,34 +93,5 @@
         </form>
     </div>
 </div>
-    <script>
-        (function () {
-            'use strict'
-            var form = document.querySelector('.needs-validation')
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-                form.classList.add('was-validated')
-            }, false)
-        })();
-        document.body.addEventListener("htmx:afterRequest", function(event) {
-            const xhr = event.detail.xhr;
-            if (xhr.status === 500 && xhr.responseURL.includes("/admin/email/save")) {
-                notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
-            }
-            if (xhr.status === 200 && xhr.responseURL.includes("/admin/email/save")) {
-                notifier.show('Success', 'email save successfully!', 'success', '', 5000);
-            }
-        });
-
-        // checked all permissions
-        document.getElementById('selectAllPermissions').addEventListener('change', function() {
-            const isChecked = this.checked;
-            document.querySelectorAll('.permission-checkbox').forEach(function(checkbox) {
-                checkbox.checked = isChecked;
-            });
-        });
-    </script>
+    <script src="/js/editEmailTemplate.js"></script>
 </cfoutput>

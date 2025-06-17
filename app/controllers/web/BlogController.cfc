@@ -824,9 +824,12 @@ component extends="app.Controllers.Controller" {
 
         // Collect unique authorIds
         authorIds = [];
-        for (comment in comments) {
-            if (!arrayContains(authorIds, comment.authorId)) {
-                arrayAppend(authorIds, comment.authorId);
+        for (key in comments) {
+            comment = comments[key];
+            if (isStruct(comment) and structKeyExists(comment, "authorId")) {
+                if (!arrayContains(authorIds, comment.authorId)) {
+                    arrayAppend(authorIds, comment.authorId);
+                }
             }
         }
 
@@ -835,7 +838,8 @@ component extends="app.Controllers.Controller" {
 
         // Map authors by ID for quick lookup
         authorMap = {};
-        for (author in authors) {
+        for (key in authors) {
+            author = authors[key];
             authorMap[author.id] = author;
         }
 

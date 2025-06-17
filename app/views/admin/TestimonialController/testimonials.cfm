@@ -105,25 +105,3 @@
         </div>
     </div>
 </div>
-<script>
-    var table = new DataTable('#testimonialTable', {
-        columnDefs: [
-            {
-                targets: [7,8], // Adjust these indexes based on your actual table structure
-                orderable: false
-            }
-        ]
-    });
-    table.on('draw', function() {
-        htmx.process(document.body);
-    });
-    document.body.addEventListener("htmx:afterRequest", function(event) {
-        const xhr = event.detail.xhr;
-        if (xhr.status === 500 && xhr.responseURL.includes("/admin/featuredTestimonial")) {
-            notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
-        }
-        if (xhr.status === 200 && xhr.responseURL.includes("/admin/featuredTestimonial")) {
-            notifier.show('Success', xhr.responseText, 'Success', '', 5000);
-        }
-    });
-</script>
