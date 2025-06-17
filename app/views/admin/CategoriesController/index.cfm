@@ -73,16 +73,3 @@
         </div>
     </div>
 </cfoutput>
-<script>
-    var table = new DataTable('#categoryTable', {
-        columnDefs: [
-            {
-                targets: [4,5], // Adjust these indexes based on your actual table structure
-                orderable: false
-            }
-        ]
-    });
-    table.on('draw', function() {
-        htmx.process(document.body);
-    });
-</script>

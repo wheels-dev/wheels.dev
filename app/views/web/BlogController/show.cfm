@@ -106,7 +106,11 @@
                                                     </div>                                   
                                                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                         <h6 class="fs-16 fw-bold">#fullName#</h6>
-                                                        <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                        <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
+                                                                <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
+                                                        <cfelse>
+                                                            <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                        </cfif>
                                                         <div class="d-flex flex-wrap justify-content-end align-items-center gap-4">
                                                             <cfif isLoggedInUser()>
                                                                 <div class="d-flex cursor-pointer align-items-center gap-2">
@@ -128,27 +132,7 @@
                                                                 <form hx-target="##reply-#Id#" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
                                                                     <input type="hidden" name="blogId" value="#blog.Id#">
                                                                     <input type="hidden" name="commentParentId" value="#Id#">
-                                                                    <div class="editor-wrapper">
-                                                                        <div class="toolbar-container bg-light rounded-top toolbar1">
-                                                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                                                <button class="ql-bold"></button>
-                                                                                <button class="ql-italic"></button>
-                                                                                <button class="ql-underline"></button>
-                                                                                <button class="ql-strike"></button>
-                                                                            </span>
-                                                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                                                <select class="ql-color"></select>
-                                                                                <select class="ql-background"></select>
-                                                                            </span>
-                                                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                                                <button class="ql-list" value="ordered"></button>
-                                                                                <button class="ql-list" value="bullet"></button>
-                                                                                <button class="ql-indent" value="-1"></button>
-                                                                                <button class="ql-indent" value="+1"></button>
-                                                                            </span>
-                                                                        </div>
-                                                                        <div class="editor editor2 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
-                                                                    </div>
+                                                                    <textarea class="markdown-editor" placeholder="Write a reply..."></textarea>
                                                                     <input required class="form-control" type="hidden" name="content" id="content">
                                                                     <div class="mt-3 text-end">
                                                                         <button type="button" class="btn btn-light border fs-14 px-3 py-2 rounded-2 cancel-reply" data-commentid="#Id#">Cancel</button>
@@ -171,7 +155,12 @@
                                                             </div>  
                                                             <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
-                                                                <p class="fs-14 fw-normal text-dark">#content#</p>
+
+                                                                <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
+                                                                    <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
+                                                                <cfelse>
+                                                                    <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                                </cfif>
                                                                 <div class="d-flex cursor-pointer align-items-center justify-content-end gap-2">
                                                                     <p class="fs-14 text--primary mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
                                                                 </div>
@@ -191,26 +180,8 @@
                                         <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>
                                         <div class="flex-grow-1 gap-2 d-flex justify-content-between align-items-center">
                                             <input class="form-control" type="hidden" name="blogId" id="blogId" value="#blog.Id#">
-                                            <div class="editor-wrapper w-100 position-relative">
-                                                <div class="toolbar-container bg-light rounded-top toolbar1">
-                                                    <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                        <button class="ql-bold"></button>
-                                                        <button class="ql-italic"></button>
-                                                        <button class="ql-underline"></button>
-                                                        <button class="ql-strike"></button>
-                                                    </span>
-                                                    <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                        <select class="ql-color"></select>
-                                                        <select class="ql-background"></select>
-                                                    </span>
-                                                    <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                        <button class="ql-list" value="ordered"></button>
-                                                        <button class="ql-list" value="bullet"></button>
-                                                        <button class="ql-indent" value="-1"></button>
-                                                        <button class="ql-indent" value="+1"></button>
-                                                    </span>
-                                                </div>
-                                                <div class="editor editor1 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
+                                            <div class="w-100 position-relative">
+                                                <textarea class="markdown-editor" placeholder="Add a comment..."></textarea>
                                                 <div class="mt-3 text-end">
                                                     <input required class="form-control" type="hidden" name="content" id="content">
                                                     <button type="submit" class="bg--primary fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Comment</button>
@@ -225,7 +196,7 @@
                                 </div>
                             <cfelse>
                                 <div class="alert alert-primary ms-5 mt-2" role="alert">
-                                    <p>Please log in to join the conversation! <u><a class="bold" href="/login">Login</a></u></p>
+                                    <p>Please login to join the conversation! <u><a class="bold" href="/login">Login</a></u></p>
                                 </div>
                             </cfif>
                         </div>
@@ -239,7 +210,7 @@
     </cfoutput>
     
     <div class="pt-5 blog-main">
-        <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
+        <h2 class="text-center fw-bold fs-60">Latest Blog Posts</h2>
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
                 

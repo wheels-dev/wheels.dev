@@ -34,7 +34,7 @@
             </div>
             <div class="text-end">
                 <div class="col-auto mt-4">
-                    <a class="btn btn-primary px-5" href="/admin/comment">Back</a>
+                    <a class="btn btn-primary bg--primary px-5" href="/admin/comment">Back</a>
                 </div>
             </div>
         </div>

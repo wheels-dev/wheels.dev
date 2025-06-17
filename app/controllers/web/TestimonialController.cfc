@@ -264,7 +264,7 @@ component extends="app.Controllers.Controller" {
             // Return success and path
             return {
                 success = true,
-                path = "/images/" & uploadedFile.serverFile
+                path = uploadedFile.serverFile
             };
 
         } catch (any e) {

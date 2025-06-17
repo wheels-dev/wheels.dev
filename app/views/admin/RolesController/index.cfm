@@ -67,28 +67,3 @@
     </div>
 </div>
 </cfoutput>
-<script>
-    var table = new DataTable('#rolesTable', {
-        columnDefs: [
-            {
-                targets: [3,4], // Adjust these indexes based on your actual table structure
-                orderable: false
-            }
-        ]
-    });
-    table.on('draw', function() {
-        htmx.process(document.body);
-    });
-    document.body.addEventListener("htmx:afterRequest", function(event) {
-        const xhr = event.detail.xhr;;
-        if (xhr.status === 500 && xhr.responseURL.includes("/admin/role/delete")) {
-            notifier.show('Error', 'Something went wrong! role not deleted.', 'danger', '', 5000);
-        }
-        if (xhr.status === 500 && xhr.responseURL.includes("/admin/role/edit")) {
-            notifier.show('Error', 'Something went wrong!', 'danger', '', 5000);
-        }
-        if (xhr.status === 200 && xhr.responseURL.includes("/admin/role/edit")) {
-            notifier.show('Success', 'Role save successfully!', 'success', '', 5000);
-        }
-    });
-</script>

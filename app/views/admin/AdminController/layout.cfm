@@ -21,6 +21,7 @@
     <link href="/css/select2.min.css" rel="stylesheet">
     <link href="/css/select2-bootstrap-min.css" rel="stylesheet">
     <link href="/css/simplebar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/lib/easymde.min.css">
     <link href="/css/theme-rtl.min.css" id="style-rtl" rel="stylesheet">
     <link href="/css/theme.min.css" id="style-default" rel="stylesheet">
     <link href="/css/user-rtl.min.css" id="user-style-rtl" rel="stylesheet">
@@ -32,6 +33,9 @@
     <script src="/js/echarts.min.js"></script>
     <script src="/js/simplebar.min.js"></script>
     <script src="/js/config.js"></script>
+    <script src="/js/lib/easymde.min.js"></script>
+    <script src="/js/lib/marked.min.js"></script>
+
     
     <script>
         var phoenixIsRTL = window.config.config.phoenixIsRTL;
@@ -54,7 +58,7 @@
     <script src="/js/select2.min.js"></script>
     <script src="/js/dataTables.min.js"></script>
 </head>
-<body>
+<body <cfoutput> data-scope="#cgi.path_info#" </cfoutput>>
     <cfset isUserAuth = find("/user/", cgi.path_info)>
     <main class="main" id="top">
         <nav class="navbar navbar-vertical navbar-expand-lg">
@@ -227,63 +231,12 @@
                 </div>
             </div>
         </cfoutput>
-    <script>
-        var navbarTopStyle = window.config.config.phoenixNavbarTopStyle;
-        var navbarTop = document.querySelector('.navbar-top');
-        if (navbarTopStyle === 'darker') {
-        navbarTop.setAttribute('data-navbar-appearance', 'darker');
-        }
-
-        var navbarVerticalStyle = window.config.config.phoenixNavbarVerticalStyle;
-        var navbarVertical = document.querySelector('.navbar-vertical');
-        if (navbarVertical && navbarVerticalStyle === 'darker') {
-        navbarVertical.setAttribute('data-navbar-appearance', 'darker');
-        }
-    </script>
+    <script src="/js/adminLayout.js"></script>
     </main>
-    <script>
-        function updateActiveNavLink() {
-            var currentUrl = window.location.pathname;
-            var navLinks = document.querySelectorAll(".navbar-nav .nav-link");
-            var allParents = document.querySelectorAll(".parent");
-            var allToggles = document.querySelectorAll(".nav-link.dropdown-indicator");
-
-            // Remove 'active' class from all links, 'show' class from all parents, and reset aria-expanded
-            navLinks.forEach(link => link.classList.remove("active"));
-            allParents.forEach(parent => parent.classList.remove("show"));
-            allToggles.forEach(toggle => toggle.setAttribute("aria-expanded", "false"));
-
-            navLinks.forEach(function (link) {
-                if (link.getAttribute("href") === currentUrl) {
-                    link.classList.add("active");
-
-                    // Find the closest parent and add 'show' class
-                    var parent = link.closest(".parent");
-                    if (parent) {
-                        parent.classList.add("show");
-                        
-                        // Traverse up to find all parent toggles and mark them expanded
-                        var parentToggle = parent.closest(".parent-wrapper").previousElementSibling;
-                        while (parentToggle) {
-                            if (parentToggle.classList.contains("nav-link")) {
-                                parentToggle.setAttribute("aria-expanded", "true");
-                            }
-                            parentToggle = parentToggle.closest(".parent-wrapper")?.previousElementSibling;
-                        }
-                    }
-                }
-            });
-        }
-
-        // Run on page load
-        document.addEventListener("DOMContentLoaded", updateActiveNavLink);
-
-        // Run after any HTMX request completes
-        document.addEventListener("htmx:afterSettle", updateActiveNavLink);
-    </script>
     <script src="/js/anchor.min.js"></script>
     <script src="/js/all.min.js"></script>
     <script src="/js/lodash.min.js"></script>
     <script src="/js/phoenix.js"></script>
+    <script src="/js/adminglobal.js"></script>
 </body>
 </html>

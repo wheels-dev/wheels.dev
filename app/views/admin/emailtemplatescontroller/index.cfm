@@ -57,17 +57,3 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    var table = new DataTable('#emailTable', {
-        columnDefs: [
-            {
-                targets: [4], // Adjust these indexes based on your actual table structure
-                orderable: false
-            }
-        ]
-    });
-    table.on('draw', function() {
-        htmx.process(document.body);
-    });
-
-</script>
