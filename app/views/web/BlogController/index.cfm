@@ -3,7 +3,7 @@
     <div class="w-100 h-300 h-sm-400 position-relative feature-blog">
         <div class="position-absolute mx-auto container start-0 end-0 bottom-50px">
             <p id="featureBlogHeading" class="text-white fs-18 pb-2">Featured</p>
-            <h1 id="blogAuthorHeading" class="text-white fw-bold fs-36 pb-3 line-height-100">Wheels The Fast & Fun CFML Framework!</h1>
+            <h1 id="blogAuthorHeading" class="text-white fw-bold fs-36 pb-3 line-height-100 d-flex align-items-center flex-nowrap gap-2">Wheels The Fast & Fun CFML Framework!</h1>
             <p id="blogAuthorSubheading" class="text-white opacity-50 fs-18">Build apps quickly with an organized, Ruby on Rails-inspired
             structure. Get up and running in no time!</p>
         </div>

@@ -457,7 +457,15 @@
 										<cfset session.profilePic = "avatar-rounded.webp">
 									</cfif>
 									<cfoutput>
-										#imageTag(source = '#session.profilePic#', alt="user profile pic", height="40", width="40", class="rounded-circle")#
+										<cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
+											<div 
+												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+												style="width:3rem; height:3rem;">
+												#ucase(left(listLast(session.username, " "), 1))#
+											</div>
+										<cfelse>
+											<img src ='/img/#session.profilePic#' alt="user profile pic" height="40" width="40" class="rounded-circle">
+										</cfif>
 									</cfoutput>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
@@ -517,7 +525,15 @@
 											<cfset session.profilePic = "avatar-rounded.webp">
 										</cfif>
 										<cfoutput>
-											#imageTag(source = '#session.profilePic#', alt="user profile pic", height="40", width="40", class="rounded-circle")#
+											<cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
+												<div 
+													class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+													style="width:3rem; height:3rem;">
+													#ucase(left(listLast(session.username, " "), 1))#
+												</div>
+											<cfelse>
+												<img src = '/img/#session.profilePic#' alt="user profile pic" height="40" width="40" class="rounded-circle">
+											</cfif>
 										</cfoutput>
 									</a>
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">

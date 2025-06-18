@@ -5,7 +5,15 @@
             <cfif commentParentId eq '' or commentParentId eq 0>                              
                 <div class="d-flex align-items-start gap-3">                                   
                     <div>
-                        #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                        <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
+                            <div 
+                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                style="width:3rem; height:3rem;">
+                                #ucase(left(listLast(fullName, " "), 1))#
+                            </div>
+                        <cfelse>
+                            <img src='/img/#profilePicture#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                        </cfif>
                     </div>                                   
                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                         <h6 class="fs-16 fw-bold">#fullName#</h6>
@@ -48,7 +56,15 @@
             <cfif commentParentId neq '' and commentParentId neq 0>
                 <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                     <div>
-                        #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                        <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
+                            <div 
+                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                style="width:3rem; height:3rem;">
+                                #ucase(left(listLast(fullName, " "), 1))#
+                            </div>
+                        <cfelse>
+                            <img src='/img/#profilePicture#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                        </cfif>
                     </div>  
                     <div class="p-3 rounded-4 bg-light">
                         <h6 class="fs-16 fw-bold">#fullName#</h6>

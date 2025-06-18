@@ -943,7 +943,7 @@ component extends="app.Controllers.Controller" {
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="name = '#tag#'",
+                where="name = '#tag#' AND status ='Approved' AND isPublished='true'",
                 order="createdAt DESC",
                 include="User,tag",
                 returnAs="query",
@@ -954,7 +954,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="name = '#tag#'");
+        result.totalCount = model("Blog").count(where="name = '#tag#' AND status ='Approved' AND isPublished='true'", include="User,tag");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;
