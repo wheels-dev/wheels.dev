@@ -103,6 +103,8 @@
 			// error routes
 			.get(name = "error403", pattern = "error403", to = "errorController##error403")
 
+			// guides
+			.get(name = "load-Guides", pattern = "guides/*[version]", to = "web.GuideController##index")
 		.namespace("admin")
 			// Admin Controls
 			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")
