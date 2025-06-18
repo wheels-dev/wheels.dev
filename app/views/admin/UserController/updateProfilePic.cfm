@@ -9,7 +9,7 @@
                         <cfset session.profilePic = "avatar-rounded.webp">
                     </cfif>
                     <cfoutput>
-                        #imageTag(source = '#session.profilePic#', alt="user profile pic", height="150", width="150", class="rounded-circle")#
+                        <img src = '/img/#session.profilePic#' alt="user profile pic" height="150" width="150" class="rounded-circle">
                     </cfoutput>
                 </div>
                 <form class="pt-3 px-1 needs-validation" id="profilePicForm" enctype="multipart/form-data" novalidate hx-post="/admin/user/upload-profile-pic" hx-validate="true">
