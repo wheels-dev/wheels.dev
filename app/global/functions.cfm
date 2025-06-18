@@ -40,7 +40,7 @@ array function getAvailableVersions(string path=getDocJSONPathExpanded()){
  * Get Path to JSON files
  */
 string function getDocJSONPath(){
-	local.rv=get("webPath") & get("filePath") & "/json/";
+	local.rv=get("webPath") & "json/";
 	return local.rv;
 }
 /**
