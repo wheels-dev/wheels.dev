@@ -5,6 +5,7 @@
 	<cfset isHome = (pathInfo EQ "" OR pathInfo EQ "/" OR pathInfo EQ "/index.cfm")>
 	<cfset isBlog = find("/blog", pathInfo)>
 	<cfset isApi = find("/api", pathInfo)>
+	<cfset isGuideDocs = find("/guides", pathInfo)>
 	<cfset isLogin = find("/login", pathInfo)>
 	<cfset isRegister = find("/register", pathInfo)>
 	<cfset isForgotPassword = find("/forgot-password", pathInfo)>
@@ -413,7 +414,7 @@
 			<script src="/js/highlighter.min.js"></script>
 			<script src="/js/bootstrap.js"></script>
 			<script src="/js/all.min.js"></script>
-			<cfif isBlog or isNews>
+			<cfif isBlog or isNews or isGuideDocs>
 			<script src="/js/quill.min.js"></script>
 			<script src="/js/lib/easymde.min.js"></script>
 			<script src="/js/lib/marked.min.js"></script>			

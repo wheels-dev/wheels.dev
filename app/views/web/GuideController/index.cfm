@@ -10,12 +10,10 @@
             </div>
 
             <div class="col-lg-9 col-12 order-lg-last order-first">
-                <div class="mt-3" id="main">
-                    <div class="p-3 rounded-18 bg-white">
-                        <cfoutput>
-                            #renderedContent#
-                        </cfoutput> 
-                    </div>
+                <div id="main">
+                    <cfoutput>
+                        #includePartial("partials/docsContent")#
+                    </cfoutput>
                 </div>
                 <div class="d-flex py-2 justify-content-center">
                     <div id="loader" style="display:none; width: 2rem; height: 2rem;" class="spinner-border text--primary" role="status">
@@ -26,3 +24,4 @@
         </div>
     </div>
 </main>
+<script src="/js/guides.js"></script>
