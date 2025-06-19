@@ -104,7 +104,8 @@
 			.get(name = "error403", pattern = "error403", to = "errorController##error403")
 
 			// guides
-			.get(name = "load-Guides", pattern = "guides/*[version]", to = "web.GuideController##index")
+			.get(name = "load-Guides", pattern = "guides", to = "web.GuideController##index")
+			.get(name = "load-guide-docs", pattern = "guides/*[path]", to = "web.GuideController##loadGuideDocs")
 		.namespace("admin")
 			// Admin Controls
 			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")

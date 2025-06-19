@@ -3,7 +3,8 @@ component extends="app.Controllers.Controller" {
     // Configuration function
     function config() {
         super.config();
-		verifies(only="index", get=true, params="version", paramsTypes="string");
+		// verifies(only="index", get=true, params="version", paramsTypes="string");
+        verifies(except="index,loadGuideDocs", params="key", paramsTypes="integer", handler="index");
 
         usesLayout("/layout");
     }
@@ -27,9 +28,25 @@ component extends="app.Controllers.Controller" {
                 redirectTo(route="home", error="Page not found.");
             }
         }catch(any e){
-            redirectTo(route="home", error="Page not found.");
+            redirectTo(route="home", error="Something went wrong.");
         }
 
+    }
+
+    public function loadGuideDocs(){
+        try{
+            var filepath = params.path;
+                file = expandPath("../guides/#filepath#.md");
+            if(fileExists(file)){
+                var content = fileRead(file);
+                renderedContent = markdownToHtml(content);
+                renderPartial(partial="partials/docsContent");
+            }else{
+                redirectTo(route="load-Guides", error="Document not found.");
+            }
+        }catch(any e){
+            redirectTo(route="load-Guides", error="Something went wrong!");
+        }
     }
 
     private function missingParams(){
@@ -65,6 +82,7 @@ component extends="app.Controllers.Controller" {
                 var title = reReplace(line, ".*\[\[?([^\]]+)\]\]?\([^)]+\).*", "\1", "all");
                 var path = reReplace(line, ".*\[[^\]]+\]\(([^)]+)\).*", "\1", "all");
                     path = reReplace(path, "\.md$", "", "all")
+                    path = "/guides/" & path;
                 var node = {
                     "title": title,
                     "path": path,
