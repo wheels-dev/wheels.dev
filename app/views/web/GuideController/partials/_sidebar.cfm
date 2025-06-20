@@ -21,7 +21,7 @@ function renderAccordion(items, parentId = "guidesAccordion") {
             writeOutput('
                 <div class="accordion-item bg-transparent border-0">
                     <div class="accordion-header section text-white" data-section="#id#">
-                        <button class="accordion-button fs-14 fw-normal shadow-none bg--input p-2 rounded-3 text--secondary #buttonCollapsed#"
+                        <button class="accordion-button fs-14 fw-normal shadow-none bg--input p-2 rounded-3 text--secondary #buttonCollapsed# #hasPath ? 'category' : ''#"
                                 type="button"
                                 data-section="#id#"
                                 data-bs-toggle="collapse"
@@ -36,6 +36,7 @@ function renderAccordion(items, parentId = "guidesAccordion") {
                                 hx-trigger="click"
                                 hx-target="##main"
                                 hx-swap="innerHTML"
+                                hx-push-url="true"
                 ');
             }
 
@@ -58,11 +59,19 @@ function renderAccordion(items, parentId = "guidesAccordion") {
                 </div>
             ');
         } else if (structKeyExists(item, "path")) {
-            writeOutput('
-                <a href="javascript:void(0)" class="category text--secondary fw-normal d-block" data-section="#parentId#" hx-get="#item.path#" hx-trigger="click" hx-target="##main" hx-swap="innerHTML" data-category="#id#">
-                    <p class="fs-14 cursor-pointer">#item.title#</p>
-                </a>
-            ');
+            if(!reFind("^https?://", item.path)){
+                writeOutput('
+                    <a class="category text--secondary fw-normal d-block" data-section="#parentId#" hx-get="#item.path#" hx-push-url="#item.path#" hx-trigger="click" hx-target="##main" hx-swap="innerHTML" data-category="#id#">
+                        <p class="fs-14 cursor-pointer">#item.title#</p>
+                    </a>
+                ');
+            }else{
+                writeOutput('
+                    <a href="#item.path#" class="category text--secondary fw-normal d-block" data-section="#parentId#" data-category="#id#">
+                        <p class="fs-14 cursor-pointer">#item.title#</p>
+                    </a>
+                ');
+            }
         }
     }
 }
