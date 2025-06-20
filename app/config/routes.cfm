@@ -106,6 +106,7 @@
 			// guides
 			.get(name = "load-Guides", pattern = "guides", to = "web.GuideController##index")
 			.get(name = "load-guide-docs", pattern = "guides/*[path]", to = "web.GuideController##loadGuideDocs")
+			.get(name = "load-guide-docs", pattern = "search/guidesDocs", to = "web.GuideController##searchDocs")
 		.namespace("admin")
 			// Admin Controls
 			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")

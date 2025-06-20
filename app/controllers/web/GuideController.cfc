@@ -4,7 +4,7 @@ component extends="app.Controllers.Controller" {
     function config() {
         super.config();
 		// verifies(only="index", get=true, params="version", paramsTypes="string");
-        verifies(except="index,loadGuideDocs", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadGuideDocs,searchDocs", params="key", paramsTypes="integer", handler="index");
 
         usesLayout("/layout");
     }
@@ -49,6 +49,10 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    public function searchDocs(){
+        writeDump(params);abort;
+    }
+
     private function missingParams(){
 		redirectTo(route="home");
 	}
@@ -81,8 +85,10 @@ component extends="app.Controllers.Controller" {
 
                 var title = reReplace(line, ".*\[\[?([^\]]+)\]\]?\([^)]+\).*", "\1", "all");
                 var path = reReplace(line, ".*\[[^\]]+\]\(([^)]+)\).*", "\1", "all");
-                    path = reReplace(path, "\.md$", "", "all")
-                    path = "/guides/" & path;
+                    if (!reFind("^https?://", path)) {
+                        path = reReplace(path, "\.md$", "", "all");
+                        path = "/guides/" & path;
+                    }
                 var node = {
                     "title": title,
                     "path": path,
