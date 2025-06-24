@@ -105,8 +105,10 @@
 
 			// guides
 			.get(name = "load-Guides", pattern = "guides", to = "web.GuideController##index")
+			.get(name = "load-guide-docs", pattern = "guides/search", to = "web.GuideController##searchDocs")
+			.get(name = "load-guide-search-index", pattern = "guides/search-book", to = "web.GuideController##getSearchBook")
+			.get(name = "generate-search-guide", pattern = "guides/generate-search", to = "web.GuideController##generateSearchBook")
 			.get(name = "load-guide-docs", pattern = "guides/*[path]", to = "web.GuideController##loadGuideDocs")
-			.get(name = "load-guide-docs", pattern = "search/guidesDocs", to = "web.GuideController##searchDocs")
 		.namespace("admin")
 			// Admin Controls
 			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")

@@ -1,19 +1,9 @@
 <main class="main-bg">
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="search-modal-header mt-2">
-                    <div class="d-flex align-items-center rounded-3 mx-2 px-2 py-2 border gap-2 transition-all hover:border-primary">
-                        <i class="bi bi-search"></i>
-                        <input type="text" class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" hx-get="/search/guidesDocs" hx-trigger="keyup changed delay:900ms" hx-target=".modal-body" hx-swap="innerHTML" id="searchDocs" placeholder="Search content or ask a question." aria-label="searchDocs">
-                    </div>
-                </div>
-                <div class="modal-body">
-                    
-                </div>
-            </div>
-        </div>
+    <div>
+        <cfoutput>#includePartial("partials/_searchModal")#</cfoutput>
     </div>
+    <div hx-get="/guides/search-book?format=json" hx-trigger="load" hx-target="#searchIndexHolder" hx-swap="innerHTML"></div>
+    <div id="searchIndexHolder" style="display: none;"></div>
     <div class="container py-5">
         <div class="row">
             <div class="col-lg-3 col-12 mb-lg-0 mb-5 order-lg-first order-last">
