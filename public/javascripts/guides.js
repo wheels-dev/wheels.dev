@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+    let lunrIndex = null;
+    let lunrDocs = [];
+
     const searchTrigger = document.getElementById('searchTrigger');
     const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
 
@@ -268,5 +271,135 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
 
         // Prevent default swap
         e.preventDefault();
+        const modal = bootstrap.Modal.getInstance(document.getElementById("searchModal"));
+        if (modal) modal.hide();
+    }
+    if (e.detail.requestConfig) {
+        history.pushState({}, "", e.detail.requestConfig.path);
+        updateCategoryActive();
     }
 });
+
+document.body.addEventListener("htmx:afterSwap", function (e) {
+    // Only proceed if we're loading the search index
+    if (e.target.id === "searchIndexHolder") {
+        try {
+            lunrDocs = JSON.parse(e.target.innerText);
+
+            // Build lunr index
+            lunrIndex = lunr(function () {
+                this.ref("url");
+                this.field("title");
+                this.field("body");
+                lunrDocs.forEach(doc => this.add(doc));
+            });
+        } catch (err) {
+            console.error("Failed to parse search index:", err);
+        }
+    }
+});
+
+document.getElementById("searchDocs").addEventListener("input", function (e) {
+    const loader = document.getElementById("search-loader");
+    const resultsContainer = document.getElementById("result");
+
+    // Clear previous results and show loader
+    resultsContainer.innerHTML = "";
+    loader.style.display = "block";
+
+    const query = e.target.value;
+
+    if (!lunrIndex || query.length === 0) {
+        loader.style.display = "none";
+        return;
+    }
+
+    // Small timeout to simulate processing time (optional)
+    setTimeout(() => {
+        const results = lunrIndex.search(query);
+
+        if (results.length === 0) {
+            resultsContainer.innerHTML = `<p class="text-muted">No results found.</p>`;
+        } else {
+            resultsContainer.innerHTML = renderSearchResults(results, lunrDocs, query);
+            htmx.process(resultsContainer);
+        }
+
+        loader.style.display = "none";
+    }, 1000); // small delay for better UX feel
+});
+
+const highlightMatch = (text, query) => {
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+};
+  
+const renderSearchResults = (results, docs, query) => {
+    return results.map(r => {
+        const doc = docs.find(d => d.url === r.ref);
+        if (!doc) return "";
+        const version = "3.0.0-SNAPSHOT";
+        return `
+        <a hx-get="${doc.url}" hx-swap="innerHTML" hx-trigger="click" hx-target="#main" hx-push-url="true" class="text-decoration-none text-dark result-item d-block px-3 py-2 border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-file-earmark-text text-muted bold mt-3"></i>
+                <div>
+                <small class="text-muted">${version}</small>
+                <div class="fw-semibold">${highlightMatch(doc.title, query)}</div>
+                <div class="small text-muted">${highlightMatch(doc.body.slice(0, 100), query)}...</div>
+                </div>
+            </div>
+            <i class="bi bi-chevron-right text-muted align-self-center"></i>
+            </div>
+        </a>
+        `;
+    }).join("");
+};
+
+const updateCategoryActive = () => {
+    const currentPath = window.location.pathname;
+    const buttons = document.querySelectorAll('.category');
+    let activeButton = null;
+    buttons.forEach(btn => {
+        const hxGet = btn.getAttribute('hx-get');
+        if (hxGet === currentPath) {
+            btn.classList.add('active');
+            activeButton = btn;
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    // Collapse everything by default
+    document.querySelectorAll('.accordion-collapse').forEach(c => c.classList.remove('show'));
+    document.querySelectorAll('.accordion-button').forEach(b => b.classList.add('collapsed'));
+
+    if (activeButton) {
+        // Start from the current .category button and walk up to all parents
+        let currentElement = activeButton;
+
+        while (currentElement) {
+            // Find closest accordion-collapse and open it
+            const collapse = currentElement.closest('.accordion-collapse');
+            if (collapse) {
+                collapse.classList.add('show');
+
+                // Find the related .accordion-button and expand it
+                const header = collapse.previousElementSibling;
+                if (header) {
+                    const btn = header.querySelector('.accordion-button');
+                    if (btn) {
+                        btn.classList.remove('collapsed');
+                        btn.classList.add('active'); // optional: for visual active state
+                    }
+                }
+
+                // Move up: set currentElement to the parent of the collapse
+                currentElement = collapse.closest('.accordion-item');
+            } else {
+                break;
+            }
+        }
+    }
+};

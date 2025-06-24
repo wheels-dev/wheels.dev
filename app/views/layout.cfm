@@ -415,6 +415,7 @@
 			<script src="/js/bootstrap.js"></script>
 			<script src="/js/all.min.js"></script>
 			<cfif isBlog or isNews or isGuideDocs>
+			<script src="/js/lunr.min.js"></script>
 			<script src="/js/quill.min.js"></script>
 			<script src="/js/lib/easymde.min.js"></script>
 			<script src="/js/lib/marked.min.js"></script>			

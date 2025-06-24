@@ -4,7 +4,7 @@ component extends="app.Controllers.Controller" {
     function config() {
         super.config();
 		// verifies(only="index", get=true, params="version", paramsTypes="string");
-        verifies(except="index,loadGuideDocs,searchDocs", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadGuideDocs,searchDocs,generateSearchBook,getSearchBook", params="key", paramsTypes="integer", handler="index");
 
         usesLayout("/layout");
     }
@@ -48,6 +48,62 @@ component extends="app.Controllers.Controller" {
             redirectTo(route="load-Guides", error="Something went wrong!");
         }
     }
+
+    public function generateSearchBook(){
+        try{
+            searchIndex = [];
+
+            mdFiles = directoryList(expandPath("../guides"), true, "path", "*.md");
+
+            for (file in mdFiles) {
+                fileName = listLast(file, "/");
+
+                // Skip SUMMARY.md
+                if (lcase(fileName) == "summary.md") {
+                    continue;
+                }
+
+                mdText = fileRead(file);
+                html = markdownToHtml(mdText);
+
+                // Extract first <h1> tag as title
+                h1Match = reFind("<h1[^>]*>(.*?)</h1>", html, 1, true, "perl");
+                title = (arrayLen(h1Match.pos) >= 2 && h1Match.len[2] > 0) ?
+                    mid(html, h1Match.pos[2], h1Match.len[2]) :
+                    "Untitled";
+
+                // Strip HTML tags for search body content
+                plainText = reReplace(html, "<[^>]+>", " ", "all");
+                cleanBody = reReplace(plainText, "[^A-Za-z0-9 ]", " ", "all");
+
+                // Adjust path: remove base and prepend /guides/
+                relativePath = replace(file, "C:\Users\BJS-044\Desktop\wheels\wheels.dev\guides", "", "one");
+                relativeUrl = "\guides" & replace(relativePath, ".md", "", "one");
+
+                arrayAppend(searchIndex, {
+                    "title": trim(title),
+                    "body": trim(cleanBody),
+                    "url": relativeUrl
+                });
+            }
+
+            targetPath = expandPath("../guides/search_index.json");
+            targetDir = getDirectoryFromPath(targetPath);
+
+            // Now write the file
+            fileWrite(targetPath, serializeJSON(searchIndex, true));
+            renderText("Search indexes generated successfully!");
+
+        }catch(any e){
+            renderText("Error :" & e.message);
+        }
+
+    }
+
+    public function getSearchBook(){
+        searchData = fileRead(expandPath("../guides/search_index.json"));
+        return deserializeJSON(searchData);
+    } 
 
     public function searchDocs(){
         writeDump(params);abort;
