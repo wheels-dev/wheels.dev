@@ -27,10 +27,10 @@
                     <cfoutput>
                         #includePartial("partials/docsContent")#
                     </cfoutput>
-                </div>
-                <div class="d-flex py-2 justify-content-center">
-                    <div id="loader" style="display:none; width: 2rem; height: 2rem;" class="spinner-border text--primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                    <div id="globalPageLoader" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white" style="z-index: 5;">
+                        <div class="spinner-border text--primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,53 @@ document.addEventListener('DOMContentLoaded', function () {
     let lunrIndex = null;
     let lunrDocs = [];
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const filePath = urlParams.get("filePath");
+
+    if (filePath){
+        // Find the matching sidebar link
+        const matchingLink = document.querySelector(`.category[hx-get="/guides/${filePath}"]`);
+        // 1. Remove existing active states and open accordions
+        document.querySelectorAll(".category").forEach(link => {
+            link.classList.remove("active");
+        });
+    
+        if (matchingLink) {
+            // Add active styling
+            matchingLink.classList.add("active"); // Add your active class name here
+    
+            // 3. If this is inside a button (subparent with path), expand its button too
+                const linkButton = matchingLink.closest("button.accordion-button");
+                if (linkButton) {
+                    const collapseId = linkButton.getAttribute("data-bs-target");
+                    const targetCollapse = document.querySelector(collapseId);
+                    if (targetCollapse) {
+                        targetCollapse.classList.add("show");
+                    }
+                    linkButton.classList.remove("collapsed");
+                    linkButton.setAttribute("aria-expanded", "true");
+                }
+
+                // 4. Expand all ancestor accordion-collapse blocks
+                let parentCollapse = matchingLink.closest(".accordion-collapse");
+                while (parentCollapse) {
+                    parentCollapse.classList.add("show");
+
+                    const parentCollapseId = parentCollapse.id;
+                    const parentButton = document.querySelector(`button[data-bs-target="#${parentCollapseId}"]`);
+                    if (parentButton) {
+                        parentButton.classList.remove("collapsed");
+                        parentButton.setAttribute("aria-expanded", "true");
+                    }
+
+                    parentCollapse = parentCollapse.parentElement.closest(".accordion-collapse");
+                }
+            // 3. Replace URL to clean format
+            const cleanUrl = `/guides/${filePath}`;
+            window.history.replaceState({}, "", cleanUrl);
+        }
+    }
+
     const searchTrigger = document.getElementById('searchTrigger');
     const searchModal = new bootstrap.Modal(document.getElementById('searchModal'));
 
@@ -36,17 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add 'active' class to the clicked button
             this.classList.add('active');
         });
-    });
-
-    const contentImages = document.querySelectorAll('.guides-docs-content img');
-
-    contentImages.forEach(img => {
-        const src = img.getAttribute('src');
-        if (src && src.startsWith('.gitbook')) {
-            // Extract filename (after last slash)
-            const filename = src.split('/').pop();
-            img.setAttribute('src', `/img/${filename}`);
-        }
     });
 
     // 3. Convert {% hint %} to Bootstrap alerts
@@ -158,6 +194,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (firstElement && firstElement.tagName === "HR") {
         contentForDescription.removeChild(firstElement);
     }
+    convertGitBookCodeBlocks(guidesContent);
+});
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        const loader = document.getElementById("globalPageLoader");
+        if (loader) loader.classList.add("d-none"); // Hide loader
+    }, 300);
 });
 
 document.body.addEventListener('htmx:beforeSwap', function (e) {
@@ -168,16 +211,6 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
 
         const guidesContent = tempDiv.querySelector('.guides-docs-content');
         if (!guidesContent) return;
-
-        // Transform images
-        const contentImages = guidesContent.querySelectorAll('img');
-        contentImages.forEach(img => {
-            const src = img.getAttribute('src');
-            if (src && src.startsWith('.gitbook')) {
-                const filename = src.split('/').pop();
-                img.setAttribute('src', `/img/${filename}`);
-            }
-        });
 
         // Convert GitBook hints to alerts
         let html = guidesContent.innerHTML;
@@ -263,7 +296,7 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
         if (firstElement && firstElement.tagName === "HR") {
             guidesContent.removeChild(firstElement);
         }
-
+        convertGitBookCodeBlocks(guidesContent);
         // Replace the response with modified HTML
         e.detail.xhr.responseText = tempDiv.innerHTML;
         e.detail.shouldSwap = true;
@@ -272,6 +305,11 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
         // Prevent default swap
         e.preventDefault();
         const modal = bootstrap.Modal.getInstance(document.getElementById("searchModal"));
+        document.getElementById("searchDocs").value="";
+        document.getElementById("result").innerHTML=`
+        <div class="d-flex justify-content-center align-content-center align-items-baseline">
+            <i class="bi bi-search-heart text--primary"> Search...</i>
+        </div>`;
         if (modal) modal.hide();
     }
     if (e.detail.requestConfig) {
@@ -340,7 +378,7 @@ const renderSearchResults = (results, docs, query) => {
         if (!doc) return "";
         const version = "3.0.0-SNAPSHOT";
         return `
-        <a hx-get="${doc.url}" hx-swap="innerHTML" hx-trigger="click" hx-target="#main" hx-push-url="true" class="text-decoration-none text-dark result-item d-block px-3 py-2 border-bottom">
+        <a hx-get="${doc.url}" hx-swap="innerHTML" hx-trigger="click" hx-target="#main" hx-push-url="true" class="text-decoration-none text-dark cursor-pointer result-item d-block px-3 py-2 border-bottom">
             <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-start gap-2">
                 <i class="bi bi-file-earmark-text text-muted bold mt-3"></i>
@@ -361,6 +399,7 @@ const updateCategoryActive = () => {
     const currentPath = window.location.pathname;
     const buttons = document.querySelectorAll('.category');
     let activeButton = null;
+
     buttons.forEach(btn => {
         const hxGet = btn.getAttribute('hx-get');
         if (hxGet === currentPath) {
@@ -371,31 +410,46 @@ const updateCategoryActive = () => {
         }
     });
 
-    // Collapse everything by default
-    document.querySelectorAll('.accordion-collapse').forEach(c => c.classList.remove('show'));
-    document.querySelectorAll('.accordion-button').forEach(b => b.classList.add('collapsed'));
+    let skipCollapseRoot = null;
 
     if (activeButton) {
-        // Start from the current .category button and walk up to all parents
+        // Check if activeButton is a subparent (i.e., it has child accordion inside)
+        const parentAccordionItem = activeButton.closest('.accordion-item');
+        if (parentAccordionItem && parentAccordionItem.querySelector('.accordion-collapse .category')) {
+            skipCollapseRoot = parentAccordionItem;
+        }
+    }
+
+    // Collapse everything except the subtree of the active subparent
+    document.querySelectorAll('.accordion-collapse').forEach(collapse => {
+        if (!skipCollapseRoot || !skipCollapseRoot.contains(collapse)) {
+            collapse.classList.remove('show');
+        }
+    });
+    document.querySelectorAll('.accordion-button').forEach(button => {
+        if (!skipCollapseRoot || !skipCollapseRoot.contains(button)) {
+            button.classList.add('collapsed');
+        }
+    });
+
+    if (activeButton) {
+        // Walk upwards and open all parents
         let currentElement = activeButton;
 
         while (currentElement) {
-            // Find closest accordion-collapse and open it
             const collapse = currentElement.closest('.accordion-collapse');
             if (collapse) {
                 collapse.classList.add('show');
 
-                // Find the related .accordion-button and expand it
                 const header = collapse.previousElementSibling;
                 if (header) {
                     const btn = header.querySelector('.accordion-button');
                     if (btn) {
                         btn.classList.remove('collapsed');
-                        btn.classList.add('active'); // optional: for visual active state
+                        btn.classList.add('active');
                     }
                 }
 
-                // Move up: set currentElement to the parent of the collapse
                 currentElement = collapse.closest('.accordion-item');
             } else {
                 break;
@@ -403,3 +457,38 @@ const updateCategoryActive = () => {
         }
     }
 };
+
+function convertGitBookCodeBlocks(container) {
+    const paragraphs = Array.from(container.querySelectorAll('p'));
+
+    paragraphs.forEach(p => {
+        const rawHTML = p.innerHTML;
+        const regex = /\{\%\s*code\s+title=["']?(.+?)["']?\s*\%\}/;
+        const match = rawHTML.match(regex);
+
+        if (match) {
+            const title = match[1];
+            const prefixText = rawHTML.split(match[0])[0].trim(); // Any text before the {% code ... %}
+
+            const pre = p.nextElementSibling;
+            const endP = pre?.nextElementSibling;
+
+            if (pre?.tagName === "PRE" && endP?.textContent.trim() === "{% endcode %}") {
+                const code = pre.outerHTML;
+
+                const block = document.createElement("div");
+                block.className = "gitbook-code-block";
+
+                block.innerHTML = `
+                    ${prefixText ? `<p>${prefixText}</p>` : ""}
+                    <div class="gitbook-code-header">${title}</div>
+                    ${code}
+                `;
+
+                endP.remove();
+                pre.remove();
+                p.replaceWith(block);
+            }
+        }
+    });
+}

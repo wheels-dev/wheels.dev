@@ -8,7 +8,11 @@
                 </div>
             </div>
             <div class="modal-body">
-                <div id="result"></div>
+                <div id="result">
+                    <div class="d-flex justify-content-center align-content-center align-items-baseline">
+                        <i class="bi bi-search-heart text--primary"> Search...</i>
+                    </div>
+                </div>
                 <div class="d-flex py-2 justify-content-center">
                     <div id="search-loader" style="display:none; width: 2rem; height: 2rem;" class="spinner-border text--primary" role="status">
                         <span class="visually-hidden">Loading...</span>

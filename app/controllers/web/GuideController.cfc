@@ -3,7 +3,6 @@ component extends="app.Controllers.Controller" {
     // Configuration function
     function config() {
         super.config();
-		// verifies(only="index", get=true, params="version", paramsTypes="string");
         verifies(except="index,loadGuideDocs,searchDocs,generateSearchBook,getSearchBook", params="key", paramsTypes="integer", handler="index");
 
         usesLayout("/layout");
@@ -11,13 +10,22 @@ component extends="app.Controllers.Controller" {
 
     function index(){
         try{
-            param name="params.version" default="3.0.0-snapshot";
-            var readmePath = expandPath("../guides/README.md");
+            param name="params.filePath" default="";
+            var filePath = (len(trim(params.filepath)) > 0)
+            ? expandPath("../guides/#params.filepath#.md")
+            : expandPath("../guides/README.md");
             var summaryPath = expandPath("../guides/SUMMARY.md");
 
-            if (fileExists(readmePath)) {
-                var content = fileRead(readmePath);
+            if (fileExists(filePath)) {
+                var content = fileRead(filePath);
                 renderedContent = markdownToHtml(content);
+                // Replace GitBook asset paths in <img> tags
+                renderedContent = rereplace(
+                    renderedContent,
+                    '(<img[^>]+src=["'']?)(\.?/)?\.gitbook/assets/([^"''>]+)(["'']?)',
+                    '\1/img/\3\4',
+                    "all"
+                );
             } else {
                 renderedContent = "<p>Page not found.</p>";
             }
@@ -30,7 +38,6 @@ component extends="app.Controllers.Controller" {
         }catch(any e){
             redirectTo(route="home", error="Something went wrong.");
         }
-
     }
 
     public function loadGuideDocs(){
@@ -40,9 +47,19 @@ component extends="app.Controllers.Controller" {
             if(fileExists(file)){
                 var content = fileRead(file);
                 renderedContent = markdownToHtml(content);
-                renderPartial(partial="partials/docsContent");
+                renderedContent = rereplace(
+                    renderedContent,
+                    '(<img[^>]+src=["'']?)(\.?/)?\.gitbook/assets/([^"''>]+)(["'']?)',
+                    '\1/img/\3\4',
+                    "all"
+                );
+                if(isHtmx()){
+                    renderPartial(partial="partials/docsContent");
+                }else{
+                    redirectTo(route="load-Guides", params="filePath=#params.path#");
+                }
             }else{
-                redirectTo(route="load-Guides", error="Document not found.");
+                redirectTo(route="load-Guides", error="Page not found.");
             }
         }catch(any e){
             redirectTo(route="load-Guides", error="Something went wrong!");
@@ -78,6 +95,7 @@ component extends="app.Controllers.Controller" {
 
                 // Adjust path: remove base and prepend /guides/
                 relativePath = replace(file, "C:\Users\BJS-044\Desktop\wheels\wheels.dev\guides", "", "one");
+                relativePath = replace(relativePath, "getting-started", "readme", "all");
                 relativeUrl = "\guides" & replace(relativePath, ".md", "", "one");
 
                 arrayAppend(searchIndex, {
@@ -104,10 +122,6 @@ component extends="app.Controllers.Controller" {
         searchData = fileRead(expandPath("../guides/search_index.json"));
         return deserializeJSON(searchData);
     } 
-
-    public function searchDocs(){
-        writeDump(params);abort;
-    }
 
     private function missingParams(){
 		redirectTo(route="home");
@@ -186,5 +200,11 @@ component extends="app.Controllers.Controller" {
         }
 
         return result;
+    }
+
+    // Helper method to check if the request was initiated by HTMX.
+    private boolean function isHtmx() {
+        // HTMX requests include the HX-Request header
+        return StructKeyExists(request.$wheelsheaders, "HX-REQUEST") && request.$wheelsheaders["HX-Request"];
     }
 }

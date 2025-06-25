@@ -3,6 +3,8 @@
 
 <cfscript>
 function renderAccordion(items, parentId = "guidesAccordion") {
+    filepathExists = structKeyExists(url, "filePath") and len(trim(url.filePath)) > 0;
+
     for (item in items) {
         id = REReplace(item.title, "[^\w]", "", "all") & globalIndex;
         globalIndex++;
@@ -10,13 +12,15 @@ function renderAccordion(items, parentId = "guidesAccordion") {
         isIntro = LCase(item.title) == "introduction";
         isGettingStarted = LCase(item.title) == "getting started";
 
+        autoExpand = (isIntro or isGettingStarted) and not filepathExists;
+
         if (structKeyExists(item, "children") and arrayLen(item.children)) {
             hasPath = structKeyExists(item, "path") and len(trim(item.path));
             collapseId = "collapse" & id;
 
-            showClass = (isIntro or isGettingStarted) ? "show" : "";
-            buttonCollapsed = (isIntro or isGettingStarted) ? "" : "collapsed";
-            ariaExpanded = (isIntro or isGettingStarted) ? "true" : "false";
+            showClass = autoExpand ? "show" : "";
+            buttonCollapsed = autoExpand ? "" : "collapsed";
+            ariaExpanded = autoExpand ? "true" : "false";
 
             writeOutput('
                 <div class="accordion-item bg-transparent border-0">
@@ -65,7 +69,7 @@ function renderAccordion(items, parentId = "guidesAccordion") {
                         <p class="fs-14 cursor-pointer">#item.title#</p>
                     </a>
                 ');
-            }else{
+            } else {
                 writeOutput('
                     <a href="#item.path#" class="category text--secondary fw-normal d-block" data-section="#parentId#" data-category="#id#">
                         <p class="fs-14 cursor-pointer">#item.title#</p>
