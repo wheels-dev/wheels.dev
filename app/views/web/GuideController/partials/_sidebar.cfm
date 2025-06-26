@@ -2,7 +2,11 @@
 <cfset globalIndex = 1>
 
 <cfscript>
-function renderAccordion(items, parentId = "guidesAccordion") {
+function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = "") {
+    if (!isArray(breadcrumbTrail)) {
+        breadcrumbTrail = [];
+    }
+
     filepathExists = structKeyExists(url, "filePath") and len(trim(url.filePath)) > 0;
 
     for (item in items) {
@@ -13,6 +17,11 @@ function renderAccordion(items, parentId = "guidesAccordion") {
         isGettingStarted = LCase(item.title) == "getting started";
 
         autoExpand = (isIntro or isGettingStarted) and not filepathExists;
+
+        // Proper breadcrumb append
+        currentTrail = duplicate(breadcrumbTrail);
+        arrayAppend(currentTrail, item.title);
+        breadcrumbPath = arrayToList(currentTrail, " > ");
 
         if (structKeyExists(item, "children") and arrayLen(item.children)) {
             hasPath = structKeyExists(item, "path") and len(trim(item.path));
@@ -41,6 +50,7 @@ function renderAccordion(items, parentId = "guidesAccordion") {
                                 hx-target="##main"
                                 hx-swap="innerHTML"
                                 hx-push-url="true"
+                                data-breadcrumb="#encodeForHTML(breadcrumbPath)#"
                 ');
             }
 
@@ -54,7 +64,8 @@ function renderAccordion(items, parentId = "guidesAccordion") {
                             <div class="space-y-2 ps-4">
             ');
 
-            renderAccordion(item.children, "collapse#id#");
+            // Recursive call with updated breadcrumbTrail
+            renderAccordion(item.children, "collapse#id#", currentTrail);
 
             writeOutput('
                             </div>
@@ -63,16 +74,27 @@ function renderAccordion(items, parentId = "guidesAccordion") {
                 </div>
             ');
         } else if (structKeyExists(item, "path")) {
-            if(!reFind("^https?://", item.path)){
+            if (!reFind("^https?://", item.path)) {
                 writeOutput('
-                    <a class="category text--secondary fw-normal d-block" data-section="#parentId#" hx-get="#item.path#" hx-push-url="#item.path#" hx-trigger="click" hx-target="##main" hx-swap="innerHTML" data-category="#id#">
-                        <p class="fs-14 cursor-pointer">#item.title#</p>
+                    <a class="category text--secondary fw-normal d-block"
+                       data-section="#parentId#"
+                       hx-get="#item.path#"
+                       hx-push-url="#item.path#"
+                       hx-trigger="click"
+                       hx-target="##main"
+                       hx-swap="innerHTML"
+                       data-category="#id#"
+                       data-breadcrumb="#encodeForHTML(breadcrumbPath)#">
+                        <p class="fs-14 cursor-pointer">#encodeForHTML(item.title)#</p>
                     </a>
                 ');
             } else {
                 writeOutput('
-                    <a href="#item.path#" class="category text--secondary fw-normal d-block" data-section="#parentId#" data-category="#id#">
-                        <p class="fs-14 cursor-pointer">#item.title#</p>
+                    <a href="#item.path#" class="category text--secondary fw-normal d-block"
+                       data-section="#parentId#"
+                       data-category="#id#"
+                       data-breadcrumb="#encodeForHTML(breadcrumbPath)#">
+                        <p class="fs-14 cursor-pointer">#encodeForHTML(item.title)#</p>
                     </a>
                 ');
             }
