@@ -195,6 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
         contentForDescription.removeChild(firstElement);
     }
     convertGitBookCodeBlocks(guidesContent);
+    convertMarkdownTablesInParagraphs(guidesContent);
+    updateBreadcrumbFromSidebar();
 });
 window.addEventListener("load", () => {
     setTimeout(() => {
@@ -297,6 +299,7 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
             guidesContent.removeChild(firstElement);
         }
         convertGitBookCodeBlocks(guidesContent);
+        convertMarkdownTablesInParagraphs(guidesContent);
         // Replace the response with modified HTML
         e.detail.xhr.responseText = tempDiv.innerHTML;
         e.detail.shouldSwap = true;
@@ -315,6 +318,7 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
     if (e.detail.requestConfig) {
         history.pushState({}, "", e.detail.requestConfig.path);
         updateCategoryActive();
+        updateBreadcrumbFromSidebar();
     }
 });
 
@@ -447,6 +451,7 @@ const updateCategoryActive = () => {
                     if (btn) {
                         btn.classList.remove('collapsed');
                         btn.classList.add('active');
+                        btn.setAttribute('data-breadcrumb', activeButton.getAttribute('data-breadcrumb'));
                     }
                 }
 
@@ -467,7 +472,10 @@ function convertGitBookCodeBlocks(container) {
         const match = rawHTML.match(regex);
 
         if (match) {
-            const title = match[1];
+            let title = match[1].trim();
+            if ((title.startsWith('"') && title.endsWith('"')) || (title.startsWith("'") && title.endsWith("'"))) {
+                title = title.slice(1, -1).trim();
+            }
             const prefixText = rawHTML.split(match[0])[0].trim(); // Any text before the {% code ... %}
 
             const pre = p.nextElementSibling;
@@ -481,7 +489,7 @@ function convertGitBookCodeBlocks(container) {
 
                 block.innerHTML = `
                     ${prefixText ? `<p>${prefixText}</p>` : ""}
-                    <div class="gitbook-code-header">${title}</div>
+                    ${title ? `<div class="gitbook-code-header">${title}</div>` : ""}
                     ${code}
                 `;
 
@@ -491,4 +499,54 @@ function convertGitBookCodeBlocks(container) {
             }
         }
     });
+}
+
+function convertMarkdownTablesInParagraphs(container = document) {
+    const paragraphs = container.querySelectorAll("p");
+
+    paragraphs.forEach(p => {
+        const text = p.textContent.trim();
+
+        if (text.startsWith("|") && text.includes("|")) {
+            const lines = text.split("\n").filter(line => line.trim().startsWith("|"));
+
+            if (lines.length >= 2) {
+                const table = document.createElement("table");
+                table.classList.add("custom-table");
+
+                lines.forEach((line, index) => {
+                    if (index === 1) return; // Skip alignment row
+
+                    const tr = document.createElement("tr");
+                    const cells = line.split("|").slice(1, -1).map(cell => cell.trim());
+
+                    cells.forEach(cellText => {
+                        const cell = document.createElement(index === 0 ? "th" : "td");
+                        cell.textContent = cellText;
+                        tr.appendChild(cell);
+                    });
+
+                    table.appendChild(tr);
+                });
+
+                p.replaceWith(table);
+            }
+        }
+    });
+}
+
+function updateBreadcrumbFromSidebar() {
+    const activeLink = document.querySelector('.category.active, .accordion-button.active');
+    const breadcrumbText = activeLink?.getAttribute('data-breadcrumb');
+    if (breadcrumbText) {
+        const breadcrumbContainer = document.getElementById("breadcrumb-nav");
+        if (breadcrumbContainer) {
+            breadcrumbContainer.innerHTML = breadcrumbText
+                .split(" > ")
+                .map((item, index, arr) => {
+                    return `<span class="text--secondary small">${item}</span>`;
+                })
+                .join(` <i class="bi bi-chevron-right mx-1 text-muted small"></i>`);
+        }
+    }
 }

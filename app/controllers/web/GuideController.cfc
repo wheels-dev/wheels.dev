@@ -17,13 +17,27 @@ component extends="app.Controllers.Controller" {
             var summaryPath = expandPath("../guides/SUMMARY.md");
 
             if (fileExists(filePath)) {
-                var content = fileRead(filePath);
+                var content = fileRead(filePath, "utf-8");
                 renderedContent = markdownToHtml(content);
                 // Replace GitBook asset paths in <img> tags
                 renderedContent = rereplace(
                     renderedContent,
                     '(<img[^>]+src=["'']?)(\.?/)?\.gitbook/assets/([^"''>]+)(["'']?)',
                     '\1/img/\3\4',
+                    "all"
+                );
+
+                // Normalize path separators
+                var normalizedPath = replace(filePath, "\", "/", "all");
+                var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one");
+                var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/");
+                var baseHref = "/guides/#guideDir#/";
+
+                // Fix internal <a href=""> links (not starting with http or /)
+                renderedContent = rereplace(
+                    renderedContent,
+                    '(<a[^>]+href=["''])(?!https?:|/)([^"''##]+?)(?:\.md)?(["''])',
+                    '\1#baseHref#\2\3',
                     "all"
                 );
             } else {
@@ -45,12 +59,26 @@ component extends="app.Controllers.Controller" {
             var filepath = params.path;
                 file = expandPath("../guides/#filepath#.md");
             if(fileExists(file)){
-                var content = fileRead(file);
+                var content = fileRead(file, "utf-8");
                 renderedContent = markdownToHtml(content);
                 renderedContent = rereplace(
                     renderedContent,
                     '(<img[^>]+src=["'']?)(\.?/)?\.gitbook/assets/([^"''>]+)(["'']?)',
                     '\1/img/\3\4',
+                    "all"
+                );
+
+                // Normalize path separators
+                var normalizedPath = replace(file, "\", "/", "all");
+                var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one"); 
+                var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/"); 
+                var baseHref = "/guides/#guideDir#/";
+
+                // Fix internal <a href=""> links (not starting with http or /)
+                renderedContent = rereplace(
+                    renderedContent,
+                    '(<a[^>]+href=["''])(?!https?:|/)([^"''##]+?)(?:\.md)?(["''])',
+                    '\1#baseHref#\2\3',
                     "all"
                 );
                 if(isHtmx()){
