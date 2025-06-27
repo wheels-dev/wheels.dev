@@ -4,18 +4,10 @@
     </div>
     <div hx-get="/guides/search-book?format=json" hx-trigger="load" hx-target="#searchIndexHolder" hx-swap="innerHTML"></div>
     <div id="searchIndexHolder" style="display: none;"></div>
-    <div class="container py-5">
+    <div class="p-5">
         <div class="row">
             <div class="col-lg-3 col-12 mb-lg-0 mb-5 order-lg-first order-last">
-                <div class="bg-white p-3 rounded-18 no-scrollbar h-70vh overflow-y-auto">
-                    <div class="search-trigger d-flex align-items-center gap-2 px-3 mb-3 py-2 border rounded-3 transition-all hover:border-primary cursor-pointer" id="searchTrigger">
-                        <i class="bi bi-search text-muted"></i>
-                        <span class="flex-grow-1 text-muted">Ask or search...</span>
-                        <div class="shortcut-hint d-flex align-items-center gap-1">
-                            <span class="key">Ctrl</span>
-                            <span class="key">K</span>
-                        </div>
-                    </div>
+                <div class="bg-white p-3 rounded-18 position-sticky top-16 no-scrollbar h-80vh overflow-y-auto">
                     <div class="accordion space-y-3" id="guidesAccordion">
                         <cfoutput>#includePartial("partials/sidebar")#</cfoutput>
                     </div>
@@ -23,6 +15,26 @@
             </div>
 
             <div class="col-lg-9 col-12 order-lg-last order-first">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="search-trigger d-flex align-items-center gap-2 px-3 mb-3 py-2 border rounded-3 transition-all hover:border-primary cursor-pointer" id="searchTrigger">
+                            <i class="bi bi-search text-muted"></i>
+                            <span class="flex-grow-1 text-muted">Ask or search...</span>
+                            <div class="shortcut-hint d-flex align-items-center gap-1">
+                                <span class="key">Ctrl</span>
+                                <span class="key">K</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="select-version" id="select-version">
+                            <select name="docs-version" id="docs-version" class="form-select px-3 mb-3 py-2 transition-all hover:border-primary cursor-pointer" aria-label="select-version">
+                                <option value="3.0.0-SNAPSHOT">3.0.0-SNAPSHOT</option>
+                                <option value="2.5.0">2.5.0</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div id="main">
                     <cfoutput>
                         #includePartial("partials/docsContent")#

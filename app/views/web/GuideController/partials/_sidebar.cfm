@@ -2,10 +2,9 @@
 <cfset globalIndex = 1>
 
 <cfscript>
-function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = "") {
-    if (!isArray(breadcrumbTrail)) {
-        breadcrumbTrail = [];
-    }
+function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = [], breadcrumbPaths = []) {
+    if (!isArray(breadcrumbTrail)) breadcrumbTrail = [];
+    if (!isArray(breadcrumbPaths)) breadcrumbPaths = [];
 
     filepathExists = structKeyExists(url, "filePath") and len(trim(url.filePath)) > 0;
 
@@ -15,13 +14,36 @@ function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = 
 
         isIntro = LCase(item.title) == "introduction";
         isGettingStarted = LCase(item.title) == "getting started";
-
         autoExpand = (isIntro or isGettingStarted) and not filepathExists;
 
-        // Proper breadcrumb append
+        // Duplicate trail and paths for current context
         currentTrail = duplicate(breadcrumbTrail);
         arrayAppend(currentTrail, item.title);
-        breadcrumbPath = arrayToList(currentTrail, " > ");
+
+        currentPaths = duplicate(breadcrumbPaths);
+        if (structKeyExists(item, "path") and len(trim(item.path))) {
+            arrayAppend(currentPaths, item.path);
+        } else {
+            arrayAppend(currentPaths, "");
+        }
+
+        // Generate breadcrumb HTML for this node
+        breadcrumbHtml = "";
+        for (i = 1; i <= arrayLen(currentTrail); i++) {
+            crumbTitle = currentTrail[i];
+            crumbPath = currentPaths[i];
+
+            if (len(trim(crumbPath))) {
+                breadcrumbHtml &= '<a hx-trigger="click" hx-get="#crumbPath#" hx-target="##main" hx-swap="innerHTML" hx-push-url="true" class="text--secondary small text-decoration-none">'
+                    & encodeForHTML(crumbTitle) & '</a>';
+            } else {
+                breadcrumbHtml &= '<span class="text--secondary small">' & encodeForHTML(crumbTitle) & '</span>';
+            }
+
+            if (i < arrayLen(currentTrail)) {
+                breadcrumbHtml &= ' <i class="bi bi-chevron-right mx-1 text-muted small"></i>';
+            }
+        }
 
         if (structKeyExists(item, "children") and arrayLen(item.children)) {
             hasPath = structKeyExists(item, "path") and len(trim(item.path));
@@ -50,8 +72,10 @@ function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = 
                                 hx-target="##main"
                                 hx-swap="innerHTML"
                                 hx-push-url="true"
-                                data-breadcrumb="#encodeForHTML(breadcrumbPath)#"
+                                data-breadcrumb="#encodeForHTML(breadcrumbHtml)#"
                 ');
+            } else {
+                writeOutput(' data-breadcrumb="#encodeForHTML(breadcrumbHtml)#" ');
             }
 
             writeOutput('>
@@ -64,8 +88,8 @@ function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = 
                             <div class="space-y-2 ps-4">
             ');
 
-            // Recursive call with updated breadcrumbTrail
-            renderAccordion(item.children, "collapse#id#", currentTrail);
+            // Recursive render
+            renderAccordion(item.children, "collapse#id#", currentTrail, currentPaths);
 
             writeOutput('
                             </div>
@@ -84,7 +108,7 @@ function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = 
                        hx-target="##main"
                        hx-swap="innerHTML"
                        data-category="#id#"
-                       data-breadcrumb="#encodeForHTML(breadcrumbPath)#">
+                       data-breadcrumb="#encodeForHTML(breadcrumbHtml)#">
                         <p class="fs-14 cursor-pointer">#encodeForHTML(item.title)#</p>
                     </a>
                 ');
@@ -93,7 +117,7 @@ function renderAccordion(items, parentId = "guidesAccordion", breadcrumbTrail = 
                     <a href="#item.path#" class="category text--secondary fw-normal d-block"
                        data-section="#parentId#"
                        data-category="#id#"
-                       data-breadcrumb="#encodeForHTML(breadcrumbPath)#">
+                       data-breadcrumb="#encodeForHTML(breadcrumbHtml)#">
                         <p class="fs-14 cursor-pointer">#encodeForHTML(item.title)#</p>
                     </a>
                 ');

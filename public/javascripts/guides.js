@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let lunrIndex = null;
     let lunrDocs = [];
+    let lastClickedElement = null;
 
     const urlParams = new URLSearchParams(window.location.search);
     const filePath = urlParams.get("filePath");
@@ -56,22 +57,40 @@ document.addEventListener('DOMContentLoaded', function () {
     if (searchTrigger) {
         searchTrigger.addEventListener('click', () => {
             searchModal.show();
-            setTimeout(() => {
-                document.getElementById('searchDocs').focus();
-            }, 200); // Focus after modal animation
+            // Wait until modal is shown before focusing
+            const input = document.getElementById('searchDocs');
+            
+            // Use event instead of timeout for better reliability
+            const handler = () => {
+                input.focus();
+                input.select();
+            };
+    
+            // If using Bootstrap modal
+            const modalElement = document.getElementById('searchModal');
+            modalElement.addEventListener('shown.bs.modal', handler, { once: true });
         });
     }
 
-    // Open modal on Ctrl+K or Cmd+K
     document.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
             e.preventDefault();
             searchModal.show();
-            setTimeout(() => {
-                document.getElementById('searchDocs').focus();
-            }, 200);
+    
+            // Wait until modal is shown before focusing
+            const input = document.getElementById('searchDocs');
+            
+            // Use event instead of timeout for better reliability
+            const handler = () => {
+                input.focus();
+                input.select();
+            };
+    
+            // If using Bootstrap modal
+            const modalElement = document.getElementById('searchModal');
+            modalElement.addEventListener('shown.bs.modal', handler, { once: true });
         }
-    });
+    });    
 
     const buttons = document.querySelectorAll('.category');
 
@@ -197,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
     convertGitBookCodeBlocks(guidesContent);
     convertMarkdownTablesInParagraphs(guidesContent);
     updateBreadcrumbFromSidebar();
+    initTOCInteraction();
 });
 window.addEventListener("load", () => {
     setTimeout(() => {
@@ -317,9 +337,20 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
     }
     if (e.detail.requestConfig) {
         history.pushState({}, "", e.detail.requestConfig.path);
+
         updateCategoryActive();
-        updateBreadcrumbFromSidebar();
+        if (lastClickedElement && lastClickedElement.hasAttribute('data-breadcrumb')) {
+            const breadcrumbHTML = lastClickedElement.getAttribute('data-breadcrumb');
+            const breadcrumbContainer = document.getElementById("breadcrumb-nav");
+            if (breadcrumbContainer) {
+                breadcrumbContainer.innerHTML = breadcrumbHTML;
+                htmx.process(breadcrumbContainer);
+            }
+        }else{
+            updateBreadcrumbFromSidebar();
+        }
     }
+    initTOCInteraction();
 });
 
 document.body.addEventListener("htmx:afterSwap", function (e) {
@@ -451,7 +482,7 @@ const updateCategoryActive = () => {
                     if (btn) {
                         btn.classList.remove('collapsed');
                         btn.classList.add('active');
-                        btn.setAttribute('data-breadcrumb', activeButton.getAttribute('data-breadcrumb'));
+                        // btn.setAttribute('data-breadcrumb', activeButton.getAttribute('data-breadcrumb'));
                     }
                 }
 
@@ -536,17 +567,64 @@ function convertMarkdownTablesInParagraphs(container = document) {
 }
 
 function updateBreadcrumbFromSidebar() {
-    const activeLink = document.querySelector('.category.active, .accordion-button.active');
-    const breadcrumbText = activeLink?.getAttribute('data-breadcrumb');
-    if (breadcrumbText) {
+    // Prefer leaf node over parent
+    let activeLink = document.querySelector('.category.active');
+
+    // Fallback to parent accordion button if needed
+    if (!activeLink) {
+        activeLink = document.querySelector('.accordion-button.active');
+    }
+
+    const breadcrumbHTML = activeLink?.getAttribute('data-breadcrumb');
+
+    if (breadcrumbHTML) {
         const breadcrumbContainer = document.getElementById("breadcrumb-nav");
         if (breadcrumbContainer) {
-            breadcrumbContainer.innerHTML = breadcrumbText
-                .split(" > ")
-                .map((item, index, arr) => {
-                    return `<span class="text--secondary small">${item}</span>`;
-                })
-                .join(` <i class="bi bi-chevron-right mx-1 text-muted small"></i>`);
+            breadcrumbContainer.innerHTML = breadcrumbHTML;
+            htmx.process(breadcrumbContainer);
         }
     }
+}
+
+document.body.addEventListener('htmx:beforeRequest', function (e) {
+    lastClickedElement = e.target.closest('[data-breadcrumb]');
+});
+
+function initTOCInteraction() {
+    const links = document.querySelectorAll(".toc-link");
+    const sections = [...document.querySelectorAll(".guides-docs-content h2, .guides-docs-content h3")];
+
+    // Smooth scroll on link click
+    links.forEach(link => {
+        link.addEventListener("click", e => {
+            e.preventDefault();
+            const id = link.dataset.id;
+            const target = document.getElementById(id);
+            if (target) {
+                window.scrollTo({
+                    top: target.getBoundingClientRect().top + window.scrollY - 100,
+                    behavior: "smooth"
+                });
+            }
+        });
+    });
+
+    // Highlight active heading on scroll
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            const id = entry.target.id;
+            const link = document.querySelector(`.toc-link[data-id="${id}"]`);
+            if (link) {
+                if (entry.isIntersecting) {
+                    document.querySelectorAll(".toc-link").forEach(l => l.classList.remove("active"));
+                    link.classList.add("active");
+                }
+            }
+        });
+    }, {
+        rootMargin: "-30% 0px -60% 0px",
+        threshold: 0.1
+    });
+
+    sections.forEach(section => observer.observe(section));
 }
