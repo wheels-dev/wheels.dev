@@ -40,6 +40,11 @@ component extends="app.Controllers.Controller" {
                     '\1#baseHref#\2\3',
                     "all"
                 );
+
+                var processed = extractHeadingsWithIds(renderedContent);
+                renderedContent = processed.renderedContent;
+                toc = processed.toc;
+
             } else {
                 renderedContent = "<p>Page not found.</p>";
             }
@@ -81,6 +86,11 @@ component extends="app.Controllers.Controller" {
                     '\1#baseHref#\2\3',
                     "all"
                 );
+
+                var processed = extractHeadingsWithIds(renderedContent);
+                renderedContent = processed.renderedContent;
+                toc = processed.toc;
+
                 if(isHtmx()){
                     renderPartial(partial="partials/docsContent");
                 }else{
@@ -235,4 +245,41 @@ component extends="app.Controllers.Controller" {
         // HTMX requests include the HX-Request header
         return StructKeyExists(request.$wheelsheaders, "HX-REQUEST") && request.$wheelsheaders["HX-Request"];
     }
+
+    function extractHeadingsWithIds(required string htmlContent) {
+        var result = {
+            renderedContent = arguments.htmlContent,
+            toc = []
+        };
+
+        var headingPattern = "<h([23])>(.*?)</h\1>";
+        var matches = reMatchNoCase(headingPattern, result.renderedContent);
+        var fullMatch = "";
+        var level = "";
+        var title = "";
+        var id = "";
+        var replacement = "";
+
+        for (var i = 1; i <= arrayLen(matches); i++) {
+            fullMatch = matches[i];
+            level = reFindNoCase("<h([23])>", fullMatch, 1, true).match[2];
+            title = rereplace(fullMatch, "</?h[23]>", "", "all");
+            id = rereplace(lcase(title), "[^a-z0-9]+", "-", "all");
+
+            // Only include in TOC if title doesn't contain "description"
+            if (!findNoCase("description", title)) {
+                arrayAppend(result.toc, {
+                    level: level,
+                    title: trim(title),
+                    id: id
+                });
+            }
+
+            replacement = "<h#level# id=""#id#"">#title#</h#level#>";
+            result.renderedContent = replace(result.renderedContent, fullMatch, replacement, "one");
+        }
+
+        return result;
+    }
+
 }
