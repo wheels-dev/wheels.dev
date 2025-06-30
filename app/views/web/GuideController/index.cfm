@@ -2,7 +2,7 @@
     <div>
         <cfoutput>#includePartial("partials/_searchModal")#</cfoutput>
     </div>
-    <div hx-get="/guides/search-book?format=json" hx-trigger="load" hx-target="#searchIndexHolder" hx-swap="innerHTML"></div>
+    <div <cfoutput>hx-get="/#params.version#/guides/search-book?format=json"</cfoutput> hx-trigger="load" hx-target="#searchIndexHolder" hx-swap="innerHTML"></div>
     <div id="searchIndexHolder" style="display: none;"></div>
     <div class="p-5">
         <div class="row">
@@ -16,7 +16,7 @@
 
             <div class="col-lg-9 col-12 order-lg-last order-first">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-lg-8">
                         <div class="search-trigger d-flex align-items-center gap-2 px-3 mb-3 py-2 border rounded-3 transition-all hover:border-primary cursor-pointer" id="searchTrigger">
                             <i class="bi bi-search text-muted"></i>
                             <span class="flex-grow-1 text-muted">Ask or search...</span>
@@ -26,11 +26,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-lg-4">
                         <div class="select-version" id="select-version">
                             <select name="docs-version" id="docs-version" class="form-select px-3 mb-3 py-2 transition-all hover:border-primary cursor-pointer" aria-label="select-version">
-                                <option value="3.0.0-SNAPSHOT">3.0.0-SNAPSHOT</option>
-                                <option value="2.5.0">2.5.0</option>
+                                <option <cfif params.version eq "3.0.0-SNAPSHOT">selected </cfif> value="3.0.0-SNAPSHOT">3.0.0-SNAPSHOT</option>
+                                <option <cfif params.version eq "2.5.0">selected </cfif> value="2.5.0">2.5.0</option>
                             </select>
                         </div>
                     </div>

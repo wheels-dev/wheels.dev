@@ -5,10 +5,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const urlParams = new URLSearchParams(window.location.search);
     const filePath = urlParams.get("filePath");
+    const version = urlParams.get("version");
 
     if (filePath){
         // Find the matching sidebar link
-        const matchingLink = document.querySelector(`.category[hx-get="/guides/${filePath}"]`);
+        const matchingLink = document.querySelector(`.category[hx-get="/${version}/guides/${filePath}"]`);
         // 1. Remove existing active states and open accordions
         document.querySelectorAll(".category").forEach(link => {
             link.classList.remove("active");
@@ -45,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     parentCollapse = parentCollapse.parentElement.closest(".accordion-collapse");
                 }
             // 3. Replace URL to clean format
-            const cleanUrl = `/guides/${filePath}`;
+            const cleanUrl = `/${version}/guides/${filePath}`;
             window.history.replaceState({}, "", cleanUrl);
         }
     }
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let html = guidesContent.innerHTML;
 
         html = html.replace(/{%\s*hint\s+style=["']?(\w+)["']?\s*%}/gi, function (match, style) {
-            return `<div class="alert alert-${style}"> <i class="bi bi-info-circle"></i>`;
+            return `<div class="alert alert-${style} overflow-x-auto"> <i class="bi bi-info-circle"></i>`;
         });
 
         html = html.replace(/{%\s*endhint\s*%}/gi, '</div>');
@@ -213,6 +214,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (firstElement && firstElement.tagName === "HR") {
         contentForDescription.removeChild(firstElement);
     }
+
+    document.getElementById('docs-version').addEventListener('change', function () {
+        const selectedVersion = this.value;
+        window.location.href = `/${selectedVersion}/guides`;
+    });
+
     convertGitBookCodeBlocks(guidesContent);
     convertMarkdownTablesInParagraphs(guidesContent);
     updateBreadcrumbFromSidebar();
@@ -237,7 +244,7 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
         // Convert GitBook hints to alerts
         let html = guidesContent.innerHTML;
         html = html.replace(/{%\s*hint\s+style=["']?(\w+)["']?\s*%}/gi, (_, style) => {
-            return `<div class="alert alert-${style}"> <i class="bi bi-info-circle"></i>`;
+            return `<div class="alert alert-${style} overflow-x-auto"> <i class="bi bi-info-circle"></i>`;
         });
         html = html.replace(/{%\s*endhint\s*%}/gi, '</div>');
         guidesContent.innerHTML = html;
@@ -367,6 +374,7 @@ document.body.addEventListener("htmx:afterSwap", function (e) {
                 lunrDocs.forEach(doc => this.add(doc));
             });
         } catch (err) {
+
             console.error("Failed to parse search index:", err);
         }
     }
@@ -411,7 +419,7 @@ const renderSearchResults = (results, docs, query) => {
     return results.map(r => {
         const doc = docs.find(d => d.url === r.ref);
         if (!doc) return "";
-        const version = "3.0.0-SNAPSHOT";
+        const version = document.getElementById('docs-version').value;
         return `
         <a hx-get="${doc.url}" hx-swap="innerHTML" hx-trigger="click" hx-target="#main" hx-push-url="true" class="text-decoration-none text-dark cursor-pointer result-item d-block px-3 py-2 border-bottom">
             <div class="d-flex align-items-center justify-content-between">
@@ -602,7 +610,7 @@ function initTOCInteraction() {
             const target = document.getElementById(id);
             if (target) {
                 window.scrollTo({
-                    top: target.getBoundingClientRect().top + window.scrollY - 100,
+                    top: target.getBoundingClientRect().top + window.scrollY - 200,
                     behavior: "smooth"
                 });
             }

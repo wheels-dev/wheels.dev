@@ -6,18 +6,22 @@
                 #renderedContent#
             </div>
         </div>
-        <div class="right-sidebar position-sticky top-16 h-80vh rounded-18 col-lg-3 p-2 border-left bg--input">           
+        <div class="right-sidebar position-sticky top-16 min-h-200 overflow-auto max-h-80vh col-lg-3 border-left">           
             <div>
                 <ul class="toc-list list-unstyled">
+                    <cfset firstActiveSet = false>
                     <cfloop array="#toc#" index="item">
                         <cfif NOT findNoCase("description", item.title)>
+                            <cfset isActive = (!firstActiveSet)>
+                            <cfset firstActiveSet = true>
+                    
                             <li class="toc-item ps-#evaluate(item.level eq 3 ? '3' : '1')#">
-                                <a href="###item.id#" data-id="#item.id#" class="toc-link py-2 d-block text-muted">
+                                <a href="###item.id#" data-id="#item.id#" class="toc-link py-2 d-block text-muted<cfif isActive> active</cfif>">
                                     #item.title#
                                 </a>
                             </li>
                         </cfif>
-                    </cfloop>
+                    </cfloop>                        
                 </ul>
             </div>
         </div>

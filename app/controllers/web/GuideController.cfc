@@ -10,11 +10,12 @@ component extends="app.Controllers.Controller" {
 
     function index(){
         try{
+            param name="params.version" default="3.0.0-snapshot";
             param name="params.filePath" default="";
             var filePath = (len(trim(params.filepath)) > 0)
-            ? expandPath("../guides/#params.filepath#.md")
-            : expandPath("../guides/README.md");
-            var summaryPath = expandPath("../guides/SUMMARY.md");
+            ? expandPath("../docs/#params.version#/guides/#params.filepath#.md")
+            : expandPath("../docs/#params.version#/guides/README.md");
+            var summaryPath = expandPath("../docs/#params.version#/guides/SUMMARY.md");
 
             if (fileExists(filePath)) {
                 var content = fileRead(filePath, "utf-8");
@@ -31,7 +32,7 @@ component extends="app.Controllers.Controller" {
                 var normalizedPath = replace(filePath, "\", "/", "all");
                 var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one");
                 var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/");
-                var baseHref = "/guides/#guideDir#/";
+                var baseHref = "/docs/#params.version#/guides/#guideDir#/";
 
                 // Fix internal <a href=""> links (not starting with http or /)
                 renderedContent = rereplace(
@@ -50,19 +51,22 @@ component extends="app.Controllers.Controller" {
             }
 
             if(fileExists(summaryPath)){
-                sidebar = summaryToJson(summaryPath);
+                sidebar = summaryToJson(summaryPath, params.version);
             }else{
+                writeDump("inner");abort;
                 redirectTo(route="home", error="Page not found.");
             }
         }catch(any e){
+            writeDump(e);abort;
             redirectTo(route="home", error="Something went wrong.");
         }
     }
 
     public function loadGuideDocs(){
         try{
+            param name="params.version" default="3.0.0-snapshot";
             var filepath = params.path;
-                file = expandPath("../guides/#filepath#.md");
+                file = expandPath("../docs/#params.version#/guides/#filepath#.md");
             if(fileExists(file)){
                 var content = fileRead(file, "utf-8");
                 renderedContent = markdownToHtml(content);
@@ -77,7 +81,7 @@ component extends="app.Controllers.Controller" {
                 var normalizedPath = replace(file, "\", "/", "all");
                 var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one"); 
                 var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/"); 
-                var baseHref = "/guides/#guideDir#/";
+                var baseHref = "/docs/#params.version#/guides/#guideDir#/";
 
                 // Fix internal <a href=""> links (not starting with http or /)
                 renderedContent = rereplace(
@@ -94,70 +98,82 @@ component extends="app.Controllers.Controller" {
                 if(isHtmx()){
                     renderPartial(partial="partials/docsContent");
                 }else{
-                    redirectTo(route="load-Guides", params="filePath=#params.path#");
+                    redirectTo(route="load-Guides", params="filePath=#params.path#&version=#params.version#");
                 }
             }else{
                 redirectTo(route="load-Guides", error="Page not found.");
             }
         }catch(any e){
+            writeDump(e);abort;
             redirectTo(route="load-Guides", error="Something went wrong!");
         }
     }
 
     public function generateSearchBook(){
-        try{
-            searchIndex = [];
+        try {
+            baseDocsPath = expandPath("../docs");
+            versionFolders = directoryList(baseDocsPath, false, "path");
 
-            mdFiles = directoryList(expandPath("../guides"), true, "path", "*.md");
-
-            for (file in mdFiles) {
-                fileName = listLast(file, "/");
-
-                // Skip SUMMARY.md
-                if (lcase(fileName) == "summary.md") {
+            for (versionPath in versionFolders) {
+                versionName = listLast(versionPath, "\");
+                
+                guidesPath = versionPath & "/guides";
+                if (!directoryExists(guidesPath)) {
                     continue;
                 }
 
-                mdText = fileRead(file);
-                html = markdownToHtml(mdText);
+                searchIndex = [];
+                mdFiles = directoryList(guidesPath, true, "path", "*.md");
 
-                // Extract first <h1> tag as title
-                h1Match = reFind("<h1[^>]*>(.*?)</h1>", html, 1, true, "perl");
-                title = (arrayLen(h1Match.pos) >= 2 && h1Match.len[2] > 0) ?
-                    mid(html, h1Match.pos[2], h1Match.len[2]) :
-                    "Untitled";
+                for (file in mdFiles) {
+                    fileName = listLast(file, "/");
 
-                // Strip HTML tags for search body content
-                plainText = reReplace(html, "<[^>]+>", " ", "all");
-                cleanBody = reReplace(plainText, "[^A-Za-z0-9 ]", " ", "all");
+                    // Skip SUMMARY.md
+                    if (lcase(fileName) == "summary.md") {
+                        continue;
+                    }
 
-                // Adjust path: remove base and prepend /guides/
-                relativePath = replace(file, "C:\Users\BJS-044\Desktop\wheels\wheels.dev\guides", "", "one");
-                relativePath = replace(relativePath, "getting-started", "readme", "all");
-                relativeUrl = "\guides" & replace(relativePath, ".md", "", "one");
+                    mdText = fileRead(file);
+                    html = markdownToHtml(mdText);
 
-                arrayAppend(searchIndex, {
-                    "title": trim(title),
-                    "body": trim(cleanBody),
-                    "url": relativeUrl
-                });
+                    // Extract first <h1> as title
+                    h1Match = reFind("<h1[^>]*>(.*?)</h1>", html, 1, true, "perl");
+                    title = (arrayLen(h1Match.pos) >= 2 && h1Match.len[2] > 0) ?
+                        mid(html, h1Match.pos[2], h1Match.len[2]) :
+                        "Untitled";
+
+                    // Strip HTML tags for body
+                    plainText = reReplace(html, "<[^>]+>", " ", "all");
+                    cleanBody = reReplace(plainText, "[^A-Za-z0-9 ]", " ", "all");
+
+                    // Create relative URL path
+                    relativePath = replace(file, baseDocsPath, "", "one");
+                    if(versionName != "2.5.0"){
+                        relativePath = replace(relativePath, "getting-started", "readme", "all");
+                    }
+                    relativeUrl = replace(relativePath, ".md", "", "one");
+
+                    arrayAppend(searchIndex, {
+                        "title": trim(title),
+                        "body": trim(cleanBody),
+                        "url": replace(relativeUrl, "\", "/", "all") // ensure URL is web-friendly
+                    });
+                }
+
+                // Write JSON to version folder
+                targetPath = versionPath & "/guides/search_index.json";
+                fileWrite(targetPath, serializeJSON(searchIndex, true));
             }
 
-            targetPath = expandPath("../guides/search_index.json");
-            targetDir = getDirectoryFromPath(targetPath);
-
-            // Now write the file
-            fileWrite(targetPath, serializeJSON(searchIndex, true));
-            renderText("Search indexes generated successfully!");
-
-        }catch(any e){
-            renderText("Error :" & e.message);
+            renderText("Search indexes generated for all versions successfully!");
         }
-
+        catch (any e) {
+            renderText("Error: " & e.message & " at " & e.tagContext[1].template & ":" & e.tagContext[1].line);
+        }
     }
 
     public function getSearchBook(){
-        searchData = fileRead(expandPath("../guides/search_index.json"));
+        searchData = fileRead(expandPath("../docs/#params.version#/guides/search_index.json"));
         return deserializeJSON(searchData);
     } 
 
@@ -165,7 +181,7 @@ component extends="app.Controllers.Controller" {
 		redirectTo(route="home");
 	}
 
-    private function summaryToJson(required string summaryPath){
+    private function summaryToJson(required string summaryPath, required string version) {
         var result = [];
         var currentSection = {};
         var stack = [];
@@ -173,7 +189,11 @@ component extends="app.Controllers.Controller" {
         var lines = fileRead(arguments.summaryPath).listToArray(chr(10));
 
         for (var i = 1; i <= arrayLen(lines); i++) {
-            var line = trim(lines[i]);
+            var rawLine = lines[i];
+            var line = trim(rawLine);
+
+            // Normalize tabs to 2 spaces
+            rawLine = replace(rawLine, chr(9), "  ", "all");
 
             // Match section headers like ## INTRODUCTION
             if (reFind("^##{2,6}\s+(.+)", line)) {
@@ -183,41 +203,45 @@ component extends="app.Controllers.Controller" {
                     "children": []
                 };
                 arrayAppend(result, currentSection);
-                stack = []; // Reset stack for new section
+                stack = []; // Reset nesting stack
                 continue;
             }
 
             // Match markdown list items with links: * [Title](path.md)
             if (reFind("\*\s*\[([^\]]+)\]\(([^)]+)\)", line)) {
-                var indent = len(lines[i]) - len(trim(lines[i]));
+                // Option 1: Indent by space count (assume 2 spaces per level)
+                var indent = len(rawLine) - len(trim(rawLine));
+                var level = int(indent / 2);
 
+                // Extract title and path
                 var title = reReplace(line, ".*\[\[?([^\]]+)\]\]?\([^)]+\).*", "\1", "all");
                 var path = reReplace(line, ".*\[[^\]]+\]\(([^)]+)\).*", "\1", "all");
-                    if (!reFind("^https?://", path)) {
-                        path = reReplace(path, "\.md$", "", "all");
-                        path = "/guides/" & path;
-                    }
+
+                // Convert relative path to full versioned path
+                if (!reFind("^https?://", path)) {
+                    path = reReplace(path, "\.md$", "", "all");
+                    path = "/#version#/guides/" & path;
+                }
+
                 var node = {
                     "title": title,
                     "path": path,
                     "children": []
                 };
 
-                if (indent eq 0) {
-                    // Direct child of current section
+                if (level eq 0) {
+                    // Direct child of section
                     if (!structIsEmpty(currentSection)) {
                         arrayAppend(currentSection.children, node);
-                        stack = [node];
                     } else {
-                        // No section yet, add directly to result
                         arrayAppend(result, node);
-                        stack = [node];
                     }
+                    stack = [node]; // Reset stack
                 } else {
-                    // Find correct parent based on indentation level
+                    // Find correct parent based on nesting level
                     var parentIndex = arrayLen(stack);
                     while (parentIndex > 0) {
-                        if (indent > (parentIndex * 2)) {
+                        if (level > (parentIndex - 1)) {
                             break;
                         }
                         arrayDeleteAt(stack, parentIndex);
@@ -232,7 +256,7 @@ component extends="app.Controllers.Controller" {
                         arrayAppend(result, node);
                     }
 
-                    arrayAppend(stack, node);
+                    arrayAppend(stack, node); // Push to stack for next children
                 }
             }
         }
