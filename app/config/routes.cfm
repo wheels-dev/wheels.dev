@@ -104,11 +104,12 @@
 			.get(name = "error403", pattern = "error403", to = "errorController##error403")
 
 			// guides
-			.get(name = "load-Guides", pattern = "guides", to = "web.GuideController##index")
-			.get(name = "load-guide-docs", pattern = "guides/search", to = "web.GuideController##searchDocs")
-			.get(name = "load-guide-search-index", pattern = "guides/search-book", to = "web.GuideController##getSearchBook")
+			.get(name = "load-Guides", pattern = "/guides", to = "web.GuideController##index")
+			.get(name = "load-Guides-WRT-version", pattern = "*[version]/guides", to = "web.GuideController##index")
+			.get(name = "load-guide-search-index", pattern = "*[version]/guides/search-book", to = "web.GuideController##getSearchBook")
 			.get(name = "generate-search-guide", pattern = "guides/generate-search", to = "web.GuideController##generateSearchBook")
-			.get(name = "load-guide-docs", pattern = "guides/*[path]", to = "web.GuideController##loadGuideDocs")
+			.get(name = "load-guide-docs", pattern = "/guides/*[path]", to = "web.GuideController##loadGuideDocs")
+			.get(name = "load-guide-docs-WRT-version", pattern = "*[version]/guides/*[path]", to = "web.GuideController##loadGuideDocs")
 		.namespace("admin")
 			// Admin Controls
 			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")
