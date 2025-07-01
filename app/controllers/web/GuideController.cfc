@@ -123,15 +123,17 @@ component extends="app.Controllers.Controller" {
                 mdFiles = directoryList(guidesPath, true, "path", "*.md");
 
                 for (file in mdFiles) {
-                    fileName = listLast(file, "/");
+                    fileName = listLast(file, "\");
 
                     // Skip SUMMARY.md
                     if (lcase(fileName) == "summary.md") {
                         continue;
                     }
 
-                    mdText = fileRead(file);
+                    mdText = fileRead(file, "utf-8");
                     html = markdownToHtml(mdText);
+                    // Remove all <img> tags
+                    html = reReplace(html, "<img\b[^>]*>", "", "all");
 
                     // Extract first <h1> as title
                     h1Match = reFind("<h1[^>]*>(.*?)</h1>", html, 1, true, "perl");
@@ -152,7 +154,7 @@ component extends="app.Controllers.Controller" {
 
                     arrayAppend(searchIndex, {
                         "title": trim(title),
-                        "body": trim(cleanBody),
+                        "body": toBase64(html),
                         "url": replace(relativeUrl, "\", "/", "all") // ensure URL is web-friendly
                     });
                 }
