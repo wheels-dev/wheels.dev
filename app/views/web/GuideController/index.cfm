@@ -6,7 +6,7 @@
     <div id="searchIndexHolder" style="display: none;"></div>
     <div class="p-5">
         <div class="row">
-            <div class="col-lg-3 col-12 mb-lg-0 mb-5 order-lg-first order-last">
+            <div class="col-lg-3 col-12 mb-lg-0 mb-5 mt-3 mt-lg-0 order-lg-first order-last">
                 <div class="bg-white p-3 rounded-18 position-sticky top-16 no-scrollbar h-80vh overflow-y-auto">
                     <div class="accordion space-y-3" id="guidesAccordion">
                         <cfoutput>#includePartial("partials/sidebar")#</cfoutput>
