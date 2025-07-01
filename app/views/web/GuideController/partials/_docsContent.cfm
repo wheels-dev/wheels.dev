@@ -6,7 +6,7 @@
                 #renderedContent#
             </div>
         </div>
-        <div class="right-sidebar position-sticky top-16 min-h-200 overflow-auto max-h-80vh col-lg-3 border-left">           
+        <div class="right-sidebar d-none d-lg-block position-sticky fs-14 top-16 min-h-200 overflow-auto max-h-80vh col-lg-3 border-left">           
             <div>
                 <ul class="toc-list list-unstyled">
                     <cfset firstActiveSet = false>
@@ -16,7 +16,7 @@
                             <cfset firstActiveSet = true>
                     
                             <li class="toc-item ps-#evaluate(item.level eq 3 ? '3' : '1')#">
-                                <a href="###item.id#" data-id="#item.id#" class="toc-link py-2 d-block text-muted<cfif isActive> active</cfif>">
+                                <a href="###item.id#" data-id="#item.id#" class="toc-link font-montserrat py-2 d-block text-muted<cfif isActive> active</cfif>">
                                     #item.title#
                                 </a>
                             </li>

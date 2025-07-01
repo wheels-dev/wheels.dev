@@ -568,7 +568,12 @@ function convertMarkdownTablesInParagraphs(container = document) {
                     table.appendChild(tr);
                 });
 
-                p.replaceWith(table);
+                // Wrap table in a div
+                const wrapper = document.createElement("div");
+                wrapper.classList.add("overflow-x-auto");
+                wrapper.appendChild(table);
+
+                p.replaceWith(wrapper);
             }
         }
     });
