@@ -53,11 +53,9 @@ component extends="app.Controllers.Controller" {
             if(fileExists(summaryPath)){
                 sidebar = summaryToJson(summaryPath, params.version);
             }else{
-                writeDump("inner");abort;
                 redirectTo(route="home", error="Page not found.");
             }
         }catch(any e){
-            writeDump(e);abort;
             redirectTo(route="home", error="Something went wrong.");
         }
     }
@@ -104,7 +102,6 @@ component extends="app.Controllers.Controller" {
                 redirectTo(route="load-Guides", error="Page not found.");
             }
         }catch(any e){
-            writeDump(e);abort;
             redirectTo(route="load-Guides", error="Something went wrong!");
         }
     }
