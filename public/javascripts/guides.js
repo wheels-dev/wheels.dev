@@ -365,6 +365,17 @@ document.body.addEventListener("htmx:afterSwap", function (e) {
     if (e.target.id === "searchIndexHolder") {
         try {
             lunrDocs = JSON.parse(e.target.innerText);
+            // Decode HTML from base64
+            lunrDocs.forEach(doc => {
+                // Decode base64 HTML
+                const decodedHtml = atob(doc.body);
+                doc.bodyHtml = decodedHtml; // Keep original HTML if needed
+
+                // Convert to plain text
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = decodedHtml;
+                doc.body = tempDiv.textContent || tempDiv.innerText || ""; // 🔄 overwrite `doc.body` with clean text
+            });
 
             // Build lunr index
             lunrIndex = lunr(function () {
@@ -402,7 +413,12 @@ document.getElementById("searchDocs").addEventListener("input", function (e) {
         if (results.length === 0) {
             resultsContainer.innerHTML = `<p class="text-muted">No results found.</p>`;
         } else {
-            resultsContainer.innerHTML = renderSearchResults(results, lunrDocs, query);
+            const exactResults = results.filter(r => {
+                const doc = lunrDocs.find(d => d.url === r.ref); // lookup actual content
+                if (!doc) return false;
+                return doc.body.toLowerCase().includes(query.toLowerCase());
+            });
+            resultsContainer.innerHTML = renderSearchResults(exactResults, lunrDocs, query);
             htmx.process(resultsContainer);
         }
 
@@ -419,24 +435,89 @@ const renderSearchResults = (results, docs, query) => {
     return results.map(r => {
         const doc = docs.find(d => d.url === r.ref);
         if (!doc) return "";
+
         const version = document.getElementById('docs-version').value;
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(doc.body, 'text/html');
+
+        const matchData = r.matchData;
+        let matchedTerm = null;
+
+        // Get first matched term
+        for (const field in matchData.metadata) {
+            const terms = matchData.metadata[field];
+            for (const term in terms) {
+                matchedTerm = term;
+                break;
+            }
+            if (matchedTerm) break;
+        }
+
+        let snippet = '';
+        if (matchedTerm) {
+            const textContent = htmlDoc.body.textContent.toLowerCase();
+            const matchIndex = textContent.indexOf(matchedTerm.toLowerCase());
+
+            if (matchIndex !== -1) {
+                // Walk through elements to find the nearest heading before the match
+                const walker = document.createTreeWalker(htmlDoc.body, NodeFilter.SHOW_ELEMENT, null, false);
+                let node = walker.currentNode;
+                let nearestHeading = null;
+                let totalCharCount = 0;
+
+                while (node = walker.nextNode()) {
+                    const nodeText = node.textContent || '';
+                    const nextCharCount = totalCharCount + nodeText.length;
+
+                    if (nextCharCount > matchIndex) {
+                        break;
+                    }
+
+                    if (/^H[2-3]$/.test(node.tagName)) {
+                        nearestHeading = node;
+                    }
+
+                    totalCharCount = nextCharCount;
+                }
+
+                if (nearestHeading) {
+                    let snippetNodes = [nearestHeading.outerHTML];
+
+                    // Collect some following text content
+                    let following = nearestHeading.nextElementSibling;
+                    while (following && snippetNodes.join('').length < 300) {
+                        snippetNodes.push(following.outerHTML);
+                        following = following.nextElementSibling;
+                    }
+
+                    const rawSnippet = snippetNodes.join('');
+                    snippet = highlightMatch(rawSnippet, query);
+                }
+            }
+        }
+
+        if (!snippet) {
+            snippet = highlightMatch(doc.body.slice(0, 200), query);
+        }
         return `
-        <a hx-get="${doc.url}" hx-swap="innerHTML" hx-trigger="click" hx-target="#main" hx-push-url="true" class="text-decoration-none text-dark cursor-pointer result-item d-block px-3 py-2 border-bottom">
+        <a hx-get="${doc.url}" hx-swap="innerHTML" hx-trigger="click" hx-target="#main" hx-push-url="true"
+           class="text-decoration-none text-dark cursor-pointer result-item d-block px-3 py-2 border-bottom">
             <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-start gap-2">
-                <i class="bi bi-file-earmark-text text-muted bold mt-3"></i>
-                <div>
-                <small class="text-muted">${version}</small>
-                <div class="fw-semibold">${highlightMatch(doc.title, query)}</div>
-                <div class="small text-muted">${highlightMatch(doc.body.slice(0, 100), query)}...</div>
+                <div class="d-flex align-items-start gap-2">
+                    <i class="bi bi-file-earmark-text text-muted bold mt-3"></i>
+                    <div>
+                        <small class="text-muted">${version}</small>
+                        <div class="fw-semibold">${highlightMatch(doc.title, query)}</div>
+                        <div class="small text-muted">${snippet}...</div>
+                    </div>
                 </div>
-            </div>
-            <i class="bi bi-chevron-right text-muted align-self-center"></i>
+                <i class="bi bi-chevron-right text-muted align-self-center"></i>
             </div>
         </a>
         `;
     }).join("");
 };
+
 
 const updateCategoryActive = () => {
     const currentPath = window.location.pathname;
