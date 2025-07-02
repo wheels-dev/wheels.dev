@@ -10,18 +10,20 @@
             <div>
                 <ul class="toc-list list-unstyled">
                     <cfset firstActiveSet = false>
-                    <cfloop array="#toc#" index="item">
-                        <cfif NOT findNoCase("description", item.title)>
-                            <cfset isActive = (!firstActiveSet)>
-                            <cfset firstActiveSet = true>
-                    
-                            <li class="toc-item ps-#evaluate(item.level eq 3 ? '3' : '1')#">
-                                <a href="###item.id#" data-id="#item.id#" class="toc-link font-montserrat py-2 d-block text-muted<cfif isActive> active</cfif>">
-                                    #item.title#
-                                </a>
-                            </li>
-                        </cfif>
-                    </cfloop>                        
+                    <cfif isDefined("toc")>
+                        <cfloop array="#toc#" index="item">
+                            <cfif NOT findNoCase("description", item.title)>
+                                <cfset isActive = (!firstActiveSet)>
+                                <cfset firstActiveSet = true>
+                        
+                                <li class="toc-item ps-#evaluate(item.level eq 3 ? '3' : '1')#">
+                                    <a href="###item.id#" data-id="#item.id#" class="toc-link font-montserrat py-2 d-block text-muted<cfif isActive> active</cfif>">
+                                        #item.title#
+                                    </a>
+                                </li>
+                            </cfif>
+                        </cfloop>                        
+                    </cfif>
                 </ul>
             </div>
         </div>
