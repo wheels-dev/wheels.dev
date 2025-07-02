@@ -29,7 +29,7 @@
                     <div class="col-lg-4">
                         <div class="select-version" id="select-version">
                             <select name="docs-version" id="docs-version" class="form-select px-3 mb-3 py-2 transition-all hover:border-primary cursor-pointer" aria-label="select-version">
-                                <option <cfif params.version eq "3.0.0-SNAPSHOT">selected </cfif> value="3.0.0-SNAPSHOT">3.0.0-SNAPSHOT</option>
+                                <option <cfif params.version eq "3.0.0">selected </cfif> value="3.0.0">3.0.0</option>
                                 <option <cfif params.version eq "2.5.0">selected </cfif> value="2.5.0">2.5.0</option>
                             </select>
                         </div>
