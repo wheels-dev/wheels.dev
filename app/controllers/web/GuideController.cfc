@@ -10,7 +10,7 @@ component extends="app.Controllers.Controller" {
 
     function index(){
         try{
-            param name="params.version" default="3.0.0-snapshot";
+            param name="params.version" default="3.0.0";
             param name="params.filePath" default="";
             var filePath = (len(trim(params.filepath)) > 0)
             ? expandPath("../docs/#params.version#/guides/#params.filepath#.md")
@@ -62,7 +62,7 @@ component extends="app.Controllers.Controller" {
 
     public function loadGuideDocs(){
         try{
-            param name="params.version" default="3.0.0-snapshot";
+            param name="params.version" default="3.0.0";
             var filepath = params.path;
                 file = expandPath("../docs/#params.version#/guides/#filepath#.md");
             if(fileExists(file)){
