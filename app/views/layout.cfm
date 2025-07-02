@@ -561,9 +561,14 @@
 					</div>
 				</div>
 			</nav>
-
+			<script src="/js/notifier.min.js"></script>
 			<cfoutput>
-				#flashMessages()#
+				<cfif flashMessages() neq "">
+					<script>
+						const html = '#flashMessages()#';
+					</script>
+					<script src="/js/flashMessage.js"></script>
+				</cfif>
 				#includeContent()#
 			</cfoutput>
 
@@ -730,7 +735,6 @@
 			</footer>
 			<script src="/js/swiper.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
-			<script src="/js/notifier.min.js"></script>
 			<script src="/js/global.js"></script>
 		</body>
 	</html>

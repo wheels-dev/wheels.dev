@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     parentCollapse = parentCollapse.parentElement.closest(".accordion-collapse");
                 }
             // 3. Replace URL to clean format
-            const cleanUrl = `/${version}/guides/${filePath}`;
+            const cleanUrl = `/${version}/guides/${filePath}${window.location.hash}`;
             window.history.replaceState({}, "", cleanUrl);
         }
     }
@@ -662,8 +662,17 @@ function convertMarkdownTablesInParagraphs(container = document) {
 
 function updateBreadcrumbFromSidebar() {
     // Prefer leaf node over parent
-    let activeLink = document.querySelector('.category.active');
+    const activeLinks = Array.from(document.querySelectorAll('.category.active'));
 
+    // Prefer the one with the longest breadcrumb (most depth)
+    let activeLink = activeLinks
+        .filter(link => link.hasAttribute('data-breadcrumb'))
+        .sort((a, b) => {
+            const aDepth = (a.getAttribute('data-breadcrumb') || '').split('/').length;
+            const bDepth = (b.getAttribute('data-breadcrumb') || '').split('/').length;
+            return bDepth - aDepth; // deeper breadcrumb comes first
+        })[0]; 
+    
     // Fallback to parent accordion button if needed
     if (!activeLink) {
         activeLink = document.querySelector('.accordion-button.active');
@@ -699,6 +708,8 @@ function initTOCInteraction() {
                     top: target.getBoundingClientRect().top + window.scrollY - 200,
                     behavior: "smooth"
                 });
+                // Update the URL with the hash
+                window.history.pushState(null, "", `#${id}`);
             }
         });
     });
