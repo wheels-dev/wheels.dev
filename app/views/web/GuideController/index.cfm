@@ -1,4 +1,9 @@
 <main class="main-bg">
+    <div id="globalPageLoader" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white" style="z-index: 5;">
+        <div class="spinner-border text--primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     <div>
         <cfoutput>#includePartial("partials/_searchModal")#</cfoutput>
     </div>
@@ -39,11 +44,6 @@
                     <cfoutput>
                         #includePartial("partials/docsContent")#
                     </cfoutput>
-                    <div id="globalPageLoader" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white" style="z-index: 5;">
-                        <div class="spinner-border text--primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
