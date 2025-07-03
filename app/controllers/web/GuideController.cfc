@@ -23,8 +23,8 @@ component extends="app.Controllers.Controller" {
                 // Replace GitBook asset paths in <img> tags
                 renderedContent = rereplace(
                     renderedContent,
-                    '(<img[^>]+src=["'']?)(\.?/)?\.gitbook/assets/([^"''>]+)(["'']?)',
-                    '\1/img/\3\4',
+                    '(?i)(<img[^>]+src=["''])[^"''>]*?\.gitbook/assets/([^"''>]+)(["''])',
+                    '\1/img/\2\3',
                     "all"
                 );
 
@@ -70,8 +70,8 @@ component extends="app.Controllers.Controller" {
                 renderedContent = markdownToHtml(content);
                 renderedContent = rereplace(
                     renderedContent,
-                    '(<img[^>]+src=["'']?)(\.?/)?\.gitbook/assets/([^"''>]+)(["'']?)',
-                    '\1/img/\3\4',
+                    '(?i)(<img[^>]+src=["''])[^"''>]*?\.gitbook/assets/([^"''>]+)(["''])',
+                    '\1/img/\2\3',
                     "all"
                 );
 
