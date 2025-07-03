@@ -358,6 +358,9 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
         }
     }
     initTOCInteraction();
+    if (e.target.id === "main") {
+        window.scrollTo({ top: 0, behavior: "instant" }); // or "smooth"
+    }
 });
 
 document.body.addEventListener("htmx:afterSettle", function (e) {
