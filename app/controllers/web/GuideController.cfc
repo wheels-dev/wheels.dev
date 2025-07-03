@@ -172,7 +172,7 @@ component extends="app.Controllers.Controller" {
     }
 
     public function getSearchBook(){
-        searchData = fileRead(expandPath("../docs/#params.version#/guides/search_index.json"));
+        searchData = fileRead(expandPath("../#params.version#/guides/search_index.json"));
         return deserializeJSON(searchData);
     } 
 
