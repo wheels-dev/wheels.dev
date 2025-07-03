@@ -360,7 +360,7 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
     initTOCInteraction();
 });
 
-document.body.addEventListener("htmx:afterSwap", function (e) {
+document.body.addEventListener("htmx:afterSettle", function (e) {
     // Only proceed if we're loading the search index
     if (e.target.id === "searchIndexHolder") {
         try {
