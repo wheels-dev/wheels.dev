@@ -40,10 +40,17 @@
                         </div>
                     </div>
                 </div>
-                <div id="main">
-                    <cfoutput>
-                        #includePartial("partials/docsContent")#
-                    </cfoutput>
+                <div class="position-relative">
+                    <div id="PageLoader" class="d-none position-absolute top-20 start-50 d-flex align-items-center justify-content-center">
+                        <div class="spinner-border text--primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="main">
+                        <cfoutput>
+                            #includePartial("partials/docsContent")#
+                        </cfoutput>
+                    </div>
                 </div>
             </div>
         </div>

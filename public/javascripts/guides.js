@@ -334,6 +334,7 @@ document.body.addEventListener('htmx:beforeSwap', function (e) {
 
         // Prevent default swap
         e.preventDefault();
+        document.getElementById("PageLoader").classList.add("d-none");
         const modal = bootstrap.Modal.getInstance(document.getElementById("searchModal"));
         document.getElementById("searchDocs").value="";
         document.getElementById("result").innerHTML=`
@@ -534,6 +535,16 @@ const updateCategoryActive = () => {
             activeButton = btn;
         } else {
             btn.classList.remove('active');
+            if (btn.classList.contains('accordion-button')) {
+                btn.classList.add('collapsed');
+                btn.setAttribute('aria-expanded', 'false');
+                // Also collapse associated .accordion-collapse
+                const accordionItem = btn.closest('.accordion-item');
+                const collapse = accordionItem?.querySelector('.accordion-collapse');
+                if (collapse) {
+                    collapse.classList.remove('show');
+                }
+            }
         }
     });
 
@@ -694,6 +705,17 @@ function updateBreadcrumbFromSidebar() {
 
 document.body.addEventListener('htmx:beforeRequest', function (e) {
     lastClickedElement = e.target.closest('[data-breadcrumb]');
+    const target = e.target;
+    // Show loader only for main content load
+    if (target && target.getAttribute("hx-target") === "#main") {
+        const main = document.getElementById("main");
+            main.style.minHeight = main.offsetHeight + "px"; // prevent layout jump
+            main.innerHTML = ""; // clear content
+            main.classList.add("bg-white");
+            main.classList.add("rounded-18");
+        window.scrollTo({ top: 0, behavior: "instant" });
+        document.getElementById("PageLoader").classList.remove("d-none");
+    }
 });
 
 function initTOCInteraction() {
@@ -736,3 +758,6 @@ function initTOCInteraction() {
 
     sections.forEach(section => observer.observe(section));
 }
+window.addEventListener("popstate", function(e) {
+    location.reload();
+});
