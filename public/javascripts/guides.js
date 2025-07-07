@@ -405,7 +405,7 @@ document.getElementById("searchDocs").addEventListener("input", function (e) {
 
     const query = e.target.value;
 
-    if (!lunrIndex || query.length === 0) {
+    if (!lunrIndex || query.length < 2) {
         loader.style.display = "none";
         return;
     }
@@ -708,11 +708,9 @@ document.body.addEventListener('htmx:beforeRequest', function (e) {
     const target = e.target;
     // Show loader only for main content load
     if (target && target.getAttribute("hx-target") === "#main") {
-        const main = document.getElementById("main");
+        const main = document.getElementById("docs-content");
             main.style.minHeight = main.offsetHeight + "px"; // prevent layout jump
-            main.innerHTML = ""; // clear content
-            main.classList.add("bg-white");
-            main.classList.add("rounded-18");
+            main.innerHTML = "";
         window.scrollTo({ top: 0, behavior: "instant" });
         document.getElementById("PageLoader").classList.remove("d-none");
     }
