@@ -1,5 +1,5 @@
 <cfoutput>
-    <div class="row p-3 rounded-18 bg-white scrollbar-overlay">
+    <div id="docs-content" class="row p-3 rounded-18 bg-white scrollbar-overlay">
         <div class="docs-content col-lg-9">
             <div id="breadcrumb-nav" class="mb-2 text-uppercase fw-semibold small"></div>
             <div class="guides-docs-content">
