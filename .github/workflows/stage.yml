@@ -85,4 +85,4 @@ jobs:
         id: Deploy-to-Docker-Swarm
         run: |
           docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
-          docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-stage
+          docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-stage --force
