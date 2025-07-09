@@ -48,7 +48,17 @@
 		<cfset apiPath = listLast(pathInfo, "/")>
 		<cfset pageTitle = apiPath & " - Wheels API ">
 	</cfif>
-
+	<cfif isGuideDocs>
+		<cfif find("2.5.0", pathInfo)>
+			<cfset version = "2.5.0">
+		<cfelse>
+			<cfset version = "3.0.0">
+		</cfif>
+		<cfset pageTitle = "Getting Started with Wheels | App Development Guide #version#">
+		<cfset ogTitle = pageTitle>
+		<cfset metaDescription = "Quickly set up and build applications with the Wheels framework. This guide covers CommandBox integration, Wheels CLI, and efficient development for version #version#">
+		<cfset ogDescription = metaDescription>
+	</cfif>
 	<cfif isDocs>
 		<cfset docsPath = listLast(pathInfo, "/")>
 		<cfset docsPath = uCase(left(docsPath, 1)) & mid(docsPath, 2)>
