@@ -291,7 +291,7 @@ component extends="app.Controllers.Controller" {
             );
             
             // Get all public URLs that should be in sitemap
-            var urls = [];
+            urls = [];
             
             // Add static pages
             arrayAppend(urls, {
@@ -364,7 +364,42 @@ component extends="app.Controllers.Controller" {
                     priority: "0.7"
                 });
             }
-            
+            // Add guide pages from /docs/*/guides/summary.md
+            var docsPath = expandPath("../docs");
+            var allEntries = directoryList(docsPath, false, "name");
+            var docVersions = [];
+
+            for (var entry in allEntries) {
+                if (directoryExists(docsPath & "/" & entry)) {
+                    arrayAppend(docVersions, entry);
+                }
+            }
+            for (version in docVersions) {
+                var summaryFilePath = docsPath & "/" & version & "/guides/summary.md";
+                if (fileExists(summaryFilePath)) {
+                    var summaryData = summaryToJson(summaryFilePath, version);
+                    function collectGuideUrls(nodes) {
+                        for (var node in nodes) {
+                            if (structKeyExists(node, "path")) {
+                                if (!reFind("^https?://", node.path)) {
+                                    var loc = replace(node.path, "#version#", version, "all");
+                                    arrayAppend(urls, {
+                                        loc: getBaseUrl() & loc,
+                                        lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                                        changefreq: "weekly",
+                                        priority: "0.7"
+                                    });
+                                }
+                            }
+                            if (arrayLen(node.children)) {
+                                collectGuideUrls(node.children);
+                            }
+                        }
+                    }
+
+                    collectGuideUrls(summaryData);
+                }
+            }
             // Add other public pages
             var publicPages = [
                 "/blog",
@@ -385,7 +420,8 @@ component extends="app.Controllers.Controller" {
                 "/verify",
                 "/api",
                 "/blog/feed",
-                "/comment/feed"
+                "/comment/feed",
+                "/guides"
             ];
             
             for (var page in publicPages) {
@@ -445,6 +481,7 @@ component extends="app.Controllers.Controller" {
             renderText(text="Sitemap generated successfully! <a href='/sitemap.xml'>View Sitemap</a>");
             
         } catch (any e) {
+            writeDump(e);abort;
             model("Log").log(
                 category = "wheels.seo",
                 level = "ERROR",
@@ -466,5 +503,88 @@ component extends="app.Controllers.Controller" {
 
     private string function getBaseUrl() {
        return application.env.application_host;
+    }
+
+    private function summaryToJson(required string summaryPath, required string version) {
+        var result = [];
+        var currentSection = {};
+        var stack = [];
+
+        var lines = fileRead(arguments.summaryPath).listToArray(chr(10));
+
+        for (var i = 1; i <= arrayLen(lines); i++) {
+            var rawLine = lines[i];
+            var line = trim(rawLine);
+
+            // Normalize tabs to 2 spaces
+            rawLine = replace(rawLine, chr(9), "  ", "all");
+
+            // Match section headers like ## INTRODUCTION
+            if (reFind("^##{2,6}\s+(.+)", line)) {
+                var title = reReplace(line, "^##{2,6}\s+(.+)", "\1", "all");
+                currentSection = {
+                    "title": title,
+                    "children": []
+                };
+                arrayAppend(result, currentSection);
+                stack = []; // Reset nesting stack
+                continue;
+            }
+
+            // Match markdown list items with links: * [Title](path.md)
+            if (reFind("\*\s*\[([^\]]+)\]\(([^)]+)\)", line)) {
+                // Option 1: Indent by space count (assume 2 spaces per level)
+                var indent = len(rawLine) - len(trim(rawLine));
+                var level = int(indent / 2);
+
+                // Extract title and path
+                var title = reReplace(line, ".*\[\[?([^\]]+)\]\]?\([^)]+\).*", "\1", "all");
+                var path = reReplace(line, ".*\[[^\]]+\]\(([^)]+)\).*", "\1", "all");
+
+                // Convert relative path to full versioned path
+                if (!reFind("^https?://", path)) {
+                    path = reReplace(path, "\.md$", "", "all");
+                    path = "/#version#/guides/" & path;
+                }
+
+                var node = {
+                    "title": title,
+                    "path": path,
+                    "children": []
+                };
+
+                if (level eq 0) {
+                    // Direct child of section
+                    if (!structIsEmpty(currentSection)) {
+                        arrayAppend(currentSection.children, node);
+                    } else {
+                        arrayAppend(result, node);
+                    }
+                    stack = [node]; // Reset stack
+                } else {
+                    // Find correct parent based on nesting level
+                    var parentIndex = arrayLen(stack);
+                    while (parentIndex > 0) {
+                        if (level > (parentIndex - 1)) {
+                            break;
+                        }
+                        arrayDeleteAt(stack, parentIndex);
+                        parentIndex--;
+                    }
+
+                    if (parentIndex > 0) {
+                        arrayAppend(stack[parentIndex].children, node);
+                    } else if (!structIsEmpty(currentSection)) {
+                        arrayAppend(currentSection.children, node);
+                    } else {
+                        arrayAppend(result, node);
+                    }
+
+                    arrayAppend(stack, node); // Push to stack for next children
+                }
+            }
+        }
+
+        return result;
     }
 }
