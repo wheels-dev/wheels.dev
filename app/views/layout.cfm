@@ -49,6 +49,49 @@
 		<cfset pageTitle = apiPath & " - Wheels API ">
 	</cfif>
 
+	<cfif isGuideDocs>
+		<cfif structKeyExists(url, "version")>
+			<cfset version = url.version>
+		<cfelse>
+			<cfset version = "3.0.0">
+		</cfif>
+		<cfif structKeyExists(url, "filePath") AND len(trim(url.filePath))>
+			<!--- Split the path and clean it up --->
+			<cfset pathParts = listToArray(url.filePath, "/")>
+			
+			<!--- Remove any blank or readme entries --->
+			<cfset cleanedParts = []>
+			<cfloop array="#pathParts#" index="part">
+				<cfif len(trim(part)) GT 0 AND lcase(part) NEQ "readme">
+					<cfset arrayAppend(cleanedParts, part)>
+				</cfif>
+			</cfloop>
+
+			<!--- Check if we have at least 1 usable segment --->
+			<cfif arrayLen(cleanedParts)>
+				<!--- Use last valid segment --->
+				<cfset lastPart = cleanedParts[arrayLen(cleanedParts)]>
+				<cfset cleanTitle = replace(lastPart, "-", " ", "all")>
+				<cfset cleanTitle = reReplace(cleanTitle, "\b(\w)", "\u\1", "all")>
+
+				<cfset pageTitle = "Wheels #cleanTitle# | App Development Guide #version#">
+				<cfset metaDescription = "Wheels #cleanTitle# guide for version #version#. Learn how to implement and understand this part of the framework with practical examples.">
+			<cfelse>
+				<!--- Fallback if only readme or empty path --->
+				<cfset pageTitle = "Getting Started with Wheels | App Development Guide #version#">
+				<cfset metaDescription = "Quickly set up and build applications with the Wheels framework. This guide covers CommandBox integration, Wheels CLI, and efficient development for version #version#">
+			</cfif>
+		<cfelse>
+			<!--- No filePath provided --->
+			<cfset pageTitle = "Getting Started with Wheels | App Development Guide #version#">
+			<cfset metaDescription = "Quickly set up and build applications with the Wheels framework. This guide covers CommandBox integration, Wheels CLI, and efficient development for version #version#">
+		</cfif>
+
+		<!--- Set OG tags --->
+		<cfset ogTitle = pageTitle>
+		<cfset ogDescription = metaDescription>
+	</cfif>
+
 	<cfif isDocs>
 		<cfset docsPath = listLast(pathInfo, "/")>
 		<cfset docsPath = uCase(left(docsPath, 1)) & mid(docsPath, 2)>
