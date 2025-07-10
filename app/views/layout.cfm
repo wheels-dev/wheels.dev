@@ -5,6 +5,7 @@
 	<cfset isHome = (pathInfo EQ "" OR pathInfo EQ "/" OR pathInfo EQ "/index.cfm")>
 	<cfset isBlog = find("/blog", pathInfo)>
 	<cfset isApi = find("/api", pathInfo)>
+	<cfset isGuideDocs = find("/guides", pathInfo)>
 	<cfset isLogin = find("/login", pathInfo)>
 	<cfset isRegister = find("/register", pathInfo)>
 	<cfset isForgotPassword = find("/forgot-password", pathInfo)>
@@ -46,6 +47,49 @@
 	<cfif isApi>
 		<cfset apiPath = listLast(pathInfo, "/")>
 		<cfset pageTitle = apiPath & " - Wheels API ">
+	</cfif>
+
+	<cfif isGuideDocs>
+		<cfif structKeyExists(url, "version")>
+			<cfset version = url.version>
+		<cfelse>
+			<cfset version = "3.0.0">
+		</cfif>
+		<cfif structKeyExists(url, "filePath") AND len(trim(url.filePath))>
+			<!--- Split the path and clean it up --->
+			<cfset pathParts = listToArray(url.filePath, "/")>
+			
+			<!--- Remove any blank or readme entries --->
+			<cfset cleanedParts = []>
+			<cfloop array="#pathParts#" index="part">
+				<cfif len(trim(part)) GT 0 AND lcase(part) NEQ "readme">
+					<cfset arrayAppend(cleanedParts, part)>
+				</cfif>
+			</cfloop>
+
+			<!--- Check if we have at least 1 usable segment --->
+			<cfif arrayLen(cleanedParts)>
+				<!--- Use last valid segment --->
+				<cfset lastPart = cleanedParts[arrayLen(cleanedParts)]>
+				<cfset cleanTitle = replace(lastPart, "-", " ", "all")>
+				<cfset cleanTitle = reReplace(cleanTitle, "\b(\w)", "\u\1", "all")>
+
+				<cfset pageTitle = "Wheels #cleanTitle# | App Development Guide #version#">
+				<cfset metaDescription = "Wheels #cleanTitle# guide for version #version#. Learn how to implement and understand this part of the framework with practical examples.">
+			<cfelse>
+				<!--- Fallback if only readme or empty path --->
+				<cfset pageTitle = "Getting Started with Wheels | App Development Guide #version#">
+				<cfset metaDescription = "Quickly set up and build applications with the Wheels framework. This guide covers CommandBox integration, Wheels CLI, and efficient development for version #version#">
+			</cfif>
+		<cfelse>
+			<!--- No filePath provided --->
+			<cfset pageTitle = "Getting Started with Wheels | App Development Guide #version#">
+			<cfset metaDescription = "Quickly set up and build applications with the Wheels framework. This guide covers CommandBox integration, Wheels CLI, and efficient development for version #version#">
+		</cfif>
+
+		<!--- Set OG tags --->
+		<cfset ogTitle = pageTitle>
+		<cfset ogDescription = metaDescription>
 	</cfif>
 
 	<cfif isDocs>
@@ -413,7 +457,8 @@
 			<script src="/js/highlighter.min.js"></script>
 			<script src="/js/bootstrap.js"></script>
 			<script src="/js/all.min.js"></script>
-			<cfif isBlog or isNews>
+			<cfif isBlog or isNews or isGuideDocs>
+			<script src="/js/lunr.min.js"></script>
 			<script src="/js/quill.min.js"></script>
 			<script src="/js/lib/easymde.min.js"></script>
 			<script src="/js/lib/marked.min.js"></script>			
@@ -559,9 +604,14 @@
 					</div>
 				</div>
 			</nav>
-
+			<script src="/js/notifier.min.js"></script>
 			<cfoutput>
-				#flashMessages()#
+				<cfif flashMessages() neq "">
+					<script>
+						const html = '#flashMessages()#';
+					</script>
+					<script src="/js/flashMessage.js"></script>
+				</cfif>
 				#includeContent()#
 			</cfoutput>
 
@@ -728,7 +778,6 @@
 			</footer>
 			<script src="/js/swiper.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
-			<script src="/js/notifier.min.js"></script>
 			<script src="/js/global.js"></script>
 		</body>
 	</html>
