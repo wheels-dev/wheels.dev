@@ -14,9 +14,9 @@ services:
         constraints: []
     ports:
      - target: 60150
-        published: 50150
-        protocol: tcp
-        mode: host
+       published: 50150
+       protocol: tcp
+       mode: host
     environment:
       - PORT=60150
       - HEALTHCHECK_URI=http://127.0.0.1:60150/
