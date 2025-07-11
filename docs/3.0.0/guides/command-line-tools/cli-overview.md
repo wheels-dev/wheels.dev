@@ -35,21 +35,21 @@ Get up and running with Wheels CLI in minutes. Learn how to:
 ### 📖 Guides
 
 #### Development Guides
-- [Service Architecture](guides/service-architecture.md) - Understand the CLI's architecture
-- [Creating Custom Commands](guides/creating-commands.md) - Extend the CLI with your own commands
-- [Template System](guides/template-system.md) - Customize code generation templates
-- [Testing Guide](guides/testing.md) - Write and run tests effectively
+- [Service Architecture](cli-guides/service-architecture.md) - Understand the CLI's architecture
+- [Creating Custom Commands](cli-guides/creating-commands.md) - Extend the CLI with your own commands
+- [Template System](cli-guides/template-system.md) - Customize code generation templates
+- [Testing Guide](cli-guides/testing.md) - Write and run tests effectively
 
 #### Best Practices
-- [Migration Guide](guides/migrations.md) - Database migration best practices
-- [Security Guide](guides/security.md) - Security scanning and hardening
-- [Performance Guide](guides/performance.md) - Optimization techniques
+- [Migration Guide](cli-guides/migrations.md) - Database migration best practices
+- [Security Guide](commands/security/security.md) - Security scanning and hardening
+- [Performance Guide](commands/performance/optimize-performance.md) - Optimization techniques
 
 ### 📋 Reference
-- [Configuration Options](reference/configuration.md) - All available configuration settings
-- [Template Variables](reference/templates.md) - Variables available in templates
+- [Configuration Options](configuration.md) - All available configuration settings
+- [Template Variables](cli-guides/template-system.md) - Variables available in templates
 - [Exit Codes](reference/exit-codes.md) - Understanding command exit codes
-- [Environment Variables](reference/environment-variables.md) - Environment configuration
+- [Environment Variables](commands/environment/env-setup.md) - Environment configuration
 
 ## Key Features
 
@@ -170,7 +170,7 @@ wheels security scan
 
 ## Contributing
 
-We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details on:
+We welcome contributions! See our [Contributing Guide](/3.0.0/guides/working-with-wheels/contributing-to-wheels) for details on:
 - Reporting issues
 - Suggesting features
 - Submitting pull requests
@@ -190,10 +190,10 @@ We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for deta
 ## Quick Links
 
 - [All Commands](commands/README.md) - Complete command reference
-- [Quick Start](guides/quick-start.md) - Get started in minutes
-- [Creating Commands](guides/creating-commands.md) - Extend the CLI
-- [Service Architecture](guides/service-architecture.md) - Technical deep dive
-- [Testing Guide](guides/testing.md) - Testing best practices
+- [Quick Start](quick-start.md) - Get started in minutes
+- [Creating Commands](cli-guides/creating-commands.md) - Extend the CLI
+- [Service Architecture](cli-guides/service-architecture.md) - Technical deep dive
+- [Testing Guide](cli-guides/testing.md) - Testing best practices
 
 ## License
 
@@ -201,4 +201,4 @@ Wheels CLI is open source software licensed under the Apache License 2.0. See [L
 
 ---
 
-Ready to get started? Head to the [Quick Start Guide](guides/quick-start.md) or explore the [Command Reference](commands/README.md).
+Ready to get started? Head to the [Quick Start Guide](quick-start.md) or explore the [Command Reference](commands/README.md).
