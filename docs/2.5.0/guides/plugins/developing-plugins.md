@@ -43,7 +43,7 @@ It is also important to note that although you can overwrite functions, they are
 
 ### Example: Overriding timeAgoInWords()
 
-Let's say that we wanted Wheels's built-in function [timeAgoInWords()](https://api.cfwheels.org/v2.2/controller.timeAgoInWords.html) to return the time followed by the string " (approximately)":
+Let's say that we wanted Wheels's built-in function [timeAgoInWords()](https://wheels.dev/api/v2.5.0/v2.2/controller.timeAgoInWords.html) to return the time followed by the string " (approximately)":
 
 {% code title="timeAgoInWords.cfc" %}
 ```javascript
@@ -109,7 +109,7 @@ set(deletePluginDirectories=false);
 
 With this setting, you can now develop new plugins in your application without worrying about having a corresponding zip file in place.
 
-See the chapter on [Configuration and Defaults](https://guides.cfwheels.org/cfwheels-guides/working-with-cfwheels/configuration-and-defaults) for more details about changing Wheels settings.
+See the chapter on [Configuration and Defaults](/2.5.0/guides/working-with-cfwheels/configuration-and-defaults) for more details about changing Wheels settings.
 
 ### Stand-Alone Plugins
 
@@ -154,7 +154,7 @@ The javaDoc style comments will automatically show this function under Plugins >
 
 ### Box.json
 
-With `2.x`, a `box.json` is required for new plugins. Read the [Publishing Plugins](https://guides.cfwheels.org/docs/publishing-plugins) chapter for more details on that. One advantage is that CFWheels now includes the version and meta data for each plugin when there's a `box.json` file.
+With `2.x`, a `box.json` is required for new plugins. Read the [Publishing Plugins](/2.5.0/guides/plugins/publishing-plugins) chapter for more details on that. One advantage is that CFWheels now includes the version and meta data for each plugin when there's a `box.json` file.
 
 ```javascript
 // Version Number

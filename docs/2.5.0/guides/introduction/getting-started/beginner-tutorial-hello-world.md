@@ -8,7 +8,7 @@ description: >-
 
 ### Testing Your Install
 
-Let's make sure we're all on the same page. I'm going to assume that you've followed the [Getting Started](https://app.gitbook.com/o/ZCJLW1aBatPAwpmEV7ux/s/bJHOVUkiNubRJ8g5VX0E/) guide and have CommandBox all setup. If you haven't done that, stop and read that guide get everything setup. It's okay, this web page will wait for you.
+Let's make sure we're all on the same page. I'm going to assume that you've followed the [Getting Started](/2.5.0/guides/README) guide and have CommandBox all setup. If you haven't done that, stop and read that guide get everything setup. It's okay, this web page will wait for you.
 
 Okay, so you have CFWheels installed and can see the CFWheels "Congratulations!"\
 page as shown below. That wasn't that hard now, was it?
@@ -47,7 +47,7 @@ So what happens if we try to call our new controller right now? Lets take a\
 look. Open your browser and point your browser to the new controller. Because my\
 local server is installed on port 60000, my URL is `http://127.0.0.1:60000/say`.\
 You may need to enter a different URL, depending on how your web server is\
-configured. In my case, I'm using [CommandBox](https://guides.cfwheels.org/docs/commandbox).
+configured. In my case, I'm using [CommandBox](https://www.ortussolutions.com/products/commandbox).
 
 ![Figure 2: Wheels error after setting up your blank say controller](../../.gitbook/assets/660aaf3-cfwheels-tutorial\_0005\_2.png)
 
@@ -239,7 +239,7 @@ below:
 ```
 {% endcode %}
 
-The [linkTo()](https://api.cfwheels.org/controller.linkto.html) function is a built-in CFWheels function. In this case, we are passing 2 named parameters to it. The first parameter, `text`, is the text\
+The [linkTo()](https://wheels.dev/api/v2.5.0/controller.linkto.html) function is a built-in CFWheels function. In this case, we are passing 2 named parameters to it. The first parameter, `text`, is the text\
 that will be displayed in the hyperlink. The second parameter, `action`, defines the action to point the link to. By using this built-in function, your application's main URL may change, and even controllers and actions may get shifted around, but you won't suffer from the dreaded dead link. CFWheels will\
 always create a valid link for you as long as you configure it correctly when you make infrastructure changes to your application.
 
