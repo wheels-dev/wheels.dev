@@ -54,20 +54,20 @@ this.customTagPaths = ListAppend(
 
 There are several types of configurations that you can perform in Wheels to override all those default behaviors. In Wheels, you can find all these configuration options:
 
-* [Environment settings](configuration-and-defaults.md#environment-settings)
-* [URL rewriting settings](configuration-and-defaults.md#url-rewriting-settings)
-* [Data source settings](configuration-and-defaults.md#data-source-settings)
-* [Function settings](configuration-and-defaults.md#function-settings)
-* [Debugging and error settings](configuration-and-defaults.md#debugging-and-error-settings)
-* [Caching settings](configuration-and-defaults.md#caching-settings)
-* [ORM settings](configuration-and-defaults.md#orm-settings)
-* [Plugin settings](configuration-and-defaults.md#plugin-settings)
-* [Media settings](configuration-and-defaults.md#media-settings)
-* [Routing settings](configuration-and-defaults.md#routing-settings)
-* [View helper settings](configuration-and-defaults.md#view-helper-settings)
-* [CSRF protection settings](configuration-and-defaults.md#csrf-protection-settings)
-* [Miscellaneous Settings](configuration-and-defaults.md#miscellaneous-settings)
-* [Migrator settings](configuration-and-defaults.md#migrator-configuration-settings)
+* [Environment settings](configuration-and-defaults#environment-settings)
+* [URL rewriting settings](configuration-and-defaults#url-rewriting-settings)
+* [Data source settings](configuration-and-defaults#data-source-settings)
+* [Function settings](configuration-and-defaults#function-settings)
+* [Debugging and error settings](configuration-and-defaults#debugging-and-error-settings)
+* [Caching settings](configuration-and-defaults#caching-settings)
+* [ORM settings](configuration-and-defaults#orm-settings)
+* [Plugin settings](configuration-and-defaults#plugin-settings)
+* [Media settings](configuration-and-defaults#media-settings)
+* [Routing settings](configuration-and-defaults#routing-settings)
+* [View helper settings](configuration-and-defaults#view-helper-settings)
+* [CSRF protection settings](configuration-and-defaults#csrf-protection-settings)
+* [Miscellaneous Settings](configuration-and-defaults#miscellaneous-settings)
+* [Migrator settings](configuration-and-defaults#migrator-configuration-settings)
 
 Let's take a closer look at each of these options.
 
@@ -107,7 +107,7 @@ The code above will tell Wheels to skip its automatic detection of the URL Rewri
 
 You can also set it to "Partial" if you believe that your web server is capable of rewriting the URL as folders after `index.cfm`.
 
-For more information, read the chapter about [URL Rewriting](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/url-rewriting).
+For more information, read the chapter about [URL Rewriting](/3.0.0/guides/handling-requests-with-controllers/url-rewriting/README).
 
 ### Data Source Settings
 
@@ -239,7 +239,7 @@ set(overwritePlugins=false);
 ```
 {% endcode %}
 
-See the chapter on [Installing and Using Plugins](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/plugins/installing-and-using-plugins) for more information.
+See the chapter on [Installing and Using Plugins](/3.0.0/guides/plugins/installing-and-using-plugins) for more information.
 
 | Name                    | Type    | Default | Description                                                                                                                                                                                                                                                  |
 | ----------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -265,7 +265,7 @@ See the chapter about [Date, Media, and Text Helpers](../displaying-views-to-use
 
 Wheels includes a powerful routing system. Parts of it are configurable with the following settings.
 
-See the chapters about [Using Routes](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
+See the chapters about [Using Routes](/3.0.0/guides/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
 
 **Full Listing of Miscellaneous Settings**
 

@@ -40,7 +40,7 @@ Here's the process that we'd like for you to follow. This process is in place ma
 
 ## Developing with Docker
 
-To easily develop and test CFWheels locally on multiple CFML engines using Docker, check out the [Docker Instructions](https://github.com/cfwheels/cfwheels/blob/main/src/docker/README.md)
+To easily develop and test CFWheels locally on multiple CFML engines using Docker, check out the [Docker Instructions](https://github.com/wheels-dev/wheels/blob/main/docker/README.md)
 
 ## Code Style
 

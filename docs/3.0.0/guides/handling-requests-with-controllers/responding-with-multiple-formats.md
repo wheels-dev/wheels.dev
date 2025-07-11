@@ -129,7 +129,7 @@ When Wheels handles this response, it will set the appropriate MIME type in the\
 
 ### Providing the HTML Format
 
-Responding to requests for the HTML version is the same as you're already used to with [Rendering Content](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/rendering-content). [renderwith()](https://wheels.dev/api/v3.0.0/controller.renderwith.html) will accept the same arguments as [renderView()](https://wheels.dev/api/v3.0.0/controller.renderview.html), and you create just a view template in the `views` folder like normal.
+Responding to requests for the HTML version is the same as you're already used to with [Rendering Content](/3.0.0/guides/handling-requests-with-controllers/rendering-content). [renderwith()](https://wheels.dev/api/v3.0.0/controller.renderwith.html) will accept the same arguments as [renderView()](https://wheels.dev/api/v3.0.0/controller.renderview.html), and you create just a view template in the `views` folder like normal.
 
 ### Automatic Generation of XML and JSON Formats
 
