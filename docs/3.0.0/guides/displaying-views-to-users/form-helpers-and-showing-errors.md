@@ -113,7 +113,7 @@ I know what you are thinking. 9 lines of code can't replace all that work, right
 
 The first helper you'll notice in the Wheels-ified version of the form is [startFormTag()](https://wheels.dev/api/v3.0.0/controller.startFormTag.html). This helper allows you to easily link up the form to the action that it's posting to in a secure way.
 
-You'll need to configure the `route` and `method` arguments, depending on the route that you're sending the form to. Also, if the route expects any parameters, you must pass those in as arguments to startFormTag as well. If you haven't already, read up about routes in the [Routing](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) chapter.
+You'll need to configure the `route` and `method` arguments, depending on the route that you're sending the form to. Also, if the route expects any parameters, you must pass those in as arguments to startFormTag as well. If you haven't already, read up about routes in the [Routing](/3.0.0/guides/handling-requests-with-controllers/routing) chapter.
 
 As we said, when linking a form to a route, there are 3 pieces of information that you will need to work with:
 
@@ -124,7 +124,7 @@ As we said, when linking a form to a route, there are 3 pieces of information th
 {% hint style="info" %}
 #### Use Routes for Form Posts
 
-Wheels's default wildcard `controller/action`-based URLs will not accept form posts for security reasons. This is due to an attack known as [Cross Site Request Forgery (CSRF)](https://owasp.org/www-community/attacks/csrf). We strongly recommend configuring [routes](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) to post your forms to.
+Wheels's default wildcard `controller/action`-based URLs will not accept form posts for security reasons. This is due to an attack known as [Cross Site Request Forgery (CSRF)](https://owasp.org/www-community/attacks/csrf). We strongly recommend configuring [routes](/3.0.0/guides/handling-requests-with-controllers/routing) to post your forms to.
 {% endhint %}
 
 Most of the time, you'll probably be working with a resource. Your `app/config/routes.cfm` may look something like this:
@@ -236,7 +236,7 @@ The moral of the story: [startFormTag()](https://wheels.dev/api/v3.0.0/controlle
 
 ### Refactoring Common Settings with Global Defaults
 
-By setting up global defaults (as explained in the [Configuration and Defaults](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/working-with-wheels/configuration-and-defaults)) for the `prependToLabel`, `append`, and `labelPlacement` arguments, you can make the form code ever simpler across your whole application.
+By setting up global defaults (as explained in the [Configuration and Defaults](/3.0.0/guides/working-with-wheels/configuration-and-defaults)) for the `prependToLabel`, `append`, and `labelPlacement` arguments, you can make the form code ever simpler across your whole application.
 
 Here are the settings that you would apply in `app/config/settings.cfm`:
 
@@ -335,7 +335,7 @@ component extends="Model" {
 
 If you really want to secure a form, you need to do it server side. Sure, you can add JavaScript here and there to validate your web form. Unfortunately, disabling JavaScript (and thus your JavaScript-powered form validation) is simple in web browsers, and malicious bots tend not to listen to JavaScript.
 
-Securing the integrity of your web forms in Wheels on the server side is very easy. Assuming that you have read the chapter on [Object Validation](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/database-interaction-through-models/object-validation), you can rest assured that your code is a lot more secure now.
+Securing the integrity of your web forms in Wheels on the server side is very easy. Assuming that you have read the chapter on [Object Validation](/3.0.0/guides/database-interaction-through-models/object-validation), you can rest assured that your code is a lot more secure now.
 
 ### Displaying a List of Model Validation Errors
 
@@ -501,7 +501,7 @@ Assume that the `departments` variable passed to the options argument contains a
 
 Each data type has its advantages and disadvantages:
 
-* **Queries** allow you to order your results, but you can only use one column. But this can be overcome using [Calculated Properties](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/database-interaction-through-models/calculated-properties).
+* **Queries** allow you to order your results, but you can only use one column. But this can be overcome using [Calculated Properties](/3.0.0/guides/database-interaction-through-models/calculated-properties).
 * **Structs** allow you to build out static or dynamic values using whatever data that you please, but there is no guarantee that your CFML engine will honor the order in which you add the elements.
 * **Arrays** also allow you to build out static or dynamic values, and there is a guarantee that your CFML engine will honor the order. But arrays are a tad more verbose to work with.
 

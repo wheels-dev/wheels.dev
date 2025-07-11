@@ -39,7 +39,7 @@ That would generally produce this HTML markup:
 
 ### Linking to Routes
 
-If you're developing a non-trivial Wheels application, you'll quickly grow out of the wildcard-based routing. You'll likely need to link to URLs containing primary keys, URL-friendly slugged titles, and nested subfolders. Now would be a good time to take a deep dive into the [Routing](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) chapter and learn the concepts.
+If you're developing a non-trivial Wheels application, you'll quickly grow out of the wildcard-based routing. You'll likely need to link to URLs containing primary keys, URL-friendly slugged titles, and nested subfolders. Now would be a good time to take a deep dive into the [Routing](/3.0.0/guides/handling-requests-with-controllers/routing) chapter and learn the concepts.
 
 When you're using [linkTo()](https://wheels.dev/api/v3.0.0/controller.linkto.html) to create links to routes, you need to pay attention to 2 pieces of information: the route _name_ and any _parameters_ that the route requires.
 
@@ -139,7 +139,7 @@ mapper()
 ```
 {% endcode %}
 
-We would see these linkable routes generated related to the posts. (See the chapter on [Form Helpers and Showing Errors](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/displaying-views-to-users/form-helpers-and-showing-errors) for information about posting forms to the rest of the routes.)
+We would see these linkable routes generated related to the posts. (See the chapter on [Form Helpers and Showing Errors](/3.0.0/guides/displaying-views-to-users/form-helpers-and-showing-errors) for information about posting forms to the rest of the routes.)
 
 | Name     | Method | Pattern            | Controller | Action |
 | -------- | ------ | ------------------ | ---------- | ------ |
@@ -194,7 +194,7 @@ The above code would generate markup like this:
 
 ### A Deep Dive into Linking and Routing
 
-The [Routing](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) chapter lists your options for generating URLs that are available in your application. Following is an explanation of how to link to the various types of routes available.
+The [Routing](/3.0.0/guides/handling-requests-with-controllers/routing) chapter lists your options for generating URLs that are available in your application. Following is an explanation of how to link to the various types of routes available.
 
 ### Namespaces
 
@@ -375,7 +375,7 @@ Wheels will still correctly build the link markup:
 
 ### Linking in a Subfolder Deployment of Wheels
 
-The same would be true if you had Wheels installed in a subfolder, thus perhaps eliminating your ability to use [URL Rewriting](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/url-rewriting) (depending on what web server you have). The same [linkTo()](https://wheels.dev/api/v3.0.0/controller.linkto.html) code above may generate this HTML if you had Wheels installed in a subfolder called `foo`:
+The same would be true if you had Wheels installed in a subfolder, thus perhaps eliminating your ability to use [URL Rewriting](/3.0.0/guides/handling-requests-with-controllers/url-rewriting/README) (depending on what web server you have). The same [linkTo()](https://wheels.dev/api/v3.0.0/controller.linkto.html) code above may generate this HTML if you had Wheels installed in a subfolder called `foo`:
 
 ```html
 <a
@@ -394,6 +394,6 @@ What's more, Wheels is smart enough to build URLs for you. And it'll do this for
 
 If you see the pattern, this gives your application a good deal of portability. For example, you could later enable URL rewriting or move your application to a different subfolder. As long as you're using [linkTo()](https://wheels.dev/api/v3.0.0/controller.linkto.html) to build your links, you won't need to change anything extra to your code in order to accommodate this change.
 
-Lastly, if you later install a [plugin](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/plugins/installing-and-using-plugins) that needs to modify link markup, that plugin's hook is the [linkTo()](https://wheels.dev/api/v3.0.0/controller.linkto.html) helper.
+Lastly, if you later install a [plugin](/3.0.0/guides/plugins/installing-and-using-plugins) that needs to modify link markup, that plugin's hook is the [linkTo()](https://wheels.dev/api/v3.0.0/controller.linkto.html) helper.
 
 Oh, and another reason is that it's just plain cool too. ;)

@@ -636,4 +636,4 @@ component extends="wheels.cli.models.BaseCommand" {
 - [Service Architecture](service-architecture.md)
 - [Testing Guide](testing.md)
 - [CommandBox Documentation](https://commandbox.ortusbooks.com/)
-- [Contributing to Wheels CLI](../CONTRIBUTING.md)
+- [Contributing to Wheels CLI](/3.0.0/guides/working-with-cfwheels/contributing-to-cfwheels)

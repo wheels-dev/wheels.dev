@@ -379,7 +379,7 @@ These commands may be re-enabled in future versions of Wheels.
 
 ## See Also
 
-- [Installation Guide](../guides/installation.md)
-- [Quick Start Guide](../guides/quick-start.md)
-- [Creating Custom Commands](../guides/creating-commands.md)
-- [CLI Architecture](../guides/service-architecture.md)
+- [Installation Guide](/3.0.0/guides/introduction/manual-installation)
+- [Quick Start Guide](/3.0.0/guides/command-line-tools/quick-start)
+- [Creating Custom Commands](/3.0.0/guides/command-line-tools/cli-guides/creating-commands)
+- [CLI Architecture](../cli-guides/service-architecture.md)

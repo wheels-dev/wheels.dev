@@ -32,8 +32,7 @@ component extends="app.Controllers.Controller" {
                 var normalizedPath = replace(filePath, "\", "/", "all");
                 var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one");
                 var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/");
-                var baseHref = "/docs/#params.version#/guides/#guideDir#/";
-
+                var baseHref = "/#params.version#/guides/#guideDir#/";
                 // Fix internal <a href=""> links (not starting with http or /)
                 renderedContent = rereplace(
                     renderedContent,
@@ -41,7 +40,13 @@ component extends="app.Controllers.Controller" {
                     '\1#baseHref#\2\3',
                     "all"
                 );
-
+                // Open external links in a new tab
+                renderedContent = rereplace(
+                    renderedContent,
+                    '(<a\s[^>]*href=["'']https?://[^"''>]+)(["''])',
+                    '\1" target="_blank"\2',
+                    "all"
+                );
                 var processed = extractHeadingsWithIds(renderedContent);
                 renderedContent = processed.renderedContent;
                 toc = processed.toc;
@@ -79,7 +84,7 @@ component extends="app.Controllers.Controller" {
                 var normalizedPath = replace(file, "\", "/", "all");
                 var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one"); 
                 var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/"); 
-                var baseHref = "/docs/#params.version#/guides/#guideDir#/";
+                var baseHref = "/#params.version#/guides/#guideDir#/";
 
                 // Fix internal <a href=""> links (not starting with http or /)
                 renderedContent = rereplace(
@@ -88,7 +93,13 @@ component extends="app.Controllers.Controller" {
                     '\1#baseHref#\2\3',
                     "all"
                 );
-
+                // Open external links in a new tab
+                renderedContent = rereplace(
+                    renderedContent,
+                    '(<a\s[^>]*href=["'']https?://[^"''>]+)(["''])',
+                    '\1" target="_blank"\2',
+                    "all"
+                );
                 var processed = extractHeadingsWithIds(renderedContent);
                 renderedContent = processed.renderedContent;
                 toc = processed.toc;

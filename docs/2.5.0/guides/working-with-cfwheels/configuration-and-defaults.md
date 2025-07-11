@@ -16,11 +16,11 @@ You can also set values based on what environment you have set. For example, you
 
 ### How to Set Configurations
 
-To change a CFWheels application default, you generally use the [set()](https://api.cfwheels.org/controller.set.html) function. With it, you can perform all sorts of tweaks to the framework's default behaviors.
+To change a CFWheels application default, you generally use the [set()](https://wheels.dev/api/v2.5.0/controller.set.html) function. With it, you can perform all sorts of tweaks to the framework's default behaviors.
 
 ### How to Access Configuration Values
 
-Use the [get()](https://api.cfwheels.org/controller.gset.html) function to access the value of a CFWheels application setting. Just pass it the name of the setting.
+Use the [get()](https://wheels.dev/api/v2.5.0/controller.gset.html) function to access the value of a CFWheels application setting. Just pass it the name of the setting.
 
 
 
@@ -54,20 +54,20 @@ this.customTagPaths = ListAppend(
 
 There are several types of configurations that you can perform in CFWheels to override all those default behaviors. In CFWheels, you can find all these configuration options:
 
-* [Environment settings](configuration-and-defaults.md#environment-settings)
-* [URL rewriting settings](configuration-and-defaults.md#url-rewriting-settings)
-* [Data source settings](configuration-and-defaults.md#data-source-settings)
-* [Function settings](configuration-and-defaults.md#function-settings)
-* [Debugging and error settings](configuration-and-defaults.md#debugging-and-error-settings)
-* [Caching settings](configuration-and-defaults.md#caching-settings)
-* [ORM settings](configuration-and-defaults.md#orm-settings)
-* [Plugin settings](configuration-and-defaults.md#plugin-settings)
-* [Media settings](configuration-and-defaults.md#media-settings)
-* [Routing settings](configuration-and-defaults.md#routing-settings)
-* [View helper settings](configuration-and-defaults.md#view-helper-settings)
-* [CSRF protection settings](configuration-and-defaults.md#csrf-protection-settings)
-* [Miscellaneous Settings](configuration-and-defaults.md#miscellaneous-settings)
-* [Migrator settings](configuration-and-defaults.md#migrator-configuration-settings)
+* [Environment settings](configuration-and-defaults#environment-settings)
+* [URL rewriting settings](configuration-and-defaults#url-rewriting-settings)
+* [Data source settings](configuration-and-defaults#data-source-settings)
+* [Function settings](configuration-and-defaults#function-settings)
+* [Debugging and error settings](configuration-and-defaults#debugging-and-error-settings)
+* [Caching settings](configuration-and-defaults#caching-settings)
+* [ORM settings](configuration-and-defaults#orm-settings)
+* [Plugin settings](configuration-and-defaults#plugin-settings)
+* [Media settings](configuration-and-defaults#media-settings)
+* [Routing settings](configuration-and-defaults#routing-settings)
+* [View helper settings](configuration-and-defaults#view-helper-settings)
+* [CSRF protection settings](configuration-and-defaults#csrf-protection-settings)
+* [Miscellaneous Settings](configuration-and-defaults#miscellaneous-settings)
+* [Migrator settings](configuration-and-defaults#migrator-configuration-settings)
 
 Let's take a closer look at each of these options.
 
@@ -107,7 +107,7 @@ The code above will tell CFWheels to skip its automatic detection of the URL Rew
 
 You can also set it to "Partial" if you believe that your web server is capable of rewriting the URL as folders after `index.cfm`.
 
-For more information, read the chapter about [URL Rewriting](https://guides.cfwheels.org/cfwheels-guides/handling-requests-with-controllers/url-rewriting).
+For more information, read the chapter about [URL Rewriting](/2.5.0/guides/handling-requests-with-controllers/url-rewriting/README).
 
 ### Data Source Settings
 
@@ -135,7 +135,7 @@ set(functionName="findAll", perPage=20);
 ```
 {% endcode %}
 
-That little line of code will make all calls to the [findAll()](https://api.cfwheels.org/model.findall.html) method in CFWheels return a maximum number of 20 record per page (if pagination is enabled for that [findAll()](https://api.cfwheels.org/model.findall.html) call). How great is that? You don't need to set the `perPage` value for every single call to [findAll()](https://api.cfwheels.org/model.findall.html) if you have a different requirement than the CFWheels default of 10 records.
+That little line of code will make all calls to the [findAll()](https://wheels.dev/api/v2.5.0/model.findall.html) method in CFWheels return a maximum number of 20 record per page (if pagination is enabled for that [findAll()](https://wheels.dev/api/v2.5.0/model.findall.html) call). How great is that? You don't need to set the `perPage` value for every single call to [findAll()](https://wheels.dev/api/v2.5.0/model.findall.html) if you have a different requirement than the CFWheels default of 10 records.
 
 ### Debugging and Error Settings
 
@@ -239,7 +239,7 @@ set(overwritePlugins=false);
 ```
 {% endcode %}
 
-See the chapter on [Installing and Using Plugins](https://guides.cfwheels.org/docs/installing-and-using-plugins) for more information.
+See the chapter on [Installing and Using Plugins](/2.5.0/guides/plugins/installing-and-using-plugins) for more information.
 
 | Name                    | Type    | Default | Description                                                                                                                                                                                                                                                  |
 | ----------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -250,7 +250,7 @@ See the chapter on [Installing and Using Plugins](https://guides.cfwheels.org/do
 
 ### Media Settings
 
-Configure how CFWheels handles linking to assets through view helpers like [imageTag()](https://api.cfwheels.org/controller.imagetag.html), [styleSheetLinkTag()](https://api.cfwheels.org/controller.stylesheetlinktag.html), and [javaScriptIncludeTag()](https://api.cfwheels.org/controller.javascriptincludetag.html).
+Configure how CFWheels handles linking to assets through view helpers like [imageTag()](https://wheels.dev/api/v2.5.0/controller.imagetag.html), [styleSheetLinkTag()](https://wheels.dev/api/v2.5.0/controller.stylesheetlinktag.html), and [javaScriptIncludeTag()](https://wheels.dev/api/v2.5.0/controller.javascriptincludetag.html).
 
 See the chapter about [Date, Media, and Text Helpers](../displaying-views-to-users/date-media-and-text-helpers.md) for more information.
 
@@ -265,7 +265,7 @@ See the chapter about [Date, Media, and Text Helpers](../displaying-views-to-use
 
 CFWheels includes a powerful routing system. Parts of it are configurable with the following settings.
 
-See the chapters about [Using Routes](https://guides.cfwheels.org/cfwheels-guides/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
+See the chapters about [Using Routes](/2.5.0/guides/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
 
 **Full Listing of Miscellaneous Settings**
 
