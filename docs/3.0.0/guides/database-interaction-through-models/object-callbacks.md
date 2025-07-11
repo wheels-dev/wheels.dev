@@ -14,7 +14,7 @@ Let's look at a possible scenario for what happens when a visitor to your imagin
 
 * You create a new `order` object using the [new()](https://wheels.dev/api/v3.0.0/model.new.html) method based on the incoming form parameters.
 * You call the [save()](https://wheels.dev/api/v3.0.0/model.save.html) method on the order object, which will cause Wheels to first validate the object and then store it in the database if it passes validation.
-* The next day, you call the [update(](https://wheels.dev/api/v3.0.0/model.update.html) method on the object because the user decided to change the shipping method for the order.
+* The next day, you call the [update()](https://wheels.dev/api/v3.0.0/model.update.html) method on the object because the user decided to change the shipping method for the order.
 * Another day passes, and you call the [delete()](https://wheels.dev/api/v3.0.0/model.delete.html) method on the object because the visitor called in to cancel the order.
 
 Let's say you want to have the following things executed somewhere in the code:

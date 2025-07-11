@@ -112,7 +112,7 @@ Features supported:
 - Validations
 - Callbacks involving initialisation and validations
 
-See [Building search forms with tableless models in Wheels](https://wheels.dev/blog/building-search-forms-with-tableless-models-in-wheels) for a worked-out example.
+See [Building search forms with tableless models in Wheels](https://wheels.dev/blog/building-search-forms-with-tableless-models-in-cfwheels) for a worked-out example.
 
 ### Columns and Properties
 

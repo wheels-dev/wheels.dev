@@ -107,7 +107,7 @@ The code above will tell Wheels to skip its automatic detection of the URL Rewri
 
 You can also set it to "Partial" if you believe that your web server is capable of rewriting the URL as folders after `index.cfm`.
 
-For more information, read the chapter about [URL Rewriting](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/url-rewriting).
+For more information, read the chapter about [URL Rewriting](/3.0.0/guides/handling-requests-with-controllers/url-rewriting/README).
 
 ### Data Source Settings
 
@@ -239,7 +239,7 @@ set(overwritePlugins=false);
 ```
 {% endcode %}
 
-See the chapter on [Installing and Using Plugins](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/plugins/installing-and-using-plugins) for more information.
+See the chapter on [Installing and Using Plugins](/3.0.0/guides/plugins/installing-and-using-plugins) for more information.
 
 | Name                    | Type    | Default | Description                                                                                                                                                                                                                                                  |
 | ----------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -265,7 +265,7 @@ See the chapter about [Date, Media, and Text Helpers](../displaying-views-to-use
 
 Wheels includes a powerful routing system. Parts of it are configurable with the following settings.
 
-See the chapters about [Using Routes](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
+See the chapters about [Using Routes](/3.0.0/guides/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
 
 **Full Listing of Miscellaneous Settings**
 

@@ -52,7 +52,7 @@ set(transactionMode=false);
 ```
 {% endcode %}
 
-See the chapter about [Configuration and Defaults](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/working-with-wheels/configuration-and-defaults) for more details.
+See the chapter about [Configuration and Defaults](/3.0.0/guides/working-with-wheels/configuration-and-defaults) for more details.
 
 ### Using Rollbacks
 

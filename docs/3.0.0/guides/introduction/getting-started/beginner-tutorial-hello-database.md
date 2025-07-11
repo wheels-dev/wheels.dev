@@ -29,7 +29,7 @@ By default, Wheels will connect to a data source `wheels.dev`. To change this de
 		Use this file to configure your application.
 		You can also use the environment specific files (e.g. app/config/production/settings.cfm) to override settings set here.
 		Don't forget to issue a reload request (e.g. reload=true) after making changes.
-		See https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/working-with-wheels/configuration-and-defaults for more info.
+		See /3.0.0/guides/working-with-wheels/configuration-and-defaults for more info.
 	*/
 
 	/*
@@ -86,7 +86,7 @@ Note a couple things about this `users` table:
 1. The table name is plural.
 2. The table has an auto-incrementing primary key named `id`.
 
-These are database [conventions](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/working-with-wheels/conventions) used by Wheels. This framework strongly encourages that everyone follow _convention over configuration_. That way everyone is doing things mostly the same way, leading to less maintenance and training headaches down the road.
+These are database [conventions](/3.0.0/guides/working-with-wheels/conventions) used by Wheels. This framework strongly encourages that everyone follow _convention over configuration_. That way everyone is doing things mostly the same way, leading to less maintenance and training headaches down the road.
 
 Fortunately, there are ways of going outside of these conventions when you really need it. But let's learn the conventional way first. Sometimes you need to learn the rules before you can know how to break them.
 
@@ -489,7 +489,7 @@ function update() {
 
 To update the `user`, simply call its [update()](https://wheels.dev/api/v3.0.0/model.update.html) method with the `user` struct passed from the form via `params`. It's that simple.
 
-After the update, we'll add a success message [using the Flash](https://guides.wheels.dev/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/using-the-flash) and send the end user back to the edit form in case they want to make more changes.
+After the update, we'll add a success message [using the Flash](/3.0.0/guides/handling-requests-with-controllers/using-the-flash) and send the end user back to the edit form in case they want to make more changes.
 
 ### Deleting Users
 
