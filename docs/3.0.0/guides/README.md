@@ -65,7 +65,7 @@ server start
 
 A few minutes after submitting the above commands a new browser window should open up and display the default Wheels congratulations screen.
 
-<figure><img src=".gitbook/assets/Screenshot 2025-01-23 at 11.21.18 AM.png" alt=""><figcaption></figcaption></figure>
+![](.gitbook/assets/76e1179-Screen\_Shot\_2022-02-08\_at\_9.12.06\_AM.png)
 
 So what just happened? Since we only passed the application name `myApp` to the `wheels generate app` command, it used default values for most of its parameters and downloaded our Base template (wheels-base-template) from ForgeBox.io, then downloaded the framework core files (wheels.dev) from ForgeBox.io and placed it in the `vendor/wheels` directory, then configured the application name and reload password, and started a Lucee server on a random port.
 
