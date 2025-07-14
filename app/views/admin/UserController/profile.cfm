@@ -23,7 +23,7 @@
                 </h1>
                 
                 
-                <form class="pt-3 px-1 needs-validation" id="userForm" novalidate hx-post="/user/store" hx-validate="true" enctype="multipart/form-data">
+                <form class="pt-3 px-1 needs-validation" id="userForm" novalidate hx-post="/admin/user/store" hx-validate="true" enctype="multipart/form-data">
                     <input name="id" type="hidden" id="id" value="#id#">
 
                     <div class="mb-3">
@@ -60,7 +60,7 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Role <span class="text-danger">*</span>
                         </label>
-                        <select class="form-control fs-14" name="roleId" id="roleId" required hx-get="/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
+                        <select class="form-control fs-14" name="roleId" id="roleId" required hx-get="/admin/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
                             <option value="">Select Role</option>
                         </select>
                     </div>
@@ -69,7 +69,7 @@
                             Profile Picture
                         </label>
                         <cfif len(user.profilePicture)>
-                            <img src="#user.profilePicture#" width="100">
+                            <img src="/img/#user.profilePicture#" width="100" alt="Wheels.dev Profile Picture">
                         </cfif>
                         <input class="form-control fs-14" type="file" name="profilePicture" accept="image/*">
                     </div>

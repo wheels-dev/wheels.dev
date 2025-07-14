@@ -7,7 +7,7 @@
             data-function="#lcase(meta.slug)#">
 
             <div class="d-flex align-items-center gap-2">
-                <h1 class="text--primary fs-24 fw-bold">#meta.name#()</h1>
+                <h2 class="text--primary fs-24 fw-bold">#meta.name#()</h2>
                 <div class="dropdown">
                     <button class="dropdown-toggle outline-none border-0 no-dropdown-arrow text-center bg-transparent"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">

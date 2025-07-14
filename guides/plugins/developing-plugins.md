@@ -1,10 +1,10 @@
 ---
-description: Extend CFWheels functionality by creating a plugin.
+description: Extend Wheels functionality by creating a plugin.
 ---
 
 # Developing Plugins
 
-Plugins are the recommended way to get new code accepted into CFWheels. If you have written code that you think constitutes core functionality and should be added to Wheels, please create a plugin. After the community has used it for a while, it will be a simple task for us to integrate it into the CFWheels core.
+Plugins are the recommended way to get new code accepted into Wheels. If you have written code that you think constitutes core functionality and should be added to Wheels, please create a plugin. After the community has used it for a while, it will be a simple task for us to integrate it into the Wheels core.
 
 To create a plugin named `MyPlugin`, you will need to create a `MyPlugin.cfc` and an `index.cfm` file. Then zip these together as `MyPlugin-x.x.zip`, where `x.x` is the version number of your plugin.
 
@@ -121,7 +121,7 @@ pluginManager.installPlugin(URL.plugin);
 
 ### Don't forget to comment!
 
-With CFWheels 2.x we can take advantage of the inbuilt documentation generator. Try and tag your public facing functions appropriately.
+With Wheels 2.x we can take advantage of the inbuilt documentation generator. Try and tag your public facing functions appropriately.
 
 Here's an example from the cfwheels ical4J plugin:
 
@@ -154,7 +154,7 @@ The javaDoc style comments will automatically show this function under Plugins >
 
 ### Box.json
 
-With `2.x`, a `box.json` is required for new plugins. Read the [Publishing Plugins](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/plugins/publishing-plugins) chapter for more details on that. One advantage is that CFWheels now includes the version and meta data for each plugin when there's a `box.json` file.
+With `2.x`, a `box.json` is required for new plugins. Read the [Publishing Plugins](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/plugins/publishing-plugins) chapter for more details on that. One advantage is that Wheels now includes the version and meta data for each plugin when there's a `box.json` file.
 
 ```javascript
 // Version Number
@@ -174,7 +174,7 @@ This means you can distribute plugins with Java libs and they'll work properly w
 
 ### Enabling Travis CI Testing
 
-One of the nicest things about `2.x` is the tighter integration with command-line tools such as CommandBox. We can take advantage of the new testing suite JSON return type and the new CFWheels CLI in CommandBox 2.x to easily build a Travis CI test. It's perhaps easiest to just show the `.travis.yml` file - this goes in the root of your gitHub plugin repository, and once you've turned on testing under Travis.org, will run your test suite on every commit.
+One of the nicest things about `2.x` is the tighter integration with command-line tools such as CommandBox. We can take advantage of the new testing suite JSON return type and the new Wheels CLI in CommandBox 2.x to easily build a Travis CI test. It's perhaps easiest to just show the `.travis.yml` file - this goes in the root of your gitHub plugin repository, and once you've turned on testing under Travis.org, will run your test suite on every commit.
 
 {% code title=".travis.yml" %}
 ```yaml
@@ -194,7 +194,7 @@ install:
   # Install CLI: needed to repackage the plugin to a zip on install
   - box install cfwheels-cli
   # Install Master Branch; nb, installed into folder of the git repo name, i.e neokoenig/cfwheels-ical4j
-  - box install cfwheels/cfwheels
+  - box install wheels-dev/wheels
   # Install the Plugin: use gitHub path to get the absolute latest rather than the forgebox version
   - box install neokoenig/cfwheels-ical4j
 before_script:
@@ -213,8 +213,8 @@ notifications:
 In sum, this:
 
 * Installs CommandBox
-* Installs the CFWheels CLI
-* Installs the master branch of the CFWheels repository
+* Installs the Wheels CLI
+* Installs the master branch of the Wheels repository
 * Installs your plugin from your repository (rather than the forgebox version which will be the version behind)
 * Starts the local server
 * Runs the test suite, pointing only at your plugin's unit tests

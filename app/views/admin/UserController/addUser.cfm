@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="row">
-        <form class="row g-3 mb-6 needs-validation" id="userForm" novalidate action="/user/store" method="post" hx-validate="true">
+        <form class="row g-3 mb-6 needs-validation" id="userForm" novalidate action="/admin/user/store" method="post" hx-validate="true">
             <input name="id" type="hidden" id="id" value="#id#">
 
             <div class="col-sm-6 col-md-6 mb-3">
@@ -88,7 +88,7 @@
                     <label class="form-label mb-1 fs-18 fw-medium">
                         Role <span class="text-danger">*</span>
                     </label>
-                    <select class="form-control fs-18" name="roleId" id="roleId" required hx-get="/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
+                    <select class="form-control fs-18" name="roleId" id="roleId" required hx-get="/admin/user/loadRoles?id=#id#&roleId=#roleId#"  hx-trigger="load" hx-target="##roleId" hx-swap="innerHTML">
                         <option value="">Select Role</option>
                     </select>
                 </div>
@@ -104,12 +104,12 @@
             </cfif>
 
             <div class="col-12 gy-6">
-                <div class="row g-3 justify-content-end">
-                    <div class="col-auto">
-                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
-                    </div>
+                <div class="row g-2 justify-content-end">
                     <div class="col-auto">
                         <button hx-get="/admin/user" hx-trigger="click" hx-swap="innerHTML" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</button>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
                     </div>
                 </div>
             </div>

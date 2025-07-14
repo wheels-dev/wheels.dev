@@ -80,17 +80,4 @@
             </div>
         </div>
     </cfoutput>
-    <script>
-        var table = new DataTable('#commentsTable', {
-            columnDefs: [
-                {
-                    targets: [6,7], // Adjust these indexes based on your actual table structure
-                    orderable: false
-                }
-            ]
-        });
-        table.on('draw', function() {
-            htmx.process(document.body);
-        });
-    </script>
 </div>

@@ -6,8 +6,8 @@
   * [Running Local Development servers](introduction/readme/running-local-development-servers.md)
   * [Beginner Tutorial: Hello World](introduction/readme/beginner-tutorial-hello-world.md)
   * [Beginner Tutorial: Hello Database](introduction/readme/beginner-tutorial-hello-database.md)
-  * [Tutorial: CFWheels, AJAX, and You](introduction/readme/tutorial-cfwheels-ajax-and-you.md)
-* [Frameworks and CFWheels](introduction/frameworks-and-cfwheels.md)
+  * [Tutorial: Wheels, AJAX, and You](introduction/readme/tutorial-cfwheels-ajax-and-you.md)
+* [Frameworks and Wheels](introduction/frameworks-and-cfwheels.md)
 * [Requirements](introduction/requirements.md)
 * [Manual Installation](introduction/manual-installation.md)
 * [Upgrading](introduction/upgrading.md)
@@ -21,14 +21,14 @@
 * [wheels dbmigrate - commands](command-line-tools/wheels-dbmigrate-commands.md)
 * [wheels plugins - commands](command-line-tools/wheels-plugins-commands.md)
 
-## Working with CFWheels
+## Working with Wheels
 
 * [Conventions](working-with-cfwheels/conventions.md)
 * [Configuration and Defaults](working-with-cfwheels/configuration-and-defaults.md)
 * [Directory Structure](working-with-cfwheels/directory-structure.md)
 * [Switching Environments](working-with-cfwheels/switching-environments.md)
 * [Testing Your Application](working-with-cfwheels/testing-your-application.md)
-* [Contributing to CFWheels](working-with-cfwheels/contributing-to-cfwheels.md)
+* [Contributing to Wheels](working-with-cfwheels/contributing-to-cfwheels.md)
 * [Documenting your Code](working-with-cfwheels/documenting-your-code.md)
 
 ## Handling Requests with Controllers
@@ -101,7 +101,7 @@
 
 ## External Links
 
-* [Source Code](https://github.com/cfwheels/cfwheels)
-* [Issue Tracker](https://github.com/cfwheels/cfwheels/issues)
+* [Source Code](https://github.com/wheels-dev/wheels)
+* [Issue Tracker](https://github.com/wheels-dev/wheels/issues)
 * [Sponsor Us](https://opencollective.com/cfwheels)
-* [Community](https://github.com/cfwheels/cfwheels/discussions)
+* [Community](https://github.com/wheels-dev/wheels/discussions)

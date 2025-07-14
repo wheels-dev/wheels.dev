@@ -1,12 +1,12 @@
 ---
 description: >-
-  The routing system in CFWheels encourages a conventional RESTful and
+  The routing system in Wheels encourages a conventional RESTful and
   resourceful style of request handling.
 ---
 
 # Routing
 
-The CFWheels routing system inspects a request's HTTP verb and URL and decides which controller and action to run.
+The Wheels routing system inspects a request's HTTP verb and URL and decides which controller and action to run.
 
 Consider the following request:
 
@@ -16,7 +16,7 @@ GET /products/5
 ```
 {% endcode %}
 
-The routing system may match the request to a route like this, which tells CFWheels to load the `show` action on the `Products` controller:
+The routing system may match the request to a route like this, which tells Wheels to load the `show` action on the `Products` controller:
 
 ```javascript
 .get(name="product", pattern="products/[key]", to="products##show")
@@ -26,7 +26,7 @@ The routing system may match the request to a route like this, which tells CFWhe
 
 To configure routes, open the file at `app/config/routes.cfm`.
 
-The CFWheels router begins with a call to [mapper()](https://api.cfwheels.org/controller.mapper.html), various methods chained from that, and lastly ends with a call to `end()`.
+The Wheels router begins with a call to [mapper()](https://api.cfwheels.org/controller.mapper.html), various methods chained from that, and lastly ends with a call to `end()`.
 
 In many cases, if you need to know where to go in the code to work with existing functionality in an application, the `routes.cfm` file can be a handy map, telling you which controller and action to start looking in.
 
@@ -68,7 +68,7 @@ posts
 
 In this example, `key` and `slug` are parameters that must be present in the URL for the first route to match, and they are required when linking to the route. In the controller, these parameters will be available at `params.key` and `params.slug`, respectively.&#x20;
 
-When a request is made to CFWheels, the router will look for the first route that matches the requested URL. As an example, this means that if `key` is present in the URL but not `slug`, then it's the second route above that will match.
+When a request is made to Wheels, the router will look for the first route that matches the requested URL. As an example, this means that if `key` is present in the URL but not `slug`, then it's the second route above that will match.
 
 {% hint style="warning" %}
 Please note that `.` is treated as a special characters in patterns and should generally not be used (one exception being when you are [responding with multiple formats](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/handling-requests-with-controllers/responding-with-multiple-formats)). If your parameters may have `.` in their value, please use the long form URL format: `/?controller=[controller_name]&action=[action_name]&[parameter_name]=[parameter_value]`
@@ -91,7 +91,7 @@ Many parts of your application will likely be CRUD-based (create, read, update, 
 {% hint style="warning" %}
 #### Resources are important
 
-You'll want to pay close attention to how resource-based routing works because this is considered an important convention in CFWheels applications.
+You'll want to pay close attention to how resource-based routing works because this is considered an important convention in Wheels applications.
 {% endhint %}
 
 If we have a `products` table and want to have a section of our application for managing the products, we can set up the routes using the [resources()](https://api.cfwheels.org/mapper.resources.html) method like this in `app/config/routes.cfm`:
@@ -121,14 +121,14 @@ Because the router uses a combination of HTTP verb and path, we only need 4 diff
 {% hint style="info" %}
 #### What's with the `PUT`?
 
-There has been some confusion in the web community on whether requests to update data should happen along with a `PUT` or `PATCH` HTTP verb. It has been settled mostly that `PATCH` is the way to go for most situations. CFWheels resources set up both `PUT` and `PATCH` to address this confusion, but you should probably prefer linking up `PATCH` when you are able.
+There has been some confusion in the web community on whether requests to update data should happen along with a `PUT` or `PATCH` HTTP verb. It has been settled mostly that `PATCH` is the way to go for most situations. Wheels resources set up both `PUT` and `PATCH` to address this confusion, but you should probably prefer linking up `PATCH` when you are able.
 {% endhint %}
 
 ### Singular Resources
 
 Standard resources using the [resources()](https://api.cfwheels.org/mapper.resources.html) method assume that there is a primary key associated with the resource. (Notice the `[key]` placeholder in the paths listed above in the _Strongly Encouraged: Resource Routing_ section.)
 
-CFWheels also provides a _singular_ resource for routing that will not expose a primary key through the URL.
+Wheels also provides a _singular_ resource for routing that will not expose a primary key through the URL.
 
 ```javascript
 mapper()
@@ -244,18 +244,18 @@ mapper()
 
 While web standards advocate for usage of these specific HTTP verbs for requests, web browsers don't do a particularly good job of supporting verbs other than `GET` or `POST`.
 
-To get around this, the CFWheels router recognizes the specialized verbs from browsers (`PUT`, `PATCH`, and `DELETE`) in this way:
+To get around this, the Wheels router recognizes the specialized verbs from browsers (`PUT`, `PATCH`, and `DELETE`) in this way:
 
 * Via a `POST` request with a
 * `POST` variable named `_method` specifying the specific HTTP verb (e.g., `_method=delete`)
 
 See the chapter on [Linking Pages](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/displaying-views-to-users/linking-pages) for strategies for working with this constraint.
 
-Note that using CFWheels to write a REST API doesn't typically have this constraint. You should confidently require API clients to use the specific verbs like `PATCH` and `DELETE`.
+Note that using Wheels to write a REST API doesn't typically have this constraint. You should confidently require API clients to use the specific verbs like `PATCH` and `DELETE`.
 
 ### Namespaces
 
-The CFWheels router allows for _namespaces_: the ability to add a route to a "subfolder" in the URL as well as within the `controllers` folder of your application.
+The Wheels router allows for _namespaces_: the ability to add a route to a "subfolder" in the URL as well as within the `controllers` folder of your application.
 
 Let's say that we want to have an "admin" section of the application that is separate from other "public" sections. We'd want for all of the "admin" controllers to be within an admin subfolder both in the URL and our application.
 
@@ -357,7 +357,7 @@ mapper()
 
 ### Wildcard Routes
 
-CFWheels 1.x had a default routing pattern: `[controller]/[action]/[key]`. The convention for URLs was as follows:
+Wheels 1.x had a default routing pattern: `[controller]/[action]/[key]`. The convention for URLs was as follows:
 
 {% code title="HTTP" %}
 ```http
@@ -365,9 +365,9 @@ GET /news/show/5
 ```
 {% endcode %}
 
-With this convention, the URL above told CFWheels to invoke the `show` action in the `news` controller. It also passed a parameter called `key` to the action, with a value of `5`.
+With this convention, the URL above told Wheels to invoke the `show` action in the `news` controller. It also passed a parameter called `key` to the action, with a value of `5`.
 
-If you're upgrading from 1.x or still prefer this style of routing for your CFWheels 2+ application, you can use the [wildcard()](https://api.cfwheels.org/mapper.wildcard.html) method to enable it part of it:&#x20;
+If you're upgrading from 1.x or still prefer this style of routing for your Wheels 2+ application, you can use the [wildcard()](https://api.cfwheels.org/mapper.wildcard.html) method to enable it part of it:&#x20;
 
 ```javascript
 mapper()
@@ -375,7 +375,7 @@ mapper()
 .end();
 ```
 
-CFWheels 2 will only generate routes for `[controller]/[action]`, however, because resources and the other routing methods are more appropriate for working with records identified by primary keys.
+Wheels 2 will only generate routes for `[controller]/[action]`, however, because resources and the other routing methods are more appropriate for working with records identified by primary keys.
 
 Here is a sample of the patterns that `wildcard` generates:
 
@@ -399,12 +399,12 @@ mapper()
 
 Specifying a `method` argument to `wildcard` with anything other than `get` gives you the potential to accidentally expose a route that could change data in your application with a `GET` request. This opens your application to Cross Site Request Forgery (CSRF) vulnerabilities.
 
-`wildcard` is provided for convenience. Once you're comfortable with routing concepts in CFWheels, we strongly recommend that you use resources (`resources`, `resource`) and the other verb-based helpers (`get`, `post`, `patch`, `put`, and `delete`) listed above instead.
+`wildcard` is provided for convenience. Once you're comfortable with routing concepts in Wheels, we strongly recommend that you use resources (`resources`, `resource`) and the other verb-based helpers (`get`, `post`, `patch`, `put`, and `delete`) listed above instead.
 {% endhint %}
 
 ### Order of Precedence
 
-CFWheels gives precedence to the first listed custom route in your `app/config/routes.cfm` file.
+Wheels gives precedence to the first listed custom route in your `app/config/routes.cfm` file.
 
 Consider this example to demonstrate when this can create unexpected issues:
 
@@ -420,7 +420,7 @@ mapper()
 .end();
 ```
 
-In this case, when the user visits `/users/promoted`, this will load the `show` action of the `users` controller because that was the first pattern that was matched by the CFWheels router.
+In this case, when the user visits `/users/promoted`, this will load the `show` action of the `users` controller because that was the first pattern that was matched by the Wheels router.
 
 To fix this, you need the more specific route listed first, leaving the dynamic routing to pick up the less specific pattern:
 
@@ -438,7 +438,7 @@ mapper()
 
 ### Making a Catch-All Route
 
-Sometimes you need a catch-all route in CFWheels to support highly dynamic websites (like a content management system, for example), where all requests that are not matched by an existing route get passed to a controller/action that can deal with it.
+Sometimes you need a catch-all route in Wheels to support highly dynamic websites (like a content management system, for example), where all requests that are not matched by an existing route get passed to a controller/action that can deal with it.
 
 Let's say you want to have both `/welcome-to-the-site` and `/terms-of-use` handled by the same controller and action. Here's what you can do to achieve this.
 
@@ -465,7 +465,7 @@ mapper()
 .end();
 ```
 
-`products` and `sessions` are your normal controllers. By adding them to the top of the routes file, CFWheels looks for them first. But your catch-all route is more specific than the site root (`/`), so your catch-all should be listed before the call to [root()](https://api.cfwheels.org/mapper.root.html).
+`products` and `sessions` are your normal controllers. By adding them to the top of the routes file, Wheels looks for them first. But your catch-all route is more specific than the site root (`/`), so your catch-all should be listed before the call to [root()](https://api.cfwheels.org/mapper.root.html).
 
 ### Constraints
 
@@ -559,7 +559,7 @@ mapper()
 
 ### Redirection
 
-As of CFWheels 2.1, you can now use a `redirect` argument on `GET`, `POST`, `PUT`, `PATCH`, and `DELETE` requests. This will execute before reaching any controllers, and perform a `302` redirect immediately after the route is matched.
+As of Wheels 2.1, you can now use a `redirect` argument on `GET`, `POST`, `PUT`, `PATCH`, and `DELETE` requests. This will execute before reaching any controllers, and perform a `302` redirect immediately after the route is matched.
 
 CFScript
 
@@ -580,10 +580,10 @@ This is useful for the occasional redirect, and saves you having to create a ded
 {% hint style="info" %}
 #### Note
 
-Introduced in CFWheels 2.1
+Introduced in Wheels 2.1
 {% endhint %}
 
-By default, CFWheels will add `.[format]` routes when using `resources()`. You may wish to disable this behavior to trim down the number of generated routes for clarity and performance reasons (or you just don't use this feature!).
+By default, Wheels will add `.[format]` routes when using `resources()`. You may wish to disable this behavior to trim down the number of generated routes for clarity and performance reasons (or you just don't use this feature!).
 
 You can either disable this via `mapFormat = false` on a per resource basis, or more widely, on a mapper basis:
 

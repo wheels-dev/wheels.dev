@@ -16,7 +16,6 @@
 			.end()
 		.end()
 
-		.namespace("")
 			.get(name = "auth-login", pattern = "login", to = "web.AuthController##Login")
 			.get(name = "auth-register", pattern = "register", to = "web.AuthController##Register")
 			.get(name = "auth-verify", pattern = "verify", to = "web.AuthController##verify")
@@ -31,34 +30,6 @@
 			.post(name = "update-password", pattern = "auth/update-password", to = "web.AuthController##updatePassword")
 			.get(name = "profile", pattern = "user/profile", to = "web.AuthController##profile")
 
-			// Admin Controls
-			.get(name = "admin-blog", pattern = "admin/blog", to = "admin.AdminController##blog")
-			.get(name = "admin-blog-edit", pattern = "admin/blog/edit/[id]", to = "admin.AdminController##editBlog")
-			.put(name = "admin-blog-update", pattern = "admin/blog/blogUpdate/[id]", to = "admin.AdminController##update")
-			.get(name = "admin-comment", pattern = "admin/comment", to = "admin.AdminController##comments")
-			.get(name = "admin-show-blog", pattern = "admin/blog/[slug]", to = "admin.AdminController##showBlog")
-			.get(name = "blog-List", pattern = "admin/blog/list", to = "admin.AdminController##blogList")
-			.post(name = "admin-blog-approve", pattern = "admin/approve", to = "admin.AdminController##blogApprove")
-			.post(name = "admin-bulk-approve", pattern = "admin/bulkApprove", to = "admin.AdminController##blogBulkApprove")
-			.post(name = "admin-blog-reject", pattern = "admin/reject", to = "admin.AdminController##rejectBlog")
-			.post(name = "admin-bulk-reject", pattern = "admin/bulkReject", to = "admin.AdminController##blogBulkReject")
-			.post(name = "admin-comment-publish", pattern = "admin/publish", to = "admin.AdminController##commentsPublish")
-			.post(name = "admin-comment-unpublish", pattern = "admin/hide", to = "admin.AdminController##unpublishComment")
-			.get(name = "admin-view-comment", pattern = "admin/commentDetails/[id]", to = "admin.AdminController##viewComments")
-			.get(name = "admin-close-comments", pattern = "admin/closeComments/[id]", to = "admin.AdminController##closeComments")
-			.get(name = "admin-publish-blog", pattern = "admin/publishblog/[id]", to = "admin.AdminController##publishblog")
-			.get(name="admin-dashboard", pattern="admin", to="admin.AdminController##dashboard")
-			.get(name="admin-import-data", pattern="admin/import-data", to="admin.AdminController##importData")
-
-			.get(name = "user-profile", pattern = "admin/user/profile", to = "admin.UserController##profile")
-			.get(name = "user", pattern = "admin/user", to = "admin.UserController##Index")
-			.get(name = "loadUsers", pattern = "user/list", to = "admin.UserController##loadUsers")
-			.get(name = "loadRoles", pattern = "user/loadRoles", to = "admin.UserController##loadRoles")
-			.get(name = "user-add", pattern = "admin/user/add", to = "admin.UserController##addUser")
-			.get(name = "user-add", pattern = "admin/user/edit/[id]", to = "admin.UserController##addUser")
-			.post(name = "user-store", pattern = "user/store", to = "admin.UserController##store")
-			.get(name="user-delete", pattern="admin/user/delete/[id]", to="admin.UserController##delete")
-
 			.get(name = "home", pattern = "", to = "web.HomeController##Index")
 			// Route for loading features,blogs,guides with HTMX
 			.get(name = "loadFeatures", pattern = "home/loadFeatures", to = "web.HomeController##loadFeatures")
@@ -69,7 +40,7 @@
 			.get(name = "blog", pattern = "blog", to = "web.BlogController##Index")
 			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "web.BlogController##Edit")
 			
-			.get(name = "downloads", pattern = "downloads", to = "web.DownloadsController##Index")
+			.get(name = "downloads", pattern = "downloads", to = "web.HomeController##downloads")
 
 			// New routes for loading categories, statuses, and post types
 			.get(name = "blog-Search", pattern = "blog/Search", to = "web.BlogController##blogSearch")
@@ -86,50 +57,22 @@
 
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")
-			.post(name = "Author-profile", pattern = "blog/author-profile", to="web.BlogController##AuthorProfileBlogs")			
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
 			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 			.put(name = "blogUpdate", pattern = "blog/update/[id]", to = "web.BlogController##Update")
 
-			.get(name = "user-changePassword", pattern = "user/change-password", to = "admin.UserController##changePassword")
-			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "admin.UserController##updatePassword")
-			.get(name = "user-update-profile-pic", pattern = "user/update-profile-pic", to = "admin.UserController##updateProfilePic")
-			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "admin.UserController##uploadProfilePic")
-		
 			// Testimonial-specific routes
 			.get(name="check_testimonial", pattern="testimonial/check", to="web.testimonials##check")
 			.get(name="approve_testimonial", pattern="testimonial/approve/[key]", to="web.testimonials##approve")
 			.get(name="feature_testimonial", pattern="testimonial/feature/[key]", to="web.testimonials##feature")
 			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
-			.get(name="admin-testimonial", pattern="admin/testimonial", to="admin.testimonialController##testimonials")
-			.get(name = "admin-view-testimonials", pattern = "admin/testimonials/view/[id]", to = "admin.testimonialController##testimonialDetails")
-			.get(name = "admin-Featured-testimonial", pattern = "admin/featuredTestimonial/[id]", to = "admin.testimonialController##featuredTestimonial")
-			.post(name = "admin-approve-testimonials", pattern = "admin/testimonials/approve", to = "admin.testimonialController##approve")
-			.post(name = "admin-reject-testimonials", pattern = "admin/testimonials/reject", to = "admin.testimonialController##reject")
-			
+
 			.get(name="new-testimonial", pattern="testimonial/new", to="web.TestimonialController##new")
 			.post(name="create-testimonial", pattern="testimonial/create", to="web.TestimonialController##create")
 
 			.post(name="clear_testimonial_prompt", pattern="testimonial/clear-prompt", to="web.Testimonial##clearPromptFlag") // Use POST to indicate an action
-
-			// routes for categories
-			.get(name = "admin-category", pattern = "admin/category", to = "admin.categoriesController##index")
-			.get(name = "admin-add-category", pattern = "admin/category/add", to = "admin.categoriesController##add")
-			.post(name = "admin-save-category", pattern = "admin/category/save", to = "admin.categoriesController##store")
-			.post(name = "admin-edit-category", pattern = "admin/category/edit", to = "admin.categoriesController##add")
-			.post(name = "admin-delete-category", pattern = "admin/category/delete", to = "admin.categoriesController##delete")
-			.get(name = "admin-load-category", pattern = "admin/loadCategories", to = "admin.categoriesController##loadCategories")
-			
-			// route for admin roles
-			.get(name = "admin-roles", pattern = "admin/role", to = "admin.rolesController##index")
-			.get(name = "admin-add-role", pattern = "admin/role/add", to = "admin.rolesController##add")
-			.post(name = "admin-save-role", pattern = "admin/role/save", to = "admin.rolesController##store")
-			.post(name = "admin-edit-role", pattern = "admin/role/edit", to = "admin.rolesController##add")
-			.post(name = "admin-delete-role", pattern = "admin/role/delete", to = "admin.rolesController##delete")
-			.post(name = "admin-role-exist", pattern = "admin/role/exist", to = "admin.rolesController##checkRoleExistance")
-			.get(name = "admin-load-role", pattern = "admin/loadRole", to = "admin.rolesController##loadRoles")
 
 			// route for docs
 			.get(name = "docs", pattern = "docs", to="web.docsController##index")
@@ -144,20 +87,8 @@
 			.post(name="newsletter-subscribe", pattern="newsletter/subscribe", to="web.NewsletterController##subscribe")
 			.get(name="newsletter-verify", pattern="newsletter/verify/[token]", to="web.NewsletterController##verify")
 			.post(name="newsletter-unsubscribe", pattern="newsletter/unsubscribe", to="web.NewsletterController##unsubscribe")
-	
-			// Admin Newsletter Routes
-			.get(name="admin-newsletter", pattern="admin/newsletter", to="admin.NewsletterController##index")
-			.post(name="admin-newsletter-send", pattern="admin/newsletter/send", to="admin.NewsletterController##send")
-			.post(name="admin-newsletter-unsubscribe", pattern="admin/newsletter/unsubscribe", to="admin.NewsletterController##unsubscribe")
-			.get(name="admin-newsletter-filter", pattern="admin/newsletter/filterByType", to="admin.NewsletterController##filterByType")
-			.get(name="admin-newsletter-search", pattern="admin/newsletter/search", to="admin.NewsletterController##search")
-			.get(name="admin-newsletter-export", pattern="admin/newsletter/export", to="admin.NewsletterController##export")
 			
-			// error routes
-			.get(name = "error403", pattern = "error403", to = "errorController##error403")
-		.end()
-			
-		.namespace("")
+			// route for function docs
 			.get(name="loadMoreFunctions", pattern="api/*[version]/functions", to="web.ApiController##loadMoreFunctions")
 			.get(name="loadFunctionBySlug", pattern="api/*[version]/function", to="web.ApiController##loadFunctionBySlug")
 			.get(name="loadFunctionsBySection", pattern="api/*[version]/functions/section", to="web.ApiController##loadFunctionsBySection")
@@ -165,6 +96,101 @@
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/.[format]", to="web.ApiController##show")
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/", to="web.ApiController##show")
 			.get(name="docVersion", pattern="api/*[version]/", to="web.ApiController##index")
+
+			// SEO Routes
+			.get(name="sitemap", pattern="generate-sitemap", to="web.HomeController##sitemap")
+
+			// error routes
+			.get(name = "error403", pattern = "error403", to = "errorController##error403")
+
+			// guides
+			.get(name = "load-Guides", pattern = "/guides", to = "web.GuideController##index")
+			.get(name = "load-Guides-WRT-version", pattern = "*[version]/guides", to = "web.GuideController##index")
+			.get(name = "load-guide-search-index", pattern = "*[version]/guides/search-book", to = "web.GuideController##getSearchBook")
+			.get(name = "generate-search-guide", pattern = "guides/generate-search", to = "web.GuideController##generateSearchBook")
+			.get(name = "load-guide-docs", pattern = "/guides/*[path]", to = "web.GuideController##loadGuideDocs")
+			.get(name = "load-guide-docs-WRT-version", pattern = "*[version]/guides/*[path]", to = "web.GuideController##loadGuideDocs")
+		.namespace("admin")
+			// Admin Controls
+			.get(name = "dashboard", pattern="/", to="AdminController##dashboard")
+
+			// FeatureController routes
+			.get(name = "feature", pattern = "feature", to = "FeatureController##index")
+			.get(name = "addFeature", pattern = "feature/add", to = "FeatureController##addFeature")
+			.get(name = "editFeature", pattern = "feature/edit/[id]", to = "FeatureController##addFeature")
+			.post(name = "storeFeature", pattern = "feature/store", to = "FeatureController##store")
+			.get(name = "deleteFeature", pattern = "feature/delete/[id]", to = "FeatureController##delete")
+			.get(name = "blog", pattern = "blog", to = "AdminController##blog")
+			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "AdminController##editBlog")
+			.put(name = "blog-update", pattern = "blog/blogUpdate/[id]", to = "AdminController##update")
+			.get(name = "comment", pattern = "comment", to = "AdminController##comments")
+			.get(name = "show-blog", pattern = "blog/[slug]", to = "AdminController##showBlog")
+			.get(name = "blog-List", pattern = "blog/list", to = "AdminController##blogList")
+			.post(name = "blog-approve", pattern = "approve", to = "AdminController##blogApprove")
+			.post(name = "bulk-approve", pattern = "bulkApprove", to = "AdminController##blogBulkApprove")
+			.post(name = "blog-reject", pattern = "reject", to = "AdminController##rejectBlog")
+			.post(name = "bulk-reject", pattern = "bulkReject", to = "AdminController##blogBulkReject")
+			.post(name = "comment-publish", pattern = "publish", to = "AdminController##commentsPublish")
+			.post(name = "comment-unpublish", pattern = "hide", to = "AdminController##unpublishComment")
+			.get(name = "view-comment", pattern = "commentDetails/[id]", to = "AdminController##viewComments")
+			.get(name = "close-comments", pattern = "closeComments/[id]", to = "AdminController##closeComments")
+			.get(name = "publish-blog", pattern = "publishblog/[id]", to = "AdminController##publishblog")
+			.get(name = "import-data", pattern="import-data", to="AdminController##importData")
+
+			// Admin Newsletter Routes
+			.get(name="newsletter", pattern="newsletter", to="NewsletterController##index")
+			.post(name="newsletter-send", pattern="newsletter/send", to="NewsletterController##send")
+			.post(name="newsletter-unsubscribe", pattern="newsletter/unsubscribe", to="NewsletterController##unsubscribe")
+			.get(name="newsletter-filter", pattern="newsletter/filterByType", to="NewsletterController##filterByType")
+			.get(name="newsletter-search", pattern="newsletter/search", to="NewsletterController##search")
+			.get(name="newsletter-export", pattern="newsletter/export", to="NewsletterController##export")
+
+			.get(name="testimonial", pattern="testimonial", to="TestimonialController##testimonials")
+			.get(name = "view-testimonials", pattern = "testimonials/view/[id]", to = "TestimonialController##testimonialDetails")
+			.get(name = "Featured-testimonial", pattern = "featuredTestimonial/[id]", to = "TestimonialController##featuredTestimonial")
+			.post(name = "approve-testimonials", pattern = "testimonials/approve", to = "TestimonialController##approve")
+			.post(name = "reject-testimonials", pattern = "testimonials/reject", to = "TestimonialController##reject")
+
+			// routes for categories
+			.get(name = "category", pattern = "category", to = "categoriesController##index")
+			.get(name = "add-category", pattern = "category/add", to = "categoriesController##add")
+			.post(name = "save-category", pattern = "category/save", to = "categoriesController##store")
+			.post(name = "edit-category", pattern = "category/edit", to = "categoriesController##add")
+			.post(name = "delete-category", pattern = "category/delete", to = "categoriesController##delete")
+			.get(name = "load-category", pattern = "loadCategories", to = "categoriesController##loadCategories")
+			
+			// route for admin roles
+			.get(name = "roles", pattern = "role", to = "rolesController##index")
+			.get(name = "add-role", pattern = "role/add", to = "rolesController##add")
+			.post(name = "save-role", pattern = "role/save", to = "rolesController##store")
+			.post(name = "edit-role", pattern = "role/edit", to = "rolesController##add")
+			.post(name = "delete-role", pattern = "role/delete", to = "rolesController##delete")
+			.post(name = "role-exist", pattern = "role/exist", to = "rolesController##checkRoleExistance")
+			.get(name = "load-role", pattern = "loadRole", to = "rolesController##loadRoles")
+			
+			.get(name = "user-profile", pattern = "user/profile", to = "UserController##profile")
+			.get(name = "user", pattern = "user", to = "UserController##Index")
+			.get(name = "loadUsers", pattern = "user/list", to = "UserController##loadUsers")
+			.get(name = "loadRoles", pattern = "user/loadRoles", to = "UserController##loadRoles")
+			.get(name = "user-add", pattern = "user/add", to = "UserController##addUser")
+			.get(name = "user-add", pattern = "user/edit/[id]", to = "UserController##addUser")
+			.post(name = "user-store", pattern = "user/store", to = "UserController##store")
+			.get(name = "user-delete", pattern= "user/delete/[id]", to="UserController##delete")
+
+			.get(name = "user-changePassword", pattern = "user/change-password", to = "UserController##changePassword")
+			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "UserController##updatePassword")
+			.get(name = "user-update-profile-pic", pattern = "user/update-profile-pic", to = "UserController##updateProfilePic")
+			.post(name = "user-upload-profile-pic", pattern = "user/upload-profile-pic", to = "UserController##uploadProfilePic")
+		
+
+			// settings routes
+			.get(name="settings", pattern="settings", to="SettingsController##index")
+			.get(name="email-templates", pattern="email-content", to="EmailTemplatesController##index")
+			.get(name="email-view", pattern="email/edit/[id]", to="EmailTemplatesController##edit")
+			.get(name="email-edit", pattern="email/view/[id]", to="EmailTemplatesController##view")
+			.post(name="email-save", pattern="email/save", to="EmailTemplatesController##save")
+			.post(name="testimonial-settings", pattern="settings/enableTestimonials", to="SettingsController##enableTestimonials")
+			.post(name="updateSlackInvite", pattern="settings/updateSlackInvite", to="SettingsController##updateSlackInvite")
 		.end()
 
 

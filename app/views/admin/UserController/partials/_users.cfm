@@ -18,10 +18,10 @@
                 </div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="user/edit/#users.id[i]#" class="dropdown-item text-success fs-16">Edit</a>
+                        <a href="admin/user/edit/#users.id[i]#" class="dropdown-item text-success fs-16">Edit</a>
                     </li>
                     <li>
-                        <a href="user/delete/#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
+                        <a href="admin/user/delete/#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
                     </li>
                 </ul>
             </div>
@@ -35,7 +35,7 @@
         var confirmation = confirm("Are you sure you want to delete this user?");
         if (confirmation) {
             // Redirect to the delete URL if confirmed
-            window.location.href = "user/delete?id=" + userId;
+            window.location.href = "admin/user/delete?id=" + userId;
         }
         return false; // Prevent the default action (following the link)
     }

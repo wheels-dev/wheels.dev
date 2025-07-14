@@ -17,6 +17,11 @@
                         </div>
                     </cfoutput> 
                 </div>
+                <div class="d-flex py-2 justify-content-center">
+                    <div id="loader" style="display:none; width: 2rem; height: 2rem;" class="spinner-border text--primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
 
             <div class="col-lg-3 col-12 mb-lg-0 mb-5 order-lg-last order-first">
@@ -58,11 +63,6 @@
             </div>
         </div>
     </div>
-    <div class="d-flex pb-5 justify-content-center">
-        <div id="loader" style="display:none; width: 4rem; height: 4rem;" class="spinner-border text--primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
 </main>
-<script src="/javascripts/jquery.min.js"></script>
-<script src="/javascripts/api.index.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/api.index.js"></script>

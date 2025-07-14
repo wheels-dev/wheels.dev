@@ -1,10 +1,10 @@
 <main class="w-100 vh-100 position-relative">
-    <div class="row w-100 h-100 m-lg-auto">
+    <div class="row w-100 g-0 h-100 m-lg-auto">
         <div class="col-lg-6 bg-white col-12">
             <div class="flex-column d-flex py-4 justify-content-center h-100 gap-3 align-items-center">
                 <h1 class="fs-36 mb-0 fw-bold text--secondary">Welcome to</h1>
                 <a href="/">
-                    <img src="/images/wheels-logo.png" width="300" alt="Logo">
+                    <img src="/img/wheels-logo.png" width="300" alt="wheels.dev Logo">
                 </a>
                 <p class="text--secondary fw-medium fs-18 text-center w-100 max-w-450 mx-auto pt-4">
                     Wheels is an open-source CFML framework inspired by Ruby on Rails. It offers fast app development,
@@ -13,18 +13,18 @@
             </div>
         </div>
         <div
-            class="col-lg-6 p-lg-auto p-0 main-login col-12 d-flex flex-column justify-content-center align-items-center">
+            class="col-lg-6 mt-lg-0 mt-5 px-lg-0 px-2 p-lg-auto main-login col-12 d-flex flex-column justify-content-center align-items-center">
             <div class="bg-white p-4 border rounded-4 w-100 max-w-570 mx-auto">
                 <div>
-                    <h1 class="fs-24 mb-0 fw-bold text--secondary">Sign Up</h1>
-                    <p class="fs-16 text--secondary fw-medium pt-2">Register your account</p>
+                    <h2 class="fs-24 mb-0 fw-bold text--secondary">Create Account</h2>
+                    <p class="fs-16 text--secondary fw-medium pt-2">Join the Wheels community today.</p>
 
                     <form class="pt-3 needs-validation" id="registrationForm" novalidate hx-post="/auth/store"
                         hx-validate="true">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.6">
                                             <path
@@ -37,16 +37,17 @@
                                                 stroke-linejoin="round" />
                                         </g>
                                     </svg>
-                                    <input type="text" placeholder="Enter First Name"
+                                    <input type="text" placeholder="First Name"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="firstName"
                                         name="firstName" required minlength="3" maxlength="20">
+                                    <span class="input-icon" id="icon-firstName"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">First name must be between 3 and 20 characters.</div>
+                                <div class="invalid-feedback px-3 py-1">First name must be between 3 and 20 characters long.</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.6">
                                             <path
@@ -59,16 +60,17 @@
                                                 stroke-linejoin="round" />
                                         </g>
                                     </svg>
-                                    <input type="text" placeholder="Enter Last Name"
+                                    <input type="text" placeholder="Last Name"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="lastName"
                                         name="lastName" required minlength="3" maxlength="20">
+                                    <span class="input-icon" id="icon-lastName"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">Last name must be between 3 and 20 characters.</div>
+                                <div class="invalid-feedback px-3 py-1">Last name must be between 3 and 20 characters long.</div>
                             </div>
 
                             <div class="mb-3">
                                 <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
-                                    <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                                    <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" class="flex-shrink-0"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.6">
                                             <path
@@ -80,16 +82,17 @@
                                                 stroke-linecap="round" stroke-linejoin="round" />
                                         </g>
                                     </svg>
-                                    <input type="email" placeholder="Enter your email"
+                                    <input type="email" placeholder="Email address (e.g., name@example.com)"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="email"
                                         name="email" required>
+                                    <span class="input-icon" id="icon-email"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">Please enter a valid email address.</div>
+                                <div class="invalid-feedback px-3 py-1">Please enter a valid email address format (e.g., name@example.com).</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
-                                    <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                                    <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" class="flex-shrink-0"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.6">
                                             <path d="M6 10V8C6 4.69 7 2 12 2C17 2 18 4.69 18 8V10" stroke="#292D32"
@@ -106,16 +109,17 @@
                                                 stroke-linecap="round" stroke-linejoin="round" />
                                         </g>
                                     </svg>
-                                    <input type="password" placeholder="Enter your password"
+                                    <input type="password" placeholder="Password"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill"
                                         id="passwordHash" name="passwordHash" required minlength="8">
+                                    <span class="input-icon" id="icon-passwordHash"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">Password must be at least 8 characters long.</div>
+                                <div class="invalid-feedback px-3 py-1">Your password should be at least 8 characters.</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
-                                    <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none"
+                                    <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none" class="flex-shrink-0"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <g opacity="0.6">
                                             <path d="M6 10V8C6 4.69 7 2 12 2C17 2 18 4.69 18 8V10" stroke="#292D32"
@@ -132,9 +136,10 @@
                                                 stroke-linecap="round" stroke-linejoin="round" />
                                         </g>
                                     </svg>
-                                    <input type="password" placeholder="Re-enter password"
+                                    <input type="password" placeholder="Re-enter Password"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill"
                                         id="confirmPassword" name="confirmPassword" required minlength="8">
+                                    <span class="input-icon" id="icon-confirmPassword"></span>
                                 </div>
                                 <div class="invalid-feedback px-3 py-1">Passwords must match.</div>
                             </div>
@@ -145,7 +150,7 @@
                             <label class="form-check-label text--secondary fs-14" for="termsCheck">Agree to Terms &
                                 Privacy
                                 Policy</label>
-                            <div class="invalid-feedback">You must agree to the terms and privacy policy.</div>
+                            <div class="invalid-feedback">You must agree to the terms and privacy policy to continue.</div>
                         </div>
                         <div class="mb-3 form-check">
                             <input name="newsletter" type="checkbox" class="form-check-input form-check-input-primary"
@@ -163,7 +168,7 @@
                             <div class="text-center">
                                 <p class="fs-14 text--secondary fw-medium">
                                     Have an account ?
-                                    <a href="/login" class="text--primary">Login here</a>
+                                    <a href="/login" class="text--primary">Login</a>
                                 </p>
                             </div>
                         </div>
@@ -176,87 +181,3 @@
 
 <!-- Include Google reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-<script>
-    (function () {
-        'use strict'
-        const form = document.getElementById('registrationForm');
-
-        const fields = {
-            firstName: {
-                validator: value => value.length >= 3 && value.length <= 20,
-                message: 'First name must be between 3 and 20 characters.'
-            },
-            lastName: {
-                validator: value => value.length >= 3 && value.length <= 20,
-                message: 'Last name must be between 3 and 20 characters.'
-            },
-            email: {
-                validator: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-                message: 'Please enter a valid email address.'
-            },
-            passwordHash: {
-                validator: value => value.length >= 8,
-                message: 'Password must be at least 8 characters long.'
-            },
-            confirmPassword: {
-                validator: (value, form) => value === form.passwordHash.value,
-                message: 'Passwords must match.'
-            },
-            termsCheck: {
-                validator: checked => checked,
-                message: 'You must agree to the terms and privacy policy.'
-            }
-        };
-
-        form.addEventListener('submit', function (event) {
-            let hasErrors = false;
-            clearAllErrors();
-
-            for (const fieldId in fields) {
-                const input = form[fieldId];
-                const { validator, message } = fields[fieldId];
-                const isValid = validator(input.type === 'checkbox' ? input.checked : input.value, form);
-
-                if (!isValid) {
-                    showError(input, message);
-                    hasErrors = true;
-                }
-            }
-
-            if (hasErrors) {
-                event.preventDefault();
-            }
-
-            // Optionally validate CAPTCHA
-            // const captchaResponse = grecaptcha.getResponse();
-            // if (captchaResponse.length === 0) {
-            //     event.preventDefault();
-            //     document.getElementById('captchaError').style.display = 'block';
-            // } else {
-            //     document.getElementById('captchaError').style.display = 'none';
-            // }
-        });
-
-        function showError(input, message) {
-            const errorDiv = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.parentElement.querySelector('.invalid-feedback');
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-            }
-            input.classList.add('is-invalid');
-        }
-
-        function clearAllErrors() {
-            const errorFields = form.querySelectorAll('.is-invalid');
-            errorFields.forEach(input => input.classList.remove('is-invalid'));
-
-            const errorDivs = form.querySelectorAll('.invalid-feedback');
-            errorDivs.forEach(div => {
-                div.textContent = '';
-                div.style.display = 'none';
-            });
-
-        }
-    })();
-</script>

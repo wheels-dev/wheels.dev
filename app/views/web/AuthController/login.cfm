@@ -2,7 +2,7 @@
     <div class="position-absolute w-100 top-0 start-0">
         <div class="container w-100 px-0 pt-3">
             <a href="/" class="text-decoration-none container">
-                <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
+                <img src="/img/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
             </a>
         </div>
     </div>
@@ -10,7 +10,7 @@
         <div class="col-lg-4 bg-white col-12 position-relative mx-auto p-4 border rounded-4 shadow-sm">
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Welcome Back</h1>
-                <p class="fs-16 text--secondary fw-medium pt-2">Please login to your account</p>
+                <p class="fs-16 text--secondary fw-medium pt-2">Please login to continue</p>
 
                 <form hx-boost="true" class="pt-4 needs-validation" id="loginForm" novalidate
                     hx-post="/auth/authenticate" hx-swap="none" aria-label="Login Form">
@@ -29,7 +29,7 @@
                                         stroke-linejoin="round" />
                                 </g>
                             </svg>
-                            <input type="email" placeholder="Enter your email"
+                            <input type="email" placeholder="Email Address"
                                 class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="email"
                                 name="email" required autocomplete="email" aria-label="Email Address">
                         </div>
@@ -55,7 +55,7 @@
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </g>
                             </svg>
-                            <input type="password" placeholder="Enter your password"
+                            <input type="password" placeholder="Password"
                                 class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="password"
                                 name="password" required minlength="8" autocomplete="current-password" aria-label="Password">
                             <button type="button" class="btn btn-link p-0" onclick="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
@@ -72,7 +72,7 @@
                     <div class="space-y-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe" aria-label="Remember Me">
+                                <input type="checkbox" class="form-check-input form-check-input-primary" id="rememberMe" name="rememberMe" aria-label="Remember Me">
                                 <label class="form-check-label fs-14 text--secondary" for="rememberMe">Remember me</label>
                             </div>
                             <a href="/auth/forgot-password" class="text--primary fw-medium fs-14 hover:text-primary" data-hx-boost="false">Forgot Password?</a>
@@ -86,149 +86,18 @@
                         <div class="text-center">
                             <p class="fs-14 text--secondary fw-medium">
                                 Don't have an account?
-                                <a href="/register" class="text--primary hover:text-primary" data-hx-boost="false">Register here</a>
+                                <a href="/register" class="text--primary hover:text-primary" data-hx-boost="false">Register</a>
                             </p>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
-                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" alt="Decorative Vector" />
+                <img src="/img/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
-                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" alt="Decorative Vector" />
+                <img src="/img/authVector2.png" class="img-fluid" width="150" height="150" alt="Wheels.dev auth" />
             </div>
         </div>
     </div>
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const submitButton = loginForm.querySelector('button[type="submit"]');
-        const spinner = submitButton.querySelector('.spinner-border');
-        const buttonText = submitButton.querySelector('.button-text');
-
-        function togglePasswordVisibility() {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            const button = passwordInput.nextElementSibling;
-            button.setAttribute('aria-label', type === 'password' ? 'Show Password' : 'Hide Password');
-        }
-
-        function clearBootstrapValidationStyles() {
-            loginForm.classList.remove('was-validated');
-            const errorMessages = loginForm.querySelectorAll('.invalid-feedback');
-            errorMessages.forEach(function(el) {
-                el.style.display = 'none';
-            });
-            emailInput.classList.remove('is-invalid');
-            passwordInput.classList.remove('is-invalid');
-        }
-
-        function showBootstrapValidationError(inputElement) {
-            inputElement.classList.add('is-invalid');
-            const errorSelector = `.invalid-feedback[data-field-error="${inputElement.name}"]`;
-            const errorDiv = inputElement.closest('.mb-3').querySelector(errorSelector);
-            if (errorDiv) {
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        loginForm.addEventListener('htmx:beforeRequest', function(event) {
-            const requestPath = event.detail.requestConfig.path;
-            const formAction = loginForm.getAttribute('hx-post');
-
-            if (requestPath !== formAction) {
-                return;
-            }
-
-            clearBootstrapValidationStyles();
-            let formIsValid = true;
-            let notificationShown = false;
-
-            // Validate Email
-            const emailValue = emailInput.value.trim();
-            if (emailValue === '') {
-                notifier.show('Required', 'Email field cannot be empty!', 'danger', '', 4000);
-                emailInput.classList.add('is-invalid');
-                formIsValid = false;
-                notificationShown = true;
-            } else if (!emailInput.checkValidity()) {
-                showBootstrapValidationError(emailInput);
-                formIsValid = false;
-            }
-
-            // Validate Password
-            const passwordValue = passwordInput.value.trim();
-            if (passwordValue === '') {
-                if (!notificationShown) {
-                    notifier.show('Required', 'Password field cannot be empty!', 'danger', '', 4000);
-                    notificationShown = true;
-                }
-                passwordInput.classList.add('is-invalid');
-                formIsValid = false;
-            } else if (!passwordInput.checkValidity()) {
-                showBootstrapValidationError(passwordInput);
-                formIsValid = false;
-            }
-
-            if (!formIsValid) {
-                event.preventDefault();
-                if (!notificationShown) {
-                    loginForm.classList.add('was-validated');
-                }
-            } else {
-                submitButton.disabled = true;
-                spinner.classList.remove('d-none');
-                buttonText.textContent = 'Logging in...';
-            }
-        });
-
-        loginForm.addEventListener('htmx:afterRequest', function (event) {
-            submitButton.disabled = false;
-            spinner.classList.add('d-none');
-            buttonText.textContent = 'Login';
-            
-            const xhr = event.detail.xhr;
-            clearBootstrapValidationStyles();
-
-            try {
-                if (xhr.responseText && xhr.responseText.trim() !== '') {
-                    const response = JSON.parse(xhr.responseText);
-
-                    if (event.detail.successful) {
-                        if (response.success) {
-                            notifier.show('Success!', response.message || 'Login successful!', 'success', '', 4000);
-                            if (response.redirectUrl) {
-                                setTimeout(() => {
-                                    window.location.href = response.redirectUrl;
-                                }, 100);
-                            }
-                        } else {
-                            notifier.show('Login Failed', response.message || 'Invalid credentials.', 'warning', '', 4000);
-                            passwordInput.value = '';
-                        }
-                    } else {
-                        notifier.show('Login Failed', response.message || 'Invalid credentials or server error.', 'danger', '', 4000);
-                        passwordInput.value = '';
-                    }
-                } else {
-                    notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
-                    passwordInput.value = '';
-                }
-            } catch (e) {
-                let errorMsg = 'An unexpected error occurred. Please try again.';
-                if (xhr.responseText && xhr.responseText.trim() !== '') {
-                    errorMsg = 'Error processing server response. Please try again.';
-                } else if (xhr.status === 0) {
-                    errorMsg = 'Network error or request cancelled. Please check connection.';
-                }
-                notifier.show('Error', errorMsg, 'danger', '', 4000);
-                passwordInput.value = '';
-            }
-        });
-    });
-</script>

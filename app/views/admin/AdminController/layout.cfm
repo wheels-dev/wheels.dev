@@ -4,36 +4,39 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <mta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">		
-	<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">		
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <!-- Bootstrap CSS -->
-    <link href="/stylesheets/font.css" rel="stylesheet">
-    <link href="/stylesheets/icons/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="/javascripts/bootstrap.js" type="text/javascript"></script>
+    <link href="/css/font.css" rel="stylesheet">
+    <link href="/css/icons/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="/js/bootstrap.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
-    <link href="/stylesheets/bootstrap.css" rel="stylesheet">
-    <link href="/stylesheets/color.css" rel="stylesheet">
-    <link href="/stylesheets/style.css" rel="stylesheet">
-    <link href="/stylesheets/utils.css" rel="stylesheet">
-    <link href="/stylesheets/dataTables.min.css" rel="stylesheet">
-    <link href="/stylesheets/notifier.min.css" rel="stylesheet">
-    <link href="/stylesheets/quill.snow.css" rel="stylesheet">
-    <link href="/stylesheets/select2.min.css" rel="stylesheet">
-    <link href="/stylesheets/select2-bootstrap-min.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/color.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/utils.css" rel="stylesheet">
+    <link href="/css/dataTables.min.css" rel="stylesheet">
+    <link href="/css/notifier.min.css" rel="stylesheet">
+    <link href="/css/quill.snow.css" rel="stylesheet">
+    <link href="/css/select2.min.css" rel="stylesheet">
+    <link href="/css/select2-bootstrap-min.css" rel="stylesheet">
+    <link href="/css/simplebar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/lib/easymde.min.css">
+    <link href="/css/theme-rtl.min.css" id="style-rtl" rel="stylesheet">
+    <link href="/css/theme.min.css" id="style-default" rel="stylesheet">
+    <link href="/css/user-rtl.min.css" id="user-style-rtl" rel="stylesheet">
+    <link href="/css/user.min.css" id="user-style-default" rel="stylesheet">
     
-    <script src="/javascripts/notifier.min.js"></script>
-    <script src="/javascripts/htmx.min.js"></script>
-    <script src="/javascripts/highlighter.min.js"></script>
-    <cfoutput>
-        #stylesheetLinkTag(source="simplebar.min.css")#
-        #stylesheetLinkTag(source="theme-rtl.min.css", id="style-rtl")# 
-        #stylesheetLinkTag(source="theme.min.css", id="style-default")#
-        #stylesheetLinkTag(source="user-rtl.min.css", id="user-style-rtl")#
-        #stylesheetLinkTag(source="user.min.css", id="user-style-default")#
-        #javascriptIncludeTag(source="echarts.min.js")#
-        #javascriptIncludeTag(source="simplebar.min.js")#
-        #javascriptIncludeTag(source="config.js")#
-    </cfoutput>
+    <script src="/js/notifier.min.js"></script>
+    <script src="/js/htmx.min.js"></script>
+    <script src="/js/highlighter.min.js"></script>
+    <script src="/js/echarts.min.js"></script>
+    <script src="/js/simplebar.min.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/lib/easymde.min.js"></script>
+    <script src="/js/lib/marked.min.js"></script>
+
+    
     <script>
         var phoenixIsRTL = window.config.config.phoenixIsRTL;
         if (phoenixIsRTL) {
@@ -50,12 +53,12 @@
         }
     </script>
     <!-- Bootstrap JS -->
-    <script src="/javascripts/quill.min.js"></script>
-    <script src="/javascripts/jquery.min.js"></script>
-    <script src="/javascripts/select2.min.js"></script>
-    <script src="/javascripts/dataTables.min.js"></script>
+    <script src="/js/quill.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/select2.min.js"></script>
+    <script src="/js/dataTables.min.js"></script>
 </head>
-<body>
+<body <cfoutput> data-scope="#cgi.path_info#" </cfoutput>>
     <cfset isUserAuth = find("/user/", cgi.path_info)>
     <main class="main" id="top">
         <nav class="navbar navbar-vertical navbar-expand-lg">
@@ -66,7 +69,7 @@
                         <li class="nav-item">
                             <div class="nav-item-wrapper mb-3">
                             <cfoutput>
-                                <a class="nav-link label-1" href="#urlFor(route='admin-dashboard')#" role="button" data-bs-toggle="" aria-expanded="false">
+                                <a class="nav-link label-1" href="#urlFor(route='adminDashboard')#" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-bar-chart-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Dashboard</span></span>
                                     </div>
                                 </a>
@@ -114,6 +117,31 @@
                                     </div>
                                 </a>
                             </div>
+                            <div class="nav-item-wrapper mb-3">
+                                <a class="nav-link dropdown-indicator label-1" href="#nv-setting" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="nv-setting">
+                                    <div class="d-flex align-items-center">
+                                        <div class="dropdown-indicator-icon-wrapper"><span class="fas fa-caret-right dropdown-indicator-icon"></span></div><span class="nav-link-icon"><i class="bi bi-gear-fill fs-18 ms-1"></i></span><span class="nav-link-text fs-14">Settings</span>
+                                    </div>
+                                </a>
+                                <div class="parent-wrapper label-1">
+                                    <ul class="nav collapse parent" data-bs-parent="#navbarVerticalCollapse" id="nv-setting">
+                                        <li class="nav-item">
+                                            <cfoutput>
+                                                <a class="nav-link" href="#urlFor(route="adminemail-templates")#">
+                                                    <div class="d-flex align-items-center"><span class="nav-link-text fs-14">Email Templates</span></span></div>
+                                                </a>
+                                            </cfoutput>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/admin/settings">
+                                                <div class="d-flex align-items-center"><span class="nav-link-text fs-14">General Setting</span></span></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="nav-item-wrapper mb-3">
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -130,7 +158,7 @@
                         <div class="d-flex align-items-center">
                             <div class="d-flex align-items-center">
                                 <cfoutput>
-                                    #imageTag(source = 'wheels-logo.png', alt="wheels-logo", width="200", height="30")#
+                                    <img src = '/img/wheels-logo.png' alt="wheels-logo" width="200" height="30">
                                 </cfoutput>
                             </div>
                         </div>
@@ -148,7 +176,15 @@
                             <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-l ">
                                     <cfoutput>
-                                        #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                        <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
+											<div 
+												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+												style="width:40px; height:40px;">
+												#ucase(left(listLast(session.username, " "), 1))#
+											</div>
+										<cfelse>
+                                            <img src = '/img/#session.profilePic#' class="rounded-circle" alt="user profile picture">
+										</cfif>
                                     </cfoutput>
                                 </div>
                             </a>
@@ -158,7 +194,15 @@
                                     <div class="text-center pt-4 pb-3">
                                     <div class="avatar avatar-xl ">
                                         <cfoutput>
-                                            #imageTag(source = '#session.profilePic#', class="rounded-circle", alt="profile-picture")#
+                                            <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
+                                                <div 
+                                                    class="d-flex align-items-center fs-24 justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                    style="width:3rem; height:3rem;">
+                                                    #ucase(left(listLast(session.username, " "), 1))#
+                                                </div>
+                                            <cfelse>
+                                                <img src = '/img/#session.profilePic#' class="rounded-circle" alt="profile-picture">
+                                            </cfif>
                                         </cfoutput>
                                     </div>
                                     <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>
@@ -203,65 +247,12 @@
                 </div>
             </div>
         </cfoutput>
-    <script>
-        var navbarTopStyle = window.config.config.phoenixNavbarTopStyle;
-        var navbarTop = document.querySelector('.navbar-top');
-        if (navbarTopStyle === 'darker') {
-        navbarTop.setAttribute('data-navbar-appearance', 'darker');
-        }
-
-        var navbarVerticalStyle = window.config.config.phoenixNavbarVerticalStyle;
-        var navbarVertical = document.querySelector('.navbar-vertical');
-        if (navbarVertical && navbarVerticalStyle === 'darker') {
-        navbarVertical.setAttribute('data-navbar-appearance', 'darker');
-        }
-    </script>
+    <script src="/js/adminLayout.js"></script>
     </main>
-    <script>
-        function updateActiveNavLink() {
-            var currentUrl = window.location.pathname;
-            var navLinks = document.querySelectorAll(".navbar-nav .nav-link");
-            var allParents = document.querySelectorAll(".parent");
-            var allToggles = document.querySelectorAll(".nav-link.dropdown-indicator");
-
-            // Remove 'active' class from all links, 'show' class from all parents, and reset aria-expanded
-            navLinks.forEach(link => link.classList.remove("active"));
-            allParents.forEach(parent => parent.classList.remove("show"));
-            allToggles.forEach(toggle => toggle.setAttribute("aria-expanded", "false"));
-
-            navLinks.forEach(function (link) {
-                if (link.getAttribute("href") === currentUrl) {
-                    link.classList.add("active");
-
-                    // Find the closest parent and add 'show' class
-                    var parent = link.closest(".parent");
-                    if (parent) {
-                        parent.classList.add("show");
-                        
-                        // Traverse up to find all parent toggles and mark them expanded
-                        var parentToggle = parent.closest(".parent-wrapper").previousElementSibling;
-                        while (parentToggle) {
-                            if (parentToggle.classList.contains("nav-link")) {
-                                parentToggle.setAttribute("aria-expanded", "true");
-                            }
-                            parentToggle = parentToggle.closest(".parent-wrapper")?.previousElementSibling;
-                        }
-                    }
-                }
-            });
-        }
-
-        // Run on page load
-        document.addEventListener("DOMContentLoaded", updateActiveNavLink);
-
-        // Run after any HTMX request completes
-        document.addEventListener("htmx:afterSettle", updateActiveNavLink);
-    </script>
-    <cfoutput>
-        #javascriptIncludeTag(source="anchor.min.js")#
-        #javascriptIncludeTag(source="all.min.js")#
-        #javascriptIncludeTag(source="lodash.min.js")#
-        #javascriptIncludeTag(source="phoenix.js")#
-    </cfoutput>
+    <script src="/js/anchor.min.js"></script>
+    <script src="/js/all.min.js"></script>
+    <script src="/js/lodash.min.js"></script>
+    <script src="/js/phoenix.js"></script>
+    <script src="/js/adminglobal.js"></script>
 </body>
 </html>

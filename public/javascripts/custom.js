@@ -1,24 +1,33 @@
-var swiper = new Swiper(".blogSwiper", {
-    spaceBetween: 30,
-    freeMode: true,
-    // autoHeight: true,
-    initialSlide: 1,
-    slidesOffsetBefore: 250,
-    breakpoints: {
-        640: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-        },
-        768: {
-            slidesPerView: 2,
-            spaceBetween: 20,
-        },
-        1024: {
-            slidesPerView: 3,
+function initSwiper() {
+    let swiperInstance = null;
+    if (window.innerWidth >= 768 && !swiperInstance) {
+        swiperInstance = new Swiper(".blogSwiper", {
             spaceBetween: 30,
-        },
-    },
-});
+            freeMode: true,
+            initialSlide: 1,
+            slidesOffsetBefore: 250,
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+            },
+        });
+    } else if (window.innerWidth < 768 && swiperInstance) {
+        swiperInstance.destroy(true, true);
+        swiperInstance = null;
+    }
+}
+
+// Initialize on load
+window.addEventListener("load", initSwiper);
+// Re-initialize on resize
+window.addEventListener("resize", initSwiper);
+
 
 var contributorsSwiperThumb = new Swiper(".contributorsSwiperThumb", {
     spaceBetween: 0,

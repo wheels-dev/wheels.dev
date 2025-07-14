@@ -1,10 +1,10 @@
 # cfwheels-base-template
 
-This is a blank application written in CFWheels. 
+This is a blank application written in Wheels.
 
 ## As an Application
 
-As an application, this is a starting point for a modern CFWheels application with Bootstrap integration.
+As an application, this is a starting point for a modern Wheels application with Bootstrap integration.
 
 ## As a ForgeBox Package
 

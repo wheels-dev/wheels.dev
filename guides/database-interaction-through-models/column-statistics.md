@@ -6,7 +6,7 @@ description: >-
 
 # Column Statistics
 
-Since CFWheels simplifies so much for you when you select, insert, update, and delete rows from the database, it would be a little annoying if you had to revert back to using `cfquery` and `COUNT(id) AS x` type queries when you wanted to get aggregate values, right?
+Since Wheels simplifies so much for you when you select, insert, update, and delete rows from the database, it would be a little annoying if you had to revert back to using `cfquery` and `COUNT(id) AS x` type queries when you wanted to get aggregate values, right?
 
 Well, good news. Of course you don't need to do this; just use the built-in functions [sum()](https://api.cfwheels.org/model.sum.html), [minimum()](https://api.cfwheels.org/model.minimum.html), [maximum()](https://api.cfwheels.org/model.maximum.html), [average()](https://api.cfwheels.org/model.average.html) and [count()](https://api.cfwheels.org/model.count.html).
 
@@ -52,7 +52,7 @@ WHERE ...
 ```
 {% endcode %}
 
-However, if you include a `hasMany` association, CFWheels will be smart enough to add the `DISTINCT` keyword to the SQL. This makes sure that you're only counting unique rows.
+However, if you include a `hasMany` association, Wheels will be smart enough to add the `DISTINCT` keyword to the SQL. This makes sure that you're only counting unique rows.
 
 For example, the following method call:
 
