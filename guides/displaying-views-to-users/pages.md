@@ -73,9 +73,9 @@ For example, if the view is to display the `title` column from a query object ca
 </ul>
 ```
 
-Please note that you do **not** need to do this when passing in data to CFWheels view helpers. The view helpers themselves will handle calling `EncodeForUrl`, `EncodeForHtml` and `EncodeForHtmlAttribute` internally as needed.
+Please note that you do **not** need to do this when passing in data to Wheels view helpers. The view helpers themselves will handle calling `EncodeForUrl`, `EncodeForHtml` and `EncodeForHtmlAttribute` internally as needed.
 
-By "view helpers" we mean everything listed as such in the [API reference](https://api.cfwheels.org/), so be aware that global helpers, such as [capitalize](https://api.cfwheels.org/controller.capitalize.html), [humanize](https://api.cfwheels.org/controller.humanize.html) etc, do not encode the content you pass in. When in doubt, simply test by passing in a string and check the HTML source of the output to see whether CFWheels encoded it or not.
+By "view helpers" we mean everything listed as such in the [API reference](https://api.cfwheels.org/), so be aware that global helpers, such as [capitalize](https://api.cfwheels.org/controller.capitalize.html), [humanize](https://api.cfwheels.org/controller.humanize.html) etc, do not encode the content you pass in. When in doubt, simply test by passing in a string and check the HTML source of the output to see whether Wheels encoded it or not.
 
 To control encoding in general you have three global settings at your disposal (they all default to `true`):
 

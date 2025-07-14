@@ -4,7 +4,7 @@
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Change Password</h1>
 
-                <form class="pt-3 px-1 needs-validation" id="changePasswordForm" novalidate hx-post="/user/update-Password" hx-validate="true">
+                <form class="pt-3 px-1 needs-validation" id="changePasswordForm" novalidate hx-post="/admin/user/update-Password" hx-validate="true">
                     <div class="mb-3">
                         <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">
                             <svg width="20" height="20" class="flex-shrink-0" viewBox="0 0 24 24" fill="none"
@@ -64,10 +64,10 @@
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
-                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" />
+                <img src="/img/authVector.png" alt="Wheels.dev auth" class="img-fluid" width="250" height="250" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
-                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" />
+                <img src="/img/authVector2.png" alt="Wheels.dev auth" class="img-fluid" width="150" height="150" />
             </div>
         </div>
     </div>

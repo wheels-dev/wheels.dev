@@ -43,17 +43,17 @@ component extends="app.Models.Model" {
 
     // Fetch all latest blog posts with corresponding users
     public function getAll() {
-        var blogs = findAll(where='statusid <> 1', include="User", order = "COALESCE(post_created_date, blog_posts.createdAt) DESC");
+        var blogs = findAll(where='statusid <> 1', include="User", order = "postDate DESC");
         return blogs;
     }
     
-    // Fetch all latest blog posts with corresponding users
+    // Fetch ten latest blog posts with corresponding users
     public function getTenLatest() {
         var blogs = findAll(
             where='statusid <> 1', 
             include="User", 
             maxRows=10,
-            order="COALESCE(post_created_date, blog_posts.createdAt) DESC"
+            order="random"
         );
         return blogs;
     }

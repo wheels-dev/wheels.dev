@@ -106,7 +106,7 @@ The same goes for `NOT BETWEEN`:
 items = application.wo.model("item").findAll(where="price <= 100 OR price >= 500");
 ```
 
-In CFWheels ORM queries, you need to surround strings with single quotes or leave the quotes out if you're passing in a number or boolean.&#x20;
+In Wheels ORM queries, you need to surround strings with single quotes or leave the quotes out if you're passing in a number or boolean.&#x20;
 
 Example with non-numeric value:
 

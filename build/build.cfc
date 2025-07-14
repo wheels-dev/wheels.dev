@@ -1,5 +1,5 @@
 /**
- * Build process for CFWheels Core and Base Template
+ * Build process for Wheels Core and Base Template
  */
 component {
 

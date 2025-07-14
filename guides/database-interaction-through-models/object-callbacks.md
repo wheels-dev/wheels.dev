@@ -59,7 +59,7 @@ When naming your callbacks you might be tempted to try and keep things (too) sim
 
 Do **not** do this.
 
-If you do, CFWheels will fail silently and you might be left wondering why nothing is happening. (What is happening is that you, if there is a corresponding method named `afterValidation`, unintentionally overrode an internal CFWheels method.)
+If you do, Wheels will fail silently and you might be left wondering why nothing is happening. (What is happening is that you, if there is a corresponding method named `afterValidation`, unintentionally overrode an internal Wheels method.)
 
 It's best to name the methods so they describe what task they actually perform, such as `calculateShippingCost` or `fixCreditCard` as shown in the example above.
 

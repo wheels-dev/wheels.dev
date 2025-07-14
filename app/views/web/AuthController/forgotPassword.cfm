@@ -2,7 +2,7 @@
     <div class="position-absolute w-100 top-0 start-0">
         <div class="container w-100 px-0 pt-3">
             <a href="/" class="text-decoration-none container">
-                <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
+                <img src="/img/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
             </a>
         </div>
     </div>
@@ -10,7 +10,7 @@
         <div class="col-lg-4 bg-white col-12 position-relative mx-auto p-4 border rounded-4 shadow-sm">
             <div class="mt-2">
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Reset Password</h1>
-                <p class="fs-16 text--secondary fw-medium pt-2">Enter your email to receive reset instructions</p>
+                <p class="fs-16 text--secondary fw-medium pt-2">Enter your email to get a password reset link</p>
 
                 <form hx-boost="true" class="pt-4 needs-validation" id="forgotPasswordForm" novalidate
                     hx-post="/auth/send-reset-link" hx-swap="none" aria-label="Forgot Password Form">
@@ -40,113 +40,24 @@
                     <div class="space-y-3">
                         <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16 hover:bg-primary-dark transition-all" aria-label="Send Reset Link">
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span class="button-text">Send Reset Link</span>
+                            <span class="button-text">Send Link</span>
                         </button>
 
                         <div class="text-center">
                             <p class="fs-14 text--secondary fw-medium">
                                 Remember your password?
-                                <a href="/login" class="text--primary hover:text-primary" data-hx-boost="false">Login here</a>
+                                <a href="/login" class="text--primary hover:text-primary" data-hx-boost="false">Login</a>
                             </p>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
-                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" alt="Decorative Vector" />
+                <img src="/img/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
-                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" alt="Decorative Vector" />
+                <img src="/img/authVector2.png" class="img-fluid" width="150" height="150" alt="Wheels.dev auth" />
             </div>
         </div>
     </div>
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-        const emailInput = document.getElementById('email');
-        const submitButton = forgotPasswordForm.querySelector('button[type="submit"]');
-        const spinner = submitButton.querySelector('.spinner-border');
-        const buttonText = submitButton.querySelector('.button-text');
-
-        function clearBootstrapValidationStyles() {
-            forgotPasswordForm.classList.remove('was-validated');
-            const errorMessages = forgotPasswordForm.querySelectorAll('.invalid-feedback');
-            errorMessages.forEach(function(el) {
-                el.style.display = 'none';
-            });
-            emailInput.classList.remove('is-invalid');
-        }
-
-        function showBootstrapValidationError(inputElement) {
-            inputElement.classList.add('is-invalid');
-            const errorSelector = `.invalid-feedback[data-field-error="${inputElement.name}"]`;
-            const errorDiv = inputElement.closest('.mb-3').querySelector(errorSelector);
-            if (errorDiv) {
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        forgotPasswordForm.addEventListener('htmx:beforeRequest', function(event) {
-            const requestPath = event.detail.requestConfig.path;
-            const formAction = forgotPasswordForm.getAttribute('hx-post');
-
-            if (requestPath !== formAction) {
-                return;
-            }
-
-            clearBootstrapValidationStyles();
-            let formIsValid = true;
-            let notificationShown = false;
-
-            // Validate Email
-            const emailValue = emailInput.value.trim();
-            if (emailValue === '') {
-                notifier.show('Required', 'Email field cannot be empty!', 'danger', '', 4000);
-                emailInput.classList.add('is-invalid');
-                formIsValid = false;
-                notificationShown = true;
-            } else if (!emailInput.checkValidity()) {
-                showBootstrapValidationError(emailInput);
-                formIsValid = false;
-            }
-
-            if (!formIsValid) {
-                event.preventDefault();
-                if (!notificationShown) {
-                    forgotPasswordForm.classList.add('was-validated');
-                }
-            } else {
-                submitButton.disabled = true;
-                spinner.classList.remove('d-none');
-                buttonText.textContent = 'Sending...';
-            }
-        });
-
-        forgotPasswordForm.addEventListener('htmx:afterRequest', function (event) {
-            submitButton.disabled = false;
-            spinner.classList.add('d-none');
-            buttonText.textContent = 'Send Reset Link';
-            
-            const xhr = event.detail.xhr;
-            clearBootstrapValidationStyles();
-            if (xhr.responseText && xhr.responseText.trim() !== '' && xhr.responseURL.includes("/auth/send-reset-link")) {
-                if (event.detail.successful) {
-                    if (xhr.status === 200 && xhr.responseURL.includes("/auth/send-reset-link")) {
-                        notifier.show('Success!', xhr.responseText, 'success', '', 4000);
-                            setTimeout(() => {
-                                window.location.href = "/login";
-                            }, 3000);
-                    } else {
-                        notifier.show('Error', 'No account found with that email address.', 'warning', '', 4000);
-                    }
-                } else {
-                    notifier.show('Error', 'An error occurred. Please try again.', 'danger', '', 4000);
-                }
-            } else {
-                notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
-            }
-        });
-    });
-</script> 

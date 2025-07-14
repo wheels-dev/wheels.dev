@@ -117,15 +117,11 @@ component extends="app.Controllers.Controller" {
 
             if (isHtmx()) {
                 renderText('
-                    <div style="padding: 15px; margin-top: 20px; background-color: ##e6ffed; border: 1px solid ##b2f5bb; color: ##2d7a36; border-radius: 5px;">
-                        <strong>Thank you!</strong> We appreciate your kind words. Your testimonial will appear once it has been reviewed.
-                    </div>
+                    <strong>Thank you!</strong> We appreciate your kind words. Your testimonial will appear on the Wheels website once it has been reviewed.
                 ');
             } else {
                 renderText('
-                    <div style="padding: 15px; margin-top: 20px; background-color: ##e6ffed; border: 1px solid ##b2f5bb; color: ##2d7a36; border-radius: 5px;">
-                        <strong>Thank you!</strong> We appreciate your kind words. Your testimonial will appear once it has been reviewed.
-                    </div>
+                    <strong>Thank you!</strong> We appreciate your kind words. Your testimonial will appear on the Wheels website once it has been reviewed.
                 ');
             }
 
@@ -268,7 +264,7 @@ component extends="app.Controllers.Controller" {
             // Return success and path
             return {
                 success = true,
-                path = "/images/" & uploadedFile.serverFile
+                path = uploadedFile.serverFile
             };
 
         } catch (any e) {

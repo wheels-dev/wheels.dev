@@ -3,13 +3,13 @@
             <!-- Blog filter -->
             <div class="container pt-4 pb-5">
                 <div class="d-flex justify-content-between align-items-center">
-                    <button onclick="history.back()" class="py-2 px-3 bg-white shadow-sm rounded-3">
+                    <a href="javascript:history.back()" class="py-2 px-3 bg-white shadow-sm rounded-3">
                         <i class="bi bi-arrow-left"></i>
                         <span class="fs-14 text--secondary">
                             Back
                         </span>
-                    </button>
-                    <cfif isLoggedInUser() AND (session.role EQ "Admin" OR session.userID EQ blog.createdBy)>
+                    </a>
+                    <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
                         <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
                             <i class="bi bi-pencil"></i> Edit
                         </a> 
@@ -51,7 +51,17 @@
                                             </cfoutput>
                                         </p>
                                     </cfif>
-
+                                    <p class="fw-medium fs-12 text--lightGray mb-0">
+                                        Posted By: 
+                                        <strong 
+                                            class="text--primary"
+                                            style="cursor: pointer;"
+                                            hx-get="/blog/author/#blog.userusername#" 
+                                            hx-target="body"
+                                            hx-push-url="true"
+                                            hx-swap="outerHTML"
+                                        >#blog.userfullName#</strong>
+                                    </p>
                                     <!-- Tags -->
                                     <cfif tags.recordCount GT 0>
                                         <p class="fw-medium fs-12 text--lightGray mb-0">
@@ -74,7 +84,13 @@
                         </div>
 
                         <div class="col-12">
-                            #this.autoLink(blog.content,"text--primary")#
+                            <cfif findNoCase("```", blog.content) OR findNoCase("##", blog.content) OR findNoCase("**", blog.content) OR findNoCase("__", blog.content) OR findNoCase(">", blog.content)>
+                                <div class="markdown-content">
+                                    <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
+                                </div>
+                            <cfelse>
+                                #this.autoLink(blog.content,"text--primary")#
+                            </cfif>
                         </div>
                     </div>
                     <cfif not blog.isCommentClosed>
@@ -86,11 +102,23 @@
                                             <cfif commentParentId eq '' or commentParentId eq 0>                              
                                                 <div class="d-flex align-items-start gap-3">                                   
                                                     <div>
-                                                        #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                                                        <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
+                                                            <div 
+                                                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                                style="width:3rem; height:3rem;">
+                                                                #ucase(left(listLast(fullName, " "), 1))#
+                                                            </div>
+                                                        <cfelse>
+                                                            <img src='/img/#profilePicture#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                                                        </cfif>
                                                     </div>                                   
                                                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                         <h6 class="fs-16 fw-bold">#fullName#</h6>
-                                                        <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                        <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
+                                                                <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
+                                                        <cfelse>
+                                                            <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                        </cfif>
                                                         <div class="d-flex flex-wrap justify-content-end align-items-center gap-4">
                                                             <cfif isLoggedInUser()>
                                                                 <div class="d-flex cursor-pointer align-items-center gap-2">
@@ -112,27 +140,7 @@
                                                                 <form hx-target="##reply-#Id#" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" class="replyCommentForm" hx-post="/blog/comment" novalidate hx-validate="true">
                                                                     <input type="hidden" name="blogId" value="#blog.Id#">
                                                                     <input type="hidden" name="commentParentId" value="#Id#">
-                                                                    <div class="editor-wrapper">
-                                                                        <div class="toolbar-container bg-light rounded-top toolbar1">
-                                                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                                                <button class="ql-bold"></button>
-                                                                                <button class="ql-italic"></button>
-                                                                                <button class="ql-underline"></button>
-                                                                                <button class="ql-strike"></button>
-                                                                            </span>
-                                                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                                                <select class="ql-color"></select>
-                                                                                <select class="ql-background"></select>
-                                                                            </span>
-                                                                            <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                                                <button class="ql-list" value="ordered"></button>
-                                                                                <button class="ql-list" value="bullet"></button>
-                                                                                <button class="ql-indent" value="-1"></button>
-                                                                                <button class="ql-indent" value="+1"></button>
-                                                                            </span>
-                                                                        </div>
-                                                                        <div class="editor editor2 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
-                                                                    </div>
+                                                                    <textarea class="markdown-editor" placeholder="Write a reply..."></textarea>
                                                                     <input required class="form-control" type="hidden" name="content" id="content">
                                                                     <div class="mt-3 text-end">
                                                                         <button type="button" class="btn btn-light border fs-14 px-3 py-2 rounded-2 cancel-reply" data-commentid="#Id#">Cancel</button>
@@ -151,11 +159,27 @@
                                                     <div class="mt-4">
                                                         <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                                             <div>
-                                                                #imageTag(source='#profilePicture#', style="width:3rem; height:3rem", class="bg-body-secondary rounded-5 flex-shrink-0", alt="profile-picture")#
+                                                            <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
+                                                                <div 
+                                                                    class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                                    style="width:3rem; height:3rem;">
+                                                                    #ucase(left(listLast(fullName, " "), 1))#
+                                                                </div>
+                                                            <cfelse>
+                                                                <img src='/img/#profilePicture#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                                                            </cfif>
                                                             </div>  
-                                                            <div class="p-3 rounded-4 bg-light">
+                                                            <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                                 <h6 class="fs-16 fw-bold">#fullName#</h6>
-                                                                <p class="fs-14 fw-normal text-dark">#content#</p>
+
+                                                                <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
+                                                                    <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
+                                                                <cfelse>
+                                                                    <p class="fs-14 fw-normal text-dark">#content#</p>
+                                                                </cfif>
+                                                                <div class="d-flex cursor-pointer align-items-center justify-content-end gap-2">
+                                                                    <p class="fs-14 text--primary mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -166,32 +190,22 @@
                                 </cfoutput>
                             </div>
                             
-                            <cfif isLoggedInUser()>
+                            <cfif isLoggedInUser() AND canUserComment()>
                                 <form hx-target="##comment" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                                     <div class="d-flex gap-3 align-items-start">
-                                        <div class="bg-body-secondary rounded-5" style="width:3rem; height:3rem"></div>
+                                        <cfif !len(session.PROFILEPIC) OR findNoCase("avatar-rounded", session.PROFILEPIC)>
+                                            <div 
+                                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.USERNAME, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                                style="width:3rem; height:3rem;">
+                                                #ucase(left(listLast(session.USERNAME, " "), 1))#
+                                            </div>
+                                        <cfelse>
+                                            <img src='/img/#session.PROFILEPIC#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
+                                        </cfif>
                                         <div class="flex-grow-1 gap-2 d-flex justify-content-between align-items-center">
                                             <input class="form-control" type="hidden" name="blogId" id="blogId" value="#blog.Id#">
-                                            <div class="editor-wrapper w-100 position-relative">
-                                                <div class="toolbar-container bg-light rounded-top toolbar1">
-                                                    <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                        <button class="ql-bold"></button>
-                                                        <button class="ql-italic"></button>
-                                                        <button class="ql-underline"></button>
-                                                        <button class="ql-strike"></button>
-                                                    </span>
-                                                    <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                        <select class="ql-color"></select>
-                                                        <select class="ql-background"></select>
-                                                    </span>
-                                                    <span class="ql-formats bg-white m-lg-0 my-1 px-3 rounded py-1 border">
-                                                        <button class="ql-list" value="ordered"></button>
-                                                        <button class="ql-list" value="bullet"></button>
-                                                        <button class="ql-indent" value="-1"></button>
-                                                        <button class="ql-indent" value="+1"></button>
-                                                    </span>
-                                                </div>
-                                                <div class="editor editor1 form-control border border-top-0 rounded-top-0" id="editor" style="height: 150px;"></div>
+                                            <div class="w-100 position-relative">
+                                                <textarea class="markdown-editor" placeholder="Add a comment..."></textarea>
                                                 <div class="mt-3 text-end">
                                                     <input required class="form-control" type="hidden" name="content" id="content">
                                                     <button type="submit" class="bg--primary fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Comment</button>
@@ -200,9 +214,13 @@
                                         </div>
                                     </div>
                                 </form>
+                            <cfelseif isLoggedInUser()>
+                                <div class="alert alert-primary ms-5 mt-2" role="alert">
+                                    <p>Comments are closed.</p>
+                                </div>
                             <cfelse>
                                 <div class="alert alert-primary ms-5 mt-2" role="alert">
-                                    <p>To join this conversation login first! <u><a class="bold" href="/login">Login</a></u></p>
+                                    <p>Please login to join the conversation! <u><a class="bold" href="/login">Login</a></u></p>
                                 </div>
                             </cfif>
                         </div>
@@ -216,7 +234,7 @@
     </cfoutput>
     
     <div class="pt-5 blog-main">
-        <h1 class="text-center fw-bold fs-60">Latest Blog Posts</h1>
+        <h2 class="text-center fw-bold fs-60">Latest Blog Posts</h2>
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
                 
@@ -225,69 +243,4 @@
     </div>
 </main>
 
-<script>
-
-    document.querySelectorAll('.editor-wrapper').forEach((wrapper) => {
-        const toolbar = wrapper.querySelector('.toolbar-container');
-        const editor = wrapper.querySelector('.editor');
-
-        const quill = new Quill(editor, {
-            modules: {
-                syntax: true,
-                toolbar: toolbar,
-            },
-            placeholder: 'Add a comment...',
-            theme: 'snow',
-        });
-
-        // Store the Quill instance on the editor element for later use
-        editor.quillInstance = quill;
-    });
-
-    // Handle form submission
-    document.querySelectorAll("#commentForm, .replyCommentForm").forEach(form => {
-        form.addEventListener("submit", function (event) {
-            const contentField = form.querySelector('input[name="content"]');
-            const editor = form.querySelector(".editor");
-            const quill = editor ? Quill.find(editor) : null;
-
-            if (quill) {
-                contentField.value = quill.root.innerHTML.trim();
-                document.getElementById("content").value = quill.root.innerHTML.trim();
-            }
-            
-            if (document.getElementById("content").value.trim() === "" || document.getElementById("content").value.trim() === "<p> </p>" || document.getElementById("content").value.trim() === "<p><br></p>") { // 
-                event.preventDefault();
-                editor?.classList.add("border-danger");
-                notifier.show("Error!", 'Please enter a comment before submitting.', "", "/images/high_priority-48.png", 5000);
-                return false;
-            } else {
-                notifier.show("Success!", 'Comment created successfully.', "", "/images/ok-48.png", 5000);
-                return true;
-            }
-        });
-    });
-
-    const handleClear = ()=>{
-        document.querySelectorAll("#commentForm, .replyCommentForm").forEach(form => {
-            const contentField = form.querySelector('input[name="content"]');
-            const editor = form.querySelector(".editor");
-            const quill = editor ? Quill.find(editor) : null;
-
-            quill.setContents([]);
-            contentField.value = "";
-            document.getElementById("content").value = "";
-        });
-    }
-    
-    const handleReply = (commentid)=>{
-        console.log(commentid);
-        let replyForm = document.getElementById("reply-form-" + commentid);
-        replyForm.style.display = replyForm.style.display === "none" ? "block" : "none";
-    }
-
-    $(document).on('click', '.cancel-reply', function () {
-        var commentId = $(this).data('commentid');
-        $('#reply-form-' + commentId).hide();
-    });
-</script>
+<script src="/js/showBlog.js"></script>

@@ -2,7 +2,7 @@
     <div class="position-absolute w-100 top-0 start-0">
         <div class="container w-100 px-0 pt-3">
             <a href="/" class="text-decoration-none container">
-                <img src="/images/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
+                <img src="/img/wheels-logo.png" width="200" alt="Wheels.dev Logo" class="hover:opacity-80 transition-all">
             </a>
         </div>
     </div>
@@ -78,90 +78,11 @@
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
-                <img src="/images/authVector.png" class="img-fluid" width="250" height="250" alt="Decorative Vector" />
+                <img src="/img/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
-                <img src="/images/authVector2.png" class="img-fluid" width="150" height="150" alt="Decorative Vector" />
+                <img src="/img/authVector2.png" class="img-fluid" width="150" height="150" alt="Wheels.dev auth" />
             </div>
         </div>
     </div>
 </main>
-<script>
-    (function () {
-        'use strict'
-        const form = document.getElementById('forgotPasswordForm');
-
-        const fields = {
-            password: {
-                validator: value => value.length >= 8,
-                message: 'Password must be at least 8 characters long.'
-            },
-            confirmPassword: {
-                validator: (value, form) => value === form.password.value,
-                message: 'Passwords must match.'
-            }
-        };
-
-        form.addEventListener('submit', function (event) {
-            let hasErrors = false;
-            clearAllErrors();
-
-            for (const fieldId in fields) {
-                const input = form[fieldId];
-                const { validator, message } = fields[fieldId];
-                const isValid = validator(input.value, form);
-
-                if (!isValid) {
-                    showError(input, message);
-                    hasErrors = true;
-                }
-            }
-
-            if (hasErrors) {
-                event.preventDefault();
-            }
-        });
-
-        function showError(input, message) {
-            const errorDiv = input.closest('.mb-3')?.querySelector('.invalid-feedback') || input.parentElement.querySelector('.invalid-feedback');
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-            }
-            input.classList.add('is-invalid');
-        }
-
-        function clearAllErrors() {
-            const errorFields = form.querySelectorAll('.is-invalid');
-            errorFields.forEach(input => input.classList.remove('is-invalid'));
-
-            const errorDivs = form.querySelectorAll('.invalid-feedback');
-            errorDivs.forEach(div => {
-                div.textContent = '';
-                div.style.display = 'none';
-            });
-
-        }
-    })();
-
-    forgotPasswordForm.addEventListener('htmx:afterRequest', function (event) {
-            
-            const xhr = event.detail.xhr;
-            if (xhr.responseText && xhr.responseText.trim() !== '' && xhr.responseURL.includes("/auth/update-password")) {
-                if (event.detail.successful) {
-                    if (xhr.status === 200 && xhr.responseURL.includes("/auth/update-password")) {
-                        notifier.show('Success!', xhr.responseText, 'success', '', 4000);
-                            setTimeout(() => {
-                                window.location.href = "/login";
-                            }, 3000);
-                    } else {
-                        notifier.show('Error', 'No account found with that email address.', 'warning', '', 4000);
-                    }
-                } else {
-                    notifier.show('Error', 'An error occurred. Please try again.', 'danger', '', 4000);
-                }
-            } else {
-                notifier.show('Error', 'An unexpected error occurred. Please try again.', 'danger', '', 4000);
-            }
-        });
-</script>

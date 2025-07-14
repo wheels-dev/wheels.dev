@@ -1,18 +1,18 @@
 ---
 description: >-
-  With a convention-over-configuration framework like CFWheels, it's important
+  With a convention-over-configuration framework like Wheels, it's important
   to know these conventions. This is your guide.
 ---
 
 # Conventions
 
-There is a specific set of standards that CFWheels follows when you run it in its default state. This is to save you time. With conventions in place, you can get started coding without worrying about configuring every little detail.
+There is a specific set of standards that Wheels follows when you run it in its default state. This is to save you time. With conventions in place, you can get started coding without worrying about configuring every little detail.
 
 But it is important for you to know these conventions, especially if you're running an operating system and/or DBMS configuration that's picky about things like case sensitivity.
 
 ### URLs
 
-CFWheels uses a very flexible routing system to match your application's URLs to controllers, views, and parameters.
+Wheels uses a very flexible routing system to match your application's URLs to controllers, views, and parameters.
 
 Within this routing system is a _default route_ that handles many scenarios that you'll run across as a developer. The default route is mapped using the pattern `[controller]/[action]/[key]`.
 
@@ -38,7 +38,7 @@ Note that the above conventions are for `GET` requests and only apply when you h
 
 ### Naming Conventions for Controllers, Actions, and Views
 
-Controllers, actions, and views are closely linked together by default. And how you name them will influence the URLs that CFWheels will generate.
+Controllers, actions, and views are closely linked together by default. And how you name them will influence the URLs that Wheels will generate.
 
 ### Controllers
 
@@ -76,19 +76,19 @@ For information on overriding the layout file to be loaded by an action, see the
 
 ### Naming Conventions for Models and Databases
 
-By default, the names of CFWheels models, model properties, database tables, and database fields all relate to each other. CFWheels even sets a sensible default for the CFML data source used for database interactions.
+By default, the names of Wheels models, model properties, database tables, and database fields all relate to each other. Wheels even sets a sensible default for the CFML data source used for database interactions.
 
 ### Data Sources
 
-By default, the datasource is set to `wheels.fw` in the `app/config/settings.cfm` file. You can change the value in the `set(dataSourceName="wheels.fw")` function to whatever you want the name of teh datasource to be. 
+By default, the datasource is set to `wheels.fw` in the `app/config/settings.cfm` file. You can change the value in the `set(dataSourceName="wheels.fw")` function to whatever you want the name of teh datasource to be.
 
 Refer to the [Configuration and Defaults](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/working-with-cfwheels/configuration-and-defaults) chapter for instructions on overriding data source information.
 
 ### Plural Database Table Names, Singular Model Names
 
-CFWheels adopts a Rails-style naming conventions for database tables and model files. Think of a database table as a collection of model objects; therefore, it is named with a plural name. Think of a model object as a representation of a single record from the database table; therefore, it is named with a singular word.
+Wheels adopts a Rails-style naming conventions for database tables and model files. Think of a database table as a collection of model objects; therefore, it is named with a plural name. Think of a model object as a representation of a single record from the database table; therefore, it is named with a singular word.
 
-For example, a `user` model represents a record from the `users` database table. CFWheels also recognizes plural patterns like `binary/binaries`, `mouse/mice`, `child/children`, etc.
+For example, a `user` model represents a record from the `users` database table. Wheels also recognizes plural patterns like `binary/binaries`, `mouse/mice`, `child/children`, etc.
 
 Like controller files, models are also CFCs and are named in `PascalCase`. They are stored in the `app/models` folder. So the user model would be stored at `app/models/User.cfc`.
 
@@ -106,6 +106,6 @@ For information on overriding column and property names, refer to documentation 
 
 ### Configuration and Defaults
 
-There are many default values and settings that you can tweak in CFWheels when you need to. Some of them are conventions and others are just configurations available for you to change. You can even change argument defaults for built-in CFWheels functions to keep your code DRYer.
+There are many default values and settings that you can tweak in Wheels when you need to. Some of them are conventions and others are just configurations available for you to change. You can even change argument defaults for built-in Wheels functions to keep your code DRYer.
 
 For more details on what you can configure, read the [Configuration and Defaults](https://guides.cfwheels.org/2.5.0/v/3.0.0-snapshot/working-with-cfwheels/configuration-and-defaults) chapter.

@@ -4,15 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a CFWheels web application for the wheels.dev community website. CFWheels is a CFML (ColdFusion Markup Language) framework with an MVC architecture similar to Ruby on Rails. The site includes features for blog management, user authentication, newsletter management, testimonials, and other community features.
+This is a Wheels web application for the wheels.dev community website. Wheels is a CFML (ColdFusion Markup Language) framework with an MVC architecture similar to Ruby on Rails. The site includes features for blog management, user authentication, newsletter management, testimonials, and other community features.
 
 ## Technical Stack
 
-- **Framework**: CFWheels (CFML framework)
+- **Framework**: Wheels (CFML framework)
 - **CLI Tools**: CommandBox for development workflow
 - **Database Support**: MySQL, PostgreSQL, SQL Server, H2
 - **CFML Engines**: Lucee 5/6, Adobe ColdFusion 2018/2021/2023
-- **Dependencies**: 
+- **Dependencies**:
   - WireBox (for dependency injection)
   - TestBox (for testing)
   - LogBox (for logging)

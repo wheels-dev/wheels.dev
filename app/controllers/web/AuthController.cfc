@@ -57,7 +57,7 @@ component extends="app.Controllers.Controller" {
                 );
                 data = {
                     "success" = false,
-                    "message" = "Account locked due to too many failed attempts. Please contact an administrator to reset your account."
+                    "message" = "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account."
                 };
                 renderWith(data=data, hideDebugInformation=true, status=423, layout='/responseLayout');
                 return;
@@ -139,7 +139,7 @@ component extends="app.Controllers.Controller" {
                 // Return JSON error response with 401 status code
                 data={
                     "success" = false,
-                    "message" = "Invalid login credentials. " & (remainingAttempts > 0 ? "You have #remainingAttempts# attempt(s) remaining." : "Account will be locked after next failed attempt.")
+                    "message" = "Invalid login credentials. " & (remainingAttempts > 0 ? "You have #remainingAttempts# attempt(s) remaining." : "Your account will be locked after the next failed attempt.")
                 };
                 renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
                 return;
@@ -158,7 +158,7 @@ component extends="app.Controllers.Controller" {
             // Return a generic JSON error response with 500 status code
             data={
                 "success" = false,
-                "message" = "An unexpected error occurred during login. Please try again."
+                "message" = "An unexpected error occurred during the login process. Please try again later."
             };
             renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
             return;
@@ -182,7 +182,7 @@ component extends="app.Controllers.Controller" {
             
             // Determine redirect URL based on role or saved URL
             if (isObject(user.role) && user.role.name == 'Admin') {
-                redirectUrl = urlFor(route="admin-dashboard");
+                redirectUrl = urlFor(route="adminDashboard");
                 model("Log").log(
                     category = "wheels.auth",
                     level = "INFO",
@@ -281,8 +281,8 @@ component extends="app.Controllers.Controller" {
                 );
 
                 // Clear remember me token if exists
-                if (cfcookie.keyExists("remember_me")) {
-                    var token = cfcookie.remember_me;
+                if (structKeyExists(cookie, "remember_me")) {
+                    var token = cookie.remember_me;
                     var rememberToken = model("RememberToken").findOne(where="token='#token#'");
                     if (isObject(rememberToken)) {
                         rememberToken.delete();
@@ -460,7 +460,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function validateCredentials(required string email, required string password) {
-        var user = model("User").findOne(where="email='#email#'", include="Role");
+        var user = model("User").findOne(where="email='#email#' AND status='True'", include="Role");
         if (!isObject(user)) {
             return false; // User not found
         }
@@ -503,16 +503,16 @@ component extends="app.Controllers.Controller" {
 
                     // Send verification email
                     if(sendVerificationEmail(newUser.email, verificationToken)){
-                        message = "Sign Up successfull. Please check your email to verify your account.";
+                        message = "Registration successful. Please check your email to verify your account.";
                     }else{
-                        message = "Error sending verification email.";
+                        message = "Unable to send verification email. Please try again or contact support.";
                     }
                 }else{
-                    message = "Error! user not created.";
+                    message = "Unable to create user account. Please try again or contact support.";
                 }
 
             } else {
-                message = "A user with the same email already exists.";
+                message = "An account with this email address already exists.";
             }
             
         } catch (any e) {
@@ -524,15 +524,28 @@ component extends="app.Controllers.Controller" {
 
     private function sendVerificationEmail(required string email, required string token) {
         var user = model("User").findOne(where="email='#email#'");
-        verifyUrl = "http://#cgi.http_host#/verify?token=#token#";
-        emailContent = generateVerifyEmail(verifyUrl);
+        var emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
+        verifyUrl = urlFor(action="verify", onlyPath=false);
+        verifyUrl = verifyUrl & "?token=" & token;
+        var emailparams = {
+            "name" = user.fullname,
+            "buttonTitle" = emaildata.buttonTitle,
+            "content" = emaildata.message,
+            "welcomeMessage"= emaildata.welcomeMessage,
+            "URl" = verifyUrl,
+            "footerNote" = emaildata.footerNote,
+            "footerGreetings" = emaildata.footerGreating,
+            "closingRemark" = emaildata.closingRemark,
+            "teamSignature" = emaildata.teamSignature
+        };
+        emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
         
         if (isObject(user)){
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
             cfmail( 
                 to = "#user.email#", 
                 from = "#application.env.mail_from#", 
-                subject = "Verify Your Email", 
+                subject = "#emaildata.subject#", 
                 server = "#application.env.smtp_host#", 
                 port = "#application.env.smtp_port#", 
                 username = "#application.env.smtp_username#", 
@@ -564,75 +577,6 @@ component extends="app.Controllers.Controller" {
         return message;
     }
 
-    private string function generateVerifyEmail(required string verifyUrl) {
-            return '
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Verify Your Account</title>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-color: ##f4f4f4;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .container {
-                            max-width: 600px;
-                            margin: 40px auto;
-                            background: ##ffffff;
-                            padding: 20px;
-                            border-radius: 8px;
-                            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                            text-align: center;
-                        }
-                        .logo {
-                            width: 120px;
-                            margin-bottom: 20px;
-                        }
-                        h1 {
-                            color: ##333;
-                            font-size: 24px;
-                        }
-                        p {
-                            color: ##666;
-                            font-size: 16px;
-                            line-height: 1.5;
-                        }
-                        .button {
-                            display: inline-block;
-                            background-color: ##007BFF;
-                            color: ##ffffff;
-                            text-decoration: none;
-                            font-size: 18px;
-                            padding: 12px 20px;
-                            border-radius: 6px;
-                            margin-top: 20px;
-                        }
-                        .footer {
-                            margin-top: 30px;
-                            font-size: 14px;
-                            color: ##999;
-                        }
-                    </style>
-                </head>
-                <body>
-
-                    <div class="container">
-                        <img src="https://avatars.githubusercontent.com/u/159224?s=200&v=4" alt="Bootstrap" width="260">
-                        <h1>Welcome to Wheels.dev!</h1>
-                        <p>Thank you for signing up. Please click the button below to verify your account and get started.</p>
-                        <a href="' & verifyUrl & '" class="button">Verify Your Account</a>
-                        <p class="footer">If you did not sign up, you can safely ignore this email.</p>
-                    </div>
-
-                </body>
-                </html>
-            ';
-    }
-
     private boolean function isRateLimited(required string ipAddress) {
         var attempts = model("LoginAttempt").findAll(where="ip_address='#ipAddress#' AND created_at > '#dateAdd("n", -15, now())#'");
         return attempts.recordCount >= 3;
@@ -643,7 +587,7 @@ component extends="app.Controllers.Controller" {
             var token = hash(createUUID() & user.id & now());
             var rememberToken = model("RememberToken").new();
             rememberToken.token = token;
-            rememberToken.user_id = user.id;
+            rememberToken.userId = user.id;
             rememberToken.expiresAt = dateAdd("d", 30, now());
             
             if (rememberToken.save()) {
@@ -708,18 +652,18 @@ component extends="app.Controllers.Controller" {
                     token = token,
                     expiresAt = dateAdd("h", 1, now())
                 );
-                
                 // Send reset email
-                sendResetEmail(user.email, token);
+                sendResetEmail(user.email, user.fullName, token);
                 
                 data = {
                     "success" = true,
-                    "message" = "Password reset instructions have been sent to your email."
+                    "message" = "Password reset instructions have been sent to your email address."
                 };
             } else {
+                sendSignUpEmail(params.email);
                 data = {
-                    "success" = false,
-                    "message" = "No account found with that email address."
+                    "success" = true,
+                    "message" = "Password reset instructions have been sent to your email address."
                 };
             }
             
@@ -737,7 +681,7 @@ component extends="app.Controllers.Controller" {
             
             data = {
                 "success" = false,
-                "message" = "An error occurred while processing your request. Please try again."
+                "message" = "An error occurred while processing your request. Please try again or contact our support team."
             };
             renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
         }
@@ -787,7 +731,7 @@ component extends="app.Controllers.Controller" {
             if (!isObject(reset)) {
                 data = {
                     "success" = false,
-                    "message" = "Invalid or expired reset token."
+                    "message" = "Invalid or expired reset token. Please request a new password reset link."
                 };
                 renderText("#data.message#"); 
                 return;
@@ -797,7 +741,7 @@ component extends="app.Controllers.Controller" {
             if (params.password != params.confirmPassword) {
                 data = {
                     "success" = false,
-                    "message" = "Passwords do not match."
+                    "message" = "The passwords you entered do not match. Please try again."
                 };
                 renderText("#data.message#"); 
                 return;
@@ -806,7 +750,7 @@ component extends="app.Controllers.Controller" {
             if (len(params.password) < 8) {
                 data = {
                     "success" = false,
-                    "message" = "Password must be at least 8 characters long."
+                    "message" = "Password must be at least 8 characters long. Please choose a stronger password."
                 };
                 renderText("#data.message#"); 
                 return;
@@ -820,7 +764,7 @@ component extends="app.Controllers.Controller" {
             
             data = {
                 "success" = true,
-                "message" = "Password has been reset successfully. You can now login with your new password.",
+                "message" = "Your password has been successfully reset. You can now log in with your new password.",
                 "redirectUrl" = urlFor(action="login")
             };
             renderText("#data.message#"); 
@@ -838,7 +782,7 @@ component extends="app.Controllers.Controller" {
             
             data = {
                 "success" = false,
-                "message" = "An error occurred while resetting your password. Please try again."
+                "message" = "An error occurred while resetting your password. Please try again or contact our support team."
             };
             renderText("#data.message#"); 
         }
@@ -848,26 +792,126 @@ component extends="app.Controllers.Controller" {
         return hash(createUUID() & now(), "SHA-256");
     }
 
-    private void function sendResetEmail(required string email, required string token) {
-        var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
-        var emailparams = {
-            "content" = "We received a request to reset the password for your account associated with this email address.",
-            "URl" = resetUrl,
-            "Footer" = "If you did not request reset password, you can safely ignore this email."
-        };
-        var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-        cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-        cfmail( 
-            to = "#arguments.email#", 
-            from = "#application.env.mail_from#", 
-            subject = "Reset Your Password", 
-            server = "#application.env.smtp_host#", 
-            port = "#application.env.smtp_port#", 
-            username = "#application.env.smtp_username#", 
-            password = "#application.env.smtp_password#", 
-            type = "html"
-        ) { 
-            writeOutput(emailContent);
-        };
+    private void function sendResetEmail(required string email, required string name, required string token) {
+        try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Sending password reset email",
+                details = {
+                    "email": email,
+                    "token": token
+                }
+            );
+            var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
+            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Reset Password")#'");
+            var emailparams = {
+                "name" = name,
+                "buttonTitle" = emaildata.buttonTitle,
+                "content" = emaildata.message,
+                "welcomeMessage"= emaildata.welcomeMessage,
+                "URl" = resetUrl,
+                "footerNote" = emaildata.footerNote,
+                "footerGreetings" = emaildata.footerGreating,
+                "closingRemark" = emaildata.closingRemark,
+                "teamSignature" = emaildata.teamSignature
+            };
+            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#arguments.email#", 
+                from = "#application.env.mail_from#", 
+                subject = "#emaildata.subject#", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
+                writeOutput(emailContent);
+            };
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Password reset email sent",
+                details = {
+                    "email": email
+                }
+            );
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error sending password reset email",
+                details = {
+                    "email": email,
+                    "token": token,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            throw e;
+        }
+    }
+
+    private void function sendSignUpEmail(required string email) {
+        try {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Account not found sending signup reset email",
+                details = {
+                    "email": email
+                }
+            );
+            var signUpUrl = urlFor(action="register", onlyPath=false);
+            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Register Your Account")#'");
+            var emailparams = {
+                "name" = "User",
+                "buttonTitle" = emaildata.buttonTitle,
+                "content" = emaildata.message,
+                "welcomeMessage"= emaildata.welcomeMessage,
+                "URl" = signUpUrl,
+                "footerNote" = emaildata.footerNote,
+                "footerGreetings" = emaildata.footerGreating,
+                "closingRemark" = emaildata.closingRemark,
+                "teamSignature" = emaildata.teamSignature
+            };
+            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#arguments.email#", 
+                from = "#application.env.mail_from#", 
+                subject = "#emaildata.subject#", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
+                writeOutput(emailContent);
+            };
+            model("Log").log(
+                category = "wheels.auth",
+                level = "INFO",
+                message = "Sign up email sent",
+                details = {
+                    "email": email
+                }
+            );
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Error sending sign up email on account not found",
+                details = {
+                    "email": email,
+                    "token": token,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            throw e;
+        }
     }
 }

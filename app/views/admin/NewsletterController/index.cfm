@@ -150,7 +150,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Send Newsletter</h5>
+                    <h5 class="modal-title">Send Newsletter to Subscribers</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -158,12 +158,12 @@
                           hx-target="##newsletterResponse"
                           hx-swap="innerHTML">
                         <div class="mb-3">
-                            <label for="subject" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subject" name="subject" required>
+                            <label for="subject" class="form-label">Newsletter Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter newsletter subject" required>
                         </div>
                         <div class="mb-3">
-                            <label for="content" class="form-label">Content</label>
-                            <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+                            <label for="content" class="form-label">Newsletter Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="10" placeholder="Write your newsletter content here..." required></textarea>
                         </div>
                         <div id="newsletterResponse"></div>
                         <div class="text-end">
@@ -177,27 +177,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.body.addEventListener("htmx:afterRequest", function(event) {
-            const xhr = event.detail.xhr;
-            try {
-                if (xhr.responseText && xhr.responseText.trim() !== '') {
-                    const response = JSON.parse(xhr.responseText);
-                    
-                    if (xhr.status === 200 && xhr.responseURL.includes("/admin/newsletter/unsubscribe")) {
-                        if (response.success) {
-                            notifier.show('Success', response.message || 'Subscriber has been unsubscribed.', 'success', '', 5000);
-                        } else {
-                            notifier.show('Error', response.message || 'Failed to unsubscribe.', 'danger', '', 5000);
-                        }
-                    }
-                }
-            } catch (e) {
-                if (xhr.status !== 200) {
-                    notifier.show('Error', 'An unexpected error occurred.', 'danger', '', 5000);
-                }
-            }
-        });
-    </script>
 </cfoutput> 

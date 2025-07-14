@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",(function(){var t=document.getElementById("testimonialPromptModal");t&&bootstrap.Modal.getOrCreateInstance(t).show()}));

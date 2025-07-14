@@ -1,10 +1,11 @@
 <main class="main-bg">
-  <div class="container py-5">
+  <div class="container py-5 word-break">
 
     <!-- Filter Buttons -->
-    <div class="d-flex justify-content-center flex-wrap align-items-center gap-4">
+    <h1 class="text-center fw-bold fs-60">News<h1>
+    <div class="d-flex justify-content-center flex-wrap align-items-center gap-4 mt-4">
       <a href="/news" class="px-4 fs-16 py-2 rounded-3 border border--primary bg--primary text-white active">Everything</a>
-      <a href="https://github.com/cfwheels/cfwheels/releases" target="_blank" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Releases</a>
+      <a href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Releases</a>
       <a href="/blog" class="px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition">Blogs</a>
     </div>
 
@@ -25,7 +26,23 @@
                 </p>
               </a>
               <p class="text--secondary fs-18 pt-2">
-                #replace((this.convertMarkdownToHtml(release.body)), chr(10), "<br>", "all")#
+                <cfif structKeyExists(release, "isBlog")>
+                  <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
+                      <div class="markdown-content">
+                          <cfoutput>#encodeForHTML(release.body)#</cfoutput>
+                      </div>
+                  <cfelse>
+                      #this.autoLink(release.body,"text--primary")#
+                  </cfif>
+                <cfelse>
+                  <cfif findNoCase("```", release.body) OR findNoCase("##", release.body) OR findNoCase("**", release.body) OR findNoCase("__", release.body) OR findNoCase(">", release.body)>
+                      <div class="markdown-content">
+                          <cfoutput>#encodeForHTML(release.body)#</cfoutput>
+                      </div>
+                  <cfelse>
+                      #replace(release.body, chr(10), "<br>", "all")#
+                  </cfif>
+                </cfif>
               </p>
 
               <!-- Show asset download links if available -->
@@ -37,6 +54,14 @@
                     </a>
                   </cfloop>
                 </div>
+              <cfelse>
+                <cfif structKeyExists(release, "isBlog")>
+                  <div class="pt-3">
+                    <a href="#release.html_url#" class="btn btn-sm btn-outline-primary me-2">
+                      Learn More <i class="bi bi-arrow-right mt-1"></i>
+                    </a>
+                  </div>
+                </cfif>
               </cfif>
             </cfoutput>
           </div>
@@ -45,60 +70,11 @@
     </div>
 
     <!-- Loader -->
-    <div id="loader" class="text-center mt-4" style="display: none;">
-      <div class="spinner-border text-primary" role="status">
+    <div id="loader" class="text-center mt-4">
+      <div class="spinner-border text--primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 
   </div>
 </main>
-
-<!-- jQuery scroll logic -->
-<script>
-  $(document).ready(function () {
-    let items = $('.items');
-    let itemsPerPage = 5;
-    let currentIndex = 0;
-    let loading = false;
-
-    if (items.length <= itemsPerPage) {
-      items.show(); // Show all if 5 or fewer
-      $('#loader').hide();
-      return;
-    }
-
-    items.hide();
-
-    function showNextItems() {
-      let nextItems = items.slice(currentIndex, currentIndex + itemsPerPage);
-      nextItems.fadeIn();
-      currentIndex += itemsPerPage;
-
-      if (currentIndex >= items.length) {
-        $(window).off('scroll', onScroll);
-      }
-
-      loading = false;
-    }
-
-    function onScroll() {
-      if (loading) return;
-
-      if ($(window).scrollTop() + $(window).height() >= $(document).height() - 500) {
-        loading = true;
-        $('#loader').show();
-        setTimeout(() => {
-          showNextItems();
-          $('#loader').hide();
-        }, 1000);
-      }
-    }
-
-    // Load first 5 items
-    showNextItems();
-
-    // Scroll event
-    $(window).on('scroll', onScroll);
-  });
-</script>

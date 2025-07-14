@@ -40,7 +40,7 @@ array function getAvailableVersions(string path=getDocJSONPathExpanded()){
  * Get Path to JSON files
  */
 string function getDocJSONPath(){
-	local.rv=get("webPath") & get("filePath") & "/json/";
+	local.rv=get("webPath") & "json/";
 	return local.rv;
 }
 /**
@@ -121,4 +121,54 @@ any function getRelatedFunctionsBySectionAndCategory(
 	});
 	return local.match;
 }
+
+/**
+ * Fetch current session user with Role, or return `false` if not valid
+ */
+private any function getCurrentUserWithRole() {
+	if (!structKeyExists(session, "userID") || session.userID == 0) {
+        return false;
+    }
+	var user = model("User").findByKey(key=session.userID, include="Role");
+	if (!isObject(user) || !structKeyExists(user, "Role")) {
+		return false;
+	}
+	return user;
+}
+
+/**
+ * Check if a user can comment based on their role
+ */
+boolean function canUserComment() {
+	var user = getCurrentUserWithRole();
+	if (!isObject(user)) {
+		return false;
+	}
+	var allowedRoles = ["admin", "editor", "commenter"];
+	return arrayContains(allowedRoles, lcase(user.Role.name));
+}
+
+/**
+ * Check if the current session user is admin
+ */
+boolean function isUserAdmin() {
+	var user = getCurrentUserWithRole();
+	if (!isObject(user)) {
+		return false;
+	}
+	return lcase(user.Role.name) == "admin";
+}
+
+/**
+ * Check if the current session user has editor or admin role
+ */
+boolean function hasEditorAccess() {
+	var user = getCurrentUserWithRole();
+	if (!isObject(user)) {
+		return false;
+	}
+	var roleName = lcase(user.Role.name);
+	return roleName == "editor" || roleName == "admin";
+}
+
 </cfscript>

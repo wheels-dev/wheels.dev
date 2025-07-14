@@ -1,18 +1,18 @@
 ---
 description: >-
-  Use CFWheels to simplify the task of setting up automated emails in your
+  Use Wheels to simplify the task of setting up automated emails in your
   application.
 ---
 
 # Sending Email
 
-Sending emails in CFWheels is done from your controller files with the [sendEmail()](https://api.cfwheels.org/controller.sendemail.html) function. It's basically a wrapper around `cfmail`, but it has some smart functionality and a more CFWheels-like approach in general.
+Sending emails in Wheels is done from your controller files with the [sendEmail()](https://api.cfwheels.org/controller.sendemail.html) function. It's basically a wrapper around `cfmail`, but it has some smart functionality and a more Wheels-like approach in general.
 
-Getting this to work in CFWheels can be broken down in 3 steps. We'll walk you through them.
+Getting this to work in Wheels can be broken down in 3 steps. We'll walk you through them.
 
 ### Establishing Mail Server and Account Information
 
-We recommend using CFWheels ability to set global defaults for [sendEmail()](https://api.cfwheels.org/controller.sendemail.html) so that you don't have to specify more arguments than necessary in your controller files. Because it's likely that you will use the same mail server across your application, this makes it worthwhile to set a global default for it.
+We recommend using Wheels ability to set global defaults for [sendEmail()](https://api.cfwheels.org/controller.sendemail.html) so that you don't have to specify more arguments than necessary in your controller files. Because it's likely that you will use the same mail server across your application, this makes it worthwhile to set a global default for it.
 
 This setting should be done in the `app/config/settings.cfm` file and can look something like this:
 
@@ -112,11 +112,11 @@ Note that the `template` argument should be the path to the view's folder name a
 
 The logic for which template file to include follows the same logic as the `template` argument to [renderView()](https://api.cfwheels.org/controller.renderview.html).
 
-Did you notice that we did not have to specify the `type` attribute of `cfmail`? CFWheels is smart enough to figure out that you want to send as HTML since you have tags in the email body. (You can override this behavior if necessary though by passing in the `type` argument.)
+Did you notice that we did not have to specify the `type` attribute of `cfmail`? Wheels is smart enough to figure out that you want to send as HTML since you have tags in the email body. (You can override this behavior if necessary though by passing in the `type` argument.)
 
 ### Multipart Emails
 
-The intelligence doesn't end there though. You can have CFWheels send a multipart email by passing in a list of templates to the `templates` argument (notice the plural), and CFWheels will automatically figure out which one is text and which one is HTML.
+The intelligence doesn't end there though. You can have Wheels send a multipart email by passing in a list of templates to the `templates` argument (notice the plural), and Wheels will automatically figure out which one is text and which one is HTML.
 
 Like the `template` argument, the logic for which file to include follows the same logic as the `template` argument to [renderView()](https://api.cfwheels.org/controller.renderview.html).
 
@@ -140,8 +140,8 @@ Alternatively you can pass in mail parameters directly if you require more contr
 {% code title="Mail Example" %}
 ```javascript
 // Create PDF
-cfdocument(name="PDFContent", format="pdf"){ 
-  writeOutput("<h1>Cats are better than dogz!</h1>"); 
+cfdocument(name="PDFContent", format="pdf"){
+  writeOutput("<h1>Cats are better than dogz!</h1>");
 };
 
 // Setup Mail Params
@@ -204,7 +204,7 @@ sendEmail(
 
 ### Multipart Email Layouts
 
-CFWheels also lets you set up layouts for the HTML and plain text parts in a multipart email.
+Wheels also lets you set up layouts for the HTML and plain text parts in a multipart email.
 
 If we set up generic email layouts at `app/views/plainemaillayout.cfm` and `app/views/htmlemaillayout.cfm`, we would call [sendEmail()](https://api.cfwheels.org/controller.sendemail.html) like so:
 
@@ -223,8 +223,8 @@ sendEmail(
 ```
 {% endcode %}
 
-For both the `templates` and `layouts` arguments (again, notice the plurals), we provide a list of view files to use. CFWheels will figure out which of the templates and layouts are the HTML versions and separate out the MIME parts for you automatically.
+For both the `templates` and `layouts` arguments (again, notice the plurals), we provide a list of view files to use. Wheels will figure out which of the templates and layouts are the HTML versions and separate out the MIME parts for you automatically.
 
 ### Go Send Some Emails
 
-Now you're all set to send emails the CFWheels way. Just don't be a spammer, please!
+Now you're all set to send emails the Wheels way. Just don't be a spammer, please!

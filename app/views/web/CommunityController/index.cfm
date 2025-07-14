@@ -1,10 +1,13 @@
 <cfset coreTeam=[]>
+<cfsilent>
     <cfloop from="10" to="27" index="i">
         <cfset member={ name="Member #i#" , country="USA" , image="https://avatar.iran.liara.run/public/#i#" ,
             since="Since 20#i#" }>
             <cfset arrayAppend(coreTeam, member)>
     </cfloop>
+</cfsilent>
 
+    <cfoutput>
     <main class="main-bg">
         <div class="container py-5">
             <h1 class="text-center fw-bold fs-60">We make Wheels better</h1>
@@ -18,14 +21,61 @@
 
             <div class="mt-5">
                 <div class="bg-white rounded-18 px-4 py-5 mt-lg-5 mt-3">
-
-                    <div>
-                        <p class="text-center text--primary fs-32 pb-2 fw-bold">Top Contributors</p>
-                        <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
-                            <a href="https://github.com/cfwheels/cfwheels/graphs/contributors" target="_blank">
-                                <img src="https://contrib.rocks/image?repo=cfwheels/cfwheels" style="max-width: 100%;">
+                    <!-- Community Engagement Section -->
+                    <div class="row mt-lg-5 mt-3">
+                        <div class="col-lg-6 col-12 mt-lg-0 mt-5">
+                            <a class="position-relative d-block docs-container bg-white border-2 px-4 py-5 cursor-pointer rounded-4 border--lightGray hover:border--primary"
+                                href="#settings.slackInviteLink#" target="_blank">
+                                <div class="docs-badge d-flex align-items-center gap-2 bg--primary px-3 py-2 text-white">
+                                    <p class="fw-bold text-uppercase fs-12">Community</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor" width="20" height="20">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <p class="fw-bold pb-2 fs-22 text-decoration-underline">Join Our Slack</p>
+                                    <p class="text--secondary fw-normal">
+                                        Connect with other Wheels developers, get help, and share your projects in our active Slack community.
+                                    </p>
+                                </div>
                             </a>
                         </div>
+
+                        <div class="col-lg-6 col-12 mt-lg-0 mt-5">
+                            <a class="position-relative d-block docs-container bg-white border-2 px-4 py-5 cursor-pointer rounded-4 border--lightGray hover:border--primary"
+                                href="https://github.com/wheels-dev/wheels/discussions" target="_blank">
+                                <div class="docs-badge d-flex align-items-center gap-2 bg--primary px-3 py-2 text-white">
+                                    <p class="fw-bold text-uppercase fs-12">Discussions</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                        stroke="currentColor" width="20" height="20">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <p class="fw-bold pb-2 fs-22 text-decoration-underline">GitHub Discussions</p>
+                                    <p class="text--secondary fw-normal">
+                                        Join the conversation, share ideas, and participate in the ongoing development of Wheels.
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Top Contributors Section -->
+                    <div class="mt-5">
+                        <p class="text-center text--primary fs-32 pb-2 fw-bold">Top Contributors</p>
+                        <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                            <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
+                                <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" alt="Wheels.dev contributors" style="max-width: 100%;">
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Financial Contributors Section -->
+                    <div class="mt-5 text-center">
+                        <p class="text-center text--primary fs-32 fw-bold">Financial Contributors</p>
+                        <script src='https://opencollective.com/wheels-dev/banner.js?style={"a":{"color":"rgb(191, 40, 33)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
                     </div>
 
                     <div class="mt-5 d-none">
@@ -74,7 +124,7 @@
                                     <div>
                                         <div
                                             class="p-2 mx-auto size-100 border-2 border--lightGray hover:border--primary rounded-circle">
-                                            <img src="#member.image#" alt="#member.name#" width="80" height="80"><br>
+                                            <img src="#member.image#" alt="#member.name# - wheels.dev" width="80" height="80"><br>
                                         </div>
                                         <p class="pt-2 fw-bold text-decoration-underline fs-18">
                                             #member.name#
@@ -87,11 +137,6 @@
                                 </cfoutput>
                             </cfloop>
                         </div>
-                    </div>
-
-                    <div class="mt-5 text-center">
-                        <p class="text-center text--primary fs-32 fw-bold">Financial Contributors</p>
-                        <script src='https://opencollective.com/wheels-dev/banner.js?style={"a":{"color":"rgb(191, 40, 33)"},"h2":{"fontWeight":"medium","fontSize":"18px"}}'></script>
                     </div>
 
                     <div class="mt-5 d-none">
@@ -122,3 +167,4 @@
                 </div>
             </div>
     </main>
+    </cfoutput>

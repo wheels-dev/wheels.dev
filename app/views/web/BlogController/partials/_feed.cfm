@@ -18,13 +18,13 @@
     <language>en-US</language>
     <sy:updatePeriod>hourly</sy:updatePeriod>
     <sy:updateFrequency>1</sy:updateFrequency>
-    <generator>https://wheels.dev</generator>
+    <generator>#application.env.application_host#</generator>
     <image>
-        <url>https://cfwheels.org/blog/wp-content/uploads/2017/05/cropped-2015_cwheels_cog_0001_RED-32x32.png</url>
-        <title>CFWheels Blog</title>
-        <link>https://cfwheels.org/blog</link>
-        <width>32</width>
-        <height>32</height>
+        <url>#application.env.application_host#/img/wheels-logo-mark.png</url>
+        <title>Wheels.dev Blog</title>
+        <link>#application.env.application_host#/blog</link>
+				<width>32</width>
+				<height>32</height>
     </image>
 
     <cfloop query="#blogPosts#">

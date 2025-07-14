@@ -28,17 +28,25 @@
 
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <div class="row gy-4">
-                        <div class="col-lg-7 col-12 d-flex flex-column">
+                        <div class="col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
-                                    #imageTag(source="#blog.user.profilePicture#", style="width:3rem; height:3rem", class="bg-body-secondary rounded-5", alt="profile-picture")#
+                                    <cfif !len(blog.user.profilePicture) OR findNoCase("avatar-rounded", blog.user.profilePicture)>
+                                        <div 
+                                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blog.user.fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
+                                            style="width:3rem; height:3rem;">
+                                            #ucase(left(listLast(blog.user.fullName, " "), 1))#
+                                        </div>
+                                    <cfelse>
+                                        <img src="/img/#blog.user.profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5" alt="profile-picture">
+                                    </cfif>
                                 </div>
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div>
-                            <h1 class="fs-36 fw-bold text--secondary">
+                            <h1 class="fs-36 fw-bold text--secondary mb-2">
                                 #blog.title#
                             </h1>
-                            <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0 mt-3">
+                            <div class="d-flex flex-wrap flex-grow-1 align-items-end gap-lg-5 gap-2 mt-lg-0">
                                 <p class="fw-medium fs-12 text--lightGray">
                                     <cfif blog.postcreateddate neq ''>
                                         #dateformat(blog.postcreateddate, 'MMMM DD, YYYY')#
@@ -54,14 +62,20 @@
                                     hx-target=".main"
 <!---                                     hx-vals='{"category_id": "#blog.Category.id#"}' --->
                                     >
-                                    #blog.PostStatus.name# in #categoryList#
+                                    #blog.PostStatus.name# in <span class="text--primary">#categoryList#</span>
                                  </p>
-                                <p class="fw-medium fs-12 text--lightGray">Tags: #tagList#</p>
+                                <p class="fw-medium fs-12 text--lightGray">Tags: <span class="text--primary">#tagList#</span></p>
                             </div>
                         </div>
 
                         <div class="col-12">
-                            #blog.content#
+                            <cfif findNoCase("```", blog.content) OR findNoCase("##", blog.content) OR findNoCase("**", blog.content) OR findNoCase("__", blog.content) OR findNoCase(">", blog.content)>
+                                <div class="markdown-content">
+                                    <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
+                                </div>
+                            <cfelse>
+                                #this.autoLink(blog.content,"text--primary")#
+                            </cfif>
                         </div>
                     </div>
                 </div>
