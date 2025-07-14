@@ -13,11 +13,11 @@ services:
       placement:
         constraints: []
     ports:
-      - "50151:60151"
-#      - target: 60151
-#        published: 50151
-#        protocol: tcp
-#        mode: host       # <-- This disables routing mesh
+#      - "50151:60151"
+      - target: 60151
+        published: 50151
+        protocol: tcp
+        mode: host       # <-- This disables routing mesh
     environment:
       - PORT=60151
       - HEALTHCHECK_URI=http://127.0.0.1:60151/
