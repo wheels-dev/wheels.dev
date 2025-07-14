@@ -1,8 +1,8 @@
 component extends="testbox.system.BaseSpec" {
     function beforeAll(){
         requestServer= application.env.application_host;
-        home = "#requestServer#";
-        
+        community = "#requestServer#/community";
+
         local.AssetPath = "/app/"
         application.wo.set(controllerPath = local.AssetPath & "controllers")
         application.wo.set(viewPath = local.AssetPath & "views")
@@ -16,14 +16,14 @@ component extends="testbox.system.BaseSpec" {
         application.wo.set(modelPath = local.AssetPath & "models")
     }
     function run() {
-        describe("Home Page Functions Tests", function() {
-            it("it should return 200 status code for home page", function(done) {
+        describe("Community Page Accessibility Tests", function() {
+            it("it should return 200 status code", function(done) {
                 var response = "";
 
-                cfhttp(url = "#home#", method ="Get", result = "local.response");
-
+                cfhttp(url = "#community#", method ="Get", result = "local.response");
                 // Assert
                 expect(response.status_code).toBe(200);
+                expect(response.error).toBe("false");
             });
         });
     }
