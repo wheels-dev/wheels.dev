@@ -161,6 +161,14 @@ component extends="app.Controllers.Controller" {
                 fileField = form.profilePic,
                 accept = "image/*"
                 );
+                var fileExt = lcase(listLast(uploadedFile.serverFile, "."));
+                var allowedTypes = "jpg,jpeg,png,gif,webp";
+
+                if (!listFindNoCase(allowedTypes, fileExt)) {
+                    fileDelete(uploadPath & "/" & uploadedFile.serverFile);
+                    renderText("Please upload a valid image file (png, jpg, jpeg, gif, webp).");
+                    return;
+                }
 
                 var savedFileName = uploadedFile.serverFile;
                 model("User").updateAll(profilePicture = "#savedFileName#", where = "id = '#session.userId#'");
