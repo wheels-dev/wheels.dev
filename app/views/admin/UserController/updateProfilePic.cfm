@@ -29,7 +29,9 @@
     </div>
 </main>
 <script>
-    document.getElementById("profilePicForm").addEventListener("submit", function (e) {
+    document.addEventListener("htmx:configRequest", function (event) {
+        const form = document.getElementById("profilePicForm");
+        if (!form.contains(event.target)) return;
         const fileInput = document.getElementById("imageInput");
         const errorDiv = document.getElementById("fileError");
         const file = fileInput.files[0];
@@ -40,12 +42,24 @@
         if (file) {
             const validExtensions = ["image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp"];
             if (!validExtensions.includes(file.type)) {
-                e.preventDefault(); // Prevent form submission
+                event.preventDefault(); // Prevent form submission
                 errorDiv.textContent = "Please upload a valid image file (png, jpg, jpeg, gif, webp).";
             }
         } else {
-            e.preventDefault();
+            event.preventDefault();
             errorDiv.textContent = "Please select an image file to upload.";
         }
     });
+    document.getElementById("profilePicForm").addEventListener("htmx:afterRequest", function(e) {
+    const xhr = e.detail.xhr;
+    const responseText = xhr.responseText.trim().toLowerCase();
+    if (xhr.status === 200 && responseText.includes("success")) {
+        notifier.show("Success", "Profile picture updated!", "success", "", 3000);
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 3000);
+    } else if (responseText) {
+        notifier.show("Error", responseText, "danger", "", 4000);
+    }
+});
 </script>
