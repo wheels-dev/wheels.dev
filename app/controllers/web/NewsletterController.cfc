@@ -77,6 +77,29 @@ component extends="app.Controllers.Controller" {
                             "type" = "reactivation"
                         }
                     );
+                } else if (subscriber.status == "pending") {                    
+                    // Log E-mail Already Sent
+                    model("Log").log(
+                        category = "Newsletter",
+                        level = "INFO",
+                        message = "Newsletter subscription Already Sent",
+                        details = {
+                            "email" = email,
+                            "subscriber_id" = subscriber.id,
+                            "ip_address" = cgi.REMOTE_ADDR,
+                            "user_agent" = cgi.HTTP_USER_AGENT,
+                            "action" = "subscribe",
+                            "status" = "success",
+                            "type" = "reactivation"
+                        }
+                    );
+                    
+                    data = {
+                        "success" = false,
+                        "message" = "Verification email already sent. Please check your inbox."
+                    };
+                    renderWith(data=data, hideDebugInformation=true, status=200, layout='/responseLayout');
+                    return;
                 } else {
                     // Log duplicate subscription attempt
                     model("Log").log(
@@ -98,7 +121,7 @@ component extends="app.Controllers.Controller" {
                         "success" = false,
                         "message" = "You are already subscribed to our newsletter!"
                     };
-                    renderWith(data=data, hideDebugInformation=true, status=409, layout='/responseLayout');
+                    renderWith(data=data, hideDebugInformation=true, status=200, layout='/responseLayout');
                     return;
                 }
             } else {
@@ -127,19 +150,20 @@ component extends="app.Controllers.Controller" {
             }
 
             // Send verification email
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendEmail(
-                template = "verify",
+            var emailContent = renderView(template="verify", layout=false, returnAs="string", subscriber = subscriber);
+            cfheader(name="Content-Type", value="text/html; charset=UTF-8");
+            cfmail( 
                 from = application.env.mail_from,
                 to = email,
                 subject = "Verify your newsletter subscription",
-                subscriber = subscriber,
                 server = application.env.smtp_host, 
                 port = application.env.smtp_port, 
                 username = application.env.smtp_username, 
                 password = application.env.smtp_password, 
                 type = "text/html"
-            );
+            ){ 
+                writeOutput(emailContent);
+            };
 
             data = {
                 "success" = true,

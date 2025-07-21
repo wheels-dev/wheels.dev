@@ -32,8 +32,8 @@
             display: inline-block;
             padding: 12px 24px;
             background-color: ##007bff;
-            color: ##fff;
-            text-decoration: none;
+            color: ##fff !important;
+            text-decoration: none !important;
             border-radius: 4px;
             margin: 20px 0;
         }
@@ -53,7 +53,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="" alt="Wheels.dev Logo" class="logo">
+        <img src="https://wheels.dev/img/wheels-logo.png" alt="Wheels.dev Logo" class="logo">
     </div>
     
     <div class="content">
