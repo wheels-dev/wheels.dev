@@ -3,6 +3,9 @@ component extends="testbox.system.BaseSpec" {
         requestServer= application.env.application_host;
         authenticate = "#requestServer#/auth/authenticate";
         blogs = "#requestServer#/blog";
+        category = "#requestServer#/blog/list/category/Community";
+        tag = "#requestServer#/blog/list/tag/CRUD";
+        archive = "#requestServer#/blog/list/2025/03";
         search = "#requestServer#/blog/Search";
         storeBlog = "#requestServer#/blog/store";
 
@@ -18,8 +21,6 @@ component extends="testbox.system.BaseSpec" {
             cfhttpparam(type="formField", name="password", value="test1234");
         };
 
-        // var cookies = Auth.responseHeader["set-cookie"];
-        // var cookieParts = [];
         if (structKeyExists(local.Auth, "responseHeader")) {
             if (structKeyExists(local.Auth.responseHeader, "Set-Cookie")) {
                 var cookieArray = local.Auth.responseHeader["Set-Cookie"];
@@ -48,7 +49,6 @@ component extends="testbox.system.BaseSpec" {
                 var response = "";
 
                 cfhttp(url = "#blogs#", method ="Get", result = "local.response");
-
                 // Assert
                 expect(response.status_code).toBe(200);
                 expect(response.error).toBe("false");
@@ -66,6 +66,34 @@ component extends="testbox.system.BaseSpec" {
                 expect(response.error).toBe("false");
             });
 
+            it("it should return 200 status code for blog category filter", function(done) {
+                var responses = "";
+                cfhttp(url = "#category#", method ="Get", result = "local.response");
+
+                // Assert
+                expect(response.status_code).toBe(200);
+                expect(response.error).toBe("false");
+            });
+
+            it("it should return 200 status code for blog tag filter", function(done) {
+                var response = "";
+
+                cfhttp(url = "#tag#", method ="Get", result = "local.response");
+
+                // Assert
+                expect(response.status_code).toBe(200);
+                expect(response.error).toBe("false");
+            });
+
+            it("it should return 200 status code for blog archive filter", function(done) {
+                var response = "";
+
+                cfhttp(url = "#archive#", method ="Get", result = "local.response");
+
+                // Assert
+                expect(response.status_code).toBe(200);
+                expect(response.error).toBe("false");
+            });
             it("it should return 200 status code after store the blog", function(done) {
                 var response = "";
                 cfhttp(url = "#storeBlog#", method ="POST", result = "local.response"){
