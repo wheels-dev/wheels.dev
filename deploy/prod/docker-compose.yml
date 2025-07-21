@@ -16,8 +16,8 @@ services:
      - target: 60150
        published: 50150
        protocol: tcp
-       mode: ingress
-#       mode: host
+#       mode: ingress
+       mode: host
     environment:
       - PORT=60150
       - HEALTHCHECK_URI=http://127.0.0.1:60150/
