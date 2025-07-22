@@ -47,8 +47,8 @@ component extends="testbox.system.BaseSpec" {
                     cfhttpparam(type="header", name="Cookie", value= "#authCookies#");
                 };
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
         });
         describe("Create Tesimonial Test", function() {
@@ -66,8 +66,8 @@ component extends="testbox.system.BaseSpec" {
 
                 };
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
         });
     }

@@ -48,51 +48,60 @@ component extends="testbox.system.BaseSpec" {
             it("it should return 200 status code for blogs", function(done) {
                 var response = "";
 
-                cfhttp(url = "#blogs#", method ="Get", result = "local.response");
+                cfhttp(url = "#blogs#", method ="Get", result = "local.response"){
+                    cfhttpparam(type="header", name="Cookie", value= "#authCookies#");
+                };
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
 
             it("it should return 200 status code for blog search filter", function(done) {
                 var response = "";
 
                 cfhttp(url = "#search#", method ="Get", result = "local.response"){
+                    cfhttpparam(type="header", name="Cookie", value= "#authCookies#");
                     cfhttpparam(type="URL", name="searchTerm", value="");
                 };
 
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
 
             it("it should return 200 status code for blog category filter", function(done) {
                 var responses = "";
-                cfhttp(url = "#category#", method ="Get", result = "local.response");
+                cfhttp(url = "#category#", method ="Get", result = "local.response"){
+                    cfhttpparam(type="header", name="Cookie", value= "#authCookies#");
+                };
 
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
 
             it("it should return 200 status code for blog tag filter", function(done) {
                 var response = "";
 
-                cfhttp(url = "#tag#", method ="Get", result = "local.response");
+                cfhttp(url = "#tag#", method ="Get", result = "local.response"){
+                    cfhttpparam(type="header", name="Cookie", value= "#authCookies#");
+                };
 
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
 
             it("it should return 200 status code for blog archive filter", function(done) {
                 var response = "";
 
-                cfhttp(url = "#archive#", method ="Get", result = "local.response");
+                cfhttp(url = "#archive#", method ="Get", result = "local.response"){
+                    cfhttpparam(type="header", name="Cookie", value= "#authCookies#");
+                };
 
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
             it("it should return 200 status code after store the blog", function(done) {
                 var response = "";
@@ -107,8 +116,8 @@ component extends="testbox.system.BaseSpec" {
                     cfhttpparam(type="formField", name="isDraft", value="0");
                 };
                 // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.error).toBe("false");
             });
         });
     }

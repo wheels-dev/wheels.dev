@@ -63,12 +63,6 @@
 			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 			.put(name = "blogUpdate", pattern = "blog/update/[id]", to = "web.BlogController##Update")
 
-			// Testimonial-specific routes
-			.get(name="check_testimonial", pattern="testimonial/check", to="web.testimonials##check")
-			.get(name="approve_testimonial", pattern="testimonial/approve/[key]", to="web.testimonials##approve")
-			.get(name="feature_testimonial", pattern="testimonial/feature/[key]", to="web.testimonials##feature")
-			.get(name="delete_testimonial", pattern="testimonial/delete/[key]", to="web.testimonials##delete")
-
 			.get(name="new-testimonial", pattern="testimonial/new", to="web.TestimonialController##new")
 			.post(name="create-testimonial", pattern="testimonial/create", to="web.TestimonialController##create")
 
