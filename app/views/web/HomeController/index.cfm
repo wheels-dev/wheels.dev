@@ -63,6 +63,7 @@
                         <a href="/blog/#slug#" class="">
                             <div>
                                 <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
+                                <p class="fs-16 mb-3 text--lightGray line-clamp-3">#left(blogs.content, 150)#...</p>
                             </div>
                         
                             <div class="d-flex gap-2 justify-content-between align-items-center">
