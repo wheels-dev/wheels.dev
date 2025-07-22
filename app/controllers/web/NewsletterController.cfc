@@ -219,12 +219,7 @@ component extends="app.Controllers.Controller" {
                     }
                 );
 
-                data = {
-                    "success" = false,
-                    "message" = "Invalid or expired verification link."
-                };
-                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
-                return;
+                location("/", false);
             }
 
             // Activate subscriber
@@ -246,26 +241,22 @@ component extends="app.Controllers.Controller" {
             );
 
             // Send welcome email
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendEmail(
-                template = "welcome",
+            var emailContent = renderView(template="welcome", layout=false, returnAs="string", subscriber = subscriber);
+            cfheader(name="Content-Type", value="text/html; charset=UTF-8");
+            cfmail( 
                 from = application.env.mail_from,
                 to = subscriber.email,
                 subject = "Welcome to our newsletter!",
-                subscriber = subscriber,
                 server = application.env.smtp_host, 
                 port = application.env.smtp_port, 
                 username = application.env.smtp_username, 
                 password = application.env.smtp_password, 
-                type = "html"
-            );
-
-            data = {
-                "success" = true,
-                "message" = "Your subscription has been verified. Welcome to our newsletter!"
+                type = "text/html"
+            ){ 
+                writeOutput(emailContent);
             };
-            renderWith(data=data, hideDebugInformation=true, status=200, layout='/responseLayout');
 
+            location("/", false);
         } catch (any e) {
             // Log error
             model("Log").log(
@@ -285,11 +276,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
 
-            data = {
-                "success" = false,
-                "message" = "An error occurred. Please try again later."
-            };
-            renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
+                location("/", false);
         }
     }
 
