@@ -46,6 +46,53 @@ component extends="testbox.system.BaseSpec" {
                 expect(data.success).tobe("true");
                 expect(data.message).toBe("Login Successful!");
             });
+            it("If invalid password should return status code 401", function() {
+                var response = "";
+                cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="testuser@pai.com");
+                    cfhttpparam(type="formField", name="password", value="wrongpassword");
+                };
+                var data = deserializeJSON(response.filecontent);
+                expect(response.status_code).toBe(401);
+                expect(data.success).toBe("false");
+                expect(data.message).toContain("Invalid login credentials");
+            });
+            it("If non-existent user should return status code 401", function() {
+                var response = "";
+                cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="nouser@pai.com");
+                    cfhttpparam(type="formField", name="password", value="irrelevant");
+                };
+                var data = deserializeJSON(response.filecontent);
+                expect(response.status_code).toBe(401);
+                expect(data.success).toBe("false");
+            });
+            // Simulate lockout: try 5 failed logins (assuming lockout after 5 attempts)
+            it("Should lock account after multiple failed attempts", function() {
+                var response = "";
+                for (var i=1; i<=5; i++) {
+                    cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
+                        cfhttpparam(type="formField", name="email", value="locktest@pai.com");
+                        cfhttpparam(type="formField", name="password", value="wrongpass");
+                    };
+                }
+                var data = deserializeJSON(response.filecontent);
+                expect(response.status_code).toBe(423); // Locked
+                expect(data.success).toBe("false");
+                expect(data.message).toContain("Account locked");
+            });
+            it("Should support remember me functionality", function() {
+                var response = "";
+                cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="testuser@pai.com");
+                    cfhttpparam(type="formField", name="password", value="test1234");
+                    cfhttpparam(type="formField", name="rememberMe", value="true");
+                };
+                var data = deserializeJSON(response.filecontent);
+                expect(response.status_code).toBe(200);
+                expect(data.success).toBe("true");
+                // Optionally check for remember_me cookie
+            });
         });
 
         describe("SignUp Function Tests", function() {
@@ -86,6 +133,26 @@ component extends="testbox.system.BaseSpec" {
                 // Assert
                 expect(response.status_code).toBe(200);
                 expect(response.filecontent).toContain("A user with the same email already exists.");
+            });
+            it("If missing required fields should return error", function() {
+                var response = "";
+                cfhttp(url = "#store#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="");
+                    cfhttpparam(type="formField", name="passwordHash", value="");
+                };
+                expect(response.status_code).toBe(500);
+                expect(response.filecontent).toContain("required");
+            });
+            it("If invalid email format should return error", function() {
+                var response = "";
+                cfhttp(url = "#store#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="notanemail");
+                    cfhttpparam(type="formField", name="passwordHash", value="test1234");
+                    cfhttpparam(type="formField", name="firstname", value="test");
+                    cfhttpparam(type="formField", name="lastname", value="user");
+                };
+                expect(response.status_code).toBe(200); // Or 500 depending on implementation
+                expect(response.filecontent).toContain("valid email");
             });
         });
 
@@ -128,6 +195,24 @@ component extends="testbox.system.BaseSpec" {
                 expect(response.status_code).toBe(200);
                 expect(response.filecontent).toContain("Password reset instructions have been sent to your email.");
                 expect(response.error).toBe("false");
+            });
+        });
+        describe("Authenticated Actions", function() {
+            it("Should access a protected route after login", function() {
+                var response = "";
+                // First, login and get cookies
+                cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="testuser@pai.com");
+                    cfhttpparam(type="formField", name="password", value="test1234");
+                };
+                var cookies = response.responseheader["Set-Cookie"];
+                // Now, access a protected route (e.g., /account)
+                var protectedResponse = "";
+                cfhttp(url = requestServer & "/account", method ="GET", result = "local.protectedResponse"){
+                    cfhttpparam(type="header", name="Cookie", value=cookies);
+                };
+                expect(local.protectedResponse.status_code).toBe(200);
+                expect(local.protectedResponse.filecontent).toContain("Account");
             });
         });
     }
