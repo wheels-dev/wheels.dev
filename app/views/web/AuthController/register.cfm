@@ -178,6 +178,25 @@
         </div>
     </div>
 </main>
+<script>
+    const fieldsToTrim = ["firstName", "lastName", "email", "passwordHash", "confirmPassword"];
+    fieldsToTrim.forEach(function (fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener("input", function () {
+                const trimmedValue = field.value.replace(/^\s+|\s+$/g, '');
+                
+                if (["text", "search", "password", "url", "tel"].includes(field.type)) {
+                    const cursorPos = field.selectionStart;
+                    field.value = trimmedValue;
+                    field.setSelectionRange(cursorPos, cursorPos);
+                } else {
+                    field.value = trimmedValue;
+                }
+            });
+        }
+    });
+</script>
 
 <!-- Include Google reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
