@@ -1,5 +1,28 @@
 component extends="testbox.system.BaseSpec" {
     function beforeAll(){
+        // Assert clean state before test
+        local.AssetPath = "/app/"
+        application.wo.set(controllerPath = local.AssetPath & "controllers")
+        application.wo.set(viewPath = local.AssetPath & "views")
+        application.wo.set(modelPath = local.AssetPath & "models")
+        var userModel = application.wo.model("User");
+        var testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
+        if (isObject(testUser)) {
+            if (structKeyExists(testUser, "deletedAt") && len(testUser.deletedAt)) {
+                testUser.deletedAt = "";
+                testUser.isActive = true;
+                testUser.save();
+            }
+        } else {
+            testUser = userModel.new();
+            testUser.email = "testuser@pai.com";
+            testUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW("test1234", application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+            testUser.firstname = "Test";
+            testUser.lastname = "User";
+            testUser.roleId = 2;
+            testUser.isActive = true;
+            testUser.save();
+        }
         requestServer= application.env.application_host;
         authenticate = "#requestServer#/auth/authenticate";
         blogs = "#requestServer#/blog";
@@ -9,11 +32,6 @@ component extends="testbox.system.BaseSpec" {
         search = "#requestServer#/blog/Search";
         storeBlog = "#requestServer#/blog/store";
 
-
-        local.AssetPath = "/app/"
-        application.wo.set(controllerPath = local.AssetPath & "controllers")
-        application.wo.set(viewPath = local.AssetPath & "views")
-        application.wo.set(modelPath = local.AssetPath & "models")
 
         var Auth;
         cfhttp(url = "#authenticate#", method ="POST", result = "local.Auth"){
@@ -42,6 +60,21 @@ component extends="testbox.system.BaseSpec" {
         application.wo.set(controllerPath = local.AssetPath & "controllers")
         application.wo.set(viewPath = local.AssetPath & "views")
         application.wo.set(modelPath = local.AssetPath & "models")
+        // Clean up test blogs created by test user
+        var userModel = application.wo.model("User");
+        var testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
+        if (isObject(testUser)) {
+            // Clean up blogs
+            var blogModel = application.wo.model("Blog");
+            blogModel.deleteAll(where="createdBy=#testUser.id#");
+            // Soft-delete the user
+            testUser.deletedAt = now();
+            testUser.isActive = false;
+            testUser.save();
+        }
+        // Assert user is soft-deleted
+        testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
+        expect(isObject(testUser) && len(testUser.deletedAt)).toBeTrue("Test user should be soft-deleted after test");
     }
     function run() {
         describe("Blogs Functions Tests", function() {
