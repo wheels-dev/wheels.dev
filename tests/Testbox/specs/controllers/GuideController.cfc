@@ -1,48 +1,33 @@
 component extends="testbox.system.BaseSpec" {
     function beforeAll(){
-        requestServer= application.env.application_host;
-        guides = "#requestServer#/guides";
-        guides2 = "#requestServer#/2.5.0/guides";
-        guides3 = "#requestServer#/3.0.0/guides";
-
         local.AssetPath = "/app/"
         application.wo.set(controllerPath = local.AssetPath & "controllers")
         application.wo.set(viewPath = local.AssetPath & "views")
         application.wo.set(modelPath = local.AssetPath & "models")
+        requestServer = application.env.application_host;
+        guideIndexUrl = requestServer & "/guides";
+        guideFileUrl = requestServer & "/guides/3.0.0/introduction";
     }
-
     function afterAll(){
-        local.AssetPath = "/tests/testbox/_assets/"
-        application.wo.set(controllerPath = local.AssetPath & "controllers")
-        application.wo.set(viewPath = local.AssetPath & "views")
-        application.wo.set(modelPath = local.AssetPath & "models")
+        // No test data to clean up
     }
     function run() {
-        describe("Guides Docs Page Accessibility Test", function() {
-            it("it should return 200 status code", function(done) {
+        describe("GuideController", function() {
+            it("should load guide index", function() {
                 var response = "";
-
-                cfhttp(url = "#guides#", method ="Get", result = "local.response");
-                // Assert
-                expect(response.status_code).toBe(200);
+                cfhttp(url=guideIndexUrl, method="GET", result="local.response");
+                expect(local.response.status_code).toBe(200);
             });
-        });
-        describe("Guides Docs Test for 3.0.0 version", function() {
-            it("it should return 200 status code", function(done) {
+            it("should load specific guide file", function() {
                 var response = "";
-
-                cfhttp(url = "#guides3#", method ="Get", result = "local.response");
-                // Assert
-                expect(response.status_code).toBe(200);
+                cfhttp(url=guideFileUrl, method="GET", result="local.response");
+                expect(local.response.status_code).toBe(200);
             });
-        });
-        describe("Guides Docs Test for 2.5.0 version", function() {
-            it("it should return 200 status code", function(done) {
+            it("should handle not found guide file", function() {
                 var response = "";
-
-                cfhttp(url = "#guides2#", method ="Get", result = "local.response");
-                // Assert
-                expect(response.status_code).toBe(200);
+                cfhttp(url=requestServer & "/guides/3.0.0/doesnotexist", method="GET", result="local.response");
+                expect(local.response.status_code).toBe(200);
+                expect(local.response.filecontent).toContain("not found");
             });
         });
     }
