@@ -5,18 +5,18 @@ component extends="testbox.system.BaseSpec" {
         application.wo.set(viewPath = local.AssetPath & "views")
         application.wo.set(modelPath = local.AssetPath & "models")
         requestServer = application.env.application_host;
-        newsUrl = requestServer & "/news";
+        docsIndexUrl = requestServer & "/docs";
     }
     function afterAll(){
         // No test data to clean up
     }
     function run() {
-        describe("NewsController", function() {
-            it("should load news page", function() {
+        describe("DocsController", function() {
+            it("should load docs index", function() {
                 var response = "";
-                cfhttp(url=newsUrl, method="GET", result="local.response");
+                cfhttp(url=docsIndexUrl, method="GET", result="local.response");
                 expect(local.response.status_code).toBe(200);
             });
         });
     }
-}
+} 
