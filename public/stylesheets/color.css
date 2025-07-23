@@ -74,7 +74,7 @@ button.bg--primary:hover{
 }
 
 .text--lightGray {
-    color: var(--lightGray)
+    color: var(--lightGray) !important
 }
 
 .border--lightGray{

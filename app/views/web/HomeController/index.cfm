@@ -62,10 +62,10 @@
             <div class="swiper-wrapper" id="blogs-container">
                 <cfoutput query= "blogs">
                     <div class="p-4 bg-white rounded-5 shadow-sm swiper-slide">
-                        <a href="/blog/#slug#" class="">
+                        <a href="/blog/#slug#">
                             <div>
                                 <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
-                                <p class="fs-16 mb-3 text--lightGray line-clamp-3">#left(blogs.content, 150)#...</p>
+                                <div class="fs-16 mb-3 text--lightGray line-clamp-2">#blogs.content#</div>
                             </div>
                         
                             <div class="d-flex gap-2 justify-content-between align-items-center">
@@ -76,6 +76,8 @@
                     </div>
                 </cfoutput>
             </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
         </div>
     </div>
 
