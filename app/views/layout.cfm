@@ -504,8 +504,7 @@
 									<cfoutput>
 										<cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
 											<div 
-												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-												style="width:3rem; height:3rem;">
+												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase size-40">
 												#ucase(left(listLast(session.username, " "), 1))#
 											</div>
 										<cfelse>
@@ -572,8 +571,7 @@
 										<cfoutput>
 											<cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
 												<div 
-													class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-													style="width:3rem; height:3rem;">
+													class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase size-40">
 													#ucase(left(listLast(session.username, " "), 1))#
 												</div>
 											<cfelse>
@@ -638,7 +636,7 @@
 								</cfoutput>
 								</div>
 							</div>
-							<div class="col-lg-2">
+							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">Docs</h6>
 								<ul class="list-unstyled">
 									<li class="mt-2"><a href="https://guides.cfwheels.org/cfwheels-guides/3.0.0-snapshot" target="_blank"
@@ -661,7 +659,7 @@
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Contribute to Wheels</a></li>
 								</ul>
 							</div>
-							<div class="col-lg-2">
+							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 								<ul class="list-unstyled">
 									<cfif isLoggedInUser()>
@@ -694,14 +692,14 @@
 									</li>
 								</ul>
 							</div>
-							<div class="col-lg-2">
+							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">Plugins</h6>
 								<ul class="list-unstyled">
 									<li class="mt-2"><a href="https://www.forgebox.io/type/cfwheels-plugins" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Plugins</a></li>
 								</ul>
 							</div>
-							<div class="col-lg-2">
+							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
 								<ul class="list-unstyled">
 									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1"
@@ -723,9 +721,9 @@
 						</div>
 						<hr>
 						<div
-							class="text-muted d-flex flex-wrap gap-2 justify-content-between align-items-center">
+							class="text-muted d-flex flex-wrap gap-2 justify-content-lg-between justify-content-center align-items-center">
 							<div>
-								<p class="p-0 m-0 fs-12 text--secondary">
+								<p class="p-0 m-0 fs-12 text--secondary text-lg-start text-center">
 										&copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
 										Wheels is licensed under the Apache License, Version 2.0.
 								</p>
