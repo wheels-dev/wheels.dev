@@ -65,7 +65,8 @@ component extends="app.Controllers.Controller" {
 		// Get the Main JSON Docs
 		docs=getDocJSON(params.version);
 		if(structIsEmpty(docs)){
-			redirectTo(route="root", error="Unknown Version");
+			redirectTo(action="index", error="Unknown Version");
+			return;
 		}
 		startIndex = val(params.start) + 1; // ColdFusion is 1-based index
 		limitCount = val(params.limit);

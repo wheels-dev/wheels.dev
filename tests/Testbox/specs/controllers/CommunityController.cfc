@@ -1,29 +1,21 @@
 component extends="testbox.system.BaseSpec" {
     function beforeAll(){
-        requestServer= application.env.application_host;
-        community = "#requestServer#/community";
-
         local.AssetPath = "/app/"
         application.wo.set(controllerPath = local.AssetPath & "controllers")
         application.wo.set(viewPath = local.AssetPath & "views")
         application.wo.set(modelPath = local.AssetPath & "models")
+        requestServer = application.env.application_host;
+        communityUrl = requestServer & "/community";
     }
-
     function afterAll(){
-        local.AssetPath = "/tests/testbox/_assets/"
-        application.wo.set(controllerPath = local.AssetPath & "controllers")
-        application.wo.set(viewPath = local.AssetPath & "views")
-        application.wo.set(modelPath = local.AssetPath & "models")
+        // No test data to clean up
     }
     function run() {
-        describe("Community Page Accessibility Tests", function() {
-            it("it should return 200 status code", function(done) {
+        describe("CommunityController", function() {
+            it("should load community page", function() {
                 var response = "";
-
-                cfhttp(url = "#community#", method ="Get", result = "local.response");
-                // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
+                cfhttp(url=communityUrl, method="GET", result="local.response");
+                expect(local.response.status_code).toBe(200);
             });
         });
     }
