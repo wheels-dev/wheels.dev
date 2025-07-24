@@ -39,10 +39,10 @@
                                     </svg>
                                     <input type="text" placeholder="First Name"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="firstName"
-                                        name="firstName" required minlength="3" maxlength="20">
+                                        name="firstName" required minlength="3" maxlength="20" pattern="[A-Za-z]+" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
                                     <span class="input-icon" id="icon-firstName"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">First name must be between 3 and 20 characters long.</div>
+                                <div class="invalid-feedback px-3 py-1">First name must be 3–20 letters only (A–Z or a–z).</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -62,10 +62,10 @@
                                     </svg>
                                     <input type="text" placeholder="Last Name"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="lastName"
-                                        name="lastName" required minlength="3" maxlength="20">
+                                        name="lastName" required minlength="3" maxlength="20" pattern="[A-Za-z]+" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
                                     <span class="input-icon" id="icon-lastName"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">Last name must be between 3 and 20 characters long.</div>
+                                <div class="invalid-feedback px-3 py-1">Last name must be 3–20 letters only (A–Z or a–z).</div>
                             </div>
 
                             <div class="mb-3">
