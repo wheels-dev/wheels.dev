@@ -92,7 +92,7 @@
                     </div>
                 </form>
             </div>
-            <div class="position-absolute d-lg-block d-none" style="left: -210px; top: 38%;">
+            <div class="position-absolute d-lg-block d-none" style="left: -225px; top: 38%;">
                 <img src="/img/authVector.png" class="img-fluid" width="250" height="250" alt="Wheels.dev auth" />
             </div>
             <div class="position-absolute d-lg-block d-none" style="right: -120px; top: 60%;">
