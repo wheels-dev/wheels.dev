@@ -65,7 +65,9 @@
                         <a href="/blog/#slug#">
                             <div>
                                 <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
-                                <div class="fs-16 mb-3 text--lightGray line-clamp-2">#blogs.content#</div>
+                                <div class="fs-16 mb-3 text--lightGray line-clamp-2">
+                                    #reReplace(blogs.content, "<(img|video|iframe)[^>]*>(.*?)</\1>|<(img)[^>]*>", "", "all")# 
+                               </div>
                             </div>
                         
                             <div class="d-flex gap-2 justify-content-between align-items-center">
