@@ -28,7 +28,7 @@
             </cfif>
             
             <article class="pb-4 blog-item" data-blog-id="#blogs.id#">
-                <div class="d-flex flex-column rounded-bottom-4 shadow-sm bg-white px-0 overflow-hidden justify-content-between">
+                <div class="d-flex flex-column rounded-bottom-4 rounded-top-4 shadow-sm bg-white px-0 overflow-hidden justify-content-between">
                     
                     <!--- Blog Header Image with Title Overlay --->
                     <header class="blog-header">
