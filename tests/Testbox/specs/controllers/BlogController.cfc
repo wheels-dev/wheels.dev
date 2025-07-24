@@ -64,13 +64,17 @@ component extends="testbox.system.BaseSpec" {
         var userModel = application.wo.model("User");
         var testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
         if (isObject(testUser)) {
-            // Clean up blogs
+            // Clean up related remember tokens
+            var rememberTokenModel = application.wo.model("RememberToken");
+            rememberTokenModel.deleteAll(where="userId=#testUser.id#");
+            // Clean up related blog posts
             var blogModel = application.wo.model("Blog");
             blogModel.deleteAll(where="createdBy=#testUser.id#");
-            // Soft-delete the user
-            testUser.deletedAt = now();
-            testUser.isActive = false;
-            testUser.save();
+            // Clean up testimonials
+            var testimonialModel = application.wo.model("Testimonial");
+            testimonialModel.deleteAll(where="userId=#testUser.id#");
+            // Now delete the user
+            testUser.delete();
         }
         // Assert user is soft-deleted
         testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
