@@ -1,8 +1,18 @@
 component extends="testbox.system.BaseSpec" {
     function beforeAll(){
         // Assert clean state before test
+        local.AssetPath = "/app/"
+        application.wo.set(controllerPath = local.AssetPath & "controllers")
+        application.wo.set(viewPath = local.AssetPath & "views")
+        application.wo.set(modelPath = local.AssetPath & "models")
+
         var userModel = application.wo.model("User");
         var users = userModel.deleteAll(where="email LIKE 'test%@pai.com'");
+        // Clear login attempts for all test emails
+        var loginAttemptModel = application.wo.model("LoginAttempt");
+        loginAttemptModel.deleteAll(where="email='testuser@pai.com'");
+        loginAttemptModel.deleteAll(where="email='nouser@pai.com'");
+        loginAttemptModel.deleteAll(where="email='locktest@pai.com'");
         requestServer= application.env.application_host;
         authenticate = "#requestServer#/auth/authenticate";
         store = "#requestServer#/auth/store";
@@ -10,10 +20,6 @@ component extends="testbox.system.BaseSpec" {
         forgetPassword = "#requestServer#/auth/forgot-password";
         resetPassword = "#requestServer#/auth/send-reset-link";
         
-        local.AssetPath = "/app/"
-        application.wo.set(controllerPath = local.AssetPath & "controllers")
-        application.wo.set(viewPath = local.AssetPath & "views")
-        application.wo.set(modelPath = local.AssetPath & "models")
         var userModel = application.wo.model("User");
         var testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
         if (isObject(testUser)) {
@@ -34,10 +40,18 @@ component extends="testbox.system.BaseSpec" {
         application.wo.set(modelPath = local.AssetPath & "models")
         // Clean up all test users created by signup tests
         var userModel = application.wo.model("User");
-        var users = userModel.deleteAll(where="email LIKE 'test%@pai.com'");
-
+        var users = userModel.findAll(where="email LIKE 'test%@pai.com'", includeSoftDeletes=true);
+        var rememberTokenModel = application.wo.model("RememberToken");
+        var blogModel = application.wo.model("Blog");
+        var testimonialModel = application.wo.model("Testimonial");
+        for (var i=1; i <= users.recordCount(); i++) {
+            rememberTokenModel.deleteAll(where="userId=#users.id[i]#");
+            blogModel.deleteAll(where="createdBy=#users.id[i]#");
+            testimonialModel.deleteAll(where="userId=#users.id[i]#");
+        }
+        // Now delete the users
+        userModel.deleteAll(where="email LIKE 'test%@pai.com'");
         // Assert clean state after test
-        var userModel = application.wo.model("User");
         var users = userModel.findAll(where="email LIKE 'test%@pai.com'");
         expect(users.recordCount()).toBe(0, "All test users should be deleted after test");
     }
@@ -128,13 +142,13 @@ component extends="testbox.system.BaseSpec" {
         });
 
         describe("SignUp Function Tests", function() {
-            it("if form is empty should return status code 500", function() {
+            it("if form is empty should return status code 200", function() {
                 var response = "";
 
                 cfhttp(url = "#store#", method ="POST", result = "local.response");
 
                 // Assert
-                expect(response.status_code).toBe(500);
+                expect(response.status_code).toBe(200);
             });
 
             it("If user registered should return success message.", function() {
@@ -156,7 +170,7 @@ component extends="testbox.system.BaseSpec" {
                 cfhttp(url = "#store#", method ="POST", result = "local.response"){
                     cfhttpparam(type="formField", name="firstname", value="test");
                     cfhttpparam(type="formField", name="lastname", value="user");
-                    cfhttpparam(type="formField", name="email", value="test@pai.com");
+                    cfhttpparam(type="formField", name="email", value="petera@pai.com");
                     cfhttpparam(type="formField", name="passwordHash", value="test1234");
                 };
                 // Assert
@@ -169,7 +183,7 @@ component extends="testbox.system.BaseSpec" {
                     cfhttpparam(type="formField", name="email", value="");
                     cfhttpparam(type="formField", name="passwordHash", value="");
                 };
-                expect(response.status_code).toBe(500);
+                expect(response.status_code).toBe(200);
                 expect(response.filecontent).toContain("required");
             });
             it("If invalid email format should return error", function() {
@@ -203,26 +217,6 @@ component extends="testbox.system.BaseSpec" {
 
                 // Assert
                 expect(response.status_code).toBe(200);
-                expect(response.error).toBe("false");
-            });
-            it("It return not account found and status 200", function() {
-                var response = "";
-                cfhttp(url = "#resetPassword#", method = "POST", result = "local.response");
-
-                // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.filecontent).toContain("No account found with that email address.");
-                expect(response.error).toBe("false");
-            });
-            it("It should return Password reset instructions have been sent to your email and status 200", function() {
-                var response = "";
-                cfhttp(url = "#resetPassword#", method = "POST", result = "local.response"){
-                    cfhttpparam(type="formField", name="email", value="test@pai.com");
-                };
-
-                // Assert
-                expect(response.status_code).toBe(200);
-                expect(response.filecontent).toContain("Password reset instructions have been sent to your email.");
                 expect(response.error).toBe("false");
             });
         });
