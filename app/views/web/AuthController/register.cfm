@@ -163,8 +163,10 @@
                         </div> --->
 
                         <div class="space-y-3">
-                            <button type="submit"
-                                class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16">Register</button>
+                            <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16" aria-label="Register Button">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="button-text">Register</span>
+                            </button>
                             <div class="text-center">
                                 <p class="fs-14 text--secondary fw-medium">
                                     Have an account ?
