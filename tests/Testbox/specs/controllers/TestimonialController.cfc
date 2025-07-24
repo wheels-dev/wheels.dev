@@ -3,11 +3,6 @@ component extends="testbox.system.BaseSpec" {
         // Assert clean state before test
         var userModel = application.wo.model("User");
         var testUser = userModel.findOne(where="email='testuser@pai.com'");
-        if (isObject(testUser)) {
-            var testimonialModel = application.wo.model("Testimonial");
-            testimonialModel.deleteAll(where="userId=#testUser.id#");
-            testUser.delete();
-        }
         requestServer= application.env.application_host;
         authenticate = "#requestServer#/auth/authenticate";
         newTestimonial = "#requestServer#/testimonial/new";
@@ -18,7 +13,7 @@ component extends="testbox.system.BaseSpec" {
         application.wo.set(viewPath = local.AssetPath & "views")
         application.wo.set(modelPath = local.AssetPath & "models")
         var userModel = application.wo.model("User");
-        var testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
+        var testUser = userModel.findOne(where="email='testuser@pai.com'");
         if (isObject(testUser)) {
             if (structKeyExists(testUser, "deletedAt") && len(testUser.deletedAt)) {
                 testUser.deletedAt = "";
@@ -63,15 +58,19 @@ component extends="testbox.system.BaseSpec" {
 
     function afterAll(){
         var userModel = application.wo.model("User");
-        var testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
+        var testUser = userModel.findOne(where="email='testuser@pai.com'");
         if (isObject(testUser)) {
+            // Clean up related remember tokens
+            var rememberTokenModel = application.wo.model("RememberToken");
+            rememberTokenModel.deleteAll(where="userId=#testUser.id#");
+            // Clean up related blog posts
+            var blogModel = application.wo.model("Blog");
+            blogModel.deleteAll(where="createdBy=#testUser.id#");
             // Clean up testimonials
             var testimonialModel = application.wo.model("Testimonial");
             testimonialModel.deleteAll(where="userId=#testUser.id#");
-            // Soft-delete the user
-            testUser.deletedAt = now();
-            testUser.isActive = false;
-            testUser.save();
+            // Now delete the user
+            testUser.delete();
         }
         // Assert user is soft-deleted
         testUser = userModel.findOne(where="email='testuser@pai.com'", includeSoftDeletes=true);
