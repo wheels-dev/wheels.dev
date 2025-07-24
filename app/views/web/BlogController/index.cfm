@@ -15,8 +15,8 @@
                     <div class="col-lg-4 col-12">
                         <input id="blogSearchInput" placeholder="Search articles..." type="text" hx-get="/blog/Search?infiniteScroll=true" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-6 rounded-18">
                     </div>
-                    <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
-                        <div class="d-flex blogs align-items-center justify-content-end gap-3 flex-wrap">
+                    <div class="col-lg-6 mt-lg-0 mt-3 offset-lg-2 col-12">
+                        <div class="d-flex blogs align-items-center justify-content-lg-end justify-content-start gap-3 flex-wrap">
 
                             <cfif isEditor>
                                 <a href="/blog/create"

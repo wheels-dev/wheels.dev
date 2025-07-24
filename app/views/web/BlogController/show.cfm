@@ -233,8 +233,18 @@
             </div>
     </cfoutput>
     
-    <div class="pt-5 blog-main">
-        <h2 class="text-center fw-bold fs-60">Latest Blog Posts</h2>
+    <div class="pt-5 blog-main px-2">
+        <div class="d-flex align-items-center justify-content-between swiper-buttons position-relative">
+            <!-- Left Button -->
+            <div class="swiper-button-prev"></div>
+
+            <!-- Heading -->
+            <h2 class="text-center fw-bold fs-60 flex-grow-1 mx-5 mb-0">Latest Blog Posts</h2>
+
+            <!-- Right Button -->
+            <div class="swiper-button-next"></div>
+        </div>
+
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container" hx-get="/home/loadBlogs" hx-trigger="load" hx-target="#blogs-container" hx-swap="innerHTML">
                 
