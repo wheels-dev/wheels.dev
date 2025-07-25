@@ -17,7 +17,7 @@ jobs:
         run: |
           cp ./deploy/tests/.env ./
           cp ./deploy/stage/server.json ./
-          cp ./deploy/tests/docker-compose.yml ./docker-compose.test.yml
+          cp ./deploy/tests/docker-compose.yml ./docker-compose.yml
           cp ./deploy/tests/dockerfile ./dockerfile
           cp ./deploy/tests/dockerfile_db ./dockerfile_db
           cp ./deploy/tests/init-db.sh ./init-sb.sh
