@@ -57,7 +57,7 @@
               <cfelse>
                 <cfif structKeyExists(release, "isBlog")>
                   <div class="pt-3">
-                    <a href="#release.html_url#" class="btn btn-sm btn-outline-primary me-2">
+                    <a href="#release.html_url#" class="btn btn-sm btn-outline-danger me-2">
                       Learn More <i class="bi bi-arrow-right mt-1"></i>
                     </a>
                   </div>
