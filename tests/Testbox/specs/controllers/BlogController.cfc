@@ -56,7 +56,7 @@ component extends="testbox.system.BaseSpec" {
     }
 
     function afterAll(){
-        local.AssetPath = "/tests/testbox/_assets/"
+        local.AssetPath = "/app/"
         application.wo.set(controllerPath = local.AssetPath & "controllers")
         application.wo.set(viewPath = local.AssetPath & "views")
         application.wo.set(modelPath = local.AssetPath & "models")
