@@ -32,7 +32,15 @@ component extends="app.Controllers.Controller" {
         param name="params.email" default="";
         param name="params.password" default="";
         param name="params.rememberMe" default=false;
-
+        // Input validation
+        if (!len(trim(params.email)) || !len(trim(params.password))) {
+            data = {
+                "success" = false,
+                "message" = "Email and password are required."
+            };
+            renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
+            return;
+        }
         try {
             model("Log").log(
                 category = "wheels.auth",
@@ -43,7 +51,6 @@ component extends="app.Controllers.Controller" {
                     "ip_address": cgi.REMOTE_ADDR
                 }
             );
-            
             // Check if user is locked out
             if (model("LoginAttempt").isUserLocked(params.email)) {
                 model("Log").log(
@@ -62,14 +69,31 @@ component extends="app.Controllers.Controller" {
                 renderWith(data=data, hideDebugInformation=true, status=423, layout='/responseLayout');
                 return;
             }
-            
             // Validate credentials
-            var user = validateCredentials(params.email, params.password);
-
+            var user = false;
+            try {
+                user = validateCredentials(params.email, params.password);
+            } catch (any e) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "ERROR",
+                    message = "Error during credential validation",
+                    details = {
+                        "error_message": e.message,
+                        "error_detail": e.detail,
+                        "email": params.email
+                    }
+                );
+                data = {
+                    "success" = false,
+                    "message" = "A system error occurred. Please try again later."
+                };
+                renderWith(data=data, hideDebugInformation=true, status=500, layout='/responseLayout');
+                return;
+            }
             if (isObject(user)) {
                 // Clear failed attempts on successful login
                 model("LoginAttempt").clearFailedAttempts(params.email);
-                
                 model("Log").log(
                     category = "wheels.auth",
                     level = "INFO",
@@ -77,17 +101,15 @@ component extends="app.Controllers.Controller" {
                     details = {
                         "user_id": user.id,
                         "email": user.email,
-                        "role": user.role.name
+                        "role": (isObject(user.role) ? user.role.name : "")
                     }
                 );
-                
                 // Store user data in session
                 session.userID = user.id;
                 session.username = user.fullname;
-                session.role = user.role.name;
+                session.role = (isObject(user.role) ? user.role.name : "");
                 session.profilePic = user.profilePicture;
                 session.lastActivity = now();
-
                 // Handle remember me
                 if (structKeyExists(params, "rememberMe")) {
                     var token = createRememberMeToken(user);
@@ -105,10 +127,8 @@ component extends="app.Controllers.Controller" {
                         );
                     }
                 }
-
                 // Get success data
                 var successData = handleLoginSuccess(user);
-
                 // Return JSON success response
                 data={
                     "success" = true,
@@ -117,14 +137,11 @@ component extends="app.Controllers.Controller" {
                 };
                 renderWith(data=data, hideDebugInformation=true, layout='/responseLayout');
                 return; 
-
             } else {
                 // Record failed attempt
                 model("LoginAttempt").recordFailedAttempt(params.email, cgi.REMOTE_ADDR);
-                
                 // Get remaining attempts
                 var remainingAttempts = model("LoginAttempt").getRemainingAttempts(params.email);
-                
                 model("Log").log(
                     category = "wheels.auth",
                     level = "WARN",
@@ -135,7 +152,6 @@ component extends="app.Controllers.Controller" {
                         "remaining_attempts": remainingAttempts
                     }
                 );
-                
                 // Return JSON error response with 401 status code
                 data={
                     "success" = false,
@@ -327,6 +343,34 @@ component extends="app.Controllers.Controller" {
 
     function store() {
         try {
+            // Input validation
+            if (!structKeyExists(params, "firstname") || !len(trim(params.firstname))) {
+                renderText("<p style='color:red;'>First name is required.</p>");
+                return;
+            }
+            if (!structKeyExists(params, "lastname") || !len(trim(params.lastname))) {
+                renderText("<p style='color:red;'>Last name is required.</p>");
+                return;
+            }
+            if (!structKeyExists(params, "email") || !len(trim(params.email))) {
+                renderText("<p style='color:red;'>Email is required.</p>");
+                return;
+            }
+            // Add invalid email format check
+            if (!reFindNoCase("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", params.email)) {
+                renderText("<p style='color:red;'>Please enter a valid email address.</p>");
+                return;
+            }
+            if (!structKeyExists(params, "passwordHash") || !len(trim(params.passwordHash))) {
+                renderText("<p style='color:red;'>Password is required.</p>");
+                return;
+            }
+            // Check for duplicate email before calling saveUser
+            var existingUser = model("User").findFirst(where="email = '#params.email#'");
+            if (isObject(existingUser)) {
+                renderText("<p style='color:red;'>An account with this email address already exists.</p>");
+                return;
+            }
             model("Log").log(
                 category = "wheels.auth",
                 level = "DEBUG",
@@ -357,7 +401,16 @@ component extends="app.Controllers.Controller" {
                         "error_message": message
                     }
                 );
-                renderText("<p style='color:red;'>#message#</p>");
+                // Always return a user-friendly error for MAIL_FROM or other missing keys
+                if (findNoCase("MAIL_FROM", message) || findNoCase("Error:", message) || findNoCase("NULL", message) || findNoCase("doesn't exist", message)) {
+                    renderText("<p style='color:red;'>An error occurred while creating your account. Please check your input and try again.</p>");
+                } else if (findNoCase("required", message)) {
+                    renderText("<p style='color:red;'>#message#</p>");
+                } else if (findNoCase("valid email", message)) {
+                    renderText("<p style='color:red;'>#message#</p>");
+                } else {
+                    renderText("<p style='color:red;'>#message#</p>");
+                }
             }
         } catch (any e) {
             model("Log").log(
@@ -369,7 +422,7 @@ component extends="app.Controllers.Controller" {
                     "email": params.email
                 }
             );
-            redirectTo(action="error", errorMessage="Invalid login credentials.");
+            renderText("<p style='color:red;'>An unexpected error occurred. Please try again later.</p>");
         }
     }
 
@@ -472,11 +525,25 @@ component extends="app.Controllers.Controller" {
     
     private function saveUser(required struct userData) {        
         var message = "";
-
         try {
+            // check required fields
+            if (!structKeyExists(userData, "firstname") || !len(trim(userData.firstname))) {
+                return "First name is required.";
+            }
+            if (!structKeyExists(userData, "lastname") || !len(trim(userData.lastname))) {
+                return "Last name is required.";
+            }
+            if (!structKeyExists(userData, "email") || !len(trim(userData.email))) {
+                return "Email is required.";
+            }
+            if (!reFindNoCase("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", userData.email)) {
+                return "Please enter a valid email address.";
+            }
+            if (!structKeyExists(userData, "passwordHash") || !len(trim(userData.password))) {
+                return "Password is required.";
+            }
             // Check if a user with the same email already exists
             var existingUser = model("User").findFirst( where="email = '#userData.email#'");
-
             if (!isObject(existingUser)) {
                 // Create a new user
                 var newUser = model("User").new();
@@ -488,19 +555,17 @@ component extends="app.Controllers.Controller" {
                 newUser.status = SetInactive(); // set inactive
                 if(structKeyExists(userData, "newsletter")){
                 newUser.newsletter = true;
+                    newUser.newsletter = true;
                 }
-
                 if(newUser.save()){
                     // Generate a unique verification token
                     var verificationToken = Hash(createUUID());
-
                     // Save token to the user_tokens table
                     var newToken = model("UserToken").new();
                     newToken.token = verificationToken;
                     newToken.user_id = newUser.id;
                     newToken.status = 0; // Not verified
                     newToken.save();
-
                     // Send verification email
                     if(sendVerificationEmail(newUser.email, verificationToken)){
                         message = "Registration successful. Please check your email to verify your account.";
@@ -510,19 +575,30 @@ component extends="app.Controllers.Controller" {
                 }else{
                     message = "Unable to create user account. Please try again or contact support.";
                 }
-
             } else {
                 message = "An account with this email address already exists.";
             }
-            
         } catch (any e) {
-            // Catch any errors and store the message
-            message = "Error: " & e.message;
+            // Log internal error, but return generic message
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Exception in saveUser",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            message = "An error occurred while creating your account. Please try again later.";
         }
         return message;
     }
 
     private function sendVerificationEmail(required string email, required string token) {
+        if (application.wheels.environment EQ 'test') {
+            // Skip email sending in test mode
+            return true;
+        }
         var user = model("User").findOne(where="email='#email#'");
         var emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
         verifyUrl = urlFor(action="verify", onlyPath=false);
@@ -793,6 +869,10 @@ component extends="app.Controllers.Controller" {
     }
 
     private void function sendResetEmail(required string email, required string name, required string token) {
+        if (application.wheels.environment EQ 'test') {
+            // Skip email sending in test mode
+            return true;
+        }
         try {
             model("Log").log(
                 category = "wheels.auth",
@@ -855,6 +935,10 @@ component extends="app.Controllers.Controller" {
     }
 
     private void function sendSignUpEmail(required string email) {
+        if (application.env.environment EQ 'testing') {
+            // Skip email sending in test mode
+            return true;
+        }
         try {
             model("Log").log(
                 category = "wheels.auth",
@@ -906,7 +990,6 @@ component extends="app.Controllers.Controller" {
                 message = "Error sending sign up email on account not found",
                 details = {
                     "email": email,
-                    "token": token,
                     "error_message": e.message,
                     "error_detail": e.detail
                 }
