@@ -57,6 +57,10 @@ component extends="testbox.system.BaseSpec" {
     }
 
     function afterAll(){
+        local.AssetPath = "/app/"
+        application.wo.set(controllerPath = local.AssetPath & "controllers")
+        application.wo.set(viewPath = local.AssetPath & "views")
+        application.wo.set(modelPath = local.AssetPath & "models")
         var userModel = application.wo.model("User");
         var testUser = userModel.findOne(where="email='testuser@pai.com'");
         if (isObject(testUser)) {
