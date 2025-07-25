@@ -170,6 +170,7 @@
 			.get(name = "user-add", pattern = "user/edit/[id]", to = "UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "UserController##store")
 			.get(name = "user-delete", pattern= "user/delete/[id]", to="UserController##delete")
+			.get(name = "user-unlock", pattern = "user/unlockUser/[userId]", to = "UserController##unlockUser")
 
 			.get(name = "user-changePassword", pattern = "user/change-password", to = "UserController##changePassword")
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "UserController##updatePassword")
