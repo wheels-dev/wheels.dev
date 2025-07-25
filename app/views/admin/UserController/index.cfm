@@ -42,10 +42,10 @@
                                         </div>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a hx-get="/admin/user/edit/#users.id[i]#" hx-target="body" hx-trigger="click" hx-swap="innerHTML" class="dropdown-item text-success fs-16">Edit</a>
+                                                <a hx-get="/admin/user/edit/#users.id[i]#" hx-target="body" hx-trigger="click" hx-swap="innerHTML" class="dropdown-item cursor-pointer text-success fs-16">Edit</a>
                                             </li>
                                             <li>
-                                                <a hx-get="/admin/user/delete/#users.id[i]#" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" hx-confirm="Are you sure you want to delete this user?" class="dropdown-item text-danger fs-16"">Delete</a>
+                                                <a hx-get="/admin/user/delete/#users.id[i]#" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" hx-confirm="Are you sure you want to delete this user?" class="dropdown-item cursor-pointer text-danger fs-16"">Delete</a>
                                             </li>
                                         </ul>
                                     </div>

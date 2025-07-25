@@ -39,15 +39,17 @@
         <div class="row gy-3 gy-sm-5 gx-sm-5" id="features-container">
             <cfoutput query="features">
                 <div class="col-lg-4">
-                    <div class="px-4 py-4 bg-white border-transparent border-2 cards rounded-5 cursor-pointer shadow-sm">
-                        <div class="icon-container d-flex justify-content-center align-items-center">
-                            #features.image#
+                    <a href="#features.card_link#" target="_blank" class="text-decoration-none">
+                        <div class="px-4 py-4 bg-white border-transparent border-2 cards rounded-5 cursor-pointer shadow-sm">
+                            <div class="icon-container d-flex justify-content-center align-items-center">
+                                #features.image#
+                            </div>
+                            <div class="mt-3">
+                                <p class="fw-bold fs-24 text--secondary">#features.title#</p>
+                                <p class="fs-18 text--secondary/70 pt-1 line-clamp-2">#features.description#</p>
+                            </div>
                         </div>
-                        <div class="mt-3">
-                            <p class="fw-bold fs-24 text--secondary">#features.title#</p>
-                            <p class="fs-18 text--secondary/70 pt-1 line-clamp-2">#features.description#</p>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </cfoutput>
         </div>
@@ -55,16 +57,29 @@
 
     <!-- Latest blogs -->
     <div class="pt-5 px-2 blog-main">
-        <h2 class="text-center fw-bold fs-60">Latest From the Wheels Dev Blog</h2>
+        <div class="d-flex align-items-center justify-content-between swiper-buttons position-relative">
+            <!-- Left Button -->
+            <div class="swiper-button-prev"></div>
+
+            <!-- Heading -->
+            <h2 class="text-center fw-bold fs-60 flex-grow-1 mx-5 mb-0">Latest From the Wheels Dev Blog</h2>
+
+            <!-- Right Button -->
+            <div class="swiper-button-next"></div>
+        </div>
+
         <div class="swiper py-5 blogSwiper h-max">
             <div class="swiper-wrapper" id="blogs-container">
-                <cfoutput query= "blogs">
+                <cfoutput query="blogs">
                     <div class="p-4 bg-white rounded-5 shadow-sm swiper-slide">
-                        <a href="/blog/#slug#" class="">
+                        <a href="/blog/#slug#">
                             <div>
                                 <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#blogs.title#</p>
+                                <div class="fs-16 mb-3 text--lightGray line-clamp-2">
+                                    #reReplace(blogs.content, "<(img|video|iframe)[^>]*>(.*?)</\1>|<(img)[^>]*>", "", "all")# 
+                                </div>
                             </div>
-                        
+
                             <div class="d-flex gap-2 justify-content-between align-items-center">
                                 <p class="fs-16 truncate fw-medium text--lightGray">#dateformat(blogs.postDate, 'MMMM DD, YYYY')# by #blogs.fullName#</p>
                                 <button class="bg--primary text-nowrap fs-16 text-white rounded-2 px-3 py-1">Learn more</button>
@@ -75,6 +90,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- welcome community -->
     <cfoutput>
@@ -179,12 +195,12 @@
                     <p class="mb-2">We'd love to hear about your experience! Would you take a moment to share a testimonial?</p>
                 </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn bg--primary text-white" 
                         hx-get="<cfoutput>#urlFor(route='new-testimonial')#</cfoutput>"
                         hx-target="main"
                         hx-trigger="click"
                         hx-swap="outerHTML" data-bs-dismiss="modal">Share Now</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <!--- The submit button will be part of the loaded form --->
                     </div>
                 </div>

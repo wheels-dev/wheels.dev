@@ -9,9 +9,9 @@
     </div>
     <div <cfoutput>hx-get="/#params.version#/guides/search-book?format=json"</cfoutput> hx-trigger="load" hx-target="#searchIndexHolder" hx-swap="innerHTML"></div>
     <div id="searchIndexHolder" style="display: none;"></div>
-    <div class="p-5">
+    <div class="p-lg-5 p-4">
         <div class="row">
-            <div class="col-lg-3 col-12 mb-lg-0 mb-5 mt-3 mt-lg-0 order-lg-first order-last">
+            <div class="col-lg-3 col-12 mb-lg-0 mb-5 mt-3 mt-lg-0 order-lg-first order-last ps-0 pe-lg-4 pe-0">
                 <div class="bg-white p-3 rounded-18 position-sticky top-16 no-scrollbar h-80vh overflow-y-auto">
                     <div class="accordion space-y-3" id="guidesAccordion">
                         <cfoutput>#includePartial("partials/sidebar")#</cfoutput>
@@ -21,7 +21,7 @@
 
             <div class="col-lg-9 col-12 order-lg-last order-first">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-8 pe-lg-3 pe-0 ps-0">
                         <div class="search-trigger d-flex align-items-center gap-2 px-3 mb-3 py-2 border rounded-3 transition-all hover:border-primary cursor-pointer" id="searchTrigger">
                             <i class="bi bi-search text-muted"></i>
                             <span class="flex-grow-1 text-muted">Ask or search...</span>
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 px-0">
                         <div class="select-version" id="select-version">
                             <select name="docs-version" id="docs-version" class="form-select px-3 mb-3 py-2 transition-all hover:border-primary cursor-pointer" aria-label="select-version">
                                 <option <cfif params.version eq "3.0.0">selected </cfif> value="3.0.0">3.0.0</option>
