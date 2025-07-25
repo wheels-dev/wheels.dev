@@ -142,10 +142,10 @@
                     </div>
                 
                     <div class="text-end">
-                        <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                         <cfoutput>
                             <a hx-get="#urlFor(route="home")#" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="btn btn-secondary px-3 py-2 rounded fs-14 me-2">Cancel</a>
                         </cfoutput>
+                        <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
                     </div>
                 </form>
             </div>

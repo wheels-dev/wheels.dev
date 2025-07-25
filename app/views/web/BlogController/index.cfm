@@ -13,10 +13,10 @@
             <div class="pt-5">
                 <div class="row">
                     <div class="col-lg-4 col-12">
-                        <input id="blogSearchInput" placeholder="Search articles..." type="text" hx-get="/blog/Search?infiniteScroll=true" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-3 rounded-18">
+                        <input id="blogSearchInput" placeholder="Search articles..." type="text" hx-get="/blog/Search?infiniteScroll=true" hx-trigger="keyup changed delay:500ms" hx-target="#blogsContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-6 rounded-18">
                     </div>
-                    <div class="col-lg-5 mt-lg-0 mt-3 offset-lg-3 col-12">
-                        <div class="d-flex blogs align-items-center justify-content-end gap-3 flex-wrap">
+                    <div class="col-lg-6 mt-lg-0 mt-3 offset-lg-2 col-12">
+                        <div class="d-flex blogs align-items-center justify-content-lg-end justify-content-start gap-3 flex-wrap">
 
                             <cfif isEditor>
                                 <a href="/blog/create"
@@ -25,7 +25,7 @@
 
                             <button onclick="handleBlogFilter('All', this)" hx-swap="innerHTML"
                                 hx-get="/blog/list" hx-push-url="/blog" hx-target="#blogsContainer"
-                                class="active px-4 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
+                                class="active px-md-4 px-3 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
                                 All
                                 <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +35,7 @@
                                 </svg>
                             </button>
                             <button onclick="handleBlogFilter('Categories', this)"
-                                class="px-4 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
+                                class="px-md-4 px-3 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
                                 Categories
                                 <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +45,7 @@
                                 </svg>
                             </button>
                             <button onclick="handleBlogFilter('Archives', this)"
-                                class="px-4 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
+                                class="px-md-4 px-3 hover:bg--primary hover:text-white filter-button fs-16 py-2 d-flex align-items-center gap-2 rounded-3 border border--primary bg-transparent text--secondary">
                                 Archives
                                 <svg class="d-none" width="16" height="16" viewBox="0 0 16 16" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">

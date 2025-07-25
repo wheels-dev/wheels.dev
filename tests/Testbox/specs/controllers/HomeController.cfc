@@ -17,7 +17,7 @@ component extends="testbox.system.BaseSpec" {
     }
     function run() {
         describe("Home Page Functions Tests", function() {
-            it("it should return 200 status code", function(done) {
+            it("it should return 200 status code for home page", function(done) {
                 var response = "";
 
                 cfhttp(url = "#home#", method ="Get", result = "local.response");

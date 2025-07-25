@@ -1,7 +1,7 @@
 <main class="w-100 vh-100 position-relative">
     <div class="row w-100 g-0 h-100 m-lg-auto">
         <div class="col-lg-6 bg-white col-12">
-            <div class="flex-column d-flex py-4 justify-content-center h-100 gap-3 align-items-center">
+            <div class="flex-column d-flex py-4 px-md-0 px-3 justify-content-center h-100 gap-3 align-items-center">
                 <h1 class="fs-36 mb-0 fw-bold text--secondary">Welcome to</h1>
                 <a href="/">
                     <img src="/img/wheels-logo.png" width="300" alt="wheels.dev Logo">
@@ -39,10 +39,10 @@
                                     </svg>
                                     <input type="text" placeholder="First Name"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="firstName"
-                                        name="firstName" required minlength="3" maxlength="20">
+                                        name="firstName" required minlength="3" maxlength="20" pattern="[A-Za-z]+" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
                                     <span class="input-icon" id="icon-firstName"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">First name must be between 3 and 20 characters long.</div>
+                                <div class="invalid-feedback px-3 py-1">First name must be 3–20 letters only (A–Z or a–z).</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -62,10 +62,10 @@
                                     </svg>
                                     <input type="text" placeholder="Last Name"
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="lastName"
-                                        name="lastName" required minlength="3" maxlength="20">
+                                        name="lastName" required minlength="3" maxlength="20" pattern="[A-Za-z]+" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
                                     <span class="input-icon" id="icon-lastName"></span>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">Last name must be between 3 and 20 characters long.</div>
+                                <div class="invalid-feedback px-3 py-1">Last name must be 3–20 letters only (A–Z or a–z).</div>
                             </div>
 
                             <div class="mb-3">
@@ -163,8 +163,10 @@
                         </div> --->
 
                         <div class="space-y-3">
-                            <button type="submit"
-                                class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16">Register</button>
+                            <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16" aria-label="Register Button">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="button-text">Register</span>
+                            </button>
                             <div class="text-center">
                                 <p class="fs-14 text--secondary fw-medium">
                                     Have an account ?
@@ -178,6 +180,25 @@
         </div>
     </div>
 </main>
+<script>
+    const fieldsToTrim = ["firstName", "lastName", "email", "passwordHash", "confirmPassword"];
+    fieldsToTrim.forEach(function (fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener("input", function () {
+                const trimmedValue = field.value.replace(/^\s+|\s+$/g, '');
+                
+                if (["text", "search", "password", "url", "tel"].includes(field.type)) {
+                    const cursorPos = field.selectionStart;
+                    field.value = trimmedValue;
+                    field.setSelectionRange(cursorPos, cursorPos);
+                } else {
+                    field.value = trimmedValue;
+                }
+            });
+        }
+    });
+</script>
 
 <!-- Include Google reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>

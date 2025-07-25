@@ -32,8 +32,8 @@
             display: inline-block;
             padding: 12px 24px;
             background-color: ##007bff;
-            color: ##fff;
-            text-decoration: none;
+            color: ##fff !important;
+            text-decoration: none !important;
             border-radius: 4px;
             margin: 20px 0;
         }
@@ -53,7 +53,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="" alt="Wheels.dev Logo" class="logo">
+        <img src="https://wheels.dev/img/wheels-logo.png" alt="Wheels.dev Logo" class="logo">
     </div>
     
     <div class="content">
@@ -62,7 +62,7 @@
         <p>Thank you for subscribing to the Wheels.dev newsletter! To complete your subscription, please click the button below:</p>
         
         <div style="text-align: center;">
-            <a href="#URLFor(route='newsletter-verify', token=subscriber.verification_token)#" class="button">Verify Subscription</a>
+            <a href="#application.env.application_host#/newsletter/verify/#subscriber.verification_token#" class="button">Verify Subscription</a>
         </div>
         
         <p>If you did not request this subscription, please ignore this email.</p>
