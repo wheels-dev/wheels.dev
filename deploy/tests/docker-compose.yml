@@ -20,7 +20,7 @@ services:
   db:
     build:
       context: .
-      dockerfile: Dockerfile_db
+      dockerfile: dockerfile_db
     image: wheels-db
     container_name: wheels_db
     environment:
