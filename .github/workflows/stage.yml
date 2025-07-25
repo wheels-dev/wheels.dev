@@ -20,7 +20,7 @@ jobs:
           cp ./deploy/tests/docker-compose.yml ./docker-compose.yml
           cp ./deploy/tests/dockerfile ./dockerfile
           cp ./deploy/tests/dockerfile_db ./dockerfile_db
-          cp ./deploy/tests/init-db.sh ./init-sb.sh
+          cp ./deploy/tests/init-db.sh ./init-db.sh
           
       - name: Install Dependencies
         id: Install-Dependencies
