@@ -110,6 +110,15 @@
                                                         hx-confirm="Are you sure you want to reject this blog?"
                                                     >Reject</button>
                                                 </li>
+                                                <li>
+                                                    <button class="dropdown-item text-danger fs-16"
+                                                    hx-post="/admin/blog/delete"
+                                                    hx-vals='{"id": "#blogs.id[i]#"}'
+                                                    hx-target="body"
+                                                    hx-swap="innerHTML"
+                                                    hx-confirm="Are you sure you want to delete this blog post?"
+                                                    >Delete</button>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
