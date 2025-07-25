@@ -594,7 +594,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function sendVerificationEmail(required string email, required string token) {
-        if (application.wheels.environment EQ 'test') {
+        if (application.env.environment EQ 'testing') {
             // Skip email sending in test mode
             return true;
         }
@@ -868,7 +868,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private void function sendResetEmail(required string email, required string name, required string token) {
-        if (application.wheels.environment EQ 'test') {
+        if (application.env.environment EQ 'testing') {
             // Skip email sending in test mode
             return true;
         }
