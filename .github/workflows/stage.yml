@@ -63,7 +63,7 @@ jobs:
         id: Cleanup-Test-Containers
         if: always()
         run: |
-          docker-compose -f docker-compose.yml down -v --remove-orphans || true
+          docker compose -f docker-compose.yml down -v --remove-orphans || true
           rm -f test_results.json || true
 
   build-and-deploy-to-docker-swarm:
