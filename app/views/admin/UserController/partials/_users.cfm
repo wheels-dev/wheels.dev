@@ -3,6 +3,8 @@
     for (var i = 1; i <= users.recordCount; i++) {
         // Determine the status text based on the value of users.status[i]
         var statusText = (users.status[i] == 1) ? "Active" : "Inactive";
+        // Check if user is locked
+        var isLocked = model("LoginAttempt").isUserLocked(users.email[i]);
 
         writeOutput('<tr> <td>' & i & '</td>');
         writeOutput('<td>' & users.firstname[i] & '</td>');
@@ -10,7 +12,7 @@
         writeOutput('<td>' & users.email[i] & '</td>');
         writeOutput('<td>' & statusText & '</td>'); // Show "Active" or "Inactive"
         writeOutput('<td>' & users.name[i] & '</td>');
-
+        writeOutput('<td>' & (isLocked ? '<span class="badge bg-danger">Locked</span>' : '<span class="badge bg-success">Unlocked</span>') & '</td>');
         writeOutput('<td>
             <div class="dropdown">
                 <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -23,9 +25,11 @@
                     <li>
                         <a href="admin/user/delete/#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
                     </li>
-                </ul>
-            </div>
-        </td>');
+                    ');
+        if (isLocked) {
+            writeOutput('<li><a href="admin/user/unlockUser/#users.id[i]#" class="dropdown-item text-warning fs-16">Unlock</a></li>');
+        }
+        writeOutput('</ul></div></td>');
     }
 </cfscript>
 
