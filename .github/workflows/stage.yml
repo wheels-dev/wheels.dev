@@ -41,7 +41,7 @@ jobs:
       - name: Run Tests via TestBox
         id: Run-Tests-via-TestBox
         run: |
-          test_url="localhost:60151/testbox?format=json"
+          test_url="localhost:60151/testbox?format=json&only=failure,error"
           echo "Running tests at: $test_url"
           
           # Make curl request and capture both response and HTTP status code
