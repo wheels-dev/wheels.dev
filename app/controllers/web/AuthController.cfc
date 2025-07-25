@@ -539,7 +539,7 @@ component extends="app.Controllers.Controller" {
             if (!reFindNoCase("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", userData.email)) {
                 return "Please enter a valid email address.";
             }
-            if (!structKeyExists(userData, "passwordHash") || !len(trim(userData.password))) {
+            if (!structKeyExists(userData, "passwordHash") || !len(trim(userData.passwordHash))) {
                 return "Password is required.";
             }
             // Check if a user with the same email already exists
@@ -554,7 +554,6 @@ component extends="app.Controllers.Controller" {
                 newUser.roleid = GetUserRoleId(); // user role
                 newUser.status = SetInactive(); // set inactive
                 if(structKeyExists(userData, "newsletter")){
-                newUser.newsletter = true;
                     newUser.newsletter = true;
                 }
                 if(newUser.save()){
