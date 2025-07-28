@@ -641,7 +641,7 @@ component extends="app.Controllers.Controller" {
         if (isObject(token)) {
             var user = model("User").findByKey(include="Role", key='#token.user_id#');
             if(isObject(user)){
-                user.update(status=SetActive()); // Activate user
+                user.update(status=SetActive(), roleId=2); // Activate user, set editor role
                 return user;
             }else{
                 message="false";
