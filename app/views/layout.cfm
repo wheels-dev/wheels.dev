@@ -490,10 +490,10 @@
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 								<cfif hasEditorAccess()>
-									<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add a Blog</a></li>
 								</cfif>
-									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues">Add Issue</a></li>
-									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Add Disscussion</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues/new/choose">Report an issue</a></li>
+									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Start new Disscussion</a></li>
 								</ul>
 							</div>
 							<div class="nav-item d-xl-none d-block dropdown navHandlers">
@@ -557,10 +557,10 @@
 									</a>
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 									<cfif hasEditorAccess()>
-										<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add Blog</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add a Blog</a></li>
 									</cfif>
-										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues">Add Issue</a></li>
-										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Add Disscussion</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues/new/choose">Report an issue</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Start new Disscussion</a></li>
 									</ul>
 								</li>
 								<li class="nav-item d-xl-block d-none dropdown px-3 navHandlers">

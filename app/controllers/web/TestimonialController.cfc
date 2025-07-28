@@ -280,10 +280,12 @@ component extends="app.Controllers.Controller" {
      * Save new testimonial
      */
     private function saveTestimonial(required struct testimonialData) {
-        var response = { "message": "", "testimonialId": 0 };
+        var response = { "success": false, "message": "", "testimonialId": 0, "errors": {} };
+        var userId = GetSignedInUserId();
+        
         try {
             var newTestimonial = model("Testimonial").new();
-            newTestimonial.testimonialText = testimonialData.content;
+            newTestimonial.testimonialText = testimonialData.testimonialText;
             newTestimonial.title = testimonialData.title;
             newTestimonial.companyName = testimonialData.companyName;
             newTestimonial.rating = testimonialData.rating ?: 5;
@@ -291,25 +293,67 @@ component extends="app.Controllers.Controller" {
             newTestimonial.experienceLevel = testimonialData.experienceLevel ?: "";
             newTestimonial.websiteUrl = testimonialData.websiteUrl ?: "";
             newTestimonial.socialMediaLinks = testimonialData.socialMediaLinks ?: "";
-            if(structKeyExists(testimonialData, "displayPermission")){
-                newTestimonial.displayPermission = true;
-            }
-            newTestimonial.userId = GetSignedInUserId();
+            newTestimonial.displayPermission = true;
+            
+            newTestimonial.userId = userId;
             newTestimonial.isApproved = false;
             newTestimonial.isFeatured = false;
 
             if (!newTestimonial.save()) {
-                throw(message=serializeJSON(newTestimonial.allErrors()));
+                response.errors = newTestimonial.allErrors();
+                response.message = "Please correct the following errors:";
+                
+                // Log validation errors
+                model("Log").log(
+                    category = "testimonials.create",
+                    level = "WARN",
+                    message = "Testimonial validation failed",
+                    details = {
+                        "ip_address": cgi.REMOTE_ADDR,
+                        "validation_errors": response.errors,
+                        "companyName": testimonialData.companyName ?: ""
+                    },
+                    userId = userId
+                );
+            } else {
+                var user = model("User").findByKey(userId);
+                user.markTestimonialSubmitted();
+
+                response.testimonialId = newTestimonial.id;
+                response.message = "Testimonial created successfully.";
+                response.success = true;
+
+                // Log successful testimonial creation
+                model("Log").log(
+                    category = "testimonials.create",
+                    level = "INFO",
+                    message = "Testimonial created successfully",
+                    details = {
+                        "ip_address": cgi.REMOTE_ADDR,
+                        "testimonialId": response.testimonialId,
+                        "companyName": testimonialData.companyName,
+                        "rating": testimonialData.rating ?: 5
+                    },
+                    userId = userId
+                );
             }
-
-            var user = model("User").findByKey(GetSignedInUserId());
-            user.markTestimonialSubmitted();
-
-            response.testimonialId = newTestimonial.id;
-            response.message = "Testimonial created successfully.";
 
         } catch (any e) {
             response.message="Error: " & e.message;
+            
+            // Log error during testimonial creation
+            model("Log").log(
+                category = "testimonials.create",
+                level = "ERROR",
+                message = "Testimonial creation failed",
+                details = {
+                    "ip_address": cgi.REMOTE_ADDR,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "companyName": testimonialData.companyName ?: ""
+                },
+                userId = userId
+            );
         }
 
         return response;

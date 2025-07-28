@@ -72,9 +72,6 @@
         <cfif testimonials.recordCount GT 0>
             <div class="row mt-4">
                 <div class="col-12 text-center">
-                    <a href="#urlFor(controller='web.Testimonial', action='index')#" class="btn btn-outline-primary">
-                        View All Testimonials
-                    </a>
                     <cfif structKeyExists(session, "userID")>
                         <a href="#urlFor(controller='web.Testimonial', action='new')#" class="btn btn-primary ms-2">
                             Submit Your Testimonial
