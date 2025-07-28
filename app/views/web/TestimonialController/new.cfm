@@ -46,17 +46,17 @@
                     </div>
                 
                     <div class="mb-3">
-                        <label for="content" class="form-label fw-bold">Your Testimonial <span class="text-danger">*</span></label>
-                        <textarea name="content"
-                                id="content"
+                        <label for="testimonialText" class="form-label fw-bold">Your Testimonial <span class="text-danger">*</span></label>
+                        <textarea name="testimonialText"
+                                id="testimonialText"
                                 class="form-control form-check-input-primary "
                                 rows="5"
                                 required
                                 minlength="20"
-                                maxlength="500"></textarea>
-                                <span class="input-icon" id="icon-content"></span>
-                        <div class="form-text">Please share your experience (20-500 characters).</div>
-                        <div class="invalid-feedback px-3 py-1">Testimonial must be between 20 to 500 characters long.</div>
+                                maxlength="470"></textarea>
+                                <span class="input-icon" id="icon-testimonialText"></span>
+                        <div class="form-text">Please share your experience (20-450 characters).</div>
+                        <div class="invalid-feedback px-3 py-1">Testimonial must be between 20 to 450 characters long.</div>
                     </div>
                 
                     <div class="mb-3">
@@ -130,15 +130,6 @@
                         <span class="input-icon" id="icon-logo"></span>
                         <div class="form-text">Upload JPG, PNG, GIF, or WEBP.</div>
                         <div class="invalid-feedback px-3 py-1">Company logo must be required.</div>
-                    </div>
-                
-                    <div class="mb-3 form-check">
-                        <input type="checkbox"
-                            name="displayPermission"
-                            id="displayPermission"
-                            class="form-check-input form-check-input-primary">
-                        <label class="form-check-label" for="displayPermission">I grant permission to display this testimonial publicly.</label>
-                <!---         <input type="hidden" name="displayPermission" value="false"> --->
                     </div>
                 
                     <div class="text-end">

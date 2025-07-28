@@ -3,28 +3,7 @@
 <cfparam name="filter" default="all">
 
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-6">Manage Testimonials</h1>
-    
-    <div class="mb-6 flex justify-between items-center">
-        <div class="flex space-x-4">
-            <a href="#urlFor(action='index', params='filter=all')#" 
-               class="px-4 py-2 rounded #filter == 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'#">
-                All
-            </a>
-            <a href="#urlFor(action='index', params='filter=pending')#" 
-               class="px-4 py-2 rounded #filter == 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-200'#">
-                Pending
-            </a>
-            <a href="#urlFor(action='index', params='filter=approved')#" 
-               class="px-4 py-2 rounded #filter == 'approved' ? 'bg-blue-600 text-white' : 'bg-gray-200'#">
-                Approved
-            </a>
-            <a href="#urlFor(action='index', params='filter=featured')#" 
-               class="px-4 py-2 rounded #filter == 'featured' ? 'bg-blue-600 text-white' : 'bg-gray-200'#">
-                Featured
-            </a>
-        </div>
-    </div>
+    <h1 class="text-2xl font-bold mb-6">Testimonials</h1>
     
     <div class="bg-white shadow rounded-lg">
         <cfif testimonials.recordCount GT 0>
