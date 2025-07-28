@@ -68,7 +68,7 @@ jobs:
 
   build-and-deploy-to-docker-swarm:
     runs-on: [self-hosted, Linux, pai]
-#    needs: test  # This ensures deployment only runs after tests pass
+    needs: test  # This ensures deployment only runs after tests pass
     if: always()  #This ensures deployment runs even if the tests fail
     steps:
       - name: Checkout Repository
