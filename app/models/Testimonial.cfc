@@ -19,7 +19,7 @@ component extends="app.Models.Model" {
 
         // === Rating & Approval ===
         property(name="rating", column="rating", dataType="integer", label="Rating", defaultValue=0);
-        property(name="displayPermission", column="display_permission", dataType="boolean", label="Display on Website", defaultValue=false);
+        property(name="displayPermission", column="display_permission", dataType="boolean", label="Display on Website", defaultValue=true);
         property(name="isFeatured", column="is_featured", dataType="boolean", label="Mark as Featured", defaultValue=false);
         property(name="isApproved", column="is_approved", dataType="boolean", label="Approval Status", defaultValue=false);
         property(name="status", column="status", dataType="string", label="Moderation Status", defaultValue="Pending");

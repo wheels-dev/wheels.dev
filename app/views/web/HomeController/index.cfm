@@ -29,8 +29,19 @@
             </div>
         </div>
         <div class="row justify-content-center align-items-center mt-5 gy-3 text-center gx-sm-5">
-            <div class="col-md-auto">
-            </div>
+            <cfif testimonials.recordCount GT 0>
+                <cfoutput query="testimonials">
+                    <cfif len(trim(testimonials.logoPath)) AND testimonials.logoPath NEQ "testi.png">
+                        <div class="col-md-auto">
+                            <img src="/img/#testimonials.logoPath#" 
+                                 alt="#encodeForHtml(testimonials.companyName)#" 
+                                 class="img-fluid" 
+                                 style="max-height: 60px; max-width: 150px; object-fit: contain; filter: grayscale(100%); opacity: 0.7;"
+                                 title="#encodeForHtml(testimonials.companyName)#">
+                        </div>
+                    </cfif>
+                </cfoutput>
+            </cfif>
         </div>
     </div>
 
@@ -212,3 +223,144 @@
         </cfif>
     </cfif>
 </main>
+
+    <script>
+        function initUserTable() {
+            if (window.jQuery && $.fn.DataTable) {
+                if ($.fn.DataTable.isDataTable('#userTable')) {
+                    $('#userTable').DataTable().destroy();
+                }
+                window.userTableInstance = $('#userTable').DataTable({
+                    columnDefs: [
+                        { targets: [6,7], orderable: false }
+                    ]
+                });
+                window.userTableInstance.on('draw', function() {
+                    if (window.htmx) htmx.process(document.body);
+                });
+            }
+        }
+        document.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.target && evt.target.id === 'users-container') {
+                initUserTable();
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            initUserTable();
+        });
+    </script>
+
+    <style>
+        .logo-swiper-container {
+            width: 100%;
+            padding: 20px 0;
+        }
+
+        .logoSwiper {
+            width: 100%;
+            height: 100px;
+        }
+
+        .logo-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .logo-image {
+            max-height: 60px;
+            max-width: 150px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .logo-image:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Swiper pagination styling */
+        .logoSwiper .swiper-pagination {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .logoSwiper .swiper-pagination-bullet {
+            width: 10px;
+            height: 10px;
+            background-color: #ccc;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .logoSwiper .swiper-pagination-bullet-active {
+            background-color: #007bff;
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .logoSwiper {
+                height: 80px;
+            }
+            
+            .logo-image {
+                max-height: 50px;
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logoSwiper {
+                height: 70px;
+            }
+            
+            .logo-image {
+                max-height: 40px;
+                max-width: 100px;
+            }
+        }
+    </style>
+
+    <script>
+        // Initialize Swiper logo slider
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoSwiper = new Swiper('.logoSwiper', {
+                slidesPerView: 1,
+                spaceBetween: 30,
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 4,
+                        spaceBetween: 40,
+                    },
+                    1200: {
+                        slidesPerView: 5,
+                        spaceBetween: 50,
+                    }
+                }
+            });
+        });
+    </script>

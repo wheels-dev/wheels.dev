@@ -49,7 +49,7 @@
               <cfif arrayLen(release.assets)>
                 <div class="pt-3">
                   <cfloop array="#release.assets#" index="asset">
-                    <a href="#asset.browser_download_url#" class="btn btn-sm btn-outline-primary me-2" target="_blank">
+                    <a href="#asset.browser_download_url#" class="btn btn-sm btn-outline-danger me-2" target="_blank">
                       Download #asset.name#
                     </a>
                   </cfloop>
