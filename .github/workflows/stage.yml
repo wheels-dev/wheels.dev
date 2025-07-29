@@ -41,6 +41,7 @@ jobs:
       - name: Run Tests via TestBox with retries
         id: Run-Tests-via-TestBox
         run: |
+          docker ps -a --filter "name=wheels_"
           # Define all variables here
           TEST_URL="http://localhost:60151/testbox?format=json&only=failure,error"
           RESULT_FILE="test_results.json"
