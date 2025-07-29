@@ -30,7 +30,8 @@ jobs:
       - name: Start Test Environment
         id: Start-Test-Environment
         run: |
-          docker compose -f docker-compose.yml up -d --build
+          docker compose build --no-cache
+          docker compose up -d
           
       - name: Wait for Application to Start
         id: Wait-For-Application
