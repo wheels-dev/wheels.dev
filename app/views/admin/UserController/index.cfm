@@ -19,6 +19,7 @@
                         <th>Email</th>
                         <th>Status</th>
                         <th>Role</th>
+                        <th>Lock Status</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -27,6 +28,8 @@
                         for (var i = 1; i <= users.recordCount; i++) {
                             // Determine the status text based on the value of users.status[i]
                             var statusText = (users.status[i] == 1) ? "Active" : "Inactive";
+                            // Check if user is locked
+                            var isLocked = model("LoginAttempt").isUserLocked(users.email[i]);
                             if(users.id[i] neq "#session.userId#"){
                                 writeOutput('<tr> <td>' & i & '</td>');
                                 writeOutput('<td>' & users.firstname[i] & '</td>');
@@ -34,22 +37,17 @@
                                 writeOutput('<td>' & users.email[i] & '</td>');
                                 writeOutput('<td>' & statusText & '</td>'); // Show "Active" or "Inactive"
                                 writeOutput('<td>' & users.name[i] & '</td>');
-    
-                                writeOutput('<td>
-                                    <div class="dropdown">
+                                writeOutput('<td>' & (isLocked ? '<span class="badge bg-danger">Locked</span>' : '<span class="badge bg-success">Unlocked</span>') & '</td>');
+                                writeOutput('<td><div class="dropdown">
                                         <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
                                             ...
                                         </div>
                                         <ul class="dropdown-menu">
-                                            <li>
-                                                <a hx-get="/admin/user/edit/#users.id[i]#" hx-target="body" hx-trigger="click" hx-swap="innerHTML" class="dropdown-item cursor-pointer text-success fs-16">Edit</a>
-                                            </li>
-                                            <li>
-                                                <a hx-get="/admin/user/delete/#users.id[i]#" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" hx-confirm="Are you sure you want to delete this user?" class="dropdown-item cursor-pointer text-danger fs-16"">Delete</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>');
+                                            <li><a hx-get="/admin/user/edit/#users.id[i]#" hx-target="body" hx-trigger="click" hx-swap="innerHTML" class="dropdown-item cursor-pointer text-success fs-16">Edit</a></li><li><a hx-get="/admin/user/delete/#users.id[i]#" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" hx-confirm="Are you sure you want to delete this user?" class="dropdown-item cursor-pointer text-danger fs-16"">Delete</a></li>');
+                                if (isLocked) {
+                                    writeOutput('<li><a href="/admin/user/unlockUser/#users.id[i]#" class="dropdown-item text-warning fs-16">Unlock</a></li>');
+                                }
+                                writeOutput('</ul></div></td>');
                             }
                         }
                     </cfscript>

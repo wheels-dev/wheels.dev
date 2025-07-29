@@ -76,17 +76,17 @@
                 <div class="form-floating">
                     <input name="teamSignature" type="text" placeholder="Enter team signature" class="form-control fs-18" id="teamSignature"
                     aria-describedby="welcomeMessageHelp" minlength="3" maxlength="30" value="#email.teamSignature#">
-                    <label for="teamSignature" class="form-label fs-18 fw-medium">Team signatre</label>
+                    <label for="teamSignature" class="form-label fs-18 fw-medium">Team signature</label>
                     <div class="invalid-feedback">Team signature must be between 3 and 30 characters.</div>
                 </div>
             </div>
             <div class="col-12 gy-6">
                 <div class="row g-3 justify-content-end">
                     <div class="col-auto">
-                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
+                        <a hx-get="#urlFor(route="adminemail-templates")#" hx-target="body" hx-push-url="true" class="btn btn-dark px-sm-5 fs-14">Cancel</a>
                     </div>
                     <div class="col-auto">
-                        <a hx-get="#urlFor(route="adminemail-templates")#" hx-target="body" hx-push-url="true" class="btn btn-dark px-sm-5 fs-14">Cancel</a>
+                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
                     </div>
                 </div>
             </div>

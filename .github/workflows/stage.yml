@@ -1,19 +1,80 @@
 name: Wheels.dev
-
 on:
   push:
     branches:
       - develop
 
 jobs:
-  build-and-deploy-to-docker-swarm:
+  test:
     runs-on: [self-hosted, Linux, pai]
-
     steps:
       - name: Checkout Repository
         id: Checkout-Repository
         uses: actions/checkout@v4
+        
+      - name: Create Test Environment Files
+        id: Create-Test-Environment-Files
+        run: |
+          cp ./deploy/tests/.env ./
+          cp ./deploy/stage/server.json ./
+          cp ./deploy/tests/docker-compose.yml ./docker-compose.yml
+          cp ./deploy/tests/dockerfile ./dockerfile
+          cp ./deploy/tests/dockerfile_db ./dockerfile_db
+          cp ./deploy/tests/init-db.sh ./init-db.sh
+          
+      - name: Install Dependencies
+        id: Install-Dependencies
+        run: |
+          box install
+          
+      - name: Start Test Environment
+        id: Start-Test-Environment
+        run: |
+          docker compose -f docker-compose.yml up -d --build
+          
+      - name: Wait for Application to Start
+        id: Wait-For-Application
+        run: |
+          echo "Waiting for application to be ready..."
+          sleep 60  # Give the application time to start
+          
+      - name: Run Tests via TestBox
+        id: Run-Tests-via-TestBox
+        run: |
+          test_url="localhost:60151/testbox?format=json&only=failure,error"
+          echo "Running tests at: $test_url"
+          
+          # Make curl request and capture both response and HTTP status code
+          http_code=$(curl -s -o test_results.json -w "%{http_code}" "$test_url")
+          
+          echo "HTTP Status Code: $http_code"
+          echo "Test Results:"
+          cat test_results.json
+          
+          # Check if HTTP status code is 200
+          if [ "$http_code" = "200" ]; then
+            echo "✅ Tests completed successfully (HTTP 200)"
+          else
+            echo "❌ Tests failed with HTTP status code: $http_code"
+            exit 1
+          fi
+          
+      - name: Cleanup Test Containers
+        id: Cleanup-Test-Containers
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml down -v --remove-orphans || true
+          rm -f test_results.json || true
 
+  build-and-deploy-to-docker-swarm:
+    runs-on: [self-hosted, Linux, pai]
+    needs: test  # This ensures deployment only runs after tests pass
+    if: always()  #This ensures deployment runs even if the tests fail
+    steps:
+      - name: Checkout Repository
+        id: Checkout-Repository
+        uses: actions/checkout@v4
+        
       - name: Create Environment Files
         id: Create-Environment-Files
         run: |
@@ -21,40 +82,35 @@ jobs:
           cp ./deploy/stage/server.json ./
           cp ./deploy/stage/docker-compose.yml ./
           cp ./deploy/stage/dockerfile ./
-
+          
       - name: Install Dependencies
         id: Install-Dependencies
         run: |
           box install
-
+          
       - name: Login to Docker Registry
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login "${{ secrets.DOCKER_HUB_IP }}":"${{ secrets.DOCKER_HUB_PORT}}" -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-
+        
       - name: Push Docker Image
         id: Push-Docker-Image
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage .
           docker push ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
-
+          
       - name: Run container and check health
         id: Run-Container-Health-Test
         run: |
           IMAGE=${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT }}/wheels-dev-stage
           CONTAINER_NAME=wheels-dev-stage-test
-
           echo "Running test container from image: $IMAGE"
           docker run -d --name $CONTAINER_NAME $IMAGE
-
           echo "Waiting for container to become healthy..."
-
           TIMEOUT=60
           INTERVAL=5
           elapsed=0
-
           while [ $elapsed -lt $TIMEOUT ]; do
             health=$(docker inspect -f '{{.State.Health.Status}}' $CONTAINER_NAME 2>/dev/null || echo "no-health")
             echo "Health status: $health"
-
             if [ "$health" = "healthy" ]; then
               echo "✅ Container is healthy."
               docker rm -f $CONTAINER_NAME
@@ -69,18 +125,15 @@ jobs:
               docker rm -f $CONTAINER_NAME || true
               exit 1
             fi
-
             sleep $INTERVAL
             elapsed=$((elapsed + INTERVAL))
           done
-
           echo "❌ Container health status stuck at 'starting' for more than $TIMEOUT seconds."
           docker logs $CONTAINER_NAME || true
           docker exec $CONTAINER_NAME cat /usr/local/lib/CommandBox/server/serverHome/lucee-6.2.1.122/WEB-INF/lucee-server/context/logs/application.log || true
           docker rm -f $CONTAINER_NAME || true
           exit 1
-
-
+          
       - name: Deploy to Docker Swarm
         id: Deploy-to-Docker-Swarm
         run: |
