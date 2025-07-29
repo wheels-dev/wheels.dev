@@ -37,7 +37,7 @@ jobs:
         id: Wait-For-Application
         run: |
           echo "Waiting for application to be ready..."
-          sleep 90  # Give the application time to start
+          sleep 120  # Give the application time to start
           
       - name: Run Tests via TestBox with retries
         id: Run-Tests-via-TestBox
