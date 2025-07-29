@@ -37,12 +37,13 @@ jobs:
         id: Wait-For-Application
         run: |
           echo "Waiting for application to be ready..."
-          sleep 120  # Give the application time to start
+          sleep 180  # Give the application time to start
           
       - name: Run Tests via TestBox with retries
         id: Run-Tests-via-TestBox
         run: |
           docker ps -a --filter "name=wheels_"
+          docker logs wheels_app
           # Define all variables here
           TEST_URL="http://localhost:60151/testbox?format=json&only=failure,error"
           RESULT_FILE="test_results.json"
