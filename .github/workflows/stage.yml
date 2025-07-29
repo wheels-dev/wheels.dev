@@ -53,7 +53,7 @@ jobs:
             RETRY_COUNT=$((RETRY_COUNT + 1))
             echo "Test attempt ${RETRY_COUNT} of ${MAX_RETRIES}..."
       
-            http_code=$(curl -s -o test_results.json -w "%{http_code}" "$test_url" || echo "000")
+            http_code=$(curl -s -o test_results.json -w "%{http_code}" "$test_url")
       
             echo "Attempt ${RETRY_COUNT}: Received HTTP code ${HTTP_CODE}"
 
