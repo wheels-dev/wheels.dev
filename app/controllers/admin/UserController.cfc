@@ -29,7 +29,7 @@ component extends="app.Controllers.Controller" {
     }
     
     // add or edit user
-    function adUser() {
+    function addUser() {
         param name="id" default=0;
         user;
         if(id > 0) {
@@ -47,7 +47,7 @@ component extends="app.Controllers.Controller" {
         try {
             var message = saveUser(params);
 
-            redirectTo(route="user", success="#message#");
+            redirectTo(route="adminUser", success="#message#");
         } catch (any e) {
             // Handle error
             redirectTo(action="error", error="Failed to save user.");
