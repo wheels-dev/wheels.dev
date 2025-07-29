@@ -30,7 +30,7 @@ component extends="app.Controllers.Controller" {
         // Load featured testimonials for the homepage
         testimonials = model("Testimonial").getApprovedTestimonials(
             onlyFeatured = true,
-            perPage = 3
+            perPage = 10
         );
         settings = model("Setting").findAll();
         blogs = model('Blog').getTenLatest(); // Get blog list

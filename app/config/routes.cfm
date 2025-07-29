@@ -163,13 +163,14 @@
 			.get(name = "load-role", pattern = "loadRole", to = "rolesController##loadRoles")
 			
 			.get(name = "user-profile", pattern = "user/profile", to = "UserController##profile")
-			.get(name = "user", pattern = "user", to = "UserController##Index")
+			.get(name = "user", pattern = "user", to = "UserController##index")
 			.get(name = "loadUsers", pattern = "user/list", to = "UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "UserController##loadRoles")
 			.get(name = "user-add", pattern = "user/add", to = "UserController##addUser")
 			.get(name = "user-add", pattern = "user/edit/[id]", to = "UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "UserController##store")
 			.get(name = "user-delete", pattern= "user/delete/[id]", to="UserController##delete")
+			.get(name = "user-unlock", pattern = "user/unlockUser/[userId]", to = "UserController##unlockUser")
 
 			.get(name = "user-changePassword", pattern = "user/change-password", to = "UserController##changePassword")
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "UserController##updatePassword")

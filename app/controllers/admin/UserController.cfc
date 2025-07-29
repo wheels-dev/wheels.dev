@@ -2,9 +2,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess,unlockUser", params="key", paramsTypes="integer", handler="index");
         usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
-        filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
+        filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic,unlockUser");
         filters(through="checkUserAccess", only="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
         filters(through="checkRoleAccess", only="index,addUser,delete");
     }
@@ -29,7 +29,7 @@ component extends="app.Controllers.Controller" {
     }
     
     // add or edit user
-    function adUser() {
+    function addUser() {
         param name="id" default=0;
         user;
         if(id > 0) {
@@ -47,7 +47,7 @@ component extends="app.Controllers.Controller" {
         try {
             var message = saveUser(params);
 
-            redirectTo(route="user", success="#message#");
+            redirectTo(route="adminUser", success="#message#");
         } catch (any e) {
             // Handle error
             redirectTo(action="error", error="Failed to save user.");
@@ -354,5 +354,24 @@ component extends="app.Controllers.Controller" {
             success = false,
             message = "User not found"
         };
+    }
+
+    /**
+     * Unlock a locked user by clearing their failed login attempts
+     */
+    function unlockUser() {
+        if (structKeyExists(params, "userId") && params.userId <= 0) {
+            flashInsert(error = "Invalid user ID.");
+            redirectTo(action="index");
+            return;
+        }
+        var user = model("User").findByKey(params.userId);
+        if (!isNull(user)) {
+            model("LoginAttempt").clearFailedAttempts(user.email);
+            flashInsert(success = "User #user.email# has been unlocked.");
+        } else {
+            flashInsert(error = "User not found.");
+        }
+        redirectTo(action="index");
     }
 }
