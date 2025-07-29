@@ -57,8 +57,6 @@ jobs:
 
             echo "Attempt ${RETRY_COUNT}: Received HTTP code ${HTTP_CODE}"
 
-            cat "$RESULT_FILE"
-
             if [ "$HTTP_CODE" != "200" ] && [ "$RETRY_COUNT" -lt "$MAX_RETRIES" ]; then
               echo "Waiting 10 seconds before retry..."
               sleep 10
