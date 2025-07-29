@@ -53,12 +53,11 @@ jobs:
             RETRY_COUNT=$((RETRY_COUNT + 1))
             echo "Test attempt ${RETRY_COUNT} of ${MAX_RETRIES}..."
       
-            HTTP_CODE=$(curl -s -o "$RESULT_FILE" \
-              --max-time 900 \
-              --write-out "%{http_code}" \
-              "$TEST_URL" || echo "000")
+            http_code=$(curl -s -o "$RESULT_FILE" -w "%{http_code}" "$test_url" || echo "000")
       
             echo "Attempt ${RETRY_COUNT}: Received HTTP code ${HTTP_CODE}"
+
+            cat "$RESULT_FILE"
       
             if [ "$HTTP_CODE" != "200" ] && [ "$RETRY_COUNT" -lt "$MAX_RETRIES" ]; then
               echo "Waiting 10 seconds before retry..."
