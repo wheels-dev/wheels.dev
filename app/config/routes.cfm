@@ -163,7 +163,7 @@
 			.get(name = "load-role", pattern = "loadRole", to = "rolesController##loadRoles")
 			
 			.get(name = "user-profile", pattern = "user/profile", to = "UserController##profile")
-			.get(name = "user", pattern = "user", to = "UserController##Index")
+			.get(name = "user", pattern = "user", to = "UserController##index")
 			.get(name = "loadUsers", pattern = "user/list", to = "UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "UserController##loadRoles")
 			.get(name = "user-add", pattern = "user/add", to = "UserController##addUser")
