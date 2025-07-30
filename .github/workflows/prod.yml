@@ -106,7 +106,7 @@ jobs:
 
   build-and-deploy-to-docker-swarm:
     runs-on: [self-hosted, Linux, pai]
-
+    needs: test #ensures that this job runs after the tests are successful
     steps:
       - name: Checkout Repository
         id: Checkout-Repository
