@@ -6,6 +6,104 @@ on:
       - main
 
 jobs:
+  test:
+    runs-on: [self-hosted, Linux, pai]
+    steps:
+      - name: Checkout Repository
+        id: Checkout-Repository
+        uses: actions/checkout@v4
+        
+      - name: Create Test Environment Files
+        id: Create-Test-Environment-Files
+        run: |
+          cp ./deploy/tests/.env ./
+          cp ./deploy/stage/server.json ./
+          cp ./deploy/tests/docker-compose.yml ./docker-compose.yml
+          cp ./deploy/tests/dockerfile ./dockerfile
+          cp ./deploy/tests/dockerfile_db ./dockerfile_db
+          cp ./deploy/tests/init-db.sh ./init-db.sh
+          
+      - name: Install Dependencies
+        id: Install-Dependencies
+        run: |
+          box install
+          
+      - name: Start Test Environment
+        id: Start-Test-Environment
+        run: |
+          docker compose build --no-cache
+          docker compose up -d
+          
+      - name: Wait for Application to Start
+        id: Wait-For-Application
+        run: |
+          echo "Waiting for application to be ready..."
+          sleep 60  # Give the application time to start
+          
+      - name: Run Tests via TestBox with retries
+        id: Run-Tests-via-TestBox
+        run: |
+          # Define all variables here
+          TEST_URL="http://localhost:60151/testbox?format=json&only=failure,error"
+          RESULT_FILE="test_results.json"
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+          HTTP_CODE="000"
+
+          # Retry loop until HTTP 200 or max retries reached
+          while [ "$RETRY_COUNT" -lt "$MAX_RETRIES" ] && [ "$HTTP_CODE" != "200" ]; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            echo "Test attempt ${RETRY_COUNT} of ${MAX_RETRIES}..."
+
+            HTTP_CODE=$(curl -s -o "$RESULT_FILE" -w "%{http_code}" "$TEST_URL" || echo "000")
+
+            echo "Attempt ${RETRY_COUNT}: Received HTTP code ${HTTP_CODE}"
+
+            if [ "$HTTP_CODE" != "200" ] && [ "$RETRY_COUNT" -lt "$MAX_RETRIES" ]; then
+              echo "Waiting 10 seconds before retry..."
+              sleep 10
+            fi
+          done
+
+          # Show test output (if exists)
+          if [ -f "$RESULT_FILE" ]; then
+            echo "Response content:"
+            cat "$RESULT_FILE"
+          fi
+
+          # Check final HTTP code
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Tests passed with HTTP 200"
+            exit 0
+          else
+            echo "❌ Tests failed after $RETRY_COUNT attempts with code: $HTTP_CODE"
+            exit 1
+          fi
+
+      
+          # Show test output (if exists)
+          if [ -f test_results.json ]; then
+            echo "Response content:"
+            cat test_results.json
+          fi
+      
+          # Check final HTTP code
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Tests passed with HTTP 200"
+            exit 0
+          else
+            echo "❌ Tests failed after $RETRY_COUNT attempts with code: $HTTP_CODE"
+            exit 1
+          fi
+          
+      
+      - name: Cleanup Test Containers
+        id: Cleanup-Test-Containers
+        if: always()
+        run: |
+          docker compose -f docker-compose.yml down -v --remove-orphans || true
+          rm -f test_results.json || true
+
   build-and-deploy-to-docker-swarm:
     runs-on: [self-hosted, Linux, pai]
 
