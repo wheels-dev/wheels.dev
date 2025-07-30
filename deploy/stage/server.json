@@ -13,6 +13,7 @@
             "config":"public/urlrewrite.xml"
         }
     },
+    "openbrowser":"false",
     "app":{
         "cfengine":"lucee@6"
     }
