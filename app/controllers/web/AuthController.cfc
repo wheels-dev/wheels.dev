@@ -38,7 +38,7 @@ component extends="app.Controllers.Controller" {
                 "success" = false,
                 "message" = "Email and password are required."
             };
-            renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
+            renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
             return;
         }
         try {
@@ -66,10 +66,70 @@ component extends="app.Controllers.Controller" {
                     "success" = false,
                     "message" = "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account."
                 };
-                renderWith(data=data, hideDebugInformation=true, status=423, layout='/responseLayout');
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
                 return;
             }
-            // Validate credentials
+            // Check if user exists first (regardless of status)
+            var existingUser = model("User").findOne(where="email='#params.email#'", include="Role");
+            
+            // If user doesn't exist, send registration invitation
+            if (!isObject(existingUser)) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "Non-existent email attempted login - sending registration email",
+                    details = {
+                        "email": params.email,
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
+                
+                // Send registration invitation email
+                if (sendRegistrationInvitationEmail(params.email)) {
+                    data = {
+                        "success" = false,
+                        "message" = "No account found with this email. We've sent you a registration invitation. Please check your email to create your account."
+                    };
+                } else {
+                    data = {
+                        "success" = false,
+                        "message" = "No account found with this email. Please register to create an account."
+                    };
+                }
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+            
+            // If user exists but is inactive, send verification email
+            if (existingUser.status == false) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "INFO",
+                    message = "Inactive account attempted login - sending verification email",
+                    details = {
+                        "email": params.email,
+                        "user_id": existingUser.id,
+                        "ip_address": cgi.REMOTE_ADDR
+                    }
+                );
+                
+                // Send verification email for inactive account
+                if (sendVerificationEmailForInactiveAccount(existingUser)) {
+                    data = {
+                        "success" = false,
+                        "message" = "Your account is not verified. We've sent you a verification email. Please check your email and verify your account before logging in."
+                    };
+                } else {
+                    data = {
+                        "success" = false,
+                        "message" = "Your account is not verified. Please check your email for verification instructions or contact support."
+                    };
+                }
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+            
+            // Now validate credentials for active user
             var user = false;
             try {
                 user = validateCredentials(params.email, params.password);
@@ -152,12 +212,12 @@ component extends="app.Controllers.Controller" {
                         "remaining_attempts": remainingAttempts
                     }
                 );
-                // Return JSON error response with 401 status code
+                // Return JSON error response with 400 status code
                 data={
                     "success" = false,
                     "message" = "Invalid login credentials. " & (remainingAttempts > 0 ? "You have #remainingAttempts# attempt(s) remaining." : "Your account will be locked after the next failed attempt.")
                 };
-                renderWith(data=data, hideDebugInformation=true, status=401, layout='/responseLayout');
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
                 return;
             }
         } catch (any e) {
@@ -632,6 +692,136 @@ component extends="app.Controllers.Controller" {
             return true;
         }
         return false;
+    }
+
+    private function sendRegistrationInvitationEmail(required string email) {
+        if (application.env.test_case EQ 'true') {
+            // Skip email sending in test mode
+            return true;
+        }
+        
+        try {
+            // Use the existing "Register Your Account" template
+            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Register Your Account")#'");
+            if (emaildata.recordCount == 0) {
+                // Fallback to sign up template if registration template doesn't exist
+                emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
+            }
+            
+            var registerUrl = urlFor(action="register", onlyPath=false);
+            var emailparams = {
+                "name" = "there",
+                "buttonTitle" = emaildata.buttonTitle,
+                "content" = emaildata.message,
+                "welcomeMessage" = emaildata.welcomeMessage,
+                "URl" = registerUrl,
+                "footerNote" = emaildata.footerNote,
+                "footerGreetings" = emaildata.footerGreating,
+                "closingRemark" = emaildata.closingRemark,
+                "teamSignature" = emaildata.teamSignature
+            };
+            
+            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#email#", 
+                from = "#application.env.mail_from#", 
+                subject = "#emaildata.subject#", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
+                writeOutput(emailContent);
+            }
+            
+            return true;
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Failed to send registration invitation email",
+                details = {
+                    "email": email,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            return false;
+        }
+    }
+
+    private function sendVerificationEmailForInactiveAccount(required User user) {
+        if (application.env.test_case EQ 'true') {
+            // Skip email sending in test mode
+            return true;
+        }
+        
+        try {
+            // Check if user already has a verification token
+            var existingToken = model("UserToken").findOne(where="user_id='#user.id#' AND status='0'");
+            
+            if (!isObject(existingToken)) {
+                // Generate a new verification token
+                var verificationToken = Hash(createUUID());
+                var newToken = model("UserToken").new();
+                newToken.token = verificationToken;
+                newToken.user_id = user.id;
+                newToken.status = 0; // Not verified
+                newToken.save();
+            } else {
+                var verificationToken = existingToken.token;
+            }
+            
+            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
+            var verifyUrl = urlFor(action="verify", onlyPath=false);
+            verifyUrl = verifyUrl & "?token=" & verificationToken;
+            
+            var emailparams = {
+                "name" = user.fullname,
+                "buttonTitle" = emaildata.buttonTitle,
+                "content" = emaildata.message,
+                "welcomeMessage" = emaildata.welcomeMessage,
+                "URl" = verifyUrl,
+                "footerNote" = emaildata.footerNote,
+                "footerGreetings" = emaildata.footerGreating,
+                "closingRemark" = emaildata.closingRemark,
+                "teamSignature" = emaildata.teamSignature
+            };
+            
+            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+            
+            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+            cfmail( 
+                to = "#user.email#", 
+                from = "#application.env.mail_from#", 
+                subject = "#emaildata.subject#", 
+                server = "#application.env.smtp_host#", 
+                port = "#application.env.smtp_port#", 
+                username = "#application.env.smtp_username#", 
+                password = "#application.env.smtp_password#", 
+                type = "html"
+            ) { 
+                writeOutput(emailContent);
+            }
+            
+            return true;
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.auth",
+                level = "ERROR",
+                message = "Failed to send verification email for inactive account",
+                details = {
+                    "email": user.email,
+                    "user_id": user.id,
+                    "error_message": e.message,
+                    "error_detail": e.detail
+                }
+            );
+            return false;
+        }
     }
 
     private function verifyToken(required string token) {
