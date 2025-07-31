@@ -11,7 +11,8 @@
                     hx-swap="none"
                     hx-validate="true"
                     hx-encoding="multipart/form-data"
-                    hx-on="htmx:afterOnLoad: handleTestimonialResponse(event)">
+                    hx-on="htmx:afterOnLoad: handleTestimonialResponse(event)"
+                    onsubmit="if (this.checkValidity()) { this.querySelector('button[type=submit]').disabled = true; } else { event.preventDefault(); event.stopPropagation(); this.classList.add('was-validated'); }">
                 </cfoutput>
                     <div id="form-messages"></div>
                     <div class="text-end">
