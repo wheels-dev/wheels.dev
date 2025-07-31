@@ -20,8 +20,8 @@
                     </div>
 
                     <div class="d-flex flex-wrap justify-content-center gap-2 align-items-start">
-                        <button type="submit" class="bg--primary text-white px-3 py-2 rounded fs-14">Save</button>
                         <button type="button" class="bg--default text-dark px-3 py-2 rounded fs-14" onclick="history.back()">Cancel</button>
+                        <button type="submit" class="bg--primary text-white px-3 py-2 rounded fs-14">Save</button>
                     </div>
                 </form>
             </div>
