@@ -115,7 +115,7 @@
                 <p class="mb-4" style="font-size: 14px;">#email.footerGreeting#</p>
             </cfif>
             <div style="margin-top: 15px; text-align: center;">
-                <a href="https://guides.cfwheels.org/cfwheels-guides/introduction/readme" target="_blank" class="button-start"> Get Started </a>
+                <a href="https://wheels.dev/guides" target="_blank" class="button-start"> Get Started </a>
                 <a style="margin-left : 8px;" href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="button-download"> Download </a>
             </div>
             <cfif email.closingRemark neq "">

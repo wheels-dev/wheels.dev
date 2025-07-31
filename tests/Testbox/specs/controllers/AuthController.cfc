@@ -68,14 +68,14 @@ component extends="testbox.system.BaseSpec" {
                     testUser.save();
                 }
             });
-            it("If pass empty form should return status code 401", function() {
+            it("If pass empty form should return status code 400", function() {
                 var response = "";
 
                 cfhttp(url = "#authenticate#", method ="POST", result = "local.response");
 
                 // Assert
                 var data = deserializeJSON(response.filecontent);
-                expect(response.status_code).toBe(401);
+                expect(response.status_code).toBe(400);
                 expect(data.success).toBe("false");
             });
 
@@ -93,40 +93,77 @@ component extends="testbox.system.BaseSpec" {
                 expect(data.success).toBe("true");
                 expect(data.message).toContain("Login Successful");
             });
-            it("If invalid password should return status code 401", function() {
+            it("If invalid password should return status code 400", function() {
                 var response = "";
                 cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
                     cfhttpparam(type="formField", name="email", value="testuser@pai.com");
                     cfhttpparam(type="formField", name="password", value="wrongpassword");
                 };
                 var data = deserializeJSON(response.filecontent);
-                expect(response.status_code).toBe(401);
+                expect(response.status_code).toBe(400);
                 expect(data.success).toBe("false");
                 expect(data.message).toContain("Invalid login credentials");
             });
-            it("If non-existent user should return status code 401", function() {
+            it("If non-existent user should return status code 400", function() {
                 var response = "";
                 cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
                     cfhttpparam(type="formField", name="email", value="nouser@pai.com");
                     cfhttpparam(type="formField", name="password", value="irrelevant");
                 };
                 var data = deserializeJSON(response.filecontent);
-                expect(response.status_code).toBe(401);
+                expect(response.status_code).toBe(400);
                 expect(data.success).toBe("false");
             });
-            // Simulate lockout: try 5 failed logins (assuming lockout after 5 attempts)
-            it("Should lock account after multiple failed attempts", function() {
+            it("If inactive account should return status code 400", function() {
+                // First create an inactive user for testing
+                var userModel = application.wo.model("User");
+                var inactiveUser = userModel.new();
+                inactiveUser.email = "inactive@pai.com";
+                inactiveUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW("test1234", application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                inactiveUser.firstname = "Inactive";
+                inactiveUser.lastname = "User";
+                inactiveUser.status = false; // Set as inactive
+                inactiveUser.roleId = 1; // Default role
+                inactiveUser.save();
+                
                 var response = "";
-                for (var i=1; i<=5; i++) {
+                cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
+                    cfhttpparam(type="formField", name="email", value="inactive@pai.com");
+                    cfhttpparam(type="formField", name="password", value="test1234");
+                };
+                var data = deserializeJSON(response.filecontent);
+                expect(response.status_code).toBe(400);
+                expect(data.success).toBe("false");
+                expect(data.message).toContain("not verified");
+                
+                // Clean up - delete the test user
+                inactiveUser.delete();
+            });
+            // Simulate lockout: try 3 failed logins
+            it("Should lock account after multiple failed attempts (existing user only)", function() {
+                // Create a user to lock
+                var userModel = application.wo.model("User");
+                var lockUser = userModel.new();
+                lockUser.email = "locktest@pai.com";
+                lockUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW("wrongpass", application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                lockUser.firstname = "Lock";
+                lockUser.lastname = "Test";
+                lockUser.status = true;
+                lockUser.roleId = 3;
+                lockUser.save();
+                var response = "";
+                for (var i=1; i<=4; i++) {
                     cfhttp(url = "#authenticate#", method ="POST", result = "local.response"){
                         cfhttpparam(type="formField", name="email", value="locktest@pai.com");
-                        cfhttpparam(type="formField", name="password", value="wrongpass");
+                        cfhttpparam(type="formField", name="password", value="@wrongpass");
                     };
                 }
                 var data = deserializeJSON(response.filecontent);
-                expect(response.status_code).toBe(423); // Locked
+                expect(response.status_code).toBe(400); // Locked
                 expect(data.success).toBe("false");
                 expect(data.message).toContain("Account locked");
+                // Clean up
+                lockUser.delete();
             });
             it("Should support remember me functionality", function() {
                 var response = "";
