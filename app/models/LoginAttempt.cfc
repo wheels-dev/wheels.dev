@@ -48,8 +48,15 @@ component extends="app.Models.Model" {
         belongsTo(name="User", foreignKey="user_id");
     }
 
-    // Check if user is locked out
+    // Check if user is locked out (either by failed attempts or admin lock)
     public function isUserLocked(required string email) {
+        // First check if user is manually locked by admin
+        var user = model("User").findOne(where="email='#arguments.email#'");
+        if (!isNull(user) && user.locked) {
+            return true;
+        }
+        
+        // Then check for automatic lock due to failed attempts
         var attempts = findAll(
             where="email='#arguments.email#'"
         );

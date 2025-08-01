@@ -53,18 +53,28 @@ component extends="app.Controllers.Controller" {
             );
             // Check if user is locked out
             if (model("LoginAttempt").isUserLocked(params.email)) {
+                // Check if it's a manual lock by admin
+                var user = model("User").findOne(where="email='#params.email#'");
+                var isManuallyLocked = !isNull(user) && user.locked;
+                
                 model("Log").log(
                     category = "wheels.auth",
                     level = "WARN",
-                    message = "Account locked - too many failed attempts",
+                    message = "Account locked - " & (isManuallyLocked ? "manually locked by admin" : "too many failed attempts"),
                     details = {
                         "email": params.email,
-                        "ip_address": cgi.REMOTE_ADDR
+                        "ip_address": cgi.REMOTE_ADDR,
+                        "manual_lock": isManuallyLocked
                     }
                 );
+                
+                var lockMessage = isManuallyLocked 
+                    ? "Your account has been locked by an administrator. Please contact support for assistance."
+                    : "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account.";
+                
                 data = {
                     "success" = false,
-                    "message" = "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account."
+                    "message" = lockMessage
                 };
                 renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
                 return;
