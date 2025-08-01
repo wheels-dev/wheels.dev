@@ -3,8 +3,10 @@
     for (var i = 1; i <= users.recordCount; i++) {
         // Determine the status text based on the value of users.status[i]
         var statusText = (users.status[i] == 1) ? "Active" : "Inactive";
-        // Check if user is locked
+        // Check if user is locked (either by failed attempts or admin lock)
         var isLocked = model("LoginAttempt").isUserLocked(users.email[i]);
+        // Check if user is manually locked by admin (with fallback if column doesn't exist)
+        var isManuallyLocked = structKeyExists(users, "locked") ? users.locked[i] == 1 : false;
 
         writeOutput('<tr> <td>' & i & '</td>');
         writeOutput('<td>' & users.firstname[i] & '</td>');
@@ -26,8 +28,15 @@
                         <a href="admin/user/delete/#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
                     </li>
                     ');
-        if (isLocked) {
-            writeOutput('<li><a href="admin/user/unlockUser/#users.id[i]#" class="dropdown-item text-warning fs-16">Unlock</a></li>');
+        // Add toggle lock option
+        if (isManuallyLocked) {
+            writeOutput('<li><a href="admin/user/toggleLock/#obfuscateId(users.id[i])#" class="dropdown-item text-success fs-16">Unlock User</a></li>');
+        } else {
+            writeOutput('<li><a href="admin/user/toggleLock/#obfuscateId(users.id[i])#" class="dropdown-item text-warning fs-16">Lock User</a></li>');
+        }
+        // Add unlock option for failed attempts lock
+        if (isLocked && !isManuallyLocked) {
+            writeOutput('<li><a href="admin/user/unlockUser/#obfuscateId(users.id[i])#" class="dropdown-item text-info fs-16">Clear Failed Attempts</a></li>');
         }
         writeOutput('</ul></div></td>');
     }

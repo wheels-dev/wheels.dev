@@ -171,4 +171,44 @@ boolean function hasEditorAccess() {
 	return roleName == "editor" || roleName == "admin";
 }
 
+/**
+ * Obfuscate an ID for security (encode)
+ */
+string function obfuscateId(required numeric id) {
+	var salt = getSaltFromEnvironment();
+	var encoded = hash(arguments.id & salt, "SHA-256");
+	return left(encoded, 16); // Return first 16 characters for shorter URLs
+}
+
+/**
+ * Deobfuscate an ID (decode)
+ */
+numeric function deobfuscateId(required string obfuscatedId) {
+	var salt = getSaltFromEnvironment();
+	var users = model("User").findAll();
+	
+	for (var i = 1; i <= users.recordCount; i++) {
+		var encoded = hash(users.id[i] & salt, "SHA-256");
+		var checkId = left(encoded, 16);
+		if (checkId == arguments.obfuscatedId) {
+			return users.id[i];
+		}
+	}
+	
+	return 0; // Return 0 if not found
+}
+
+/**
+ * Get salt from environment variable with fallback
+ */
+private string function getSaltFromEnvironment() {
+	// Try to get from application.env first (from .env file)
+	if (structKeyExists(application, "env") && structKeyExists(application.env, "wheels_id_salt")) {
+		return application.env.wheels_id_salt;
+	}
+	
+	// Final fallback
+	return "wheels_dev_salt_2025";
+}
+
 </cfscript>
