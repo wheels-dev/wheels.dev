@@ -1,3 +1,27 @@
+<style>
+.email-check-spinner {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.valid-feedback {
+    color: #198754;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+.is-valid {
+    border-color: #198754 !important;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+</style>
+
 <main class="w-100 vh-100 position-relative">
     <div class="row w-100 g-0 h-100 m-lg-auto">
         <div class="col-lg-6 bg-white col-12">
@@ -86,8 +110,14 @@
                                         class="fs-14 flex-grow-1 outline-none bg-transparent input-autofill" id="email"
                                         name="email" required>
                                     <span class="input-icon" id="icon-email"></span>
+                                    <div class="email-check-spinner d-none">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                            <span class="visually-hidden">Checking email...</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="invalid-feedback px-3 py-1">Please enter a valid email address format (e.g., name@example.com).</div>
+                                <div class="invalid-feedback px-3 py-1" id="email-error">Please enter a valid email address format (e.g., name@example.com).</div>
+                                <div class="valid-feedback px-3 py-1 d-none" id="email-success">Email is available!</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -202,3 +232,6 @@
 
 <!-- Include Google reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<!-- Include registration form JavaScript -->
+<script src="/js/registration.js"></script>

@@ -146,7 +146,7 @@
                                     <cfif !len(trim(imgSrc))>
                                         <cfset imgSrc = "testi.png">
                                     </cfif>
-                                    <img src='/img/#imgSrc#' class="img-fluid" alt=encodeForHtml(testimonials.companyName) style="width: 330px; height: 290px;">
+                                    <img src='/img/#imgSrc#' class="img-fluid" alt=#encodeForHtml(testimonials.companyName)# style="width: 330px; height: 290px;">
                                 </div>
                                 <div class="col-lg-9 col-12">
                                     <div class="d-flex flex-column justify-content-between h-100">

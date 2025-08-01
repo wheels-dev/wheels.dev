@@ -403,12 +403,27 @@ component extends="app.Controllers.Controller" {
 
     function store() {
         try {
-            // Input validation
-            if (!structKeyExists(params, "firstname") || !len(trim(params.firstname))) {
+            // Input validation - handle both camelCase and lowercase field names
+            var firstname = "";
+            var lastname = "";
+            
+            if (structKeyExists(params, "firstName")) {
+                firstname = params.firstName;
+            } else if (structKeyExists(params, "firstname")) {
+                firstname = params.firstname;
+            }
+            
+            if (structKeyExists(params, "lastName")) {
+                lastname = params.lastName;
+            } else if (structKeyExists(params, "lastname")) {
+                lastname = params.lastname;
+            }
+            
+            if (!len(trim(firstname))) {
                 renderText("<p style='color:red;'>First name is required.</p>");
                 return;
             }
-            if (!structKeyExists(params, "lastname") || !len(trim(params.lastname))) {
+            if (!len(trim(lastname))) {
                 renderText("<p style='color:red;'>Last name is required.</p>");
                 return;
             }
@@ -439,7 +454,17 @@ component extends="app.Controllers.Controller" {
                     "email": params.email
                 }
             );
-            var message = saveUser(params);
+            
+            // Create user data structure with correct field names
+            var userData = {
+                firstname: firstname,
+                lastname: lastname,
+                email: params.email,
+                passwordHash: params.passwordHash,
+                newsletter: structKeyExists(params, "newsletter") ? params.newsletter : false
+            };
+            
+            var message = saveUser(userData);
             
             if(findNoCase('success', '#message#')) {
                 model("Log").log(
