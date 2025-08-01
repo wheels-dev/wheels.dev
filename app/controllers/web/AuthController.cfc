@@ -51,34 +51,6 @@ component extends="app.Controllers.Controller" {
                     "ip_address": cgi.REMOTE_ADDR
                 }
             );
-            // Check if user is locked out
-            if (model("LoginAttempt").isUserLocked(params.email)) {
-                // Check if it's a manual lock by admin
-                var user = model("User").findOne(where="email='#params.email#'");
-                var isManuallyLocked = !isNull(user) && user.locked;
-                
-                model("Log").log(
-                    category = "wheels.auth",
-                    level = "WARN",
-                    message = "Account locked - " & (isManuallyLocked ? "manually locked by admin" : "too many failed attempts"),
-                    details = {
-                        "email": params.email,
-                        "ip_address": cgi.REMOTE_ADDR,
-                        "manual_lock": isManuallyLocked
-                    }
-                );
-                
-                var lockMessage = isManuallyLocked 
-                    ? "Your account has been locked by an administrator. Please contact support for assistance."
-                    : "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account.";
-                
-                data = {
-                    "success" = false,
-                    "message" = lockMessage
-                };
-                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
-                return;
-            }
             // Check if user exists first (regardless of status)
             var existingUser = model("User").findOne(where="email='#params.email#'", include="Role");
             
@@ -106,6 +78,35 @@ component extends="app.Controllers.Controller" {
                         "message" = "No account found with this email. Please register to create an account."
                     };
                 }
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+
+            // Check if user is locked out
+            if (model("LoginAttempt").isUserLocked(params.email)) {
+                // Check if it's a manual lock by admin
+                var user = model("User").findOne(where="email='#params.email#'");
+                var isManuallyLocked = !isNull(user) && isStruct(user) && structKeyExists(user, "locked") && user.locked;
+                
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "WARN",
+                    message = "Account locked - " & (isManuallyLocked ? "manually locked by admin" : "too many failed attempts"),
+                    details = {
+                        "email": params.email,
+                        "ip_address": cgi.REMOTE_ADDR,
+                        "manual_lock": isManuallyLocked
+                    }
+                );
+                
+                var lockMessage = isManuallyLocked 
+                    ? "Your account has been locked by an administrator. Please contact support for assistance."
+                    : "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account.";
+                
+                data = {
+                    "success" = false,
+                    "message" = lockMessage
+                };
                 renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
                 return;
             }
