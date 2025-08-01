@@ -363,4 +363,22 @@
                 }
             });
         });
+        document.addEventListener("DOMContentLoaded", function () {
+            <cfif structKeyExists(session, "toastMessage")>
+                <cfscript>
+                    title = structKeyExists(session.toastMessage, "title") ? session.toastMessage.title : "";
+                    message = structKeyExists(session.toastMessage, "message") ? session.toastMessage.message : "";
+                    type = structKeyExists(session.toastMessage, "type") ? session.toastMessage.type : "";
+                    structDelete(session, "toastMessage");
+                </cfscript>
+                <cfoutput>
+                showNotificationOnce(
+                    "#encodeForJavaScript(title)#",
+                    "#encodeForJavaScript(message)#",
+                    "#encodeForJavaScript(type)#",
+                    4000
+                );
+                </cfoutput>
+            </cfif>
+        });
     </script>

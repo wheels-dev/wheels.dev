@@ -109,7 +109,8 @@
                         <button hx-get="/admin/user" hx-trigger="click" hx-swap="innerHTML" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</button>
                     </div>
                     <div class="col-auto">
-                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
+                        <cfset buttonText = (action eq "Edit") ? "Update" : "Save">
+                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">#buttonText#</button>
                     </div>
                 </div>
             </div>
