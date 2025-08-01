@@ -2,9 +2,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess,unlockUser", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess,unlockUser,toggleUserLock", params="key", paramsTypes="integer", handler="index");
         usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
-        filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic,unlockUser");
+        filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic,unlockUser,toggleUserLock");
         filters(through="checkUserAccess", only="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
         filters(through="checkRoleAccess", only="index,addUser,delete");
     }
@@ -31,7 +31,6 @@ component extends="app.Controllers.Controller" {
     // add or edit user
     function addUser() {
         param name="id" default=0;
-        user;
         if(id > 0) {
             user = findById(params.id);
         }else {
@@ -56,8 +55,16 @@ component extends="app.Controllers.Controller" {
 
     // Function to delete a user
     function delete() {
-        try {
-            var message = softDelete(params.id);
+        try {            
+            // Handle obfuscated ID if provided
+            if (structKeyExists(params, "obfuscatedId") && len(trim(params.obfuscatedId))) {
+                var realId = deobfuscateId(params.obfuscatedId);
+                if (realId > 0) {
+                    userId = realId;
+                }
+            }
+            
+            var message = softDelete(userId);
             renderText('');
             return;
         } catch (any e) {
@@ -256,6 +263,7 @@ component extends="app.Controllers.Controller" {
                     user.email = userData.email;
                     user.status = userData.status;
                     user.roleid = userData.roleid;
+                    user.locked = userData.locked;
                     user.updatedAt = now();
                     if (structKeyExists(userData, "profilePicture") && isDefined("userData.profilePicture")) {
                         user.profilePicture = userData.profilePicture
@@ -278,6 +286,7 @@ component extends="app.Controllers.Controller" {
                     newUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
                     newUser.status = application.wo.SetActive();
                     newUser.roleid = userData.roleid;
+                    newUser.locked = userData.locked;
                     newUser.createdAt = now();
                     newUser.updatedAt = now();
                     newUser.save();
@@ -326,17 +335,8 @@ component extends="app.Controllers.Controller" {
         var user = model("User").findByKey(arguments.id);
         
         if (!isNull(user)) {
-            user.deletedAt = createDateTime(
-                year(now()),
-                month(now()),
-                day(now()),
-                hour(now()),
-                minute(now()),
-                second(now())
-            );
-            user.status = false;
             
-            if (user.save()) {
+            if (user.delete()) {
                 model("LoginAttempt").deleteAll(where="email = '#user.email#'");
                 return {
                     success = true,
@@ -346,7 +346,7 @@ component extends="app.Controllers.Controller" {
                 return {
                     success = false,
                     errors = user.allErrors(),
-                    message = "Failed to soft delete user"
+                    message = "Failed to delete user"
                 };
             }
         }
@@ -361,15 +361,57 @@ component extends="app.Controllers.Controller" {
      * Unlock a locked user by clearing their failed login attempts
      */
     function unlockUser() {
-        if (structKeyExists(params, "userId") && params.userId <= 0) {
+        
+        // Handle obfuscated ID if provided
+        if (structKeyExists(params, "obfuscatedId") && len(trim(params.obfuscatedId))) {
+            var realId = deobfuscateId(params.obfuscatedId);
+            if (realId > 0) {
+                userId = realId;
+            }
+        }
+        
+        if (userId <= 0) {
             flashInsert(error = "Invalid user ID.");
             redirectTo(action="index");
             return;
         }
-        var user = model("User").findByKey(params.userId);
+        var user = model("User").findByKey(userId);
         if (!isNull(user)) {
             model("LoginAttempt").clearFailedAttempts(user.email);
             flashInsert(success = "User #user.email# has been unlocked.");
+        } else {
+            flashInsert(error = "User not found.");
+        }
+        redirectTo(action="index");
+    }
+
+    /**
+     * Toggle user lock status (manual lock/unlock by admin)
+     */
+    function toggleUserLock() {        
+        // Handle obfuscated ID if provided
+        if (structKeyExists(params, "obfuscatedId") && len(trim(params.obfuscatedId))) {
+            var realId = deobfuscateId(params.obfuscatedId);
+            if (realId > 0) {
+                userId = realId;
+            }
+        }
+        
+        if (userId <= 0) {
+            flashInsert(error = "Invalid user ID.");
+            redirectTo(action="index");
+            return;
+        }
+        var user = model("User").findByKey(userId);
+        if (!isNull(user)) {
+            // Toggle the locked status
+            user.locked = !user.locked;
+            if (user.save()) {
+                var action = user.locked ? "locked" : "unlocked";
+                flashInsert(success = "User #user.email# has been #action#.");
+            } else {
+                flashInsert(error = "Failed to update user lock status.");
+            }
         } else {
             flashInsert(error = "User not found.");
         }
