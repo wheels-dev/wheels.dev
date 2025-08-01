@@ -265,11 +265,12 @@
     </div>
 </main>
 <script>
-  document.body.addEventListener("htmx:afterRequest", function (e) {
-  const path = e.detail?.pathInfo?.requestPath || "";
-  if (path.includes("/unpublishBlog") && status === 200) {
-    window.location.href = "/blog";
-  }
-});
+    document.body.addEventListener("htmx:afterRequest", function (e) {
+        const path = e.detail?.pathInfo?.requestPath || "";
+        const status = e.detail?.xhr?.status;
+        if (path.includes("/unpublishBlog") && status === 200) {
+            window.location.href = "/blog";
+        }
+    });
 </script>
 <script src="/js/showBlog.js"></script>
