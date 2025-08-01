@@ -25,7 +25,7 @@
                         <a href="admin/user/edit/#users.id[i]#" class="dropdown-item text-success fs-16">Edit</a>
                     </li>
                     <li>
-                        <a href="admin/user/delete/#users.id[i]#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(#users.id[i]#);">Delete</a>
+                        <a href="admin/user/delete/#obfuscateId(users.id[i])#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete('#obfuscateId(users.id[i])#');">Delete</a>
                     </li>
                     ');
         // Add toggle lock option
