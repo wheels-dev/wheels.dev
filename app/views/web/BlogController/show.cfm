@@ -17,7 +17,7 @@
                             <cfif blog.isPublished>
                                 <button 
                                     class="btn btn-danger rounded-3"
-                                    hx-post="/blog/unpublishBlog"
+                                    hx-post="/blog/unpublish"
                                     hx-vals='{"id": "#blog.id#"}'
                                     hx-target="this"
                                     hx-swap="outerHTML">
@@ -268,7 +268,7 @@
     document.body.addEventListener("htmx:afterRequest", function (e) {
         const path = e.detail?.pathInfo?.requestPath || "";
         const status = e.detail?.xhr?.status;
-        if (path.includes("/unpublishBlog") && status === 200) {
+        if (path.includes("/unpublish") && status === 200) {
             window.location.href = "/blog";
         }
     });

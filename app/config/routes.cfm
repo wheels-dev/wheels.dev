@@ -59,7 +59,7 @@
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
-			.post(name = "blog-unpublish", pattern = "blog/unpublishBlog", to = "web.BlogController##unpublishBlog")
+			.post(name = "blog-unpublish", pattern = "blog/unpublish", to = "web.BlogController##unpublish")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
 			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 			.put(name = "blogUpdate", pattern = "blog/update/[id]", to = "web.BlogController##Update")

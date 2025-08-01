@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch,commentsFeed,unpublishBlog", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch,commentsFeed,unpublish", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment,edit,update");
         usesLayout("/layout");
     }
@@ -1384,7 +1384,7 @@ component extends="app.Controllers.Controller" {
         return response;
     }
 
-    public void function unpublishBlog() {
+    public void function unpublish() {
         try {
             var currentUserId = GetSignedInUserId();
             if (!isNumeric(currentUserId)) {
