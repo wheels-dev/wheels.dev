@@ -220,7 +220,10 @@
                                                 <textarea class="markdown-editor" placeholder="Add a comment..."></textarea>
                                                 <div class="mt-3 text-end">
                                                     <input required class="form-control" type="hidden" name="content" id="content">
-                                                    <button type="submit" class="bg--primary fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Comment</button>
+                                                    <button type="submit" class="comment-btn bg--primary fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">
+                                                        <span class="btn-text">Comment</span>
+                                                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
