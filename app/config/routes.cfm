@@ -13,6 +13,7 @@
 				.get(name = "get_blog_post", pattern = "blog/[:id]", to = "api.BlogController##Show")
 
 				.get(name = "get_downloads", pattern = "downloads", to = "api.DownloadsController##Index")
+				.get(name = "check_email", pattern = "auth/check-email", to = "AuthController##checkEmail")
 			.end()
 		.end()
 
