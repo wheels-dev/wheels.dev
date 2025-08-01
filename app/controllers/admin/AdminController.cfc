@@ -2,7 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,deleteBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
     }
@@ -371,6 +371,24 @@ component extends="app.Controllers.Controller" {
         } catch(e) {
             cfheader(statusCode=500);
             return;
+        }
+    }
+    function deleteBlog() {
+
+        var blog = model("Blog").findByKey(params.id);
+        if (!isObject(blog)) {
+        redirectTo(action="blog", errorMessage="Blog post not found.");
+        }
+        try {
+            blog.statusId = 7;
+            blog.is_deleted = 1;
+            blog.deletedAt = now();
+            blog.deletedBy = GetSignedInUserId();
+            blog.save();
+            blog.delete()
+            redirectTo(action="blog", success="Blog post moved to trash.");
+        } catch (any e) {
+            redirectTo(action="blog", errorMessage="Error trashing blog post.");
         }
     }
 

@@ -82,6 +82,15 @@ component extends="app.Models.Model" {
             defaultValue=true
         );
 
+        // Locked Property (for admin-controlled lock/unlock)
+        property(
+            name="locked", 
+            column="locked", 
+            dataType="boolean", 
+            label="Account Locked", 
+            defaultValue=false
+        );
+
         // Has Testimonial Property
         property(
             name="hasTestimonial",

@@ -146,7 +146,7 @@
                                     <cfif !len(trim(imgSrc))>
                                         <cfset imgSrc = "testi.png">
                                     </cfif>
-                                    <img src='/img/#imgSrc#' class="img-fluid" alt=encodeForHtml(testimonials.companyName) style="width: 330px; height: 290px;">
+                                    <img src='/img/#imgSrc#' class="img-fluid" alt=#encodeForHtml(testimonials.companyName)# style="width: 330px; height: 290px;">
                                 </div>
                                 <div class="col-lg-9 col-12">
                                     <div class="d-flex flex-column justify-content-between h-100">
@@ -362,5 +362,23 @@
                     }
                 }
             });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            <cfif structKeyExists(session, "toastMessage")>
+                <cfscript>
+                    title = structKeyExists(session.toastMessage, "title") ? session.toastMessage.title : "";
+                    message = structKeyExists(session.toastMessage, "message") ? session.toastMessage.message : "";
+                    type = structKeyExists(session.toastMessage, "type") ? session.toastMessage.type : "";
+                    structDelete(session, "toastMessage");
+                </cfscript>
+                <cfoutput>
+                showNotificationOnce(
+                    "#encodeForJavaScript(title)#",
+                    "#encodeForJavaScript(message)#",
+                    "#encodeForJavaScript(type)#",
+                    4000
+                );
+                </cfoutput>
+            </cfif>
         });
     </script>

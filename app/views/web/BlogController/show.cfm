@@ -10,9 +10,21 @@
                         </span>
                     </a>
                     <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
-                        <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a> 
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a> 
+                            <cfif blog.isPublished>
+                                <button 
+                                    class="btn btn-danger rounded-3"
+                                    hx-post="/blog/unpublish"
+                                    hx-vals='{"id": "#blog.id#"}'
+                                    hx-target="this"
+                                    hx-swap="outerHTML">
+                                    <i class="bi bi-eye-slash"></i> Unpublish
+                                </button>
+                            </cfif>
+                        </div>
                     </cfif>
                 </div>
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
@@ -208,7 +220,10 @@
                                                 <textarea class="markdown-editor" placeholder="Add a comment..."></textarea>
                                                 <div class="mt-3 text-end">
                                                     <input required class="form-control" type="hidden" name="content" id="content">
-                                                    <button type="submit" class="bg--primary fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">Comment</button>
+                                                    <button type="submit" class="comment-btn bg--primary fs-14 text-white px-3 py-2 rounded-2 flex-shrink-0">
+                                                        <span class="btn-text">Comment</span>
+                                                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -252,5 +267,13 @@
         </div>
     </div>
 </main>
-
+<script>
+    document.body.addEventListener("htmx:afterRequest", function (e) {
+        const path = e.detail?.pathInfo?.requestPath || "";
+        const status = e.detail?.xhr?.status;
+        if (path.includes("/unpublish") && status === 200) {
+            window.location.href = "/blog";
+        }
+    });
+</script>
 <script src="/js/showBlog.js"></script>

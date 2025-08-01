@@ -51,24 +51,6 @@ component extends="app.Controllers.Controller" {
                     "ip_address": cgi.REMOTE_ADDR
                 }
             );
-            // Check if user is locked out
-            if (model("LoginAttempt").isUserLocked(params.email)) {
-                model("Log").log(
-                    category = "wheels.auth",
-                    level = "WARN",
-                    message = "Account locked - too many failed attempts",
-                    details = {
-                        "email": params.email,
-                        "ip_address": cgi.REMOTE_ADDR
-                    }
-                );
-                data = {
-                    "success" = false,
-                    "message" = "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account."
-                };
-                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
-                return;
-            }
             // Check if user exists first (regardless of status)
             var existingUser = model("User").findOne(where="email='#params.email#'", include="Role");
             
@@ -96,6 +78,35 @@ component extends="app.Controllers.Controller" {
                         "message" = "No account found with this email. Please register to create an account."
                     };
                 }
+                renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
+                return;
+            }
+
+            // Check if user is locked out
+            if (model("LoginAttempt").isUserLocked(params.email)) {
+                // Check if it's a manual lock by admin
+                var user = model("User").findOne(where="email='#params.email#'");
+                var isManuallyLocked = !isNull(user) && isStruct(user) && structKeyExists(user, "locked") && user.locked;
+                
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "WARN",
+                    message = "Account locked - " & (isManuallyLocked ? "manually locked by admin" : "too many failed attempts"),
+                    details = {
+                        "email": params.email,
+                        "ip_address": cgi.REMOTE_ADDR,
+                        "manual_lock": isManuallyLocked
+                    }
+                );
+                
+                var lockMessage = isManuallyLocked 
+                    ? "Your account has been locked by an administrator. Please contact support for assistance."
+                    : "Account locked due to multiple failed login attempts. Please contact our support team to unlock your account.";
+                
+                data = {
+                    "success" = false,
+                    "message" = lockMessage
+                };
                 renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
                 return;
             }
@@ -403,12 +414,27 @@ component extends="app.Controllers.Controller" {
 
     function store() {
         try {
-            // Input validation
-            if (!structKeyExists(params, "firstname") || !len(trim(params.firstname))) {
+            // Input validation - handle both camelCase and lowercase field names
+            var firstname = "";
+            var lastname = "";
+            
+            if (structKeyExists(params, "firstName")) {
+                firstname = params.firstName;
+            } else if (structKeyExists(params, "firstname")) {
+                firstname = params.firstname;
+            }
+            
+            if (structKeyExists(params, "lastName")) {
+                lastname = params.lastName;
+            } else if (structKeyExists(params, "lastname")) {
+                lastname = params.lastname;
+            }
+            
+            if (!len(trim(firstname))) {
                 renderText("<p style='color:red;'>First name is required.</p>");
                 return;
             }
-            if (!structKeyExists(params, "lastname") || !len(trim(params.lastname))) {
+            if (!len(trim(lastname))) {
                 renderText("<p style='color:red;'>Last name is required.</p>");
                 return;
             }
@@ -439,7 +465,17 @@ component extends="app.Controllers.Controller" {
                     "email": params.email
                 }
             );
-            var message = saveUser(params);
+            
+            // Create user data structure with correct field names
+            var userData = {
+                firstname: firstname,
+                lastname: lastname,
+                email: params.email,
+                passwordHash: params.passwordHash,
+                newsletter: structKeyExists(params, "newsletter") ? params.newsletter : false
+            };
+            
+            var message = saveUser(userData);
             
             if(findNoCase('success', '#message#')) {
                 model("Log").log(
