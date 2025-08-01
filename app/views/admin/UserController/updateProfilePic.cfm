@@ -2,7 +2,7 @@
     <div class="row w-100 m-lg-auto m-2">
         <div class="col-lg-5 bg-white col-12 mx-auto p-3 rounded-18">
             <div class="mt-2">
-                <h1 class="fs-24 mb-0 fw-bold text--secondary">Change Profile Picture</h1>
+                <h1 class="fs-24 mb-0 fw-bold text--secondary text-center">Change Profile Picture</h1>
 
                 <div class="text-center pb-3 my-4">
                     <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">

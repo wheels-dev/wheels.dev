@@ -12,7 +12,7 @@
                             </div>
                         </div>
                     </cfif>
-                    <form id="blogForm" hx-post="#isEdit ? '/blog/update/#blog.id#' : '/blog/store'#" hx-swap="none" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data" onsubmit="if (document.getElementById('editLoader')) { document.getElementById('editLoader').style.display = 'block'; }">
+                    <form id="blogForm" hx-post="#isEdit ? '/blog/update/#blog.id#' : '/blog/store'#" hx-swap="none" class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="#isEdit ? 'PUT' : 'POST'#">
                         <input class="form-control" type="hidden" name="id" id="id" value="#isEdit ? blog.id : ''#">
                         <input type="hidden" name="content" id="content" value="">
@@ -91,7 +91,7 @@
                             <button type="button" class="btn btn-dark px-3 py-2 rounded fs-14 me-2" id="saveDraftBtn">
                                 Save as Draft
                             </button>
-                            <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">Submit</button>
+                            <button type="submit" class="bg--primary btn--secondary text-white px-3 py-2 rounded fs-14">#isEdit ? 'Update' : 'Submit'#</button>
                         </div>
                     </form>
                     <div id="message"></div>
