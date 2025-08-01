@@ -18,8 +18,16 @@
                     <cfset email = user.email>
                     <cfset roleId = user.roleId>
                     <cfset status = user.status>
+                    <cfset locked = user.locked>
                 <cfelse>
-                    <cfset action = "Add">  
+                    <cfset action = "Add">
+                    <cfset id = 0>
+                    <cfset firstName = "">
+                    <cfset lastName = "">
+                    <cfset email = "">
+                    <cfset roleId = "">
+                    <cfset status = "">
+                    <cfset locked = false>
                 </cfif>
                 #action# User
             </h1>
@@ -81,6 +89,18 @@
                         <option value="true" <cfif status eq true>selected</cfif>>Active</option>
                         <option value="false" <cfif status eq false>selected</cfif>>Inactive</option>
                     </select>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 mb-3">
+                <div class="form-floating form-floating-advance-select">
+                    <label class="form-label mb-1 fs-18 fw-medium">
+                        Lock Status
+                    </label>
+                    <select class="form-control fs-18" name="locked" id="locked">
+                        <option value="false" <cfif locked eq false>selected</cfif>>Unlocked</option>
+                        <option value="true" <cfif locked eq true>selected</cfif>>Locked</option>
+                    </select>
+                    <small class="form-text text-muted">Locked users cannot login regardless of failed attempts</small>
                 </div>
             </div>
             <div class="col-sm-6 col-md-6 mb-3">

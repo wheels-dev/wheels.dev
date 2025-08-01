@@ -13,6 +13,7 @@
 				.get(name = "get_blog_post", pattern = "blog/[:id]", to = "api.BlogController##Show")
 
 				.get(name = "get_downloads", pattern = "downloads", to = "api.DownloadsController##Index")
+				.get(name = "check_email", pattern = "auth/check-email", to = "AuthController##checkEmail")
 			.end()
 		.end()
 
@@ -171,8 +172,9 @@
 			.get(name = "user-add", pattern = "user/add", to = "UserController##addUser")
 			.get(name = "user-add", pattern = "user/edit/[id]", to = "UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "UserController##store")
-			.get(name = "user-delete", pattern= "user/delete/[id]", to="UserController##delete")
-			.get(name = "user-unlock", pattern = "user/unlockUser/[userId]", to = "UserController##unlockUser")
+			.get(name = "user-delete", pattern= "user/delete/[obfuscatedId]", to="UserController##delete")
+			.get(name = "user-unlock", pattern = "user/unlockUser/[obfuscatedId]", to = "UserController##unlockUser")
+			.get(name = "user-toggle-lock", pattern = "user/toggleLock/[obfuscatedId]", to = "UserController##toggleUserLock")
 
 			.get(name = "user-changePassword", pattern = "user/change-password", to = "UserController##changePassword")
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "UserController##updatePassword")
