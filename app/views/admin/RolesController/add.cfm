@@ -73,10 +73,10 @@
             <div class="col-12 gy-6">
                 <div class="row g-3 justify-content-end">
                     <div class="col-auto">
-                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
-                    </div>
-                    <div class="col-auto">
                         <a hx-get="/admin/Role" hx-target="body" class="btn btn-dark px-sm-5 fs-14">Cancel</a>
+                    </div>
+                     <div class="col-auto">
+                        <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Save</button>
                     </div>
                 </div>
             </div>

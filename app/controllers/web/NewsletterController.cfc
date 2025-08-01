@@ -205,6 +205,11 @@ component extends="app.Controllers.Controller" {
             
             if (isNull(subscriber)) {
                 // Log invalid verification attempt
+               session.toastMessage = {
+                title = "Verification Failed",
+                message = "The verification link is invalid or has expired.",
+                type = "danger"
+            };
                 model("Log").log(
                     category = "Newsletter",
                     level = "WARN",
@@ -224,6 +229,11 @@ component extends="app.Controllers.Controller" {
 
             // Activate subscriber
             subscriber.update(status = "active");
+            session.toastMessage = {
+                title = "Success!",
+                message = "Your email has been successfully verified.",
+                type = "success"
+            };
             
             // Log successful verification
             model("Log").log(
