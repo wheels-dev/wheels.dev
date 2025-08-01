@@ -337,6 +337,7 @@ component extends="app.Controllers.Controller" {
             user.status = false;
             
             if (user.save()) {
+                model("LoginAttempt").deleteAll(where="email = '#user.email#'");
                 return {
                     success = true,
                     message = "User soft deleted successfully"
