@@ -59,6 +59,7 @@
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")
 			
 			.post(name = "blog-store", pattern = "blog/store", to = "web.BlogController##store")
+			.post(name = "blog-unpublish", pattern = "blog/unpublish", to = "web.BlogController##unpublish")
 			.post(name = "blog-comment", pattern = "blog/comment", to = "web.BlogController##comment")
 			.post(name = "check-title", pattern = "blog/check-title", to = "web.BlogController##checkTitle")
 			.put(name = "blogUpdate", pattern = "blog/update/[id]", to = "web.BlogController##Update")
@@ -116,6 +117,7 @@
 			.get(name = "deleteFeature", pattern = "feature/delete/[id]", to = "FeatureController##delete")
 			.get(name = "blog", pattern = "blog", to = "AdminController##blog")
 			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "AdminController##editBlog")
+			.post(name = "blogDelete", pattern = "blog/delete", to = "AdminController##deleteBlog")
 			.put(name = "blog-update", pattern = "blog/blogUpdate/[id]", to = "AdminController##update")
 			.get(name = "comment", pattern = "comment", to = "AdminController##comments")
 			.get(name = "show-blog", pattern = "blog/[slug]", to = "AdminController##showBlog")
