@@ -2,7 +2,7 @@
     <div class="row w-100 m-lg-auto m-2">
         <div class="col-lg-4 bg-white col-12 position-relative mx-auto p-4 border rounded-4">
             <div class="mt-2">
-                <h1 class="fs-24 mb-0 fw-bold text--secondary">Change Password</h1>
+                <h1 class="fs-24 mb-0 fw-bold text--secondary text-center">Change Password</h1>
 
                 <form class="pt-3 px-1 needs-validation" id="changePasswordForm" novalidate hx-post="/admin/user/update-Password" hx-validate="true">
                     <div class="mb-3">
