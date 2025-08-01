@@ -381,11 +381,11 @@ component extends="app.Controllers.Controller" {
         }
         try {
             blog.statusId = 7;
-            blog.is_deleted = true;
+            blog.is_deleted = 1;
             blog.deletedAt = now();
-            blog.deletedBy = GetSignedInUserId;
-            blog.delete()
+            blog.deletedBy = GetSignedInUserId();
             blog.save();
+            blog.delete()
             redirectTo(action="blog", success="Blog post moved to trash.");
         } catch (any e) {
             redirectTo(action="blog", errorMessage="Error trashing blog post.");
