@@ -10,9 +10,21 @@
                         </span>
                     </a>
                     <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
-                        <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a> 
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a> 
+                            <cfif blog.isPublished>
+                                <button 
+                                    class="btn btn-danger rounded-3"
+                                    hx-post="/blog/unpublish"
+                                    hx-vals='{"id": "#blog.id#"}'
+                                    hx-target="this"
+                                    hx-swap="outerHTML">
+                                    <i class="bi bi-eye-slash"></i> Unpublish
+                                </button>
+                            </cfif>
+                        </div>
                     </cfif>
                 </div>
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
@@ -252,5 +264,13 @@
         </div>
     </div>
 </main>
-
+<script>
+    document.body.addEventListener("htmx:afterRequest", function (e) {
+        const path = e.detail?.pathInfo?.requestPath || "";
+        const status = e.detail?.xhr?.status;
+        if (path.includes("/unpublish") && status === 200) {
+            window.location.href = "/blog";
+        }
+    });
+</script>
 <script src="/js/showBlog.js"></script>

@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
-        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch,commentsFeed", params="key", paramsTypes="integer", handler="index");
+        verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch,commentsFeed,unpublish", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment,edit,update");
         usesLayout("/layout");
     }
@@ -1382,5 +1382,62 @@ component extends="app.Controllers.Controller" {
         }
 
         return response;
+    }
+
+    public void function unpublish() {
+        try {
+            var currentUserId = GetSignedInUserId();
+            if (!isNumeric(currentUserId)) {
+                throw("Unauthorized access", "UserNotAuthenticated");
+            }
+
+            if (!structKeyExists(params, "id") || !isNumeric(params.id)) {
+                throw("Invalid blog ID", "InvalidRequest");
+            }
+
+            var blogId = val(params.id);
+            var blog = model("Blog").findByKey(blogId);
+            var user = model("User").findByKey(currentUserId);
+
+            if (!isObject(blog)) {
+                renderText("Blog not found");
+                return;
+            }
+
+            if (blog.createdBy != currentUserId AND !isUserAdmin()) {
+                renderText(" UnauthorizedAccess : You do not have permission to unpublish this blog");
+                return
+            }
+
+            blog.isPublished = false;
+            blog.save();
+
+            model("Log").log(
+                category = "wheels.blog",
+                level = "INFO",
+                message = "Blog unpublished",
+                details = {
+                    "blog_id": blog.id,
+                    "user_id": currentUserId,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = currentUserId
+            );
+
+            renderText("Blog unpublished successfully.");
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Error unpublishing blog: #e.message#",
+                details = {
+                    "error_message": e.message,
+                    "blog_id": structKeyExists(params, "id") ? params.id : "",
+                    "user_id": GetSignedInUserId(),
+                    "ip_address": cgi.REMOTE_ADDR
+                }
+            );
+            renderText("An error occurred while trying to unpublish the blog.");
+        }
     }
 }
