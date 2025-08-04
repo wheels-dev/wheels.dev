@@ -27,7 +27,6 @@
     <link href="/css/user-rtl.min.css" id="user-style-rtl" rel="stylesheet">
     <link href="/css/user.min.css" id="user-style-default" rel="stylesheet">
     
-    <script src="/js/notifier.min.js"></script>
     <script src="/js/htmx.min.js"></script>
     <script src="/js/highlighter.min.js"></script>
     <script src="/js/echarts.min.js"></script>
@@ -254,5 +253,6 @@
     <script src="/js/lodash.min.js"></script>
     <script src="/js/phoenix.js"></script>
     <script src="/js/adminglobal.js"></script>
+    <script src="/js/notifier.min.js"></script>
 </body>
 </html>
