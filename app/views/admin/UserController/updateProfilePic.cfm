@@ -41,7 +41,7 @@
 
         if (file) {
             const validExtensions = ["image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp"];
-            if (!validExtensions.includes(file.type)) {
+            if (!validExtensions.includes(file.type) || file.name.toLowerCase().endsWith(".jfif")) {
                 event.preventDefault(); // Prevent form submission
                 errorDiv.textContent = "Please upload a valid image file (png, jpg, jpeg, gif, webp).";
             }
