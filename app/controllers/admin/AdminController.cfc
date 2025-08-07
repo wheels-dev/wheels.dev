@@ -323,8 +323,8 @@ component extends="app.Controllers.Controller" {
     function comments(){
         comments = model("comment").findAll(
             select="id,Content,isPublished,commentParentId,createdat,authorId,blogId,slug,FullName,title",
-            include="User, Blog"
-            );
+            include="User, Blog",
+            order="createdAt DESC");
     }   
 
     function viewComments(){
