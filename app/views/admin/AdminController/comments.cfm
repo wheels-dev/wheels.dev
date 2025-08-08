@@ -34,7 +34,7 @@
                                 </td>
                                 <td>#comments.FullName[j]#</td>
                                 <td><a href="blog/#comments.slug[j]#" class="cursor-pointer text-primary">#comments.title[j]#</a></td>
-                                <td>#datetimeFormat(comments.createdAt[j], "dd-MMM-YYYY HH:MM")#</td>
+                                <td class="comment-date" data-date="#dateTimeFormat(comments.createdAt[j], 'yyyy-mm-dd HH:nn:ss')#">Loading...</td>
                                 <td>
                                     <span class="approval-status-#commentId#">
                                         <cfif comments.isPublished[j] eq true>
