@@ -418,6 +418,11 @@ component extends="app.Controllers.Controller" {
             return dateCompare(b.subscribedAt, a.subscribedAt);
         });
         
+        if (arrayLen(subscribers) EQ 0) {
+            renderText("<div class='text-center py-4 text-muted'>No record found</div>");
+            return;
+        }
+
         data = {
             "subscribers": subscribers
         };

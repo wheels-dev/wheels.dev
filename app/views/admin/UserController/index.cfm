@@ -39,7 +39,7 @@
                                 writeOutput('<td>' & users.email[i] & '</td>');
                                 writeOutput('<td>' & statusText & '</td>'); // Show "Active" or "Inactive"
                                 writeOutput('<td>' & users.name[i] & '</td>');
-                                writeOutput('<td>' & (isLocked ? '<span class="badge bg-danger">Locked</span>' : '<span class="badge bg-success">Unlocked</span>') & '</td>');
+                                writeOutput('<td>' & (isManuallyLocked ? '<span class="badge bg-danger">Admin Locked</span>' : (isLocked ? '<span class="badge bg-warning">Login Security Locked</span>' : '<span class="badge bg-success">Unlocked</span>')) & '</td>');
                                 writeOutput('<td><div class="dropdown">
                                         <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
                                             ...
