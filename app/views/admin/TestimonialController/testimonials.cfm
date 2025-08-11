@@ -64,7 +64,7 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="dropdown-dots fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
                                             ...
                                         </div>
                                         <ul class="dropdown-menu">
@@ -105,3 +105,44 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.createElement('div');
+        container.id = 'dropdown-container';
+        Object.assign(container.style, {
+            position: 'absolute', top: '0', left: '-150px'
+        });
+        document.body.appendChild(container);
+
+        const closeAll = () => {
+            document.querySelectorAll(".dropdown-menu").forEach(el => {
+                el.style.display = "none";
+            });
+        };
+
+        document.querySelectorAll(".dropdown-dots").forEach(toggle => {
+            const menu = toggle.closest('.dropdown').querySelector('.dropdown-menu');
+            container.appendChild(menu);
+            
+            toggle.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                const isVisible = menu.style.display === "block";
+                closeAll();
+                if (!isVisible) {
+                    const rect = toggle.getBoundingClientRect();
+                    Object.assign(menu.style, {
+                        position: "absolute",
+                        top: `${rect.bottom + window.scrollY}px`,
+                        left: `${rect.left}px`,
+                        display: "block"
+                    });
+                }
+            });
+        });
+
+        document.addEventListener("click", e => {
+            if (!e.target.closest(".dropdown-dots, .dropdown-menu")) closeAll();
+        });
+    });
+</script>
