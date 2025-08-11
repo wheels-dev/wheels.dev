@@ -138,9 +138,9 @@
                 </div>
                 <!-- Swiper container -->
                 <div class="col-12 pb-5 px-2 testimonialsSwiper swiper">
-                    <div class="w-100 gap-lg-5 gap-0 swiper-wrapper">
+                    <div class="w-100 swiper-wrapper">
                         <cfloop query="testimonials">
-                            <div class="d-flex row swiper-slide">
+                            <div class="d-flex mx-5 row swiper-slide">
                                 <div class="col-lg-3 col-12 pb-2 pb-sm-0">
                                     <cfset imgSrc = testimonials.logoPath>
                                     <cfif !len(trim(imgSrc))>
