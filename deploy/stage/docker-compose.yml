@@ -30,6 +30,7 @@ services:
       - shared-images:/app/public/images
       - shared-files:/app/public/files
       - shared-sitemap:/app/public/sitemap
+      - shared-dev-docs:/app/docs/3.0.0/guides
       - wheels-data:/data
 
 networks:
