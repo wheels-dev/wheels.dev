@@ -44,4 +44,6 @@ volumes:
     external: true
   shared-sitemap:
     external: true
+  shared-dev-docs
+    external: true
   wheels-data:
