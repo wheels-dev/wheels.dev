@@ -47,6 +47,13 @@ If you do not use Tuckey or Commandbox, this file can be safely deleted.
     <to type="forward">/images/$1</to>
   </rule>
 
+  <!-- Rule to handle image requests securely -->
+  <rule enabled="true">
+    <name>Guides Image rewrite rule</name>
+    <from>^/wheels/guides-assets/(.*)$</from>
+    <to type="forward">/images/$1</to>
+  </rule>
+
   <!-- Rule to serve sitemap.xml from sitemap folder -->
   <rule enabled="true">
     <name>Sitemap serve rule</name>
@@ -64,7 +71,7 @@ If you do not use Tuckey or Commandbox, this file can be safely deleted.
   <!-- Main framework router rule - should be last -->
   <rule enabled="true">
     <name>Wheels pretty URLs</name>
-    <condition type="request-uri" operator="notequal">^/(cf_script|flex2gateway|jrunscripts|CFIDE/administrator|lucee/admin|cfformgateway|cffileservlet|lucee|files|img|images|css|js|wheels/public/assets|robots.txt|favicon.ico|sitemap.xml|index.cfm)</condition>
+    <condition type="request-uri" operator="notequal">^/(cf_script|flex2gateway|jrunscripts|CFIDE/administrator|lucee/admin|cfformgateway|cffileservlet|lucee|files|img|images|css|js|wheels/public/assets|wheels/guides-assets|robots.txt|favicon.ico|sitemap.xml|index.cfm)</condition>
     <from>^/(.*)$</from>
     <to type="passthrough">/index.cfm/$1</to>
   </rule>
