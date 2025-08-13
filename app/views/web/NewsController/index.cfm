@@ -49,7 +49,7 @@
               <cfif arrayLen(release.assets)>
                 <div class="pt-3">
                   <cfloop array="#release.assets#" index="asset">
-                    <a href="#asset.browser_download_url#" class="btn btn-sm btn-outline-danger me-2" target="_blank">
+                    <a href="#asset.browser_download_url#" class="btn btn-sm btn-outline-danger me-2 mb-2" target="_blank">
                       Download #asset.name#
                     </a>
                   </cfloop>
@@ -57,7 +57,7 @@
               <cfelse>
                 <cfif structKeyExists(release, "isBlog")>
                   <div class="pt-3">
-                    <a href="#release.html_url#" class="btn btn-sm btn-outline-danger me-2">
+                    <a href="#release.html_url#" class="btn btn-sm btn-outline-danger me-2 mb-2">
                       Learn More <i class="bi bi-arrow-right mt-1"></i>
                     </a>
                   </div>
