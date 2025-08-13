@@ -64,7 +64,7 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="dropdown-dots fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
                                             ...
                                         </div>
                                         <ul class="dropdown-menu">
