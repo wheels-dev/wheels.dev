@@ -117,73 +117,306 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    public function generateSearchBook(){
+    public function generateSearchBook() {
+        var startTime = getTickCount();
+        var processedVersions = 0;
+        var totalFiles = 0;
+        var errors = [];
+            verbose = false;
+        
         try {
-            baseDocsPath = expandPath("../docs");
-            versionFolders = directoryList(baseDocsPath, false, "path");
+            docIndexPath = expandPath("/files");
+            
+            // Create base path if it doesn't exist
+            if (!directoryExists(docIndexPath)) {
+                directoryCreate(docIndexPath);
+                if (verbose) {
+                    renderText("Created base directory: #docIndexPath#<br>");
+                }
+            }
+            
+            if (verbose) {
+                renderText("Starting search index generation for: #docIndexPath#<br>");
+            }
+            
+            // Get only directories
+            var docsPath = expandPath("../docs");
+            versionFolders = getVersionDirectories(docsPath, verbose);
 
             for (versionPath in versionFolders) {
-                versionName = listLast(versionPath, "\");
-                
-                guidesPath = versionPath & "/guides";
-                if (!directoryExists(guidesPath)) {
-                    continue;
-                }
-
-                searchIndex = [];
-                mdFiles = directoryList(guidesPath, true, "path", "*.md");
-
-                for (file in mdFiles) {
-                    fileName = listLast(file, "\");
-
-                    // Skip SUMMARY.md
-                    if (lcase(fileName) == "summary.md") {
+                try {
+                    // Double-check that this is actually a directory
+                    if (!directoryExists(versionPath)) {
+                        if (verbose) {
+                            renderText("Skipping non-directory: #versionPath#<br>");
+                        }
                         continue;
                     }
-
-                    mdText = fileRead(file, "utf-8");
-                    html = markdownToHtml(mdText);
-                    // Remove all <img> tags
-                    html = reReplace(html, "<img\b[^>]*>", "", "all");
-
-                    // Extract first <h1> as title
-                    h1Match = reFind("<h1[^>]*>(.*?)</h1>", html, 1, true, "perl");
-                    title = (arrayLen(h1Match.pos) >= 2 && h1Match.len[2] > 0) ?
-                        mid(html, h1Match.pos[2], h1Match.len[2]) :
-                        "Untitled";
-
-                    // Strip HTML tags for body
-                    plainText = reReplace(html, "<[^>]+>", " ", "all");
-                    cleanBody = reReplace(plainText, "[^A-Za-z0-9 ]", " ", "all");
-
-                    // Create relative URL path
-                    relativePath = replace(file, baseDocsPath, "", "one");
-                    if(versionName != "2.5.0"){
-                        relativePath = replace(relativePath, "getting-started", "readme", "all");
+                    
+                    versionName = listLast(versionPath, "\");
+                    guidesPath = versionPath & "/guides";
+                    
+                    // Create guides folder if it doesn't exist
+                    if (!directoryExists(guidesPath)) {
+                        directoryCreate(guidesPath);
+                        if (verbose) {
+                            renderText("Created guides directory for #versionName#: #guidesPath#<br>");
+                        }
                     }
-                    relativeUrl = replace(relativePath, ".md", "", "one");
 
-                    arrayAppend(searchIndex, {
-                        "title": trim(title),
-                        "body": toBase64(html),
-                        "url": replace(relativeUrl, "\", "/", "all") // ensure URL is web-friendly
+                    if (verbose) {
+                        renderText("Processing version: #versionName#<br>");
+                    }
+
+                    searchIndex = [];
+                    mdFiles = directoryList(guidesPath, true, "path", "*.md");
+                    var versionFileCount = 0;
+
+                    for (file in mdFiles) {
+                        try {
+                            fileName = listLast(file, "\");
+
+                            // Skip SUMMARY.md and other system files
+                            if (listFindNoCase("summary.md,readme.md,index.md", lcase(fileName))) {
+                                continue;
+                            }
+
+                            // Read and validate file content
+                            if (!fileExists(file)) {
+                                continue;
+                            }
+                            
+                            mdText = fileRead(file, "utf-8");
+                            if (len(trim(mdText)) == 0) {
+                                if (verbose) {
+                                    renderText("Skipping empty file: #fileName#<br>");
+                                }
+                                continue;
+                            }
+
+                            html = markdownToHtml(mdText);
+                            
+                            // Enhanced HTML cleaning
+                            html = reReplace(html, "<img\b[^>]*>", "", "all");
+                            html = reReplace(html, "<script\b[^>]*>.*?</script>", "", "all");
+                            html = reReplace(html, "<style\b[^>]*>.*?</style>", "", "all");
+
+                            // Extract title with better fallback logic
+                            title = extractTitle(html, fileName);
+                            
+                            // Create clean body text with better formatting
+                            cleanBody = createCleanBody(html);
+                            
+                            // Generate SEO-friendly URL
+                            relativeUrl = generateCleanUrl(file, docIndexPath, versionName);
+                            
+                            // Create search entry with additional metadata
+                            searchEntry = {
+                                "title": trim(title),
+                                "body": toBase64(html),
+                                "plainText": left(cleanBody, 500), // First 500 chars for previews
+                                "url": relativeUrl,
+                                "version": versionName
+                            };
+
+                            arrayAppend(searchIndex, searchEntry);
+                            versionFileCount++;
+                            totalFiles++;
+
+                        } catch (any fileError) {
+                            arrayAppend(errors, {
+                                "file": fileName,
+                                "version": versionName,
+                                "error": fileError.message
+                            });
+                            
+                            if (verbose) {
+                                renderText("Error processing #fileName#: #fileError.message#<br>");
+                            }
+                        }
+                    }
+
+                    // Only write index if we have content
+                    if (arrayLen(searchIndex) > 0) {
+                        
+                        // Create version directory if it doesn't exist
+                        versionDir = docIndexPath & "/" & versionName;
+                        if (!directoryExists(versionDir)) {
+                            directoryCreate(versionDir);
+                        }
+
+                        // Create guides directory if it doesn't exist  
+                        guidesDir = versionDir & "/guides";
+                        if (!directoryExists(guidesDir)) {
+                            directoryCreate(guidesDir);
+                        }
+
+                        targetPath = docIndexPath & "/" & versionName & "/guides/search_index.json";
+                        
+                        fileWrite(targetPath, serializeJSON(searchIndex, true));
+                        processedVersions++;
+                        
+                        if (verbose) {
+                            renderText("✓ Generated index for #versionName# (#arrayLen(searchIndex)# documents)<br>");
+                        }
+                    } else {
+                        if (verbose) {
+                            renderText("⚠ No valid documents found for #versionName#<br>");
+                        }
+                    }
+
+                } catch (any versionError) {
+                    arrayAppend(errors, {
+                        "version": versionName,
+                        "error": versionError.message
                     });
+                    
+                    if (verbose) {
+                        renderText("Error processing version #versionName#: #versionError.message#<br>");
+                    }
                 }
-
-                // Write JSON to version folder
-                targetPath = versionPath & "/guides/search_index.json";
-                fileWrite(targetPath, serializeJSON(searchIndex, true));
             }
 
-            renderText("Search indexes generated for all versions successfully!");
+            // Generate summary report
+            var duration = (getTickCount() - startTime) / 1000;
+            var summary = "Search index generation completed!<br>";
+            summary &= "Processed #processedVersions# versions<br>";
+            summary &= "Indexed #totalFiles# total files<br>";
+            summary &= "Completed in #numberFormat(duration, '0.00')# seconds<br>";
+            
+            if (arrayLen(errors) > 0) {
+                summary &= "<br>Errors encountered: #arrayLen(errors)#<br>";
+                if (verbose) {
+                    for (error in errors) {
+                        summary &= "- #structKeyExists(error, 'file') ? error.file : error.version#: #error.error#<br>";
+                    }
+                }
+            }
+            
+            renderText(summary);
+
+        } catch (any e) {
+            var errorMsg = "Error in generating search index";
+            
+            renderText(errorMsg);
         }
-        catch (any e) {
-            renderText("Error: " & e.message & " at " & e.tagContext[1].template & ":" & e.tagContext[1].line);
+    }
+
+    // Helper function to extract document title
+    private function extractTitle(required string html, required string fileName) {
+        // Try to find h1 tag
+        var h1Match = reFind("<h1[^>]*>(.*?)</h1>", html, 1, true, "perl");
+        if (arrayLen(h1Match.pos) >= 2 && h1Match.len[2] > 0) {
+            var title = mid(html, h1Match.pos[2], h1Match.len[2]);
+            title = reReplace(title, "<[^>]+>", "", "all"); // Strip any nested tags
+            return trim(title);
+        }
+        
+        // Fallback to filename without extension
+        return replace(fileName, ".md", "", "one");
+    }
+
+    // Helper function to create clean body text
+    private function createCleanBody(required string html) {
+        // Remove code blocks first to avoid weird spacing
+        var cleanHtml = reReplace(html, "<pre[^>]*>.*?</pre>", " [CODE_BLOCK] ", "all");
+        cleanHtml = reReplace(cleanHtml, "<code[^>]*>.*?</code>", " [CODE] ", "all");
+        
+        // Strip all HTML tags
+        var plainText = reReplace(cleanHtml, "<[^>]+>", " ", "all");
+        
+        // Clean up whitespace and special characters
+        plainText = reReplace(plainText, "&[a-zA-Z0-9]+;", " ", "all"); // HTML entities
+        plainText = reReplace(plainText, "\s+", " ", "all"); // Multiple spaces
+        plainText = reReplace(plainText, "^\s+|\s+$", "", "all"); // Trim
+        
+        return plainText;
+    }
+
+    // Helper function to generate clean URLs
+    private function generateCleanUrl(required string filePath, required string basePath, required string versionName) {
+        var versionPosition = findNoCase(versionName, filePath);
+        if (versionPosition > 0) {
+            var relativePath = "/" & mid(filePath, versionPosition + len(versionName) + 1);
+        } else {
+            // Fallback to original logic if version not found in path
+            var relativePath = "/guides";
+        }
+        
+        // Version-specific URL handling
+        if (versionName != "2.5.0") {
+            relativePath = replace(relativePath, "getting-started", "readme", "all");
+        }
+        
+        // Convert to web-friendly URL
+        var relativeUrl = replace(relativePath, ".md", "", "one");
+        relativeUrl = replace(relativeUrl, "\", "/", "all");
+        
+        // Clean up URL segments
+        relativeUrl = reReplace(relativeUrl, "/+", "/", "all"); // Remove double slashes
+        relativeUrl = reReplace(relativeUrl, "^|/$", "", "all"); // Remove trailing slashes
+        
+        return relativeUrl;
+    }
+
+    // Helper function to get only version directories (excludes files)
+    private function getVersionDirectories(required string basePath, boolean verbose = false) {
+        var versionFolders = [];
+        
+        try {
+            if (!directoryExists(basePath)) {
+                return versionFolders;
+            }
+            
+            var allItems = directoryList(basePath, false, "query");
+            
+            for (var item in allItems) {
+                if (item.type == "Dir") {
+                    var fullPath = item.directory & "\" & item.name;
+                    
+                    // Additional validation - skip hidden folders and common non-version folders
+                    var folderName = item.name;
+                    if (!reFind("^\.", folderName) && // Skip hidden folders (starting with .)
+                        !listFindNoCase("assets,images,css,js,static,temp,cache", folderName)) { // Skip common non-version folders
+                        
+                        arrayAppend(versionFolders, fullPath);
+                        
+                        if (verbose) {
+                            renderText("Found version directory: #folderName#<br>");
+                        }
+                    }
+                } else if (verbose && item.type == "File") {
+                    renderText("Skipping file: #item.name#<br>");
+                }
+            }
+            
+        } catch (any e) {
+            if (verbose) {
+                renderText("Error scanning directories: #e.message#<br>");
+            }
+        }
+        
+        return versionFolders;
+    }
+
+    // Helper function to safely create directory structure
+    private function ensureDirectoryExists(required string dirPath, boolean verbose = false) {
+        try {
+            if (!directoryExists(dirPath)) {
+                directoryCreate(dirPath);
+                if (verbose) {
+                    renderText("Created directory: #dirPath#<br>");
+                }
+                return true;
+            }
+            return false;
+        } catch (any e) {
+            throw(message = "Failed to create directory #dirPath#: #e.message#", type = "DirectoryCreationError");
         }
     }
 
     public function getSearchBook(){
-        searchData = fileRead(expandPath("../docs/#params.version#/guides/search_index.json"));
+        searchData = fileRead(expandPath("files/#params.version#/guides/search_index.json"));
         return deserializeJSON(searchData);
     } 
 
