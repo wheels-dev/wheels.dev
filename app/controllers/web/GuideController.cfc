@@ -417,7 +417,7 @@ component extends="app.Controllers.Controller" {
 
     public function getSearchBook(){
         searchData = fileRead(expandPath("files/#params.version#/guides/search_index.json"));
-        return deserializeJSON(searchData);
+        renderWith(data=searchData, hideDebugInformation=true, status=200, layout='/responseLayout');
     } 
 
     private function missingParams(){
