@@ -646,7 +646,7 @@ component extends="app.Controllers.Controller" {
                 newUser.firstname = userData.firstname;
                 newUser.lastname = userData.lastname;
                 newUser.email = userData.email;
-                newUser.passwordhash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                newUser.passwordhash = bCryptHashPW(userData.passwordHash, bCryptGenSalt());
                 newUser.roleid = GetUserRoleId(); // user role
                 newUser.status = SetInactive(); // set inactive
                 if(structKeyExists(userData, "newsletter")){
@@ -1059,7 +1059,7 @@ component extends="app.Controllers.Controller" {
             
             // Update password
             var user = model("User").findByKey(reset.userId);
-            user.update(passwordHash=application.WHEELS.plugins.bcrypt.bCryptHashPW(params.password, application.WHEELS.plugins.bcrypt.bCryptGenSalt()));
+            user.update(passwordHash=bCryptHashPW(params.password, bCryptGenSalt()));
             // Mark token as used
             reset.update(used=1);
             

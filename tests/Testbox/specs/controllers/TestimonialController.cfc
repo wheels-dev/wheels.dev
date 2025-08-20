@@ -23,7 +23,7 @@ component extends="testbox.system.BaseSpec" {
         } else {
             testUser = userModel.new();
             testUser.email = "testuser@pai.com";
-            testUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW("test1234", application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+            testUser.passwordHash = bCryptHashPW("test1234", bCryptGenSalt());
             testUser.firstname = "Test";
             testUser.lastname = "User";
             testUser.roleId = 2;
