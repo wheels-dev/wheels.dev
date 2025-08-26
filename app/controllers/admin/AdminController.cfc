@@ -1025,7 +1025,7 @@ component extends="app.Controllers.Controller" {
                 });
                 
                 // Generate a password hash
-                user.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW("wheels.dev@"&login, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                user.passwordHash = bCryptHashPW("wheels.dev@"&login, bCryptGenSalt());
                 
                 if (user.save(validate=false)) {
                     // Successfully created user

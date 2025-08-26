@@ -137,7 +137,7 @@ component extends="app.Controllers.Controller" {
             return;
         }
 
-        var hashedPassword = application.WHEELS.plugins.bcrypt.bCryptHashPW(params.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+        var hashedPassword = bCryptHashPW(params.passwordHash, bCryptGenSalt());
         var updateUserPassword = model("User").updateAll(
                 passwordHash = "#hashedPassword#",
                 where = "id = '#session.userId#'"
@@ -283,7 +283,7 @@ component extends="app.Controllers.Controller" {
                     newUser.firstname = userData.firstName;
                     newUser.lastname = userData.lastName;
                     newUser.email = userData.email;
-                    newUser.passwordHash = application.WHEELS.plugins.bcrypt.bCryptHashPW(userData.passwordHash, application.WHEELS.plugins.bcrypt.bCryptGenSalt());
+                    newUser.passwordHash = bCryptHashPW(userData.passwordHash, bCryptGenSalt());
                     newUser.status = application.wo.SetActive();
                     newUser.roleid = userData.roleid;
                     newUser.locked = userData.locked;
