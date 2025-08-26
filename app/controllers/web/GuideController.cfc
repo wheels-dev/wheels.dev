@@ -12,6 +12,10 @@ component extends="app.Controllers.Controller" {
         try{
             param name="params.version" default="3.0.0";
             param name="params.filePath" default="";
+            
+            // Auto-generate search index if it doesn't exist
+            ensureSearchIndexExists(params.version);
+            
             var filePath = (len(trim(params.filepath)) > 0)
             ? expandPath("../docs/#params.version#/guides/#params.filepath#.md")
             : expandPath("../docs/#params.version#/guides/README.md");
@@ -68,6 +72,10 @@ component extends="app.Controllers.Controller" {
     public function loadGuideDocs(){
         try{
             param name="params.version" default="3.0.0";
+            
+            // Auto-generate search index if it doesn't exist
+            ensureSearchIndexExists(params.version);
+            
             var filepath = params.path;
                 file = expandPath("../docs/#params.version#/guides/#filepath#.md");
             if(fileExists(file)){
@@ -117,6 +125,134 @@ component extends="app.Controllers.Controller" {
         }
     }
 
+    // Helper function to ensure search index exists
+    private void function ensureSearchIndexExists(required string version) {
+        var indexPath = expandPath("/files/#arguments.version#/guides/search_index.json");
+        
+        // Check if index already exists
+        if (!fileExists(indexPath)) {
+            // Generate the index silently in the background
+            generateSearchIndexForVersion(arguments.version);
+        } else {
+            // Optionally check if index is stale (older than 24 hours)
+            var fileInfo = getFileInfo(indexPath);
+            var hoursSinceGenerated = dateDiff("h", fileInfo.lastModified, now());
+            
+            // Regenerate if older than 24 hours (optional - you can adjust or remove this)
+            if (hoursSinceGenerated > 24) {
+                generateSearchIndexForVersion(arguments.version);
+            }
+        }
+    }
+
+    // Simplified version of generateSearchBook for internal use
+    private void function generateSearchIndexForVersion(required string version) {
+        try {
+            var docIndexPath = expandPath("/files");
+            
+            // Create base path if it doesn't exist
+            if (!directoryExists(docIndexPath)) {
+                directoryCreate(docIndexPath);
+            }
+            
+            var docsPath = expandPath("../docs");
+            var versionPath = docsPath & "/" & arguments.version;
+            
+            // Check if version directory exists
+            if (!directoryExists(versionPath)) {
+                return; // Silently exit if version doesn't exist
+            }
+            
+            var guidesPath = versionPath & "/guides";
+            
+            // Check if guides directory exists
+            if (!directoryExists(guidesPath)) {
+                return; // Silently exit if no guides directory
+            }
+            
+            var searchIndex = [];
+            var mdFiles = directoryList(guidesPath, true, "path", "*.md");
+            
+            for (var file in mdFiles) {
+                try {
+                    var fileName = listLast(file, "\");
+                    
+                    // Skip SUMMARY.md and other system files
+                    if (listFindNoCase("summary.md", lcase(fileName))) {
+                        continue;
+                    }
+                    
+                    // Read and validate file content
+                    if (!fileExists(file)) {
+                        continue;
+                    }
+                    
+                    var mdText = fileRead(file, "utf-8");
+                    if (len(trim(mdText)) == 0) {
+                        continue;
+                    }
+                    
+                    var html = markdownToHtml(mdText);
+                    
+                    // Enhanced HTML cleaning
+                    html = reReplace(html, "<img\b[^>]*>", "", "all");
+                    html = reReplace(html, "<script\b[^>]*>.*?</script>", "", "all");
+                    html = reReplace(html, "<style\b[^>]*>.*?</style>", "", "all");
+                    
+                    // Extract title with better fallback logic
+                    var title = extractTitle(html, fileName);
+                    
+                    // Create clean body text with better formatting
+                    var cleanBody = createCleanBody(html);
+                    
+                    // Generate SEO-friendly URL
+                    var relativeUrl = generateCleanUrl(file, docIndexPath, arguments.version);
+                    
+                    // Create search entry with additional metadata
+                    var searchEntry = {
+                        "title": trim(title),
+                        "body": toBase64(html),
+                        "plainText": left(cleanBody, 500), // First 500 chars for previews
+                        "url": relativeUrl,
+                        "version": arguments.version,
+                        "fileName": fileName,
+                        "lastModified": dateFormat(getFileInfo(file).lastModified, "yyyy-mm-dd HH:nn:ss")
+                    };
+                    
+                    arrayAppend(searchIndex, searchEntry);
+                    
+                } catch (any fileError) {
+                    // Silently continue on error
+                    continue;
+                }
+            }
+            
+            // Only write index if we have content
+            if (arrayLen(searchIndex) > 0) {
+                // Create version directory if it doesn't exist
+                var versionDir = docIndexPath & "/" & arguments.version;
+                if (!directoryExists(versionDir)) {
+                    directoryCreate(versionDir);
+                }
+                
+                // Create guides directory if it doesn't exist  
+                var guidesDir = versionDir & "/guides";
+                if (!directoryExists(guidesDir)) {
+                    directoryCreate(guidesDir);
+                }
+                
+                var targetPath = docIndexPath & "/" & arguments.version & "/guides/search_index.json";
+
+                fileWrite(targetPath, serializeJSON(searchIndex, true));
+            }
+            
+        } catch (any e) {
+            // Silently fail - don't interrupt the guide loading
+            // Optionally, you could log this error
+        }
+    }
+
+    // Keep the original generateSearchBook for manual/route-based generation
     public function generateSearchBook() {
         var startTime = getTickCount();
         var processedVersions = 0;
@@ -177,7 +313,7 @@ component extends="app.Controllers.Controller" {
                             fileName = listLast(file, "\");
 
                             // Skip SUMMARY.md and other system files
-                            if (listFindNoCase("summary.md,readme.md,index.md", lcase(fileName))) {
+                            if (listFindNoCase("summary.md", lcase(fileName))) {
                                 continue;
                             }
 
@@ -399,22 +535,6 @@ component extends="app.Controllers.Controller" {
         return versionFolders;
     }
 
-    // Helper function to safely create directory structure
-    private function ensureDirectoryExists(required string dirPath, boolean verbose = false) {
-        try {
-            if (!directoryExists(dirPath)) {
-                directoryCreate(dirPath);
-                if (verbose) {
-                    renderText("Created directory: #dirPath#<br>");
-                }
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            throw(message = "Failed to create directory #dirPath#: #e.message#", type = "DirectoryCreationError");
-        }
-    }
-
     public function getSearchBook(){
         searchData = fileRead(expandPath("files/#params.version#/guides/search_index.json"));
         renderWith(data=searchData, hideDebugInformation=true, status=200, layout='/responseLayout');
@@ -428,6 +548,7 @@ component extends="app.Controllers.Controller" {
         var result = [];
         var currentSection = {};
         var stack = [];
+        var lastItemAtLevel = {}; // Track last item at each indentation level
 
         var lines = fileRead(arguments.summaryPath).listToArray(chr(10));
 
@@ -435,71 +556,92 @@ component extends="app.Controllers.Controller" {
             var rawLine = lines[i];
             var line = trim(rawLine);
 
-            // Normalize tabs to 2 spaces
-            rawLine = replace(rawLine, chr(9), "  ", "all");
-
-            // Match section headers like ## INTRODUCTION
-            if (reFind("^##{2,6}\s+(.+)", line)) {
-                var title = reReplace(line, "^##{2,6}\s+(.+)", "\1", "all");
-                currentSection = {
-                    "title": title,
-                    "children": []
-                };
-                arrayAppend(result, currentSection);
-                stack = []; // Reset nesting stack
+            // Skip empty lines
+            if (len(line) == 0) {
                 continue;
             }
 
-            // Match markdown list items with links: * [Title](path.md)
-            if (reFind("\*\s*\[([^\]]+)\]\(([^)]+)\)", line)) {
-                // Option 1: Indent by space count (assume 2 spaces per level)
-                var indent = len(rawLine) - len(trim(rawLine));
-                var level = int(indent / 2);
+            // Normalize tabs to 2 spaces
+            rawLine = replace(rawLine, chr(9), "  ", "all");
+            
+            // Calculate indentation level
+            var indent = len(rawLine) - len(ltrim(rawLine));
+            var level = int(indent / 2);
 
-                // Extract title and path
-                var title = reReplace(line, ".*\[\[?([^\]]+)\]\]?\([^)]+\).*", "\1", "all");
-                var path = reReplace(line, ".*\[[^\]]+\]\(([^)]+)\).*", "\1", "all");
-
-                // Convert relative path to full versioned path
-                if (!reFind("^https?://", path)) {
-                    path = reReplace(path, "\.md$", "", "all");
-                    path = "/#version#/guides/" & path;
-                }
-
-                var node = {
+            // Match section headers like ## INTRODUCTION
+            if (reFind("^##{1,6}\s+(.+)", line)) {
+                var title = reReplace(line, "^##{1,6}\s+(.+)", "\1", "all");
+                currentSection = {
                     "title": title,
-                    "path": path,
+                    "path": "", // Section headers don't have paths
+                    "isSection": true,
                     "children": []
                 };
+                arrayAppend(result, currentSection);
+                stack = [currentSection]; // Reset stack with current section
+                lastItemAtLevel = {}; // Reset level tracking
+                continue;
+            }
 
-                if (level eq 0) {
-                    // Direct child of section
+            // Match markdown list items
+            if (reFind("^\*\s+", line)) {
+                var node = {};
+                
+                // Check if it's a link item: * [Title](path.md)
+                if (reFind("\[([^\]]+)\]\(([^)]+)\)", line)) {
+                    // Extract title and path from link
+                    var title = reReplace(line, ".*\[([^\]]+)\]\([^)]+\).*", "\1", "all");
+                    var path = reReplace(line, ".*\[[^\]]+\]\(([^)]+)\).*", "\1", "all");
+
+                    // Convert relative path to full versioned path
+                    if (!reFind("^https?://", path)) {
+                        path = reReplace(path, "\.md$", "", "all");
+                        path = "/#version#/guides/" & path;
+                    }
+
+                    node = {
+                        "title": title,
+                        "path": path,
+                        "hasLink": true,
+                        "children": []
+                    };
+                } else {
+                    // It's a plain text item (like "Core Commands", "Database Operations")
+                    var title = reReplace(line, "^\*\s+", "", "all");
+                    node = {
+                        "title": trim(title),
+                        "path": "", // No path for non-link items
+                        "hasLink": false,
+                        "children": []
+                    };
+                }
+
+                // Store this item at its level for potential children
+                lastItemAtLevel[level] = node;
+
+                // Find the parent based on indentation level
+                if (level == 0) {
+                    // Top level item under current section or root
                     if (!structIsEmpty(currentSection)) {
                         arrayAppend(currentSection.children, node);
                     } else {
                         arrayAppend(result, node);
                     }
-                    stack = [node]; // Reset stack
                 } else {
-                    // Find correct parent based on nesting level
-                    var parentIndex = arrayLen(stack);
-                    while (parentIndex > 0) {
-                        if (level > (parentIndex - 1)) {
-                            break;
-                        }
-                        arrayDeleteAt(stack, parentIndex);
-                        parentIndex--;
-                    }
-
-                    if (parentIndex > 0) {
-                        arrayAppend(stack[parentIndex].children, node);
+                    // Find parent at level - 1
+                    var parentLevel = level - 1;
+                    
+                    // Look for parent in lastItemAtLevel
+                    if (structKeyExists(lastItemAtLevel, parentLevel)) {
+                        var parent = lastItemAtLevel[parentLevel];
+                        arrayAppend(parent.children, node);
                     } else if (!structIsEmpty(currentSection)) {
+                        // Fallback to current section if no parent found
                         arrayAppend(currentSection.children, node);
                     } else {
+                        // Fallback to root
                         arrayAppend(result, node);
                     }
-
-                    arrayAppend(stack, node); // Push to stack for next children
                 }
             }
         }
