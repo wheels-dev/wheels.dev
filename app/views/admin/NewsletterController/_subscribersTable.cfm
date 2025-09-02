@@ -1,5 +1,5 @@
 <cfoutput>
-    <table class="table table-hover" id="subscribersTable">
+    <table class="table table-hover" id="subscribersListTable">
         <thead>
             <tr>
                 <th>Email</th>
@@ -38,3 +38,9 @@
         </tbody>
     </table>
 </cfoutput> 
+<script>
+    var table = new DataTable('#subscribersListTable',{
+        "searching": false,
+        "lengthChange": false
+    });
+</script>
