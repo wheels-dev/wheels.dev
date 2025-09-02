@@ -3,7 +3,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <p class="fs-16 ms-2 fw-medium">Oops! looks like there's nothing here yet.</p>
-                <p class="fs-22 ms-2 mb-3 mt-3 fw-medium">Relative Posts</p>
+                <p class="fs-22 ms-2 mb-3 mt-3 fw-medium">You might be interested in:</p>
             </div>
         </div>
     </cfif>
