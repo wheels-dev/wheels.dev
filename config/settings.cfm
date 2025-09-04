@@ -23,7 +23,7 @@
 		To run with "partial" rewriting, the "cgi.path_info" variable needs to be supported by the web server.
 		To run with rewriting set to "on", you need to apply the necessary rewrite rules on the web server first.
 	*/
-	set(URLRewriting="Off");
+	set(URLRewriting="On");
 
 	// Reload your application with ?reload=true&password=wheels.fw
 	set(reloadPassword="wheels.fw");
