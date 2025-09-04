@@ -21,7 +21,12 @@ jobs:
           cp ./deploy/tests/dockerfile ./dockerfile
           cp ./deploy/tests/dockerfile_db ./dockerfile_db
           cp ./deploy/tests/init-db.sh ./init-db.sh
-          
+
+      - name: Install Wheels-cli
+        id: Install-Wheels-cli
+        run: |
+          box install wheels-cli
+
       - name: Install Dependencies
         id: Install-Dependencies
         run: |
@@ -119,7 +124,12 @@ jobs:
           cp ./deploy/stage/server.json ./
           cp ./deploy/stage/docker-compose.yml ./
           cp ./deploy/stage/dockerfile ./
-          
+
+      - name: Install Wheels-cli
+        id: Install-Wheels-cli
+        run: |
+          box install wheels-cli
+
       - name: Install Dependencies
         id: Install-Dependencies
         run: |
