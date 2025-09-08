@@ -175,6 +175,19 @@ component extends="testbox.system.BaseSpec" {
                 var data = deserializeJSON(response.filecontent);
                 expect(response.status_code).toBe(200);
                 expect(data.success).toBe("true");
+
+                var hasRememberCookie = false;
+                var rememberToken = "";
+
+                for (var i=1; i <= local.response.cookies.recordCount; i++) {
+                    if (uCase(local.response.cookies.name[i]) == "REMEMBER_ME") {
+                        hasRememberCookie = true;
+                        rememberToken = local.response.cookies.value[i];
+                        break;
+                    }
+                }
+
+                expect(hasRememberCookie).toBeTrue("REMEMBER_ME cookie should be set");
             });
         });
 

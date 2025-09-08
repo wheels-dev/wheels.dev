@@ -154,21 +154,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form hx-post="/admin/newsletter/send" 
-                          hx-target="##newsletterResponse"
-                          hx-swap="innerHTML">
+                    <form hx-post="/admin/newsletter/send" hx-swap="none">
                         <div class="mb-3">
-                            <label for="subject" class="form-label">Newsletter Subject</label>
+                            <label for="subject" class="form-label mb-2">Newsletter Subject</label>
                             <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter newsletter subject" required>
                         </div>
                         <div class="mb-3">
-                            <label for="content" class="form-label">Newsletter Content</label>
+                            <label for="content" class="form-label mb-2">Newsletter Content</label>
                             <textarea class="form-control" id="content" name="content" rows="10" placeholder="Write your newsletter content here..." required></textarea>
                         </div>
-                        <div id="newsletterResponse"></div>
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
                                 <i class="bi bi-send me-2"></i>Send Newsletter
                             </button>
                         </div>
