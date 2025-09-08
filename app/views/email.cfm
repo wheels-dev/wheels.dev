@@ -23,6 +23,7 @@
                 background: #e7e7e7;
                 padding: 6px;
                 border-radius: 8px;
+                margin-top: 8px;
             }
             .logo {
                 width: 120px;
@@ -99,12 +100,17 @@
                 <cfif structKeyExists(params, "welcomeMessage") AND params.welcomeMessage neq "">
                     <h1 class="mt-4">#params.welcomeMessage#</h1>
                 </cfif>
-                <h2 class="mt-4">Dear #params.name#</h2>
+                <cfif structKeyExists(params, "name")>
+                    <h2 class="mt-4">Dear #params.name#</h2>
+                </cfif>
+                <cfif structKeyExists(params, "subject")>
+                    <h2 class="mt-4">#params.subject#</h2>
+                </cfif>
                 <p class="mb-4">#params.content#</p>
-                <cfif params.buttonTitle neq "">
+                <cfif structKeyExists(params, "buttonTitle") and params.buttonTitle neq "">
                     <a href="#params.URl#" class="button"> #params.buttonTitle# </a>
                 </cfif>
-                <cfif params.footerNote neq "">
+                <cfif structKeyExists(params, "footerNote") and params.footerNote neq "">
                     <p class="footer">#params.footerNote#</p>
                 </cfif>
 
@@ -118,10 +124,10 @@
                     <a href="https://wheels.dev/guides" target="_blank" class="button-start"> Get Started </a>
                     <a style="margin-left : 8px;" href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="button-download"> Download </a>
                 </div>
-                <cfif params.closingRemark neq "">
+                <cfif structKeyExists(params, "closingRemark") and params.closingRemark neq "">
                     <p style="font-size: 14px;">#params.closingRemark#</p>
                 </cfif>
-                <cfif params.teamSignature neq "">
+                <cfif structKeyExists(params, "teamSignature") and params.teamSignature neq "">
                     <h5 style="margin-top: 5px !important; font-size: 14px;">#params.teamSignature#<h5>
                 </cfif>
                 <div class="signatureBox">
