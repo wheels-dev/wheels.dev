@@ -28,7 +28,6 @@ component output="false" {
 
 	// We turn on "sessionManagement" by default since the Flash uses it.
 	this.sessionManagement = true;
-	this.sessionTimeout = createTimeSpan(0, 0, 30, 0); // 30 minutes idle timeout
 
 	// If a plugin has a jar or class file, automatically add the mapping to this.javasettings.
 	this.wheels.pluginDir = this.appDir & "../plugins";
