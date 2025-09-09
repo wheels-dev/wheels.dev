@@ -19,8 +19,10 @@
                         <div class="d-flex blogs align-items-center justify-content-lg-end justify-content-start gap-3 flex-wrap">
 
                             <cfif isEditor>
-                                <a href="/blog/create"
-                                    class="bg--primary text-white text-center d-none py-2 fs-16 rounded-3 col-4">Create New Article</a>
+                                <cfoutput>
+                                    <a href="#urlFor(route='blog-create')#"
+                                        class="bg--primary text-white text-center d-none py-2 fs-16 rounded-3 col-4">Create New Article</a>
+                                </cfoutput>
                             </cfif>
 
                             <button onclick="handleBlogFilter('All', this)" hx-swap="innerHTML"

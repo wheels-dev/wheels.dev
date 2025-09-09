@@ -68,28 +68,29 @@
                         <div class="invalid-feedback" data-field-error="password">Password must be at least 8 characters long.</div>
                         <div class="invalid-feedback" data-empty-error="password">Password field cannot be empty!</div>
                     </div>
-
-                    <div class="space-y-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input form-check-input-primary" id="rememberMe" name="rememberMe" aria-label="Remember Me">
-                                <label class="form-check-label fs-14 text--secondary" for="rememberMe">Remember me</label>
+                    <cfoutput>
+                        <div class="space-y-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input form-check-input-primary" id="rememberMe" name="rememberMe" aria-label="Remember Me">
+                                    <label class="form-check-label fs-14 text--secondary" for="rememberMe">Remember me</label>
+                                </div>
+                                <a href="#urlFor(route='forgot-password')#" class="text--primary fw-medium fs-14 hover:text-primary" data-hx-boost="false">Forgot Password?</a>
                             </div>
-                            <a href="/auth/forgot-password" class="text--primary fw-medium fs-14 hover:text-primary" data-hx-boost="false">Forgot Password?</a>
-                        </div>
 
-                        <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16 hover:bg-primary-dark transition-all" aria-label="Login Button">
-                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span class="button-text">Login</span>
-                        </button>
+                            <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16 hover:bg-primary-dark transition-all" aria-label="Login Button">
+                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                <span class="button-text">Login</span>
+                            </button>
 
-                        <div class="text-center">
-                            <p class="fs-14 text--secondary fw-medium">
-                                Don't have an account?
-                                <a href="/register" class="text--primary hover:text-primary" data-hx-boost="false">Register</a>
-                            </p>
+                            <div class="text-center">
+                                <p class="fs-14 text--secondary fw-medium">
+                                    Don't have an account?
+                                    <a href="#urlFor(route='register')#" class="text--primary hover:text-primary" data-hx-boost="false">Register</a>
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </cfoutput>
                 </form>
             </div>
             <div class="position-absolute d-lg-block d-none" style="left: -225px; top: 38%;">

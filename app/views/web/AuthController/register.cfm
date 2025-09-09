@@ -197,12 +197,14 @@
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                             <span class="button-text">Register</span>
                             </button>
-                            <div class="text-center">
-                                <p class="fs-14 text--secondary fw-medium">
-                                    Have an account ?
-                                    <a href="/login" class="text--primary">Login</a>
-                                </p>
-                            </div>
+                            <cfoutput>
+                                <div class="text-center">
+                                    <p class="fs-14 text--secondary fw-medium">
+                                        Have an account ?
+                                        <a href="#urlFor(route='login')#" class="text--primary">Login</a>
+                                    </p>
+                                </div>
+                            </cfoutput>
                         </div>
                     </form>
                 </div>

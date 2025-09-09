@@ -490,7 +490,9 @@
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 								<cfif hasEditorAccess()>
-									<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add a Blog</a></li>
+									<cfoutput>
+										<li><a class="dropdown-item fw-normal text--secondary" href="#urlFor(route='blog-create')#">Add a Blog</a></li>
+									</cfoutput>
 								</cfif>
 									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues/new/choose">Report an issue</a></li>
 									<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Start new Disscussion</a></li>
@@ -518,10 +520,10 @@
 									<cfoutput>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='adminuser-changePassword')#">Change Password</a></li>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlfor(route="adminUser-update-profile-pic")#">Update Profile Pic</a></li>
+										<li><hr class="dropdown-divider"></li>
+										<li><a class="dropdown-item fw-normal" href="#urlFor(route='auth-logout')#">Logout</a></li>
 									</cfoutput>
 
-									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item fw-normal" href="/logout">Logout</a></li>
 								</ul>
 							</div>
 						</cfif>
@@ -533,21 +535,22 @@
 					</div>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary ms-auto mb-2 mb-lg-0 align-items-center">
+							<cfoutput>
 							<li class="nav-item px-3">
 								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1">Source</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isDocs or isGuideDocs>active</cfif>" aria-current="page" href="/docs">Docs</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isDocs or isGuideDocs>active</cfif>" aria-current="page" href="#urlFor(route='docs')#">Docs</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isCommunity>active</cfif>" aria-current="page" href="/community">Community</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isCommunity>active</cfif>" aria-current="page" href="#urlFor(route='community')#">Community</a>
 							</li>
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isNews>active</cfif>" aria-current="page" href="/news">News</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isNews>active</cfif>" aria-current="page" href="#urlFor(route='news')#">News</a>
 							</li>
 							<cfif isCurrentUserAdmin() and isLoggedInUser()>
 								<li class="nav-item px-3">
-									<a class="nav-link px-3 fw-normal py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/admin">Dashboard</a>
+									<a class="nav-link px-3 fw-normal py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="#urlFor(route='adminDashboard')#">Dashboard</a>
 								</li>
 							</cfif>
 							<cfif isLoggedInUser()>
@@ -557,7 +560,7 @@
 									</a>
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
 									<cfif hasEditorAccess()>
-										<li><a class="dropdown-item fw-normal text--secondary" href="/blog/create">Add a Blog</a></li>
+										<li><a class="dropdown-item fw-normal text--secondary" href="#urlFor(route='blog-create')#">Add a Blog</a></li>
 									</cfif>
 										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/issues/new/choose">Report an issue</a></li>
 										<li><a class="dropdown-item fw-normal text--secondary" target="_blank" href="https://github.com/wheels-dev/wheels/discussions/new/choose">Start new Disscussion</a></li>
@@ -588,16 +591,17 @@
 										</cfoutput>
 
 										<li><hr class="dropdown-divider"></li>
-										<li><a class="dropdown-item fw-normal" href="/logout">Logout</a></li>
+										<li><a class="dropdown-item fw-normal" href="#urlFor(route='auth-logout')#">Logout</a></li>
 									</ul>
 								</li>
 								<cfelse>
 								<li class="nav-item px-3">
-									<a class="nav-link fw-normal px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="/login">
+									<a class="nav-link fw-normal px-3 py-2 nav-link-hover rounded fs-16 text--secondary" aria-current="page" href="#urlFor(route='auth-login')#">
 										Login
 									</a>
 								</li>
 							</cfif>
+							</cfoutput>
 						</ul>
 					</div>
 				</div>
@@ -651,8 +655,8 @@
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a Tutorial</a></li>
 									<li class="mt-2"><a href="https://wheels.dev/guides" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Read the Guides</a></li>
-									<li class="mt-2"><a href="/api/v3.0.0"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">API Documentation</a></li>
+									<li class="mt-2"><cfoutput><a href="#urlFor(route='docVersion', version='v3.0.0')#"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">API Documentation</a></cfoutput></li>
 									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/discussions" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Join the Conversation</a></li>
 									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels" target="_blank"
@@ -662,34 +666,36 @@
 							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">Meta</h6>
 								<ul class="list-unstyled">
+									<cfoutput>
 									<cfif isLoggedInUser()>
 										<li class="mt-2">
 											<a class="text--secondary fs-14 text-decoration-none cursor-pointer">
 												<cfoutput>#session.username#</cfoutput>
 											</a>
 										</li>
-										<li class="mt-2"><a href="/logout"
+										<li class="mt-2"><a href="#urlFor(route ='auth-logout')#"
 												class="text--secondary fs-14 text-decoration-none cursor-pointer">Logout</a>
 										</li>
 									<cfelse>
-										<li class="mt-2"><a href="/login"
+										<li class="mt-2"><a href="#urlFor(route='auth-login')#"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Login</a>
 										</li>
-										<li class="mt-2"><a href="/register"
+										<li class="mt-2"><a href="#urlFor(route='auth-register')#"
 												class="text--secondary fs-14 text-decoration-none cursor-pointer">Register</a>
 										</li>
 									</cfif>
 
-									<li class="mt-2"><a href="/blog/feed"
+									<li class="mt-2"><a href="#urlFor(route='blogFeed')#"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Blog Feed</a>
 									</li>
-									<li class="mt-2"><a href="/comment/feed"
+									<li class="mt-2"><a href="#urlFor(route='commentFeed')#"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">RSS Comments
 											Feed</a>
 									</li>
 									<li class="mt-2"><a
 											class="text--secondary fs-14 text-decoration-none cursor-pointer"></a>
 									</li>
+									</cfoutput>
 								</ul>
 							</div>
 							<div class="col-lg-2 text-lg-start text-center">
@@ -713,9 +719,11 @@
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Sponsor
 											Us</a>
 									</li>
-									<li class="mt-2"><a href="/community"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Community</a>
-									</li>
+									<cfoutput>
+										<li class="mt-2"><a href="#urlFor(route='community')#"
+												class="text--secondary fs-14 text-decoration-none cursor-pointer">Community</a>
+										</li>
+									</cfoutput>
 								</ul>
 							</div>
 						</div>

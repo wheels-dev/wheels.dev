@@ -78,7 +78,7 @@
                     <div class="d-flex justify-content-between flex-wrap gap-2 align-items-start">
                         <button type="submit" class="bg--secondary text-white px-3 py-2 rounded fs-14">Save User</button>
                         <p class="mb-2 fs-14">
-                            <a href="/admin/user" class="text-primary">Back to User List</a>
+                            <a href="#urlFor(route='adminUser')#" class="text-primary">Back to User List</a>
                         </p>
                     </div>
                 </form>
