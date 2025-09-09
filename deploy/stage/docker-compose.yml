@@ -12,13 +12,20 @@ services:
         delay: 15s
       placement:
         constraints: []
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     ports:
 #      - "50151:60151"
       - target: 60151
         published: 50151
         protocol: tcp
-        mode: ingress
-#        mode: host       # <-- This disables routing mesh
+#        mode: ingress
+        mode: host       # <-- This disables routing mesh
     environment:
       - PORT=60151
       - HEALTHCHECK_URI=http://127.0.0.1:60151/

@@ -94,7 +94,7 @@ component extends="app.Controllers.Controller" {
             }
             
             // Get all active subscribers
-            var userSubscribers = model("User").findAll(where="newsletter = true");
+            var userSubscribers = model("User").findAll(where="newsletter = 'true'");
             var nonUserSubscribers = model("NewsletterSubscriber").findAll(where="status = 'active'");
             
             // Log the newsletter send attempt
@@ -111,14 +111,14 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = session.userID
             );
-            
+
             // Send to user subscribers
             for (var user in userSubscribers) {
                 sendEmail(
                     to=user.email,
                     from=application.env.mail_from,
                     subject=subject,
-                    template="template",
+                    template="/email",
                     content=content,
                     subscriber=user.email,
                     type="html"
@@ -131,7 +131,7 @@ component extends="app.Controllers.Controller" {
                     to=subscriber.email,
                     from=application.env.mail_from,
                     subject=subject,
-                    template="template",
+                    template="newsTemplate",
                     content=content,
                     subscriber=subscriber.email,
                     type="html"
@@ -151,11 +151,11 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = session.userID
             );
-            
-            return renderWith(data={
+            data={
                 success: true,
                 message: "Newsletter sent successfully!"
-            });
+            }
+            return renderText(SerializeJson(data));
         } catch (any e) {
             // Log the error
             model("Log").log(
@@ -172,10 +172,11 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = session.userID
             );
-            return renderWith(data={
+            data={
                 success: false,
                 message: "An error occurred while sending the newsletter."
-            });
+            }
+            return renderText(SerializeJson(data));
         }
     }
 

@@ -21,7 +21,7 @@ settings.json
 settings.xml
 *.db
 *.log
-/app/plugins
+/plugins
 /app/lib
 
 # Exclude everything in public/files
