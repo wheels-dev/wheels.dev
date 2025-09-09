@@ -81,7 +81,7 @@
     
                         <input type="hidden" name="isDraft" id="isDraft" value="0">
                         <div class="text-end">
-                            <a href="/admin/blog" type="button" class="btn btn-dark px-sm-5 fs-14">
+                            <a href="#urlFor(route='blog')#" type="button" class="btn btn-dark px-sm-5 fs-14">
                                 Cancel
                             </a>
                             <button type="submit" class="btn bg--primary text-white px-sm-5 fs-14">Submit</button>

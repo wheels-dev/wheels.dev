@@ -147,7 +147,7 @@
                             Rails team: <br>
                             <cfoutput>
                                 <cfloop from="1" to="#arrayLen(coreTeam)#" index="i">
-                                    <a class="text-decoration-underline text--primary fw-bold fs-18" href="/community">
+                                    <a class="text-decoration-underline text--primary fw-bold fs-18" href="#urlFor(route='community')#">
                                         #coreTeam[i].name#
                                     </a>
                                     <cfif i LT arrayLen(coreTeam)>
