@@ -185,7 +185,7 @@ component extends="app.Controllers.Controller" {
                 if (structKeyExists(params, "rememberMe")) {
                     var token = createRememberMeToken(user);
                     if (len(token)) {
-                        cfcookie(name="remember_me", value=token, expires="07", secure="true", httponly="true");
+                        cfcookie(name="remember_me", value=token, expires="07", secure="true", httponly="true", samesite="Strict");
                     } else {
                         model("Log").log(
                             category = "wheels.auth",
@@ -890,6 +890,7 @@ component extends="app.Controllers.Controller" {
             var hashedToken = hash(token, "SHA-256");
             var rememberToken = model("RememberToken").new();
             rememberToken.token = hashedToken;
+            rememberToken.userAgent = cgi.http_user_agent;
             rememberToken.userId = user.id;
             rememberToken.expiresAt = dateAdd("d", 07, now());
             
