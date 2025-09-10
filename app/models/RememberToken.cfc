@@ -19,6 +19,15 @@ component extends="app.Models.Model" {
             limit=255
         );
 
+        // User Agent
+        property(
+            name="userAgent", 
+            column="user_agent", 
+            dataType="string", 
+            label="User Agent", 
+            limit=255
+        );
+
         // User ID Property
         property(
             name="userId", 

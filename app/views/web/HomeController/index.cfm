@@ -14,11 +14,13 @@
             </p>
             <div class="row g-3 justify-content-center w-100 mt-1 align-items-center">
                 <div class="col-md-auto text-center">
-                    <a href="/guides" class="">
-                        <button class="fs-16 fw-semibold bg--primary w-200 py-2 rounded-4 text-white">
-                            Get Started
-                        </button>
-                    </a>
+                    <cfoutput>
+                        <a href="#urlFor(route='load-Guides')#" class="">
+                            <button class="fs-16 fw-semibold bg--primary w-200 py-2 rounded-4 text-white">
+                                Get Started
+                            </button>
+                        </a>
+                    </cfoutput>
                 </div>
                 <div class="col-md-auto text-center">
                     <a href="https://github.com/wheels-dev/wheels/releases" class="" target="_blank">
@@ -122,7 +124,16 @@
         </div>
     </div>
     </cfoutput>
-
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="cookie-banner">
+        <p style="margin: 0; line-height: 1.4;">
+            This website uses essential cookies to improve your experience. By continuing to use the site, you consent to the use of cookies.
+        </p>
+        <div style="text-align: right;">
+            <button id="accept-cookies" class="fs-16 fw-semibold bg--success w-90 py-1 rounded-2 text--secondary">OK</button>
+        </div>
+    </div>
+    
     <!-- Testimonials -->
     <cfoutput>
     <cfif testimonials.recordCount GT 0>
