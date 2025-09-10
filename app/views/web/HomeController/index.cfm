@@ -124,7 +124,16 @@
         </div>
     </div>
     </cfoutput>
-
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="cookie-banner">
+        <p style="margin: 0; line-height: 1.4;">
+            This website uses essential cookies to improve your experience. By continuing to use the site, you consent to the use of cookies.
+        </p>
+        <div style="text-align: right;">
+            <button id="accept-cookies" class="fs-16 fw-semibold bg--success w-90 py-1 rounded-2 text--secondary">OK</button>
+        </div>
+    </div>
+    
     <!-- Testimonials -->
     <cfoutput>
     <cfif testimonials.recordCount GT 0>

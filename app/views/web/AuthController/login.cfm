@@ -86,7 +86,7 @@
                             <div class="text-center">
                                 <p class="fs-14 text--secondary fw-medium">
                                     Don't have an account?
-                                    <a href="#urlFor(route='register')#" class="text--primary hover:text-primary" data-hx-boost="false">Register</a>
+                                    <a href="#urlFor(route='auth-register')#" class="text--primary hover:text-primary" data-hx-boost="false">Register</a>
                                 </p>
                             </div>
                         </div>
