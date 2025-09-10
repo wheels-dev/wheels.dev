@@ -397,7 +397,7 @@ component extends="app.Controllers.Controller" {
             },
             userId = GetSignedInUserId()
         );
-        categorylist = model("Category").getAll();
+        categorylist = model("Category").findAll(where="isActive='true'");
         renderPartial(partial="partials/categorylist");
     }
 

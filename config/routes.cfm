@@ -90,7 +90,6 @@
 			.get(name="loadFunctionsBySection", pattern="api/*[version]/functions/section", to="web.ApiController##loadFunctionsBySection")
 			.get(name="loadFunctionsBySectionAndCategory", pattern="api/*[version]/functions/sectionCategory", to="web.ApiController##loadFunctionsBySectionAndCategory")
 			.get(name="docFunction", pattern="api/*[version]/*[slug]/.[format]", to="web.ApiController##show")
-			.get(name="docFunction", pattern="api/*[version]/*[slug]/", to="web.ApiController##show")
 			.get(name="docVersion", pattern="api/*[version]/", to="web.ApiController##index")
 
 			// SEO Routes

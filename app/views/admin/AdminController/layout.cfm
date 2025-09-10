@@ -80,7 +80,7 @@
                                 </a>
                             </div>
                             <div class="nav-item-wrapper mb-3">
-                                <a class="nav-link label-1" href="#urlFor(route='blog')#" role="button" data-bs-toggle="" aria-expanded="false">
+                                <a class="nav-link label-1" href="#urlFor(route='adminblog')#" role="button" data-bs-toggle="" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><i class="bi bi-chat-left-text-fill fs-18"></i></span><span class="nav-link-text-wrapper"><span class="nav-link-text fs-14">Blogs</span></span>
                                     </div>
                                 </a>
@@ -190,7 +190,7 @@
                             <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border" aria-labelledby="navbarDropdownUser">
                                 <div class="card position-relative border-0">
                                 <div class="card-body p-0">
-                                    <div class="text-center pt-4 pb-3">
+                                    <div class="text-center pt-4">
                                     <div class="avatar avatar-xl ">
                                         <cfoutput>
                                             <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
@@ -206,10 +206,8 @@
                                     </div>
                                     <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>
                                     </div>
-                                    <div class="mb-3 mx-3">
-                                    <input class="form-control form-control-sm" id="statusUpdateInput" type="text" placeholder="Update your status" />
-                                    </div>
                                 </div>
+                                <hr>
                                 <cfoutput>
                                 <div class="overflow-auto scrollbar" style="height: 3rem;">
                                     <ul class="nav d-flex flex-column mb-2 pb-1">
@@ -218,7 +216,7 @@
                                 </div>
                                 <div class="card-footer p-0 border-top border-translucent">
                                     <div class="px-3 my-3"> <a class="btn btn-phoenix-secondary d-flex flex-center w-100" href="#urlFor(route='auth-logout')#"> <span class="me-2" data-feather="log-out"> </span>Sign out</a></div>
-                                    <div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a class="text-body-quaternary me-1" href="javascript:void(0)">Privacy policy</a>&bull;<a class="text-body-quaternary mx-1" href="javascript:void(0)">Terms</a>&bull;<a class="text-body-quaternary ms-1" href="javascript:void(0)">Cookies</a></div>
+                                    <!---<div class="my-2 text-center fw-bold fs-10 text-body-quaternary"><a class="text-body-quaternary me-1" href="javascript:void(0)">Privacy policy</a>&bull;<a class="text-body-quaternary mx-1" href="javascript:void(0)">Terms</a>&bull;<a class="text-body-quaternary ms-1" href="javascript:void(0)">Cookies</a></div>--->
                                 </div>
                                 </cfoutput>
                                 </div>
