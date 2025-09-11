@@ -125,6 +125,29 @@
                         </div>
                     </a>
                 </div>
+
+            </div>
+        </div>
+        <div class="mt-5">
+            <div class="row mt-lg-5 mt-3">
+                <div class="col-lg-4 col-12 mt-lg-0 mt-5">
+                    <a class="position-relative d-block docs-container bg-white border-2 px-4 py-5 cursor-pointer rounded-4 border--lightGray hover:border--primary"
+                        aria-current="page" target="_blank" href="https://marketplace.visualstudio.com/items?itemName=wheels-dev.wheels-vscode">
+                        <div class="docs-badge d-flex align-items-center gap-2 bg--primary px-3 py-2 text-white">
+                            <p class="fw-bold text-uppercase fs-12">Install</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <p class="fw-bold pb-2 fs-22 text-decoration-underline">Wheels VS Code Extension</p>
+                            <p class="text--secondary fw-normal">
+                                Enhance your Wheels development workflow with intelligent code snippets.
+                            </p>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
