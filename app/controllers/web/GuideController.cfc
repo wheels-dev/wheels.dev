@@ -118,7 +118,12 @@ component extends="app.Controllers.Controller" {
                     redirectTo(route="load-Guides", params="filePath=#params.path#&version=#params.version#");
                 }
             }else{
-                redirectTo(route="load-Guides", error="Page not found.");
+                if(isHtmx()){
+                    renderedContent = "<p style='color:red;'>Page not found!</p>";
+                    renderPartial(partial="partials/docsContent");
+                }else{
+                    redirectTo(route="load-Guides", error="Page not found.");
+                }
             }
         }catch(any e){
             redirectTo(route="load-Guides", error="Something went wrong!");
