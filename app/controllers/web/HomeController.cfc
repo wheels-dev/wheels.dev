@@ -481,7 +481,6 @@ component extends="app.Controllers.Controller" {
             renderText(text="Sitemap generated successfully! <a href='/sitemap.xml'>View Sitemap</a>");
             
         } catch (any e) {
-            writeDump(e);abort;
             model("Log").log(
                 category = "wheels.seo",
                 level = "ERROR",
@@ -498,7 +497,7 @@ component extends="app.Controllers.Controller" {
     }
     
     function downloads() {
-        redirectTo(url="https://github.com/wheels-dev/wheels/releases", statusCode=301);
+        // redirectTo(url="https://github.com/wheels-dev/wheels/releases", statusCode=301);
     }
 
     private string function getBaseUrl() {
