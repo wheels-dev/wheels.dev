@@ -196,12 +196,61 @@
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contributors</p>
         </div>
-        <div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
+        <!---<div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
             <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
                 <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;" alt="GitHub Contributors for Wheels">
             </a>
-        </div>
+        </div>--->
     </div>
+
+    <div class="py-5 px-2 blog-main">
+        <cfoutput>
+            <div class="swiper mySwiper2 h-max">
+                <div class="swiper-wrapper" id="contributors-container">
+                    <cfloop array="#contributors#" index="c">
+                        <div class="swiper-slide">
+                            <div class="contributor">
+                                <img src="#c.avatar_url#" alt="#c.login#">
+                            </div>
+                        </div>
+                    </cfloop>
+                </div>
+            </div>
+            <div style="--swiper-navigation-color: ##fff; --swiper-pagination-color: ##fff" thumbsSlider="" class="swiper mySwiper mt-2">
+                <div class="swiper-wrapper">
+                    <cfloop array="#contributors#" index="c">
+                        <div class="swiper-slide">
+                            <div class="contributor">
+                                <img src="#c.avatar_url#" alt="#c.login#" width="80" height="80" style="border-radius:50%;">
+                            </div>
+                        </div>
+                    </cfloop>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </cfoutput>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var swiper = new Swiper(".mySwiper", {
+                    spaceBetween: 15,
+                    slidesPerView: 8,
+                    freeMode: true,
+                    watchSlidesProgress: true,
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+                });
+                var swiper2 = new Swiper(".mySwiper2", {
+                spaceBetween: 10,
+                thumbs: {
+                        swiper: swiper,
+                    },
+            });
+        });
+    </script>
 
     <!-- Testimonial Popup Modal -->
     <cfif settings.enableTestimonial>
