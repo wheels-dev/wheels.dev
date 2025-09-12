@@ -32,6 +32,16 @@ component extends="app.Controllers.Controller" {
             onlyFeatured = true,
             perPage = 10
         );
+
+        // GitHub contributors API
+        var apiUrl = "https://api.github.com/repos/wheels-dev/wheels/contributors";
+        var result;
+        // GitHub requires a User-Agent header
+        cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
+            cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
+        }
+        
+        contributors = deserializeJson(resp.fileContent);
         settings = model("Setting").findAll();
         blogs = model('Blog').getTenLatest(); // Get blog list
         features = getAllFeatures();
