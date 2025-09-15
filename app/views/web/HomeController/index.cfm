@@ -192,65 +192,69 @@
     </cfif>
 
     <!-- Top contribute -->
-    <div class="container py-5 mt-5">
+    <!---<div class="container py-5 mt-5">
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contributors</p>
         </div>
-        <!---<div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
+        <div class="d-flex flex-wrap justify-content-center mt-5 gap-3">
             <a href="https://github.com/wheels-dev/wheels/graphs/contributors" target="_blank">
                 <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;" alt="GitHub Contributors for Wheels">
             </a>
-        </div>--->
-    </div>
-
-    <div class="py-5 px-2 blog-main">
+        </div>
+    </div>--->
+    <div <cfif arrayLen(contributors) neq 0> class="container mt-5 py-5"<cfelse> class="d-none container mt-5 py-5"</cfif>>
+        <div class="text-center">
+            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">
+                Our Top Contributer
+            </p>
+        </div>
         <cfoutput>
-            <div class="swiper mySwiper2 h-max">
-                <div class="swiper-wrapper" id="contributors-container">
+            <div class="swiper contributorsSwiper mt-5">
+                <div class="swiper-wrapper">
                     <cfloop array="#contributors#" index="c">
-                        <div class="swiper-slide">
-                            <div class="contributor">
-                                <img src="#c.avatar_url#" alt="#c.login#">
+                        <div class="swiper-slide overflow-hidden rounded-30">
+                            <div class="p-5 bg-white overflow-hidden d-flex row">
+                                <div class="col-lg-8 col-12">
+                                    <p class="fs-36 fw-bold text--secondary">#c.name#</p>
+                                    <p class="fs-18 text--lightGray fw-medium">
+                                        Contributed as a Software Developer
+                                    </p>
+                                    <p class="fs-16 pt-4 text--secondary fw-normal">
+                                        Lorem Ipsum is simply dummy text of the printing and
+                                        typesetting industry. Lorem Ipsum has been the
+                                        industry's standard dummy text ever since the 1500s,
+                                        when an unknown printer took a galley of type and
+                                        scrambled it to make a type specimen book. It has
+                                        survived not only five centuries, but also the leap
+                                        into electronic typesetting, remaining essentially
+                                        unchanged.
+                                    </p>
+                                </div>
+                                <div class="col-lg-4 col-12">
+                                    <img src="#c.avatar_url#" alt="#c.login#"/>
+                                </div>
                             </div>
                         </div>
                     </cfloop>
                 </div>
             </div>
-            <div style="--swiper-navigation-color: ##fff; --swiper-pagination-color: ##fff" thumbsSlider="" class="swiper mySwiper mt-2">
+            <div class="swiper contributorsSwiperThumb mt-5">
                 <div class="swiper-wrapper">
                     <cfloop array="#contributors#" index="c">
-                        <div class="swiper-slide">
-                            <div class="contributor">
-                                <img src="#c.avatar_url#" alt="#c.login#" width="80" height="80" style="border-radius:50%;">
-                            </div>
+                        <div class="swiper-slide d-flex justify-content-center align-items-center">
+                            <img
+                                class="rounded-circle size-100"
+                                src="#c.avatar_url#"
+                            />
                         </div>
                     </cfloop>
                 </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next contributors-swiper-button-next end-0"></div>
+                <div class="swiper-button-prev contributors-swiper-button-prev start-0"></div>
+                </div>
             </div>
         </cfoutput>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var swiper = new Swiper(".mySwiper", {
-                    spaceBetween: 15,
-                    slidesPerView: 8,
-                    freeMode: true,
-                    watchSlidesProgress: true,
-                    navigation: {
-                        nextEl: ".swiper-button-next",
-                        prevEl: ".swiper-button-prev",
-                    },
-                });
-                var swiper2 = new Swiper(".mySwiper2", {
-                spaceBetween: 10,
-                thumbs: {
-                        swiper: swiper,
-                    },
-            });
-        });
-    </script>
 
     <!-- Testimonial Popup Modal -->
     <cfif settings.enableTestimonial>
