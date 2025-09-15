@@ -33,7 +33,14 @@
 		connectionLimit:#toNumeric(this.env.wheelsdev_connectionlimit)#, // default:-1
 		storage:#not(!this.env.wheelsdev_storage)# // default: false
 	};
-
+	this.cache.connections["contributors"] = {
+		class: 'lucee.runtime.cache.ram.RamCache'
+		, storage: true
+		, custom: {
+			"outOfMemory":"true",
+			"timeToIdleSeconds":3600,"timeToLiveSeconds":3600}
+		, default: 'object'
+	};
 	  this.mailservers =[ {
     host: '#this.env.smtp_host#'
     , port: #toNumeric(this.env.smtp_port)#

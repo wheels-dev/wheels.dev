@@ -34,14 +34,45 @@ component extends="app.Controllers.Controller" {
         );
 
         // GitHub contributors API
-        var apiUrl = "https://api.github.com/repos/wheels-dev/wheels/contributors";
-        var result;
-        // GitHub requires a User-Agent header
-        cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
-            cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
+        cacheKey = "github_contributors";
+        contributors = cacheGet(cacheKey);
+        if (isNull(contributors) OR !isArray(contributors)) {
+            var apiUrl = "https://api.github.com/repos/wheels-dev/wheels/contributors?per_page=50";
+            // GitHub requires a User-Agent header
+            cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
+                cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
+            }
+            contributors = deserializeJson(resp.fileContent);
+            if (listFirst(resp.statusCode, " ") EQ "200") {
+                contributors = deserializeJson(resp.fileContent);
+
+                // loop contributors and enrich with real name
+                for (i=1; i <= arrayLen(contributors); i++) {
+                    username = contributors[i].login;
+                    userUrl = "https://api.github.com/users/" & username;
+
+                    cfhttp(url=userUrl, method="get", timeout=30, result="userResp") {
+                        cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
+                    }
+
+                    if (listFirst(userResp.statusCode, " ") EQ "200") {
+                        userData = deserializeJson(userResp.fileContent);
+
+                        // GitHub may return null if no name is set
+                        if (structKeyExists(userData, "name") AND len(trim(userData.name))) {
+                            contributors[i].name = userData.name;
+                        } else {
+                            contributors[i].name = contributors[i].login; // fallback if not set
+                        }
+                    } else {
+                        contributors[i].name = ""; // fallback if user API call fails
+                    }
+                }
+            } else {
+                contributors = []; // empty array if main API fails
+            }
+            cachePut(cacheKey, contributors, 3600);
         }
-        
-        contributors = deserializeJson(resp.fileContent);
         settings = model("Setting").findAll();
         blogs = model('Blog').getTenLatest(); // Get blog list
         features = getAllFeatures();
