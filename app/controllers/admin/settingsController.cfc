@@ -1,7 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,enableTestimonials,updateSlackInvite,checkAdminAccess,checkRoleExistance,contributors,syncContributors", params="key", paramsTypes="integer");
+        verifies(except="index,enableTestimonials,updateSlackInvite,checkAdminAccess,checkRoleExistance,contributors,syncContributors,editContributors,storeContributors", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -48,6 +48,7 @@ component extends="app.Controllers.Controller" {
             cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
                 cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
             }
+            
             contributors = deserializeJson(resp.fileContent);
             if (listFirst(resp.statusCode, " ") EQ "200") {
                 contributors = deserializeJson(resp.fileContent);
@@ -92,8 +93,43 @@ component extends="app.Controllers.Controller" {
             cachePut(cacheKey, contributors, 3600);
             redirectTo(route="adminget-contributors", text="Contributors sync successfully.");
         }catch(any e){
-            renderText("Error! while sync the contributors detail.")
+            renderText("Error! while sync the contributors detail.");
         }
+    }
+
+    function editContributors(){
+        contributor = model("contributor").findOnebyId(params.id);
+        roles = model("contributor_role").findAll();
+    }
+
+    function storeContributors() {
+        // get params safely
+        var contributorId = params.id ?: "";
+        var contributor   = model("Contributor").findOneById(contributorId);
+
+        // if not found, create new
+        if (!isObject(contributor)) {
+            contributor = model("Contributor").new();
+        }
+        // assign simple fields
+        contributor.name        = params.name ?: "";
+        contributor.username    = params.username ?: "";
+        contributor.description = params.description ?: "";
+
+        // handle roles array → comma-separated string
+        if (isArray(params.roles)) {
+            contributor.roles = arrayToList(params.roles, ",");
+        } else if (isSimpleValue(params.roles)) {
+            // single value case
+            contributor.roles = params.roles;
+        } else {
+            contributor.roles = "";
+        }
+
+        // save to DB
+        contributor.save();
+        redirectTo(action = "contributors", success="Contributor update successfully!")
+        
     }
 
     private boolean function isHtmx() {
