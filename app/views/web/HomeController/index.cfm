@@ -126,11 +126,14 @@
     </cfoutput>
     <!-- Cookie Consent Banner -->
     <div id="cookie-banner" class="cookie-banner">
-        <p style="margin: 0; line-height: 1.4;">
+        <button id="close-cookie-banner" aria-label="Dismiss" class="fs-14" style="position: absolute; top: 4px; right: 8px; border: none; background: transparent; font-size: 18px; cursor: pointer;">
+            &times;
+        </button>
+        <p class="mt-2" style="line-height: 1.4;">
             This website uses essential cookies to improve your experience. By continuing to use the site, you consent to the use of cookies.
         </p>
         <div style="text-align: right;">
-            <button id="accept-cookies" class="fs-16 fw-semibold bg--success w-90 py-1 rounded-2 text--secondary">OK</button>
+            <button id="accept-cookies" class="fs-14 fw-semibold bg--success px-2 py-1 rounded-2 text--secondary">Accept Necessary</button>
         </div>
     </div>
     
@@ -206,7 +209,7 @@
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">
                 Our Top Contributer
-            </p>
+        </p>
         </div>
         <cfoutput>
             <div class="swiper contributorsSwiper mt-5">
@@ -217,17 +220,10 @@
                                 <div class="col-lg-8 col-12">
                                     <p class="fs-36 fw-bold text--secondary">#c.name#</p>
                                     <p class="fs-18 text--lightGray fw-medium">
-                                        Contributed as a Software Developer
+                                        Contributed as a #c.role# 
                                     </p>
-                                    <p class="fs-16 pt-4 text--secondary fw-normal">
-                                        Lorem Ipsum is simply dummy text of the printing and
-                                        typesetting industry. Lorem Ipsum has been the
-                                        industry's standard dummy text ever since the 1500s,
-                                        when an unknown printer took a galley of type and
-                                        scrambled it to make a type specimen book. It has
-                                        survived not only five centuries, but also the leap
-                                        into electronic typesetting, remaining essentially
-                                        unchanged.
+                                    <p class="fs-16 pt-4 text--secondary fw-normal text-justify">
+                                        #c.description#
                                     </p>
                                 </div>
                                 <div class="col-lg-4 col-12">
