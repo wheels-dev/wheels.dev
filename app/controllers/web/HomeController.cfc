@@ -42,10 +42,8 @@ component extends="app.Controllers.Controller" {
             cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
                 cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
             }
-            contributors = deserializeJson(resp.fileContent);
             if (listFirst(resp.statusCode, " ") EQ "200") {
                 contributors = deserializeJson(resp.fileContent);
-
                 // loop contributors and enrich with real name
                 for (i=1; i <= arrayLen(contributors); i++) {
                     username = contributors[i].login;
@@ -66,6 +64,29 @@ component extends="app.Controllers.Controller" {
                         }
                     } else {
                         contributors[i].name = ""; // fallback if user API call fails
+                    }
+
+                    contributor = model("contributor").findOnebyUserName(username);
+                    if (!isNull(contributor)) {
+                        var roleIds = listToArray(contributor.roles, ",");
+                        var roleCount = arrayLen(roleIds);
+                        var roleString = "";
+
+                        for (var j=1; j <= roleCount; j++) {
+                            var role = model("contributor_role").findOneById(roleIds[j]);
+                            if (j == 1) {
+                                roleString &= role.rolename;
+                            } else if (j == roleCount) {
+                                roleString &= " and " & role.rolename;
+                            } else {
+                                roleString &= ", " & role.rolename;
+                            }
+                        }
+                        contributors[i].description = contributor.description;
+                        contributors[i].role = roleString;
+                    } else {
+                        contributors[i].description = "";
+                        contributors[i].role = "";
                     }
                 }
             } else {
