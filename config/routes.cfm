@@ -191,6 +191,9 @@
 			.post(name="updateSlackInvite", pattern="settings/updateSlackInvite", to="SettingsController##updateSlackInvite")
 			.get(name="get-contributors", pattern="contributors", to="SettingsController##contributors")
 			.get(name="sync-contributors", pattern="sync/contributors", to="SettingsController##syncContributors")
+			.post(name="edit-contributors", pattern="edit/contributors", to="SettingsController##editContributors")
+			.post(name="store-contributors", pattern="store/contributors", to="SettingsController##storeContributors")
+			.post(name="delete-contributors", pattern="delete/contributors", to="SettingsController##deleteContributors")
 		.end()
 
 
