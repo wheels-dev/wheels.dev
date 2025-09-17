@@ -43,6 +43,24 @@
                             The Slack invite link expires after 30 days. Make sure to update it regularly.
                         </small>
                     </div>
+
+                    <div class="mb-4">
+                        <h6 class="mb-3">Wheels Contributor</h6>
+                        <form hx-post="/admin/settings/updateContributorApi" hx-swap="none">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="wheelsContributorLink" 
+                                        placeholder="Enter wheels contributors github Link" 
+                                        value="#settings.wheelsContributorLink#">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Update Wheels Contributor API
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
