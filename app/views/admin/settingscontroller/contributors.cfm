@@ -90,9 +90,9 @@
 
     // Hide loader on success
     syncBtn.addEventListener("htmx:afterOnLoad", function(evt) {
-        const xhr = evt.detail.xhr
+        const xhr = evt.detail.xhr;
         label.textContent = "Sync Contributors";
-        if(xhr.status === 200 && xhr.responseURL.includes('admin/sync/contributors')){
+        if(xhr.status === 200 && xhr.responseURL.includes('admin/contributors')){
             notifier.show("Success", "Contributors synced successfully!", "success", "", 5000);
         }
     });

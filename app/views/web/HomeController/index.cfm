@@ -227,7 +227,7 @@
                                     </p>
                                 </div>
                                 <div class="col-lg-4 col-12">
-                                    <img src="#c.avatar_url#" alt="#c.login#"/>
+                                    <img src="#c.profilePic#" alt="#c.name# profile picture"/>
                                 </div>
                             </div>
                         </div>
@@ -240,7 +240,7 @@
                         <div class="swiper-slide d-flex justify-content-center align-items-center">
                             <img
                                 class="rounded-circle size-100"
-                                src="#c.avatar_url#"
+                                src="#c.profilePic#"
                             />
                         </div>
                     </cfloop>

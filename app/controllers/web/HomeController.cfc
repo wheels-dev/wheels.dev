@@ -34,16 +34,35 @@ component extends="app.Controllers.Controller" {
         );
 
         // GitHub contributors API
-        cacheKey = "github_contributors";
-        contributors = cacheGet(cacheKey);
-        if (isNull(contributors) OR !isArray(contributors)) {
-            var apiUrl = "https://api.github.com/repos/wheels-dev/wheels/contributors?per_page=50";
+        contributors = getContributors();
+        settings = model("Setting").findAll();
+        blogs = model('Blog').getTenLatest(); // Get blog list
+        features = getAllFeatures();
+        renderView();
+    }
+    
+    private function getContributors(){
+        var contributorsList = model("contributors").findAll();
+
+        if(contributorsList.recordCount == 0){
+            return [];
+        }
+
+        if(dateDiff("h", contributorsList.updatedAt, now()) >= 24){
+
+            var contributorLink = model("setting").findAll(select="wheelsContributorLink");
+            if(contributorLink.recordCount == 0 OR contributorLink.wheelsContributorLink == ""){
+                return [];
+            }
+            var apiUrl = contributorLink.wheelsContributorLink;
+            
             // GitHub requires a User-Agent header
             cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
                 cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
             }
             if (listFirst(resp.statusCode, " ") EQ "200") {
                 contributors = deserializeJson(resp.fileContent);
+
                 // loop contributors and enrich with real name
                 for (i=1; i <= arrayLen(contributors); i++) {
                     username = contributors[i].login;
@@ -62,44 +81,73 @@ component extends="app.Controllers.Controller" {
                         } else {
                             contributors[i].name = contributors[i].login; // fallback if not set
                         }
-                    } else {
-                        contributors[i].name = ""; // fallback if user API call fails
-                    }
 
-                    contributor = model("contributor").findOnebyUserName(username);
-                    if (isObject(contributor)) {
-                        var roleIds = listToArray(contributor.roles, ",");
-                        var roleCount = arrayLen(roleIds);
-                        var roleString = "";
+                        // === Insert only if not exists ===
+                        var existing = model("Contributor").findOneByUsername(username);
 
-                        for (var j=1; j <= roleCount; j++) {
-                            var role = model("contributor_role").findOneById(roleIds[j]);
-                            if (j == 1) {
-                                roleString &= role.rolename;
-                            } else if (j == roleCount) {
-                                roleString &= " and " & role.rolename;
-                            } else {
-                                roleString &= ", " & role.rolename;
-                            }
+                        if (!isObject(existing)) {
+                            var c = model("Contributor").new();
+                            c.name        = contributors[i].name;
+                            c.username    = contributors[i].login;
+                            c.description = "";
+                            c.roles       = "1";
+                            c.profilePic  = userData.avatar_url;
+                            c.contributions = contributors[i].contributions;
+                            c.profileAPI  = userData.url;
+                            c.save();
+                        }else{
+                            var c = existing;
+                            c.name        = contributors[i].name;
+                            c.username    = contributors[i].login;
+                            c.profilePic  = userData.avatar_url;
+                            c.contributions = contributors[i].contributions;
+                            c.profileAPI  = userData.url;
+                            c.save();
                         }
-                        contributors[i].description = contributor.description;
-                        contributors[i].role = roleString;
-                    } else {
-                        contributors[i].description = "";
-                        contributors[i].role = "Software Developer";
                     }
                 }
-            } else {
-                contributors = []; // empty array if main API fails
+                contributors = model("contributors").findAll();
+            }else{
+                contributors = contributorsList;
             }
-            cachePut(cacheKey, contributors, 3600);
+        }else{
+            contributors = contributorsList;
         }
-        settings = model("Setting").findAll();
-        blogs = model('Blog').getTenLatest(); // Get blog list
-        features = getAllFeatures();
-        renderView();
-    }
+        contributorsArray = [];
+        // Preload all roles to avoid N+1 queries
+        var rolesMap = {};
+        for (r in model("contributor_role").findAll()) {
+            rolesMap[r.id] = r.rolename;
+        }
 
+        for (row in contributors) {
+            var roleString = "";
+            var roleIds = (!isNull(row.roles) AND len(trim(row.roles))) ? listToArray(row.roles, ",") : [];
+
+            for (var j=1; j <= arrayLen(roleIds); j++) {
+                var roleName = rolesMap[ roleIds[j] ] ?: ""; // safe lookup
+
+                if (len(roleName)) {
+                    if (j == 1) {
+                        roleString &= roleName;
+                    } else if (j == arrayLen(roleIds)) {
+                        roleString &= " and " & roleName;
+                    } else {
+                        roleString &= ", " & roleName;
+                    }
+                }
+            }
+
+            contributor = {
+                "name"        : row.name,
+                "description" : row.description,
+                "role"        : roleString,
+                "profilePic"  : row.contributor_pic
+            };
+            arrayAppend(contributorsArray, contributor);
+        }
+        return contributorsArray;
+    }
     // Function to load features
     function loadFeatures() {
         try {

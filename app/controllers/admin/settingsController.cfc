@@ -1,7 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="index,enableTestimonials,updateSlackInvite,checkAdminAccess,checkRoleExistance,contributors,syncContributors,editContributors,storeContributors", params="key", paramsTypes="integer");
+        verifies(except="index,enableTestimonials,updateSlackInvite,checkAdminAccess,checkRoleExistance,contributors,syncContributors,editContributors,storeContributors,updateContributorApi", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -18,6 +18,16 @@ component extends="app.Controllers.Controller" {
         }else{
             model("setting").updateAll(enableTestimonial=false);
             message = "Testimonials disabled";
+        }
+        renderText(message);
+    }
+
+    function updateContributorApi(){
+        if(structKeyExists(params, "wheelsContributorLink")){
+            model("setting").updateAll(wheelsContributorLink=params.wheelsContributorLink);
+            message = "Wheels Contributor Github API link updated successfully";
+        }else{
+            message = "No Wheels Contributor Github API link provided";
         }
         renderText(message);
     }
@@ -40,62 +50,76 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    function syncContributors (){
-        try{
-            var apiUrl = "https://api.github.com/repos/wheels-dev/wheels/contributors?per_page=50";
-            var cacheKey = "github_contributors";
-            // GitHub requires a User-Agent header
-            cfhttp(url="#apiUrl#", method="get", timeout=30, result="resp"){
+    function syncContributors() {
+        try {
+            var contributorLink = model("setting").findAll(select="wheelsContributorLink");
+            if (contributorLink.recordCount == 0 OR contributorLink.wheelsContributorLink == "") {
+                redirectTo(route="adminget-contributors", text="Contributor API not found! Failed to sync contributors.");
+            }
+            var apiUrl = contributorLink.wheelsContributorLink;
+
+            // Main GitHub contributors API
+            cfhttp(url=apiUrl, method="get", timeout=30, result="resp") {
                 cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
             }
-            
-            contributors = deserializeJson(resp.fileContent);
-            if (listFirst(resp.statusCode, " ") EQ "200") {
-                contributors = deserializeJson(resp.fileContent);
 
-                // loop contributors and enrich with real name
+            if (listFirst(resp.statusCode, " ") EQ "200" AND isJSON(resp.fileContent)) {
+                var contributors = deserializeJson(resp.fileContent);
+
                 for (i=1; i <= arrayLen(contributors); i++) {
-                    username = contributors[i].login;
-                    userUrl = "https://api.github.com/users/" & username;
+                    var username   = contributors[i].login;
+                    var userUrl    = "https://api.github.com/users/" & username;
+                    var name       = username; // fallback
+                    var avatarUrl  = "";
+                    var apiUrlUser = "";
+                    var contributions = contributors[i].contributions ?: 0;
 
+                    // Per-user API call
                     cfhttp(url=userUrl, method="get", timeout=30, result="userResp") {
                         cfhttpparam(type="header", name="User-Agent", value="CFWheels-App");
                     }
 
-                    if (listFirst(userResp.statusCode, " ") EQ "200") {
-                        userData = deserializeJson(userResp.fileContent);
-
-                        // GitHub may return null if no name is set
-                        if (structKeyExists(userData, "name") AND len(trim(userData.name))) {
-                            contributors[i].name = userData.name;
-                        } else {
-                            contributors[i].name = contributors[i].login; // fallback if not set
-                        }
-                    } else {
-                        contributors[i].name = ""; // fallback if user API call fails
+                    // If user call fails → redirect immediately
+                    if (listFirst(userResp.statusCode, " ") NEQ "200" OR !isJSON(userResp.fileContent)) {
+                        redirectTo(route="adminget-contributors", text="GitHub API rate limit exceeded. Try again later.");
                     }
 
-                    // === Insert only if not exists ===
-                    var existing = model("Contributor").findOneByUsername(username);
+                    var userData = deserializeJson(userResp.fileContent);
 
+                    if (structKeyExists(userData, "name") AND len(trim(userData.name))) {
+                        name = userData.name;
+                    }
+                    avatarUrl    = userData.avatar_url ?: "";
+                    apiUrlUser   = userData.url ?: "";
+
+                    // Upsert contributor
+                    var existing = model("Contributor").findOneByUsername(username);
                     if (!isObject(existing)) {
                         var c = model("Contributor").new();
-                        c.name        = contributors[i].name;
-                        c.username    = contributors[i].login;
-                        c.description = "";
-                        c.roles       = "1";
+                        c.name          = name;
+                        c.username      = username;
+                        c.description   = "";
+                        c.roles         = "1"; // default role
+                        c.contributor_pic = avatarUrl;
+                        c.contributions  = contributions;
+                        c.contributor_profile_api = apiUrlUser;
                         c.save();
+                    } else {
+                        existing.name        = name;
+                        existing.contributor_pic = avatarUrl;
+                        existing.contributions   = contributions;
+                        existing.contributor_profile_api = apiUrlUser;
+                        existing.save();
                     }
                 }
-            } else {
-                contributors = []; // empty array if main API fails
             }
-            cachePut(cacheKey, contributors, 3600);
-            redirectTo(route="adminget-contributors", text="Contributors sync successfully.");
-        }catch(any e){
-            renderText("Error! while sync the contributors detail.");
+
+            redirectTo(route="adminget-contributors", text="Contributors synced successfully.");
+        } catch (any e) {
+            renderText("Error while syncing contributors");
         }
     }
+
 
     function editContributors(){
         contributor = model("contributor").findOnebyId(params.id);

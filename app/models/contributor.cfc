@@ -20,7 +20,7 @@ component extends="app.Models.Model" {
             automaticValidations=true
         );
 
-        // Last Name Property
+        // User Name Property
         property(
             name="UserName", 
             column="user_name", 
@@ -29,7 +29,7 @@ component extends="app.Models.Model" {
             defaultValue=""
         );
 
-        // Password Hash Property
+        // Description Hash Property
         property(
             name="Description", 
             column="description", 
@@ -39,6 +39,30 @@ component extends="app.Models.Model" {
         );
         
         // Profile Picture Property
+        property(
+            name="profilePic", 
+            column="contributor_pic", 
+            dataType="string", 
+            label="Contributor Profile Pic",
+            defaultValue= ""
+        );
+
+        property(
+            name="profileAPI", 
+            column="contributor_profile_api", 
+            dataType="string", 
+            label="Profile Url",
+            defaultValue= ""
+        );
+
+        property(
+            name="contributions", 
+            column="contributions", 
+            dataType="string", 
+            label="contributions",
+            defaultValue= ""
+        );
+
         property(
             name="Roles", 
             column="roles", 
