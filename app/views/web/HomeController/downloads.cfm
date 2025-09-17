@@ -1,6 +1,6 @@
 <main class="main">
     <div class="container py-5">
-        <h1 class="text-center fw-bold fs-60">Install Wheels Guide</h1>
+        <h1 class="text-center fw-bold fs-60">Install Wheels</h1>
         <p class="text--secondary fs-18 text-center fw-medium">This guide walks you through installing Wheels (both the software/library and its dependencies) on your operating system.</p>
         <div class="mt-3">
             <p class="mb-2">Follow the section for the operating system you use:</p>
