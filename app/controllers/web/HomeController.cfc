@@ -67,7 +67,7 @@ component extends="app.Controllers.Controller" {
                     }
 
                     contributor = model("contributor").findOnebyUserName(username);
-                    if (!isNull(contributor)) {
+                    if (isObject(contributor)) {
                         var roleIds = listToArray(contributor.roles, ",");
                         var roleCount = arrayLen(roleIds);
                         var roleString = "";
@@ -86,7 +86,7 @@ component extends="app.Controllers.Controller" {
                         contributors[i].role = roleString;
                     } else {
                         contributors[i].description = "";
-                        contributors[i].role = "";
+                        contributors[i].role = "Software Developer";
                     }
                 }
             } else {

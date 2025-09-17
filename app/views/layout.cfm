@@ -708,9 +708,9 @@
 								<cfoutput>
 									<ul class="list-unstyled">
 										<li class="mt-2"><a href="https://marketplace.visualstudio.com/items?itemName=wheels-dev.wheels-vscode" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Install VS Code Extension</a></li>
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">VS Code Extension</a></li>
 										<li class="mt-2"><a href="#urlFor(route='downloads')#" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Using Package Manager
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels
 											</a></li>
 									</ul>
 								</cfoutput>
