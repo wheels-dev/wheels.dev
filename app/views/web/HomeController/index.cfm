@@ -217,17 +217,27 @@
                     <cfloop array="#contributors#" index="c">
                         <div class="swiper-slide overflow-hidden rounded-30">
                             <div class="p-5 bg-white overflow-hidden d-flex row">
-                                <div class="col-lg-8 col-12">
-                                    <p class="fs-36 fw-bold text--secondary">#c.name#</p>
-                                    <p class="fs-18 text--lightGray fw-medium">
-                                        Contributed as a #c.role# 
-                                    </p>
-                                    <p class="fs-16 pt-4 text--secondary fw-normal text-justify">
-                                        #c.description#
-                                    </p>
+                                <div class="col-lg-8 col-12 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <p class="fs-36 fw-bold text--secondary">#c.name#</p>
+                                        <p class="fs-18 text--lightGray fw-medium">
+                                            Contributed as a #c.role# 
+                                        </p>
+                                        <p class="col-lg-11 fs-16 pt-4 text--secondary fw-normal text-justify">
+                                            #c.description#
+                                        </p>
+                                    </div>
+                                    <cfif c.LinkedInLink neq "">
+                                        <div class="mt-2">
+                                            <a href="#c.LinkedInLink#" target="_blank" class="text-decoration-none me-3">
+                                                <i class="bi bi-linkedin fs-24 text-primary"></i>
+                                            </a>
+                                            <!-- You can add more icons here -->
+                                        </div>
+                                    </cfif>
                                 </div>
                                 <div class="col-lg-4 col-12">
-                                    <img src="#c.profilePic#" alt="#c.name# profile picture"/>
+                                    <img src="#c.profilePic#" class="rounded-5 contributor-img" alt="#c.name# profile picture"/>
                                 </div>
                             </div>
                         </div>

@@ -94,6 +94,7 @@ component extends="app.Controllers.Controller" {
                             c.profilePic  = userData.avatar_url;
                             c.contributions = contributors[i].contributions;
                             c.profileAPI  = userData.url;
+                            c.LinkedInLink = "";
                             c.save();
                         }else{
                             var c = existing;
@@ -142,7 +143,8 @@ component extends="app.Controllers.Controller" {
                 "name"        : row.name,
                 "description" : row.description,
                 "role"        : roleString,
-                "profilePic"  : row.contributor_pic
+                "profilePic"  : row.contributor_pic,
+                "LinkedInLink": row.LinkedIn_Link
             };
             arrayAppend(contributorsArray, contributor);
         }

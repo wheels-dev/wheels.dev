@@ -103,6 +103,7 @@ component extends="app.Controllers.Controller" {
                         c.contributor_pic = avatarUrl;
                         c.contributions  = contributions;
                         c.contributor_profile_api = apiUrlUser;
+                        c.LinkedInLink = "";
                         c.save();
                     } else {
                         existing.name        = name;
@@ -139,6 +140,7 @@ component extends="app.Controllers.Controller" {
         contributor.name        = params.name ?: "";
         contributor.username    = params.username ?: "";
         contributor.description = params.description ?: "";
+        contributor.LinkedInLink = params.LinkedInLink ?: "";
 
         // handle roles array → comma-separated string
         if (isArray(params.roles)) {
