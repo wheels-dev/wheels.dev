@@ -230,7 +230,7 @@
                                     <cfif c.LinkedInLink neq "">
                                         <div class="mt-2">
                                             <a href="#c.LinkedInLink#" target="_blank" class="text-decoration-none me-3">
-                                                <i class="bi bi-linkedin fs-24 text-primary"></i>
+                                                <span class="fs-22 fw-medium">Linked </span><i class="bi bi-linkedin fs-24 text-primary"></i>
                                             </a>
                                             <!-- You can add more icons here -->
                                         </div>
