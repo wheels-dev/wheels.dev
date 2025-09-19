@@ -71,7 +71,14 @@ component extends="app.Models.Model" {
             defaultValue= ""
         );
 
-        
+        property(
+            name="LinkedInLink", 
+            column="linkedIn_link", 
+            dataType="string", 
+            label="Contributor Linked in profile link",
+            defaultValue= ""
+        );
+
         // Timestamps with custom column names
         property(
             name="createdAt", 
