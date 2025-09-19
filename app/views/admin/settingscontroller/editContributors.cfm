@@ -27,7 +27,14 @@
                     <div class="invalid-feedback">User Name must be required.</div>
                 </div>
             </div>
-
+            <div class="col-sm-6 col-md-6 col-lg-12 mb-3">
+                <div class="form-floating">
+                    <input name="LinkedInLink" type="text" placeholder="LinkedInLink" class="form-control fs-14" id="LinkedInLink"
+                    aria-describedby="LinkedInLinkHelp" minlength="3" maxlength="255" value="#contributor.LinkedInLink#">
+                    <label for="LinkedInLink" class="form-label fs-18 fw-medium">LinkedIn Profile Link</label>
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
             <div class="col-sm-6 col-md-6 col-lg-12 mb-3">
                 <div class="form-floating">
                     <textarea name="description" type="textArea" placeholder="Enter Contributor description" class="form-control fs-14" id="description"
