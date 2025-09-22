@@ -48,8 +48,7 @@ component extends="app.Controllers.Controller" {
             return [];
         }
 
-        if(dateDiff("h", contributorsList.updatedAt, now()) >= 24){
-
+        if(dateDiff("d", contributorsList.updatedAt, now()) >= 30){
             var contributorLink = model("setting").findAll(select="wheelsContributorLink");
             if(contributorLink.recordCount == 0 OR contributorLink.wheelsContributorLink == ""){
                 return [];
