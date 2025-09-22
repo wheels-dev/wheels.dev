@@ -704,6 +704,16 @@
 									<li class="mt-2"><a href="https://www.forgebox.io/type/cfwheels-plugins" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Plugins</a></li>
 								</ul>
+								<h6 class="fw-bold fs-16 text--secondary">Downloads</h6>
+								<cfoutput>
+									<ul class="list-unstyled">
+										<li class="mt-2"><a href="https://marketplace.visualstudio.com/items?itemName=wheels-dev.wheels-vscode" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">VS Code Extension</a></li>
+										<li class="mt-2"><a href="#urlFor(route='downloads')#" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels
+											</a></li>
+									</ul>
+								</cfoutput>
 							</div>
 							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
