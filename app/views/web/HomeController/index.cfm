@@ -126,11 +126,14 @@
     </cfoutput>
     <!-- Cookie Consent Banner -->
     <div id="cookie-banner" class="cookie-banner">
-        <p style="margin: 0; line-height: 1.4;">
+        <button id="close-cookie-banner" aria-label="Dismiss" class="fs-14" style="position: absolute; top: 4px; right: 8px; border: none; background: transparent; font-size: 18px; cursor: pointer;">
+            &times;
+        </button>
+        <p class="mt-2" style="line-height: 1.4;">
             This website uses essential cookies to improve your experience. By continuing to use the site, you consent to the use of cookies.
         </p>
         <div style="text-align: right;">
-            <button id="accept-cookies" class="fs-16 fw-semibold bg--success w-90 py-1 rounded-2 text--secondary">OK</button>
+            <button id="accept-cookies" class="fs-14 fw-semibold bg--success px-2 py-1 rounded-2 text--secondary">Accept Necessary</button>
         </div>
     </div>
     
@@ -192,7 +195,7 @@
     </cfif>
 
     <!-- Top contribute -->
-    <div class="container py-5 mt-5">
+    <!---<div class="container py-5 mt-5">
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">Top Contributors</p>
         </div>
@@ -201,6 +204,62 @@
                 <img src="https://contrib.rocks/image?repo=wheels-dev/wheels" style="max-width: 100%;" alt="GitHub Contributors for Wheels">
             </a>
         </div>
+    </div>--->
+    <div <cfif arrayLen(contributors) neq 0> class="container mt-5 py-5"<cfelse> class="d-none container mt-5 py-5"</cfif>>
+        <div class="text-center">
+            <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">
+                Our Top Contributer
+        </p>
+        </div>
+        <cfoutput>
+            <div class="swiper contributorsSwiper mt-5">
+                <div class="swiper-wrapper">
+                    <cfloop array="#contributors#" index="c">
+                        <div class="swiper-slide overflow-hidden rounded-30">
+                            <div class="p-5 bg-white overflow-hidden d-flex row">
+                                <div class="col-lg-8 col-12 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <p class="fs-36 fw-bold text--secondary">#c.name#</p>
+                                        <p class="fs-18 text--lightGray fw-medium">
+                                            Contributed as a #c.role# 
+                                        </p>
+                                        <p class="col-lg-11 fs-16 pt-4 text--secondary fw-normal text-justify">
+                                            #c.description#
+                                        </p>
+                                    </div>
+                                    <cfif c.LinkedInLink neq "">
+                                        <div class="mt-2">
+                                            <a href="#c.LinkedInLink#" target="_blank" class="text-decoration-none me-3">
+                                                <span class="fs-22 fw-medium">Linked </span><i class="bi bi-linkedin fs-24 text-primary"></i>
+                                            </a>
+                                            <!-- You can add more icons here -->
+                                        </div>
+                                    </cfif>
+                                </div>
+                                <div class="col-lg-4 col-12">
+                                    <img src="#c.profilePic#" class="rounded-5 contributor-img" alt="#c.name# profile picture"/>
+                                </div>
+                            </div>
+                        </div>
+                    </cfloop>
+                </div>
+            </div>
+            <div class="swiper contributorsSwiperThumb mt-5">
+                <div class="swiper-wrapper">
+                    <cfloop array="#contributors#" index="c">
+                        <div class="swiper-slide d-flex justify-content-center align-items-center">
+                            <img
+                                class="rounded-circle size-100"
+                                src="#c.profilePic#"
+                            />
+                        </div>
+                    </cfloop>
+                </div>
+                <div class="swiper-button-next contributors-swiper-button-next end-0"></div>
+                <div class="swiper-button-prev contributors-swiper-button-prev start-0"></div>
+                </div>
+            </div>
+        </cfoutput>
     </div>
 
     <!-- Testimonial Popup Modal -->

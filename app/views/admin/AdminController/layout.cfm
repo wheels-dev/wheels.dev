@@ -133,6 +133,13 @@
                                         </li>
                                         <li class="nav-item">
                                             <cfoutput>
+                                                <a class="nav-link" href="#urlFor(route='adminget-contributors')#">
+                                                    <div class="d-flex align-items-center"><span class="nav-link-text fs-14">Contributors</span></span></div>
+                                                </a>
+                                            </cfoutput>
+                                        </li>
+                                        <li class="nav-item">
+                                            <cfoutput>
                                                 <a class="nav-link" href="#urlFor(route='adminsettings')#">
                                                     <div class="d-flex align-items-center"><span class="nav-link-text fs-14">General Setting</span></span></div>
                                                 </a>

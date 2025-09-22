@@ -165,6 +165,12 @@ jobs:
             elif [ "$health" = "unhealthy" ]; then
               echo "❌ Container is unhealthy."
               docker logs $CONTAINER_NAME || true
+              # Extract WEB-INF path from logs
+              WEBINF_PATH=$(docker logs $CONTAINER_NAME 2>&1 | grep "Found WEB-INF" | sed -E "s/.*Found WEB-INF: '([^']+)'.*/\1/")
+              if [ -n "$WEBINF_PATH" ]; then
+                echo "Detected WEB-INF: $WEBINF_PATH"
+                docker exec $CONTAINER_NAME cat "$WEBINF_PATH/lucee-server/context/logs/application.log" || true
+              fi
               docker rm -f $CONTAINER_NAME || true
               exit 1
             elif [ "$health" = "no-health" ]; then
@@ -177,9 +183,15 @@ jobs:
           done
           echo "❌ Container health status stuck at 'starting' for more than $TIMEOUT seconds."
           docker logs $CONTAINER_NAME || true
-          docker exec $CONTAINER_NAME cat /usr/local/lib/CommandBox/server/serverHome/lucee-6.2.1.122/WEB-INF/lucee-server/context/logs/application.log || true
+          # Extract WEB-INF path from logs
+          WEBINF_PATH=$(docker logs $CONTAINER_NAME 2>&1 | grep "Found WEB-INF" | sed -E "s/.*Found WEB-INF: '([^']+)'.*/\1/")
+          if [ -n "$WEBINF_PATH" ]; then
+            echo "Detected WEB-INF: $WEBINF_PATH"
+            docker exec $CONTAINER_NAME cat "$WEBINF_PATH/lucee-server/context/logs/application.log" || true
+          fi
           docker rm -f $CONTAINER_NAME || true
           exit 1
+
           
       - name: Deploy to Docker Swarm
         id: Deploy-to-Docker-Swarm
