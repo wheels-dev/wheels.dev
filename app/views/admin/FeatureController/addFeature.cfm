@@ -7,6 +7,7 @@
                 <cfparam  name="title" default=''>
                 <cfparam  name="image" default=''>
                 <cfparam  name="description" default=''>
+                <cfparam  name="cardLink" default=''>
                 <cfif structKeyExists(params, "id") OR id gt 0>
                     <cfset feature = findById(params.id)>
                     <cfset action = "Edit">
@@ -14,6 +15,7 @@
                     <cfset title = feature.title>
                     <cfset image = feature.image>
                     <cfset description = feature.description>
+                    <cfset cardLink = feature.card_link>
                 <cfelse>
                     <cfset action = "Add">  
                 </cfif>
@@ -38,6 +40,13 @@
                     <input name="image" type="text" placeholder="Enter image URL" class="form-control fs-18" id="image"
                     aria-describedby="imageHelp" value="#image#">
                     <label for="image" class="form-label fs-18 fw-medium">Image URL</label>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-12 mb-3">
+                <div class="form-floating">
+                    <input name="card_link" type="text" placeholder="Enter card URL" class="form-control fs-18" id="card_link"
+                    aria-describedby="cardLinkHelp" value="#cardlink#">
+                    <label for="card_link" class="form-label fs-18 fw-medium">Card URL</label>
                 </div>
             </div>
             <div class="col-sm-12 mb-3">

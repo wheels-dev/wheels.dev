@@ -13,6 +13,7 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Link</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -22,6 +23,7 @@
                             writeOutput('<tr> <td>' & i & '</td>');
                             writeOutput('<td>' & features.title[i] & '</td>');
                             writeOutput('<td>' & features.description[i] & '</td>');
+                            writeOutput('<td>' & features.card_link[i] & '</td>');
                             writeOutput('<td>
                                 <div class="dropdown">
                                     <div class="fw-bold cursor-pointer me-2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -45,7 +47,7 @@
     var table = new DataTable('#featureTable', {
         columnDefs: [
             {
-                targets: [3],
+                targets: [4],
                 orderable: false
             }
         ]
