@@ -91,7 +91,6 @@ component extends="app.Controllers.Controller" {
                     }
                     avatarUrl    = userData.avatar_url ?: "";
                     apiUrlUser   = userData.url ?: "";
-
                     // Upsert contributor
                     var existing = model("Contributor").findOneByUsername(username);
                     if (!isObject(existing)) {
@@ -100,16 +99,16 @@ component extends="app.Controllers.Controller" {
                         c.username      = username;
                         c.description   = "";
                         c.roles         = "1"; // default role
-                        c.contributor_pic = avatarUrl;
+                        c.profilePic = avatarUrl;
                         c.contributions  = contributions;
-                        c.contributor_profile_api = apiUrlUser;
+                        c.profileAPI = apiUrlUser;
                         c.LinkedInLink = "";
                         c.save();
                     } else {
-                        existing.name        = name;
-                        existing.contributor_pic = avatarUrl;
+                        existing.name = name;
+                        existing.profilePic = avatarUrl;
                         existing.contributions   = contributions;
-                        existing.contributor_profile_api = apiUrlUser;
+                        existing.profileAPI = apiUrlUser;
                         existing.save();
                     }
                 }
