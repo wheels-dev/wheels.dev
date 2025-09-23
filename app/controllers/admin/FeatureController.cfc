@@ -61,6 +61,7 @@ component extends="app.Controllers.Controller" {
                 feature.title = featureData.title;
                 feature.image = featureData.image;
                 feature.description = featureData.description;
+                feature.card_link = featureData.card_link;
                 feature.updatedAt = now();
                 feature.save();
                 message = "Feature updated successfully.";
@@ -72,6 +73,7 @@ component extends="app.Controllers.Controller" {
             newFeature.title = featureData.title;
             newFeature.image = featureData.image;
             newFeature.description = featureData.description;
+            newFeature.card_link = featureData.card_link;
             newFeature.createdAt = now();
             newFeature.updatedAt = now();
             newFeature.save();
