@@ -16,8 +16,8 @@
                 </svg>
             </button>
             <ul class="dropdown-menu">
-                <li class="dropdown-item fs-14 cursor-pointer">#linkTo(route="docFunction", version=params.version, slug=meta.slug, format="html", text="Permalink")#</li>
-                <li class="dropdown-item fs-14 cursor-pointer">#linkTo(route="docFunction", version=params.version, slug=meta.slug, format="json", text="JSON")#</li>
+                <li class="dropdown-item fs-14 cursor-pointer">#linkTo(route="docFunction", version=params.version, slug=meta.slug, format="html", text="Permalink", target="_blank")#</li>
+                <li class="dropdown-item fs-14 cursor-pointer">#linkTo(route="docFunction", version=params.version, slug=meta.slug, format="json", text="JSON", target="_blank")#</li>
             </ul>
         </div>
     </div>
@@ -65,7 +65,7 @@
                         <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Name</th>
                         <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Type</th>
                         <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Required</th>
-                        <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Default</th>
+                        <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium max-w-200">Default</th>
                         <th class="important:text--primary px-lg-3 px-1 fs-14 fw-medium">Description</th>
                     </tr>
                 </thead>
@@ -77,11 +77,11 @@
                                 <td class="text-black p-lg-3 p-1 fs-14 fw-normal">#_param.name#</td>
                                 <td class="text-black p-lg-3 p-1 fs-14 fw-normal">#_param.type#</td>
                                 <td class="text-black p-lg-3 p-1 fs-14 fw-normal">#YesNoFormat(_param.required)#</td>
-                                <td class="text-black p-lg-3 p-1 fs-14 fw-normal">
+                                <td class="text-black p-lg-3 p-1 fs-14 fw-normal max-w-200">
                                     <cfif structKeyExists(application.wheels.functions, func) AND structKeyExists(application.wheels.functions[func], _param.name)>
                                         #application.wheels.functions[func][_param.name]#
                                     </cfif>
-                                    <cfif structKeyExists(_param, "default")>#_param.default#</cfif>
+                                    <cfif structKeyExists(_param, "default")>#replace(_param.default, ",", ", ", "all")#</cfif>
                                 </td>
                                 <td class="text-black p-lg-3 p-1 fs-14 fw-normal">
                                     <cfif structKeyExists(_param, "hint")>#$backTickReplace(_param.hint)#</cfif>
