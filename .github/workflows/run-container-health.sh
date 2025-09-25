@@ -7,7 +7,7 @@ CONTAINER_NAME=wheels-dev-stage-test
 echo "Running test container from image: $IMAGE"
 docker run -d --name $CONTAINER_NAME $IMAGE
 echo "Waiting for container to become healthy..."
-TIMEOUT=60
+TIMEOUT=90
 INTERVAL=5
 elapsed=0
 
