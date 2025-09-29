@@ -42,7 +42,7 @@ component extends="app.Controllers.Controller" {
     }
     
     private function getContributors(){
-        var contributorsList = model("contributors").findAll();
+        var contributorsList = model("contributors").findAll(where="username!='dependabot[bot]'");
 
         if(contributorsList.recordCount == 0){
             return [];
@@ -106,7 +106,7 @@ component extends="app.Controllers.Controller" {
                         }
                     }
                 }
-                contributors = model("contributors").findAll();
+                contributors = model("contributors").findAll(where="username!='dependabot[bot]'");
             }else{
                 contributors = contributorsList;
             }
