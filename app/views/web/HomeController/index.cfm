@@ -208,7 +208,7 @@
     <div <cfif arrayLen(contributors) neq 0> class="container mt-5 py-5"<cfelse> class="d-none container mt-5 py-5"</cfif>>
         <div class="text-center">
             <p class="fs-60 mb-2 text--secondary line-height-70 fw-bold">
-                Our Top Contributer
+                Top Contributors
         </p>
         </div>
         <cfoutput>
@@ -257,7 +257,6 @@
                 </div>
                 <div class="swiper-button-next contributors-swiper-button-next end-0"></div>
                 <div class="swiper-button-prev contributors-swiper-button-prev start-0"></div>
-                </div>
             </div>
         </cfoutput>
     </div>
