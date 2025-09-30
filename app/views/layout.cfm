@@ -649,8 +649,8 @@
 									<li class="mt-2"><a href="https://wheels.dev/3.0.0/guides/command-line-tools/cli-overview" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Command Line
 											Tools</a></li>
-									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>
+									<!---<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>--->
 									<li class="mt-2"><a href="https://www.youtube.com/@wheels-dev" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a Tutorial</a></li>
 									<li class="mt-2"><a href="https://wheels.dev/guides" target="_blank"
@@ -707,11 +707,11 @@
 								<h6 class="fw-bold fs-16 text--secondary">Downloads</h6>
 								<cfoutput>
 									<ul class="list-unstyled">
-										<li class="mt-2"><a href="https://marketplace.visualstudio.com/items?itemName=wheels-dev.wheels-vscode" target="_blank"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">VS Code Extension</a></li>
-										<li class="mt-2"><a href="#urlFor(route='downloads')#" target="_blank"
+										<li class="mt-2"><a href="#urlFor(route='downloads')#"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels
 											</a></li>
+										<li class="mt-2"><a href="https://marketplace.visualstudio.com/items?itemName=wheels-dev.wheels-vscode" target="_blank"
+											class="text--secondary fs-14 text-decoration-none cursor-pointer">VS Code Extension</a></li>
 									</ul>
 								</cfoutput>
 							</div>
