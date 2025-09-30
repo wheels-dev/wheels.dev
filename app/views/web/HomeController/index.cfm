@@ -13,21 +13,21 @@
                 running in no time!
             </p>
             <div class="row g-3 justify-content-center w-100 mt-1 align-items-center">
-                <div class="col-md-auto text-center">
-                    <cfoutput>
-                        <a href="#urlFor(route='load-Guides')#" class="">
-                            <button class="fs-16 fw-semibold bg--primary w-200 py-2 rounded-4 text-white">
-                                Get Started
-                            </button>
+                <cfoutput>
+                    <div class="col-md-auto text-center">
+                            <a href="#urlFor(route='load-Guides')#" class="">
+                                <button class="fs-16 fw-semibold bg--primary w-200 py-2 rounded-4 text-white">
+                                    Get Started
+                                </button>
+                            </a>
+                    </div>
+                    <div class="col-md-auto text-center">
+                        <a href="#urlFor(route='downloads')#" class="">
+                            <button
+                                class="fs-16 fw-semibold bg--success w-200 py-2 rounded-4 text--secondary">Download</button>
                         </a>
-                    </cfoutput>
-                </div>
-                <div class="col-md-auto text-center">
-                    <a href="https://github.com/wheels-dev/wheels/releases" class="" target="_blank">
-                        <button
-                            class="fs-16 fw-semibold bg--success w-200 py-2 rounded-4 text--secondary">Download</button>
-                    </a>
-                </div>
+                    </div>
+                </cfoutput>
             </div>
         </div>
         <div class="row justify-content-center align-items-center mt-5 gy-3 text-center gx-sm-5">
