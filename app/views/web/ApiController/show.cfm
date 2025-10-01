@@ -49,7 +49,7 @@
                         <cfif structKeyExists(meta, "availableIn") && arrayLen(meta.availableIn)>
                             <cfloop from="1" to="#arrayLen(meta.availableIn)#" index="a">
                                 <button class="bg--lightGray text--secondary rounded-4 fs-12 fw-normal px-4 py-2">
-                                    <i class="bi bi-bolt"></i>
+                                    <i class="bi bi-lightning-charge-fill"></i>
                                     #meta.availableIn[a]#
                                 </button>
                             </cfloop>
@@ -87,6 +87,16 @@
                         </tbody>
                     </table>
                 </div>
+                <cfif meta.extended.hasExtended>
+                    <div style="background-color: rgba(243, 243, 243, 1);"
+                        class="p-4 rounded-18">
+                        <div class="fs-14 fw-normal m-0 p-0">#meta.extended.docs#</div>
+                        <div class="text-end">
+                            <i class="bi bi-copy text--primary fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
+                            <span class="text-success fs-5 fw-bold d-none">Copied!</span>
+                        </div>
+                    </div>
+                </cfif>
             </div>
         </cfoutput>
     </div>
