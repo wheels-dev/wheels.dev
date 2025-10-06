@@ -26,6 +26,7 @@ services:
       - shared-files:/app/public/files
       - shared-sitemap-prod:/app/public/sitemap
       - shared-dev-docs:/app/docs/3.0.0/guides
+      - shared-json-folder:/app/public/json
       - wheels-data:/data
 
 networks:
@@ -40,5 +41,7 @@ volumes:
   shared-sitemap-prod:
     external: true
   shared-dev-docs:
+    external: true
+  shared-json-folder:
     external: true
   wheels-data:
