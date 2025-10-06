@@ -54,4 +54,6 @@ volumes:
     external: true
   shared-dev-docs:
     external: true
+  shared-json-folder:
+    external: true
   wheels-data:
