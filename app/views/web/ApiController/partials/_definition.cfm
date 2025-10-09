@@ -5,22 +5,30 @@
     data-category="#meta.tags.categoryClass#"
     data-function="#lcase(meta.slug)#">
 
-    <div class="d-flex align-items-center gap-2">
-        <h2 class="text--primary fs-24 fw-bold">#meta.name#()</h2>
-        <div class="dropdown">
-            <button class="dropdown-toggle outline-none border-0 no-dropdown-arrow text-center bg-transparent"
-                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" width="25" height="25" class="text--lightGray">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-            </button>
-            <ul class="dropdown-menu">
-                <li class="dropdown-item fs-14 cursor-pointer">#linkTo(route="docFunction", version=params.version, slug=meta.slug, format="html", text="Permalink", target="_blank")#</li>
-                <li class="dropdown-item fs-14 cursor-pointer">#linkTo(route="docFunction", version=params.version, slug=meta.slug, format="json", text="JSON", target="_blank")#</li>
-            </ul>
+    <div class="d-flex align-items-center gap-3">
+            <h2 class="text--primary fs-24 fw-bold mb-0">#meta.name#()</h2>
+            <div class="d-flex align-items-center gap-2">
+                <button 
+                    class="permalinkBtn btn btn-outline-primary small-btn d-flex align-items-center justify-content-center rounded-pill px-3" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="bottom"
+                    title="Copy Permalink"
+                    data-link="/api/#params.version#/#meta.slug#.html"
+                    data-bs-custom-class="small-tooltip">
+                    <i class="fa fa-link me-1"></i> Permalink
+                </button>
+
+                <button 
+                    class="jsonLinkBtn btn btn-outline-secondary small-btn d-flex align-items-center justify-content-center rounded-pill px-3" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="bottom"
+                    title="Open JSON"
+                    data-link="/api/#params.version#/#meta.slug#.json"
+                    data-bs-custom-class="small-tooltip">
+                    <i class="fa fa-code me-1"></i> JSON
+                </button>
+            </div>
         </div>
-    </div>
 
     <div class="d-flex api-filter-buttons align-items-center my-3 gap-2 flex-wrap">
         <cfif len(meta.tags.section)>
