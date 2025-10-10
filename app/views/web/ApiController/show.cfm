@@ -38,7 +38,7 @@
 
                     <div class="mt-4">
                         <div class="bg-light border rounded-18">
-                            <div class="p-4 position-relative json-container">
+                            <div class="p-4 position-relative json-container rounded-18">
                                 <pre class="mb-0 json-pre"><code class="language-json">#encodeForHTML(prettyPrintJSON(meta))#</code></pre>
                                 <div class="text-end">
                                     <i class="bi bi-copy text--primary fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
