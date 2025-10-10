@@ -40,23 +40,90 @@ component extends="app.Controllers.Controller" {
 	 * Function Permalink Style output
 	 */
 	function show(){
-		// Find this function by slug
-		docFunction=getFunctionFromDocs(docs, params.slug);
-		if(structIsEmpty(docFunction)){
-			slug = params.slug & "." & params.format;
-			docFunction=getFunctionFromDocs(docs, slug);
-			if(structIsEmpty(docFunction)){
-				redirectTo(route="docVersion", error="Unknown Function", version="#params.version#");
+    	// Find this function by slug
+        docFunction=getFunctionFromDocs(docs, params.slug);
+        if(structIsEmpty(docFunction)){
+            slug = params.slug & "." & params.format;
+            docFunction=getFunctionFromDocs(docs, slug);
+            if(structIsEmpty(docFunction)){
+                redirectTo(route="docVersion", error="Unknown Function", version="#params.version#");
+            }
+        }
+        // Set pagetitle/meta data
+        request.pagetitle=docFunction.name & "()" & ' | ' &  params.version;
+        // If we're not displaying JSON, try for related functions by category/section
+        // Pre 2.x this won't work well.
+        paramVersion = replace(params.version, "v", "", "all");
+        hasRelatedFunctions = (params.format == "html" && paramVersion >= 2.0)? true : false;
+        relatedFunctions = hasRelatedFunctions? getRelatedFunctionsBySectionAndCategory(docs, docFunction.tags.section, docFunction.tags.category) : [];
+        
+        // Make data available to view
+        rc.docFunction = docFunction;
+        rc.data = docFunction;
+        
+        if (params.format == "json") {
+            renderView(view="show");
+        } else {
+            renderWith(data=docFunction);
+        }
+    }
+	/**
+	* Safe JSON formatting - preserves all characters exactly
+	*/
+	private function prettyPrintJSON(required any data) {
+		var jsonString = serializeJSON(arguments.data);
+		var result = "";
+		var indentLevel = 0;
+		var inString = false;
+		var inEscape = false;
+		
+		for (var i = 1; i <= len(jsonString); i++) {
+			var char = mid(jsonString, i, 1);
+			
+			if (inEscape) {
+				result &= char;
+				inEscape = false;
+				continue;
+			}
+			
+			if (char == "\") {
+				result &= char;
+				inEscape = true;
+				continue;
+			}
+			
+			if (char == '"') {
+				result &= char;
+				inString = !inString;
+				continue;
+			}
+			
+			if (!inString) {
+				switch(char) {
+					case "{":
+					case "[":
+						result &= char & chr(10) & repeatString("  ", ++indentLevel);
+						break;
+					case "}":
+					case "]":
+						indentLevel--;
+						result &= chr(10) & repeatString("  ", indentLevel) & char;
+						break;
+					case ",":
+						result &= char & chr(10) & repeatString("  ", indentLevel);
+						break;
+					case ":":
+						result &= ": ";
+						break;
+					default:
+						result &= char;
+				}
+			} else {
+				result &= char;
 			}
 		}
-		// Set pagetitle/meta data
-		request.pagetitle=docFunction.name & "()" & ' | ' &  params.version;
-		// If we're not displaying JSON, try for related functions by category/section
-		// Pre 2.x this won't work well.
-		paramVersion = replace(params.version, "v", "", "all");
-		hasRelatedFunctions = (params.format == "html" && paramVersion >= 2.0)? true : false;
-		relatedFunctions = hasRelatedFunctions? getRelatedFunctionsBySectionAndCategory(docs, docFunction.tags.section, docFunction.tags.category) : [];
-		renderWith(data=docFunction);
+		
+		return result;
 	}
 
 	private function getDocsByVersion(){
