@@ -26,19 +26,19 @@
                         </button>
 
                         <button 
-                            class="jsonLinkBtn btn btn-outline-secondary small-btn d-flex align-items-center justify-content-center rounded-pill px-3" 
+                            class="jsonLinkBtn btn btn-secondary small-btn d-flex align-items-center justify-content-center rounded-pill px-3 btn-disabled-fix" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="bottom"
-                            title="Open JSON"
-                            data-link="/api/#params.version#/#meta.slug#.json"
-                            data-bs-custom-class="small-tooltip">
+                            title="JSON View"
+                            data-bs-custom-class="small-tooltip"
+                            disabled>
                             <i class="fa fa-code me-1"></i> JSON
                         </button>
                     </div>
 
                     <div class="mt-4">
                         <div class="bg-light border rounded-18">
-                            <div class="p-4 position-relative json-container">
+                            <div class="p-4 position-relative json-container rounded-18">
                                 <pre class="mb-0 json-pre"><code class="language-json">#encodeForHTML(prettyPrintJSON(meta))#</code></pre>
                                 <div class="text-end">
                                     <i class="bi bi-copy text--primary fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
