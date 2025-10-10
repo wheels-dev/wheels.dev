@@ -26,12 +26,12 @@
                         </button>
 
                         <button 
-                            class="jsonLinkBtn btn btn-outline-secondary small-btn d-flex align-items-center justify-content-center rounded-pill px-3" 
+                            class="jsonLinkBtn btn btn-secondary small-btn d-flex align-items-center justify-content-center rounded-pill px-3 btn-disabled-fix" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="bottom"
-                            title="Open JSON"
-                            data-link="/api/#params.version#/#meta.slug#.json"
-                            data-bs-custom-class="small-tooltip">
+                            title="JSON View"
+                            data-bs-custom-class="small-tooltip"
+                            disabled>
                             <i class="fa fa-code me-1"></i> JSON
                         </button>
                     </div>
