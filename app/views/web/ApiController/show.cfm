@@ -15,12 +15,30 @@
                     <!--- JSON Format: Show function name and formatted JSON --->
                     <div class="d-flex align-items-center gap-2 mb-4">
                         <h1 class="text--primary fs-24 fw-bold">#meta.name#()</h1>
-                        <span class="badge bg-secondary rounded-pill px-3">JSON View</span>
+                        <button
+                            class="permalinkBtn btn btn-outline-primary small-btn d-flex align-items-center justify-content-center rounded-pill px-3" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="bottom"
+                            title="Copy Permalink"
+                            data-link="/api/#params.version#/#meta.slug#.html"
+                            data-bs-custom-class="small-tooltip">
+                            <i class="fa fa-link me-1"></i> Permalink
+                        </button>
+
+                        <button 
+                            class="jsonLinkBtn btn btn-outline-secondary small-btn d-flex align-items-center justify-content-center rounded-pill px-3" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="bottom"
+                            title="Open JSON"
+                            data-link="/api/#params.version#/#meta.slug#.json"
+                            data-bs-custom-class="small-tooltip">
+                            <i class="fa fa-code me-1"></i> JSON
+                        </button>
                     </div>
 
                     <div class="mt-4">
                         <div class="bg-light border rounded-18">
-                            <div class="p-4 position-relative">
+                            <div class="p-4 position-relative json-container">
                                 <pre class="mb-0 json-pre"><code class="language-json">#encodeForHTML(prettyPrintJSON(meta))#</code></pre>
                                 <div class="text-end">
                                     <i class="bi bi-copy text--primary fs-5 cursor-pointer" onclick="copyToClipboard(this)"></i>
