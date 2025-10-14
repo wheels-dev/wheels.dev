@@ -20,6 +20,7 @@ for (var func = 1; func <= arrayLen(docs.functions); func++) {
     var meta = docs.functions[func];
     var functionSlug = lcase(meta.slug);
     writeOutput("<a 
+    class='functionlinkSearch fw-normal text--secondary' 
     href='/api/#params.version#/#meta.slug#.html'
   >
     <input type='hidden' name='slug' value='#functionSlug#'>
