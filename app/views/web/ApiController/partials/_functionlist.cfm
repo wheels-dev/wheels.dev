@@ -20,17 +20,7 @@ for (var func = 1; func <= arrayLen(docs.functions); func++) {
     var meta = docs.functions[func];
     var functionSlug = lcase(meta.slug);
     writeOutput("<a 
-    href='javascript:void(0)' 
-    class='functionlink fw-normal text--secondary' 
-    data-section='#meta.tags.sectionClass#' 
-    data-category='#meta.tags.categoryClass#' 
-    data-function='#functionSlug#'
-    data-slug='#functionSlug#'
-    data-version='#params.version#'
-    hx-get='/api/#params.version#/function'
-    hx-include='this'
-    hx-target='##main'
-    hx-swap='innerHTML'
+    href='/api/#params.version#/#meta.slug#.html'
   >
     <input type='hidden' name='slug' value='#functionSlug#'>
     <input type='hidden' name='version' value='#params.version#'>
