@@ -101,6 +101,8 @@
                         </cfif>
                     </div>
 
+                    <p class="fs-14 fw-normal">#meta.hint#</p>
+
                     <div class="mt-4 overflow-x-auto no-scrollbar">
                         <table class="table table-responsive">
                             <thead class="table--primary/10">
