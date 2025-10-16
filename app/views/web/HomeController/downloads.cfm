@@ -13,8 +13,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p><strong>Requirements:</strong> OS Windows 10 or 11 (64-bit), 100 Mb free disk space.</p>
-                            <p class="text--secondary fw-normal">
+                            <p class="mb-1"><strong>Requirements:</strong> OS Windows 10 or 11 (64-bit), 100 Mb free disk space.</p>
+                            <p class="text--secondary fw-normal mb-1">
                                 <strong>Troubleshooting:</strong> If the installer fails, try running it with administrative privileges or temporarily disable antivirus software.
                             </p>
                         </div>
@@ -33,13 +33,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                             </svg>
                         </div>
+                        <div>
+                            <p class="mb-1"><strong>Requirements:</strong> macOS 10.15 (Catalina) or later, 100 MB free disk space.</p>
+                            <p class="mb-1 text--secondary fw-normal"><strong>Troubleshooting:</strong> If the installer fails, right-click (or Control-click) the installer and select <strong>Open</strong> to bypass Gatekeeper. You may need to allow the app in <strong>System Settings > Privacy & Security</strong> if macOS blocks the installation.</p>
+                        </div>
                         <div class="text-center">
-                            <p class="text--secondary fw-normal">
-                                The Mac installer will be available soon.  
-                                In the meantime, you can <a href="https://github.com/cfwheels/cfwheels/releases/latest" target="_blank" class="link-danger">Download Wheels</a> manually.
-                            </p>
-                            <p style="visibility: hidden;">Requirements</p>
-                            <a class="btn important:text--primary mt-2 px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition" style="visibility: hidden;" href="##">Download for Mac(.dmg)</a>
+                            <a class="btn important:text--primary mt-2 px-4 fs-16 py-2 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition" href="https://github.com/wheels-dev/wheels/raw/develop/tools/installer/macos/installer/wheels-installer.dmg">Download</a>
                         </div>
                     </div>
                 </div>
