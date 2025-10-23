@@ -29,7 +29,7 @@ services:
       - PORT=60151
       - HEALTHCHECK_URI=http://127.0.0.1:60151/
     networks:
-      - wheels-mesh-net
+      - wheels_overlay_net
     volumes:
       - shared-images:/app/public/images
       - shared-files:/app/public/files
