@@ -39,7 +39,7 @@ services:
       - wheels-data:/data
 
 networks:
-  wheels-mesh-net:
+  wheels_overlay_net:
     driver: overlay
     attachable: true      # optional: allows manual container attachment
 
