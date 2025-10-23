@@ -5,6 +5,7 @@ services:
     image: 10.100.10.116:5000/wheels-dev-stage
     deploy:
       mode: replicated
+      replicas: 3
       restart_policy:
         condition: on-failure
       update_config:
