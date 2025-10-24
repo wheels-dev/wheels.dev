@@ -24,7 +24,7 @@ services:
       - target: 60151
         published: 50151
         protocol: tcp
-        mode: ingress       # <-- enables Docker routing mesh
+        mode: host       # <-- enables Docker routing mesh
     environment:
       - PORT=60151
       - HEALTHCHECK_URI=http://127.0.0.1:60151/
