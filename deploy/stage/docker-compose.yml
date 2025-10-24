@@ -4,8 +4,7 @@ services:
   wheels-dev:
     image: 10.100.10.116:5000/wheels-dev-stage
     deploy:
-      mode: replicated
-      replicas: 3
+      mode: global
       restart_policy:
         condition: on-failure
       update_config:
@@ -21,15 +20,19 @@ services:
           cpus: '0.25'
           memory: 256M
     ports:
+#      - "50151:60151"
       - target: 60151
         published: 50151
         protocol: tcp
-        mode: host       # <-- enables Docker routing mesh
+#        mode: ingress
+        mode: host       # <-- This disables routing mesh
     environment:
       - PORT=60151
       - HEALTHCHECK_URI=http://127.0.0.1:60151/
+#     - JVM_HEAPSIZE=1024
+#     - BOX_SERVER_DEBUG=true
     networks:
-      - wheels_overlay_net
+      - wheels-net
     volumes:
       - shared-images:/app/public/images
       - shared-files:/app/public/files
@@ -39,9 +42,8 @@ services:
       - wheels-data:/data
 
 networks:
-  wheels_overlay_net:
+  wheels-net:
     driver: overlay
-    attachable: true      # optional: allows manual container attachment
 
 volumes:
   shared-images:
