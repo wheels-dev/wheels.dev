@@ -201,7 +201,7 @@
                                 <div class="text-center">
                                     <p class="fs-14 text--secondary fw-medium">
                                         Have an account ?
-                                        <a href="#urlFor(route='login')#" class="text--primary">Login</a>
+                                        <a href="#urlFor(route='auth-login')#" class="text--primary">Login</a>
                                     </p>
                                 </div>
                             </cfoutput>
