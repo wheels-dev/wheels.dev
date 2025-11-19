@@ -57,7 +57,7 @@ jobs:
           rm -f test_results.json || true
 
   build-and-deploy-to-docker-swarm:
-    runs-on: [self-hosted, Linux, pai]
+    runs-on: [self-hosted, Linux, X64, wheels-dev]
     needs: test  # This ensures deployment only runs after tests pass
     if: always()  #This ensures deployment runs even if the tests fail
     steps:
