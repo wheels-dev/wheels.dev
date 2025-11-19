@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: [self-hosted, Linux, pai]
+    runs-on: [self-hosted, Linux, pai, wheels-dev]
     steps:
       - name: Checkout Repository
         id: Checkout-Repository
@@ -105,3 +105,4 @@ jobs:
         run: |
           docker pull ${{ secrets.DOCKER_HUB_IP }}:${{ secrets.DOCKER_HUB_PORT}}/wheels-dev-stage
           docker stack deploy --with-registry-auth -c docker-compose.yml wheels-dev-stage
+
