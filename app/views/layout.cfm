@@ -537,7 +537,7 @@
 						<ul class="navbar-nav divide-x-primary ms-auto mb-2 mb-lg-0 align-items-center">
 							<cfoutput>
 							<li class="nav-item px-3">
-								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1">Source</a>
+								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary" aria-current="page" target="_blank" href="https://github.com/wheels-dev/wheels/releases">Source</a>
 							</li>
 							<li class="nav-item px-3">
 								<a class="nav-link py-2 fw-normal px-3 nav-link-hover rounded fs-16 text--secondary <cfif isDocs or isGuideDocs>active</cfif>" aria-current="page" href="#urlFor(route='docs')#">Docs</a>
@@ -643,17 +643,15 @@
 							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">Docs</h6>
 								<ul class="list-unstyled">
-									<li class="mt-2"><a href="https://wheels.dev/3.0.0/guides/introduction/frameworks-and-wheels" target="_blank"
+									<li class="mt-2"><a href="/3.0.0/guides/introduction/frameworks-and-wheels" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Introduction</a>
 									</li>
-									<li class="mt-2"><a href="https://wheels.dev/3.0.0/guides/command-line-tools/cli-overview" target="_blank"
+									<li class="mt-2"><a href="/3.0.0/guides/command-line-tools/cli-overview" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Command Line
 											Tools</a></li>
-									<!---<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1"
-											class="text--secondary fs-14 text-decoration-none cursor-pointer">Download Wheels</a></li>--->
 									<li class="mt-2"><a href="https://www.youtube.com/@wheels-dev" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Follow a Tutorial</a></li>
-									<li class="mt-2"><a href="https://wheels.dev/guides" target="_blank"
+									<li class="mt-2"><a href="/guides" target="_blank"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">Read the Guides</a></li>
 									<li class="mt-2"><cfoutput><a href="#urlFor(route='docVersion', version='v3.0.0')#"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer">API Documentation</a></cfoutput></li>
@@ -718,7 +716,7 @@
 							<div class="col-lg-2 text-lg-start text-center">
 								<h6 class="fw-bold fs-16 text--secondary">External Links</h6>
 								<ul class="list-unstyled">
-									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases/tag/v2.5.1"
+									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/releases"
 											class="text--secondary fs-14 text-decoration-none cursor-pointer" target="_blank">Source
 											Code</a></li>
 									<li class="mt-2"><a href="https://github.com/wheels-dev/wheels/issues"
@@ -742,7 +740,7 @@
 							class="text-muted d-flex flex-wrap gap-2 justify-content-lg-between justify-content-center align-items-center">
 							<div>
 								<p class="p-0 m-0 fs-12 text--secondary text-lg-start text-center">
-										&copy; 2005-2025 Wheels.Dev. All rights are reserved.<br>
+										&copy; 2005-<cfoutput>#Year(Now())#</cfoutput> Wheels.Dev. All rights are reserved.<br>
 										Wheels is licensed under the Apache License, Version 2.0.
 								</p>
 							</div>
