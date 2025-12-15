@@ -37,11 +37,6 @@ jobs:
         run: |
           box install
 
-      - name: Restart Wheels Server
-        working-directory: ${{ env.APP_DIR }}
+      - name: Restart Wheels Server via systemd
         run: |
-          box server stop || echo "Server not running"
-          sleep 5
-          box server start
-          sleep 10
-          box server status
+          systemctl restart wheelsdev.service
