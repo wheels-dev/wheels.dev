@@ -1,38 +1,46 @@
 name: Wheels.dev
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  test:
+  deploy:
     runs-on: [self-hosted, Linux, X64]
+
+    env:
+      APP_DIR: /home/wheels-1/wheels.dev
+
     steps:
       - name: Checkout Repository
-        id: Checkout-Repository
         uses: actions/checkout@v4
-        
-      - name: Create Environment Files
-        id: Create-Environment-Files
-        run: |
-          cp ./deploy/prod/.env ./
-          cp ./deploy/prod/server.json ./
 
-      - name: Install Wheels-cli
-        id: Install-Wheels-cli
+      - name: Prepare application directory
+        run: |
+          mkdir -p "$APP_DIR"
+          rsync -av --delete ./ "$APP_DIR/"
+
+      - name: Create Environment Files
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          cp ./deploy/stage/.env .
+          cp ./deploy/stage/server.json .
+
+      - name: Install Wheels CLI
+        working-directory: ${{ env.APP_DIR }}
         run: |
           box install wheels-cli
 
       - name: Install Dependencies
-        id: Install-Dependencies
+        working-directory: ${{ env.APP_DIR }}
         run: |
           box install
 
-      - name: Restart server
-        id: Restart-server
+      - name: Restart Wheels Server via systemd
         run: |
-          box server stop || true
-          box server start
+          sudo systemctl restart wheelsdev.service
+
 
 #      - name: Post Slack Message
 #        id: Post-Slack-Message
