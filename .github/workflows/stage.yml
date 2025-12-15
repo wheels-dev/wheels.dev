@@ -39,4 +39,4 @@ jobs:
 
       - name: Restart Wheels Server via systemd
         run: |
-          systemctl restart wheelsdev.service
+          sudo systemctl restart wheelsdev.service
