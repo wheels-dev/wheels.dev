@@ -41,5 +41,5 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           box server stop || echo "Server not running"
-          sleep 5
-          box server start
+          sleep 1
+          box server start --daemon
