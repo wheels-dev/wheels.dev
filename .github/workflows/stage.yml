@@ -1,35 +1,44 @@
 name: Wheels.dev
+
 on:
   push:
     branches:
       - develop
 
 jobs:
-  test:
+  deploy:
     runs-on: [self-hosted, Linux, X64, stage]
+
+    env:
+      APP_DIR: /home/${{ runner.user }}/wheels.dev
+
     steps:
       - name: Checkout Repository
-        id: Checkout-Repository
         uses: actions/checkout@v4
-        
-      - name: Create Environment Files
-        id: Create-Environment-Files
-        run: |
-          cp ./deploy/stage/.env ./
-          cp ./deploy/stage/server.json ./
 
-      - name: Install Wheels-cli
-        id: Install-Wheels-cli
+      - name: Prepare application directory
+        run: |
+          mkdir -p "$APP_DIR"
+          rsync -av --delete ./ "$APP_DIR/"
+
+      - name: Create Environment Files
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          cp ./deploy/stage/.env .
+          cp ./deploy/stage/server.json .
+
+      - name: Install Wheels CLI
+        working-directory: ${{ env.APP_DIR }}
         run: |
           box install wheels-cli
 
       - name: Install Dependencies
-        id: Install-Dependencies
+        working-directory: ${{ env.APP_DIR }}
         run: |
           box install
 
-      - name: Restart server
-        id: Restart-server
+      - name: Restart Wheels Server
+        working-directory: ${{ env.APP_DIR }}
         run: |
-          box server stop name=wheelsdev --force || true
-          box server start name=wheelsdev
+          box server stop || echo "Server not running"
+          box server start
