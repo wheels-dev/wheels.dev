@@ -10,7 +10,7 @@ jobs:
     runs-on: [self-hosted, Linux, X64, stage]
 
     env:
-      APP_DIR: "$HOME/wheels.dev"
+      APP_DIR: /home/wheels-stage1/wheels.dev
 
     steps:
       - name: Checkout Repository
