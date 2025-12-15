@@ -31,5 +31,5 @@ jobs:
       - name: Restart server
         id: Restart-server
         run: |
-          box server stop || true
-          box server start
+          box server stop name=wheelsdev --force || true
+          box server start name=wheelsdev
