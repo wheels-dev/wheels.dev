@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted, Linux, X64, prod]
 
     env:
       APP_DIR: /home/wheels-1/wheels.dev
