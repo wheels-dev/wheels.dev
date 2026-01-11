@@ -41,7 +41,9 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           box server stop || true
-          box server start
+          nohup box server start > /dev/null 2>&1 &
+          sleep 10
+          box server status
 
 
 #      - name: Post Slack Message
