@@ -37,9 +37,11 @@ jobs:
         run: |
           box install
 
-      - name: Restart Wheels Server via systemd
+      - name: Restart Wheels Server
+        working-directory: ${{ env.APP_DIR }}
         run: |
-          sudo systemctl restart wheelsdev.service
+          box server stop || true
+          box server start
 
 
 #      - name: Post Slack Message
