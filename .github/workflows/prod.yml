@@ -21,12 +21,20 @@ jobs:
           mkdir -p "$APP_DIR"
           rsync -av --delete ./ "$APP_DIR/"
 
+      - name: Ensure Java 11 is installed
+        run: |
+          if [ ! -d "/opt/jdk-11.0.21+9" ]; then
+            cd /tmp
+            curl -sL 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.21%2B9/OpenJDK11U-jdk_x64_linux_hotspot_11.0.21_9.tar.gz' -o java11.tar.gz
+            sudo tar -xzf java11.tar.gz -C /opt
+            rm java11.tar.gz
+          fi
+
       - name: Create Environment Files
         working-directory: ${{ env.APP_DIR }}
         run: |
           cp ./deploy/prod/.env .
           cp ./deploy/prod/server.json .
-          cp ./deploy/prod/custom.java.security .
 
       - name: Install Wheels CLI
         working-directory: ${{ env.APP_DIR }}
