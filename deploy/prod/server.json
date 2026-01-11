@@ -18,6 +18,7 @@
         "cfengine":"lucee@6"
     },
     "jvm":{
-        "args":"-Djava.security.properties=/home/wheels/wheels.dev/custom.java.security"
+        "javaHome":"/opt/jdk-11.0.21+9",
+        "args":""
     }
 }
