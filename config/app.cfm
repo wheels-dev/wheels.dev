@@ -24,7 +24,7 @@
 		class: "com.microsoft.sqlserver.jdbc.SQLServerDriver",
 		bundleName: "org.lucee.mssql",
 		bundleVersion: "#this.env.wheelsdev_bundleversion#",
-		connectionString: "jdbc:sqlserver://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#;DATABASENAME=#this.env.wheelsdev_databasename#;trustServerCertificate=true;SelectMethod=direct",
+		connectionString: "jdbc:sqlserver://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#;DATABASENAME=#this.env.wheelsdev_databasename#;encrypt=false;trustServerCertificate=true;SelectMethod=direct",
 		username: "#this.env.wheelsdev_username#",
 		password: "encrypted:#this.env.wheelsdev_password#",
 
