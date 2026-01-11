@@ -37,36 +37,11 @@ jobs:
         run: |
           box install
 
-      - name: Setup systemd service
-        run: |
-          if [ ! -f /etc/systemd/system/wheelsdev.service ]; then
-            BOX_PATH=$(which box)
-            sudo tee /etc/systemd/system/wheelsdev.service > /dev/null <<EOF
-          [Unit]
-          Description=Wheels.dev CommandBox Server
-          After=network.target
-
-          [Service]
-          Type=forking
-          User=wheels-1
-          WorkingDirectory=$APP_DIR
-          ExecStart=$BOX_PATH server start
-          ExecStop=$BOX_PATH server stop
-          Restart=always
-          RestartSec=10
-
-          [Install]
-          WantedBy=multi-user.target
-          EOF
-            sudo systemctl daemon-reload
-            sudo systemctl enable wheelsdev.service
-          fi
-
       - name: Restart Wheels Server
         working-directory: ${{ env.APP_DIR }}
         run: |
           box server stop || true
-          sudo systemctl restart wheelsdev.service
+          box server start
           sleep 10
           box server status || true
 
