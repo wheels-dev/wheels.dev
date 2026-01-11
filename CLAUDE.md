@@ -4,188 +4,117 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Wheels web application for the wheels.dev community website. Wheels is a CFML (ColdFusion Markup Language) framework with an MVC architecture similar to Ruby on Rails. The site includes features for blog management, user authentication, newsletter management, testimonials, and other community features.
-
-## Technical Stack
-
-- **Framework**: Wheels (CFML framework)
-- **CLI Tools**: CommandBox for development workflow
-- **Database Support**: MySQL, PostgreSQL, SQL Server, H2
-- **CFML Engines**: Lucee 5/6, Adobe ColdFusion 2018/2021/2023
-- **Dependencies**:
-  - WireBox (for dependency injection)
-  - TestBox (for testing)
-  - LogBox (for logging)
-- **Deployment**: Docker Swarm
-
-## Project Structure
-
-Following MVC architecture:
-- `app/models/` - Model classes
-- `app/controllers/` - Controller classes
-- `app/views/` - View templates
-- `app/config/` - Configuration files
-- `app/migrator/migrations/` - Database migration files
-- `tests/` - Test files
-- `deploy/` - Environment-specific deployment configurations
-- `.github/workflows/` - CI/CD pipeline configurations
+This is the wheels.dev community website built with Wheels 3.0, a Rails-inspired CFML MVC framework. The site provides blog management, user authentication, API documentation, newsletter management, testimonials, and admin features.
 
 ## Development Commands
 
-### Setting Up a Development Environment
-
-1. Install CommandBox CLI
-2. Install the wheels-cli CommandBox module:
-```
-box install wheels-cli
-```
-
-3. Start a new application (if needed):
-```
-box wheels new
-```
-or
-```
-box wheels generate app myApp
-```
-
-### Starting the Server
-
-Start the CFML server:
-```
+```bash
+# Start development server
 box server start
-```
 
-### Database Migrations
+# Install dependencies
+box install
 
-View migrations status:
-```
-box wheels db info
-```
+# Code formatting
+box run-script format           # Format all code
+box run-script format:check     # Check formatting only
 
-Apply all pending migrations:
-```
-box wheels db latest
-```
+# Database migrations
+box wheels db info              # View migration status
+box wheels db latest            # Apply pending migrations
 
-Create a new migration:
-```
-box wheels dbmigrate create table [name]
-box wheels dbmigrate create column [name] [columnType] [columnName]
-```
+# Testing
+box wheels test app             # Run application tests
 
-Reset database to initial state:
-```
-box wheels db reset
-```
-
-### Testing
-
-Run application tests:
-```
-box wheels test app
-```
-
-Run core framework tests:
-```
-box wheels test core
-```
-
-Run plugin tests:
-```
-box wheels test [plugin-name]
-```
-
-### Reloading Application
-
-Reload the application after code changes:
-```
+# Reload application after changes
 box wheels reload
 ```
 
-### Code Formatting
+## Architecture
 
-Format code:
-```
-box run-script format
-```
+### Controller Namespaces
 
-Check format without making changes:
-```
-box run-script format:check
-```
+Controllers are organized into three namespaces in `app/controllers/`:
+- `web.*` - Public-facing controllers (HomeController, BlogController, AuthController, etc.)
+- `admin.*` - Admin dashboard controllers (AdminController, UserController, NewsletterController, etc.)
+- `api.*` - API endpoints
 
-### Docker Development
+All controllers extend `app/controllers/Controller.cfc`, which provides:
+- CSRF protection via `protectsFromForgery()`
+- Authentication helpers: `isLoggedInUser()`, `isCurrentUserAdmin()`, `checkAdminAccess()`
+- Role-based access control: `checkRoleAccess()`
+- Shared business logic (e.g., `getBlogBySlug()`, `getTagsByBlogid()`)
 
-For complete testing environment with multiple engines and databases:
+### Model Patterns
 
-1. Ensure docker is installed
-2. Increase Docker memory to about 4GB
-3. Run from repository root:
-```
-docker compose up
-```
+Models in `app/models/` extend `app.Models.Model` and use:
+- `table()` to specify database table name
+- `property()` for column mappings with type coercion
+- `belongsTo()`, `hasMany()` for associations
+- Custom methods for business logic
 
-Access test UI at: http://localhost:3000
-
-Individual CFML engines available at:
-- Lucee 5: localhost:60005
-- Lucee 6: localhost:60006
-- ACF 2018: localhost:62018
-- ACF 2021: localhost:62021
-- ACF 2023: localhost:62023
-
-## Scaffolding Content
-
-Create application components:
-```
-box wheels scaffold [objectName]
+Example from `Blog.cfc`:
+```cfscript
+table("blog_posts");
+property(name="title", column="title", type="string");
+belongsTo(name="User", foreignKey="createdBy");
+hasMany(name="BlogCategory", foreignKey="blogId");
 ```
 
-Generate specific components:
+### Routing
+
+Routes are defined in `config/routes.cfm` using the mapper DSL:
+```cfscript
+mapper()
+    .namespace("api")
+        .namespace("v1")
+            .get(name="get_blog_posts", pattern="blog", to="api.BlogController##Index")
+        .end()
+    .end()
+    .namespace("admin")
+        .get(name="dashboard", pattern="/", to="AdminController##dashboard")
+    .end()
+    .wildcard()  // Enables automatic controller/action routing
+.end();
 ```
-box wheels generate controller [name]
-box wheels generate model [name]
-box wheels generate view [name]
-```
 
-## Deployment Process
+### Views
 
-The application uses GitHub Actions for CI/CD to deploy to Docker Swarm environments. The deployment is configured for two environments:
+Views in `app/views/` are organized by controller namespace:
+- `app/views/web/` - Public views (HomeController/, BlogController/, etc.)
+- `app/views/admin/` - Admin views
+- `app/views/layout.cfm` - Main layout template
+- `app/views/helpers.cfm` - View helper functions
 
-### Production Deployment
-- Triggered by pushes to the `main` branch
-- Deploys to the production Docker Swarm with 3 replicas
-- Uses configuration from `deploy/prod/`
-- Exposed on port 50150
+### Configuration
 
-### Staging Deployment
-- Triggered by pushes to the `develop` branch
-- Deploys to the staging Docker Swarm with 3 replicas
-- Uses configuration from `deploy/stage/`
-- Exposed on port 50151
+- `config/app.cfm` - Application scope settings (datasources, sessions, mail servers)
+- `config/settings.cfm` - Wheels framework settings (URL rewriting, auto-migration)
+- `config/routes.cfm` - URL routing
+- Environment overrides in `config/development/`, `config/production/`, etc.
 
-### Deployment Process
-1. GitHub Actions workflow checks out the repository
-2. Copies environment-specific files (docker-compose.yml, dockerfile, server.json)
-3. Installs dependencies using CommandBox
-4. Logs into private Docker registry
-5. Builds and pushes Docker image to the registry
-6. Deploys to Docker Swarm using `docker stack deploy`
-7. Sends notification to Slack channel
+### Environment Variables
 
-### Shared Resources
-Both environments use shared Docker volumes for persistent data:
-- `shared-images` - For uploaded images
-- `shared-files` - For uploaded files
-- `wheels-data` - For application data
+Database and service configuration uses environment variables (set in `.env`):
+- `wheelsdev_host`, `wheelsdev_port`, `wheelsdev_databasename`, `wheelsdev_username`, `wheelsdev_password` - SQL Server connection
+- `smtp_host`, `smtp_port`, `smtp_username`, `smtp_password` - Email
+- `reloadPassword` - Application reload password
 
-## Important Configuration Files
+## Deployment
 
-- `box.json` - Package dependencies and settings
-- `CFConfig.json` - CFML engine configuration
-- `app/config/settings.cfm` - Application settings including datasource config
-- `app/config/routes.cfm` - URL routing configuration
-- `deploy/*/docker-compose.yml` - Docker Swarm service configuration
-- `deploy/*/dockerfile` - Docker image build configuration
-- `deploy/*/server.json` - CommandBox server configuration
+- **Staging**: Push to `develop` branch → deploys via GitHub Actions to staging server
+- **Production**: Push to `main` branch → deploys via GitHub Actions to production server
+
+Both use self-hosted runners that:
+1. Sync files to application directory
+2. Copy environment-specific config from `deploy/stage/` or `deploy/prod/`
+3. Install dependencies via CommandBox
+4. Restart the systemd service (`wheelsdev.service`)
+
+## Key URLs
+
+- `/` - Homepage
+- `/blog` - Blog listing
+- `/admin/` - Admin dashboard (requires authentication)
+- `/api/v1/blog` - Blog API endpoint
+- `/login`, `/register` - Authentication
