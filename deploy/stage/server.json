@@ -16,5 +16,8 @@
     "openbrowser":"false",
     "app":{
         "cfengine":"lucee@6"
+    },
+    "jvm":{
+        "args":"-Djdk.tls.disabledAlgorithms=\"MD5, RC4, DES, 3DES_EDE_CBC\""
     }
 }
