@@ -41,8 +41,9 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           box server stop || true
-          echo "cd $APP_DIR && box server start" | at now + 1 minute
-          echo "Server scheduled to start in 1 minute"
+          screen -dmS wheelsdev bash -c "cd $APP_DIR && box server start"
+          sleep 15
+          box server status || true
 
 
 #      - name: Post Slack Message
