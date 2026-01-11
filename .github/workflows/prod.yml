@@ -10,7 +10,7 @@ jobs:
     runs-on: [self-hosted, Linux, X64, prod]
 
     env:
-      APP_DIR: /home/wheels-1/wheels.dev
+      APP_DIR: /home/wheels/wheels.dev
 
     steps:
       - name: Checkout Repository
@@ -41,9 +41,9 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           box server stop || true
-          box server start
-          sleep 10
-          box server status || true
+          sudo systemctl restart wheelsdev.service
+          sleep 5
+          sudo systemctl status wheelsdev.service
 
 
 #      - name: Post Slack Message
