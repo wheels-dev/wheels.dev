@@ -26,6 +26,7 @@ jobs:
         run: |
           cp ./deploy/prod/.env .
           cp ./deploy/prod/server.json .
+          cp ./deploy/prod/custom.java.security .
 
       - name: Install Wheels CLI
         working-directory: ${{ env.APP_DIR }}
