@@ -18,6 +18,6 @@
         "cfengine":"lucee@6"
     },
     "jvm":{
-        "args":"-Djava.security.properties==/home/wheels-stage1/wheels.dev/custom.java.security"
+        "args":"-Djava.security.properties=/home/wheels-stage1/wheels.dev/custom.java.security"
     }
 }
