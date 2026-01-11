@@ -24,8 +24,8 @@ jobs:
       - name: Create Environment Files
         working-directory: ${{ env.APP_DIR }}
         run: |
-          cp ./deploy/stage/.env .
-          cp ./deploy/stage/server.json .
+          cp ./deploy/prod/.env .
+          cp ./deploy/prod/server.json .
 
       - name: Install Wheels CLI
         working-directory: ${{ env.APP_DIR }}
