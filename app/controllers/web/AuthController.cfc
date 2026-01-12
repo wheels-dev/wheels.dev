@@ -1,41 +1,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword,checkSession,setAdmin", params="key", paramsTypes="integer", handler="login");
+        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword", params="key", paramsTypes="integer", handler="login");
         usesLayout("/layout");
-        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword,checkSession,setAdmin");
-    }
-
-    // Temporary function to set user as admin - requires reload password
-    function setAdmin() {
-        param name="params.email" default="";
-        param name="params.password" default="";
-
-        if (params.password != application.wheels.reloadPassword) {
-            renderText("Unauthorized");
-            return;
-        }
-
-        if (!len(trim(params.email))) {
-            renderText("Email required");
-            return;
-        }
-
-        // Find admin role
-        var adminRole = model("Role").findOne(where="name='Admin'");
-        if (!isObject(adminRole)) {
-            renderText("Admin role not found in database");
-            return;
-        }
-
-        // Update user role
-        var user = model("User").findOne(where="email='#params.email#'");
-        if (isObject(user)) {
-            user.update(roleId=adminRole.id);
-            renderText("User " & params.email & " updated to Admin role. Please log out and log back in.");
-        } else {
-            renderText("User not found");
-        }
+        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword");
     }
 
     function login() {
