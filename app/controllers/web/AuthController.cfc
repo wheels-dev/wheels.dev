@@ -1,9 +1,30 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword", params="key", paramsTypes="integer", handler="login");
+        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword,checkSession", params="key", paramsTypes="integer", handler="login");
         usesLayout("/layout");
-        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword");
+        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword,checkSession");
+    }
+
+    // Temporary diagnostic function
+    function checkSession() {
+        var result = {
+            "loggedIn" = structKeyExists(session, "userID"),
+            "sessionRole" = structKeyExists(session, "role") ? session.role : "NOT SET",
+            "sessionUserID" = structKeyExists(session, "userID") ? session.userID : "NOT SET",
+            "sessionUsername" = structKeyExists(session, "username") ? session.username : "NOT SET"
+        };
+
+        if (structKeyExists(session, "userID")) {
+            var user = model("User").findOne(where="id='#session.userID#'", include="Role");
+            if (isObject(user)) {
+                result["dbRoleName"] = isObject(user.role) ? user.role.name : "NO ROLE";
+                result["dbRoleId"] = user.roleId;
+                result["dbEmail"] = user.email;
+            }
+        }
+
+        renderText(serializeJSON(result));
     }
 
     function login() {
