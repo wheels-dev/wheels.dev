@@ -16,10 +16,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Stop server before deployment
+        run: |
+          sudo systemctl stop wheelsdev.service || true
+          sleep 2
+
       - name: Prepare application directory
         run: |
           mkdir -p "$APP_DIR"
-          rsync -av --delete ./ "$APP_DIR/"
+          rsync -av --delete --exclude='.CommandBox' ./ "$APP_DIR/"
 
       - name: Ensure Java 11 is installed
         run: |
