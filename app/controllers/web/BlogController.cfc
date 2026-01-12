@@ -986,10 +986,21 @@ component extends="app.Controllers.Controller" {
         blogData.slug = slug;
 
 
+        // Determine status based on draft flag and user role
         if (blogData.isdraft eq 1) {
             blogData.statusId = 1; // Draft
+            blogData.status = "";
+            blogData.isPublished = false;
+        } else if (isUserAdmin()) {
+            // Auto-approve and publish for admin users
+            blogData.statusId = 2;
+            blogData.status = "Approved";
+            blogData.isPublished = true;
+            blogData.publishedAt = now();
         } else {
             blogData.statusId = 2; // Under Review
+            blogData.status = "";
+            blogData.isPublished = false;
         }
 
         try {
@@ -1031,6 +1042,18 @@ component extends="app.Controllers.Controller" {
                     newBlog.createdAt = now();
                     newBlog.updatedAt = now();
                     newBlog.createdBy = GetSignedInUserId();
+
+                    // Set approval status fields for admin auto-approval
+                    if (structKeyExists(blogData, "status")) {
+                        newBlog.status = blogData.status;
+                    }
+                    if (structKeyExists(blogData, "isPublished")) {
+                        newBlog.isPublished = blogData.isPublished;
+                    }
+                    if (structKeyExists(blogData, "publishedAt") && blogData.isPublished) {
+                        newBlog.publishedAt = blogData.publishedAt;
+                    }
+
                     if(blogData.postCreatedDate neq " "){
                         newBlog.postCreatedDate = blogData.postCreatedDate;
                     } else {
@@ -1069,9 +1092,15 @@ component extends="app.Controllers.Controller" {
             slug = rereplace(slug, "-+", "-", "all");
             params.slug = slug;
 
-            // Set status based on isDraft flag
+            // Set status based on isDraft flag and user role
             if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
                 params.statusId = 1; // Draft
+            } else if (isUserAdmin()) {
+                // Auto-approve and publish for admin users
+                params.statusId = 2;
+                params.status = "Approved";
+                params.isPublished = true;
+                params.publishedAt = now();
             } else {
                 params.statusId = 2; // Under Review
             }
@@ -1091,6 +1120,17 @@ component extends="app.Controllers.Controller" {
             blog.content = params.content;
             blog.slug = params.slug;
             blog.statusId = params.statusId;
+
+            // Set approval status fields for admin auto-approval
+            if (structKeyExists(params, "status")) {
+                blog.status = params.status;
+            }
+            if (structKeyExists(params, "isPublished")) {
+                blog.isPublished = params.isPublished;
+            }
+            if (structKeyExists(params, "publishedAt") && params.isPublished) {
+                blog.publishedAt = params.publishedAt;
+            }
 
             // Only update these if they exist in params
             if (structKeyExists(params, "postTypeId")) {
