@@ -1,38 +1,9 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
-        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword,clearAttempts", params="key", paramsTypes="integer", handler="login");
+        verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword", params="key", paramsTypes="integer", handler="login");
         usesLayout("/layout");
-        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword,clearAttempts");
-    }
-
-    // Temporary function to clear login attempts - requires reload password
-    function clearAttempts() {
-        param name="params.email" default="";
-        param name="params.password" default="";
-
-        // Require reload password for security
-        if (params.password != application.wheels.reloadPassword) {
-            renderText("Unauthorized");
-            return;
-        }
-
-        if (!len(trim(params.email))) {
-            renderText("Email required");
-            return;
-        }
-
-        // Clear login attempts
-        model("LoginAttempt").clearFailedAttempts(params.email);
-
-        // Also unlock the account if it was locked
-        var user = model("User").findOne(where="email='#params.email#'");
-        if (isObject(user) && user.locked) {
-            user.update(locked=false);
-            renderText("Login attempts cleared and account unlocked for: " & params.email);
-        } else {
-            renderText("Login attempts cleared for: " & params.email);
-        }
+        filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword");
     }
 
     function login() {
