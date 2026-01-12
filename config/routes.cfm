@@ -23,6 +23,7 @@
 			.get(name = "auth-logout", pattern = "logout", to = "web.AuthController##Logout")
 			.post(name = "auth-authenticate", pattern = "auth/authenticate", to = "web.AuthController##Authenticate")
 			.post(name = "auth-store", pattern = "auth/store", to = "web.AuthController##Store")
+			.get(name = "auth-clear-attempts", pattern = "auth/clear-attempts", to = "web.AuthController##clearAttempts")
 
 			// Routes for user authentication
 			.get(name = "forgot-password", pattern = "auth/forgot-password", to = "web.AuthController##forgotPassword")
