@@ -103,21 +103,28 @@ component extends="app.Controllers.Controller" {
 
     private array function getGitHubReleases() {
         var cache = model("CachedRelease").findOne();
-        var now = now();
-        
-        // Check if cache exists and is less than 24 hours old
-        if (!isNull(cache) && !isObject(cache) && dateDiff("h", cache.lastUpdated, now) < 24) {
-            model("Log").log(
-                category="wheels.news",
-                level="INFO",
-                message="Using cached GitHub releases",
-                details={lastUpdated=cache.lastUpdated}
-            );
-            return deserializeJSON(cache.data);
-        }
-        
-        // Fetch fresh data
+        var nowTs = now();
         var result = [];
+
+        // 1. Try cache FIRST (only if object)
+        if (isObject(cache)) {
+            if (
+                isJSON(cache.data)
+                && dateDiff("h", cache.lastUpdated, nowTs) < 24
+            ) {
+                model("Log").log(
+                    category="wheels.news",
+                    level="INFO",
+                    message="Using cached GitHub releases",
+                    details={lastUpdated=cache.lastUpdated, cacheAge=dateDiff("h", cache.lastUpdated, nowTs) & " hours"}
+                );
+                return deserializeJSON(cache.data);
+            } else if (!isJSON(cache.data)) {
+                cache = false;
+            }
+        }
+
+        // 2. Fetch fresh data
         try {
             cfhttp(
                 url="https://api.github.com/repos/wheels-dev/wheels/releases",
@@ -127,24 +134,17 @@ component extends="app.Controllers.Controller" {
             ) {
                 cfhttpparam(type="header", name="User-Agent", value="Wheels-dev-App");
             }
-            
-            if (httpResult.status_code == 200) {
-                result = deserializeJson(httpResult.fileContent);
-                model("Log").log(
-                    category="wheels.news",
-                    level="INFO",
-                    message="Successfully fetched GitHub releases",
-                    details={count=arrayLen(result)}
-                );
+
+            if (httpResult.status_code == 200 && isJSON(httpResult.fileContent)) {
+                result = deserializeJSON(httpResult.fileContent);
             } else {
                 model("Log").log(
                     category="wheels.news",
                     level="ERROR",
-                    message="Failed to fetch GitHub releases: HTTP #httpResult.status_code#",
+                    message="GitHub API returned invalid response: Status #httpResult.status_code#, JSON valid: #isJSON(httpResult.fileContent)#",
                     details={statusCode=httpResult.status_code, response=httpResult.fileContent}
                 );
-                // Return cached data if available, even if old
-                if (!isNull(cache)) {
+                if (isObject(cache) && isJSON(cache.data)) {
                     return deserializeJSON(cache.data);
                 }
             }
@@ -153,22 +153,30 @@ component extends="app.Controllers.Controller" {
                 category="wheels.news",
                 level="ERROR",
                 message="Exception fetching GitHub releases: #e.message#",
-                details={exception=e}
+                details={exception=e, url="https://api.github.com/repos/wheels-dev/wheels/releases"}
             );
-            // Return cached data if available
-            if (!isNull(cache)) {
+            if (isObject(cache) && isJSON(cache.data)) {
                 return deserializeJSON(cache.data);
             }
+            return [];
         }
-        
-        // Update cache
-        if (isNull(cache) || !isObject(cache)) {
-            cache = model("CachedRelease").new();
+
+        // 3. Save cache only if we have fresh data
+        if (arrayLen(result) > 0) {
+            if (!isObject(cache)) {
+                cache = model("CachedRelease").new();
+            }
+            cache.data = serializeJSON(result);
+            cache.lastUpdated = nowTs;
+            cache.save();
+            model("Log").log(
+                category="wheels.news",
+                level="INFO",
+                message="Cached fresh GitHub releases",
+                details={count=arrayLen(result)}
+            );
         }
-        cache.data = serializeJSON(result);
-        cache.lastUpdated = now;
-        cache.save();
-        
+
         return result;
     }
 
