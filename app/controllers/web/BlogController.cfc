@@ -885,7 +885,7 @@ component extends="app.Controllers.Controller" {
         var result = {
             query = model("Blog").findAll(
                 where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished='true'",
-                order="post_created_date DESC",
+                order="postCreatedDate DESC",
                 include="User",
                 returnAs="query",
                 page = arguments.page,
