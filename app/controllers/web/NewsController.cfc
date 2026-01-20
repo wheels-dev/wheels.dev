@@ -106,7 +106,7 @@ component extends="app.Controllers.Controller" {
         var now = now();
         
         // Check if cache exists and is less than 24 hours old
-        if (!isNull(cache) && cache && dateDiff("h", cache.lastUpdated, now) < 24) {
+        if (!isNull(cache) && !isObject(cache) && dateDiff("h", cache.lastUpdated, now) < 24) {
             model("Log").log(
                 category="wheels.news",
                 level="INFO",
@@ -162,7 +162,7 @@ component extends="app.Controllers.Controller" {
         }
         
         // Update cache
-        if (isNull(cache) || !cache) {
+        if (isNull(cache) || !isObject(cache)) {
             cache = model("CachedRelease").new();
         }
         cache.data = serializeJSON(result);
