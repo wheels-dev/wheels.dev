@@ -884,8 +884,8 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'",
-                order="createdat DESC",
+                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished='true'",
+                order="post_created_date DESC",
                 include="User",
                 returnAs="query",
                 page = arguments.page,
@@ -896,7 +896,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'"
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished='true'"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -1054,7 +1054,7 @@ component extends="app.Controllers.Controller" {
                         newBlog.publishedAt = blogData.publishedAt;
                     }
 
-                    if(blogData.postCreatedDate neq " "){
+                    if(isNull(blogData.postCreatedDate)){
                         newBlog.postCreatedDate = blogData.postCreatedDate;
                     } else {
                         newBlog.postCreatedDate = now();
