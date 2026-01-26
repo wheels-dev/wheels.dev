@@ -521,12 +521,9 @@
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='adminuser-changePassword')#">Change Password</a></li>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlfor(route="adminUser-update-profile-pic")#">Update Profile Pic</a></li>
 										<li><hr class="dropdown-divider"></li>
-										<li><a class="dropdown-item fw-normal" href="#urlFor(route='auth-logout')#">Logout</a></li>
-									</cfoutput>
-
-								</ul>
-							</div>
-						</cfif>
+											<li><a class="dropdown-item fw-normal" href="#urlFor(route='readingHistory')#">Reading History</a></li>
+											<li><a class="dropdown-item fw-normal" href="#urlFor(route='bookmarks')#">Bookmarks</a></li>
+											<li><hr class="dropdown-divider"></li>
 						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 							data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
 							aria-label="Toggle navigation">

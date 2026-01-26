@@ -533,6 +533,29 @@ component extends="app.Controllers.Controller" {
             attachments = getAttachmentsByBlogid(blog.id);
             comments = getAllCommentsByBlogid(blog.id);
 
+            // Track reading history
+            if (StructKeyExists(session, "user")) {
+                history = model("ReadingHistory").findOne(
+                    where="userId=#session.user.id# AND blogId=#blog.id#"
+                );
+                if (IsObject(history)) {
+                    history.update(lastReadAt=Now());
+                } else {
+                    history = model("ReadingHistory").create(
+                        userId=session.user.id,
+                        blogId=blog.id,
+                        lastReadAt=Now()
+                    );
+                }
+
+                // Check if bookmarked
+                isBookmarked = model("Bookmark").exists(
+                    where="userId=#session.user.id# AND blogId=#blog.id#"
+                );
+            } else {
+                isBookmarked = false;
+            }
+
         } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",

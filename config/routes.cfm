@@ -84,6 +84,16 @@
 			.get(name="newsletter-verify", pattern="newsletter/verify/[token]", to="web.NewsletterController##verify")
 			.post(name="newsletter-unsubscribe", pattern="newsletter/unsubscribe", to="web.NewsletterController##unsubscribe")
 			
+			// Reading History
+			.get(name="readingHistory", pattern="reading-history", to="web.ReadingHistoryController##index")
+			.post(name="trackReading", pattern="reading-history/track", to="web.ReadingHistoryController##track")
+			.post(name="completeReading", pattern="reading-history/complete", to="web.ReadingHistoryController##complete")
+			.delete(name="clearHistory", pattern="reading-history/clear", to="web.ReadingHistoryController##clear")
+
+			// Bookmarks
+			.get(name="bookmarks", pattern="bookmarks", to="web.BookmarkController##index")
+			.post(name="toggleBookmark", pattern="bookmark/toggle", to="web.BookmarkController##toggle")
+			
 			// route for function docs
 			.get(name="loadMoreFunctions", pattern="api/*[version]/functions", to="web.ApiController##loadMoreFunctions")
 			.get(name="loadFunctionBySlug", pattern="api/*[version]/function", to="web.ApiController##loadFunctionBySlug")
