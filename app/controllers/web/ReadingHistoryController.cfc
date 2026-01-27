@@ -37,7 +37,7 @@ component extends="app.Controllers.Controller" {
 	// POST /reading-history/track
 	function track() {
 		if (!StructKeyExists(session, "userID")) {
-			renderWith(text="<div class='alert alert-danger'>Not logged in</div>", format="html");
+			renderWith(data="<div class='alert alert-danger'>Not logged in</div>", layout=false);
 			return;
 		}
 

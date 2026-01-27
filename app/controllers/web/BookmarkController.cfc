@@ -9,7 +9,7 @@ component extends="app.Controllers.Controller" {
 	// POST /bookmark/toggle
 	function toggle() {
 		if (!StructKeyExists(session, "userID")) {
-			renderWith(text="<div class='alert alert-danger'>Not logged in</div>", format="html");
+			renderWith(data="<div class='alert alert-danger'>Not logged in</div>", layout=false);
 			return;
 		}
 
@@ -18,16 +18,16 @@ component extends="app.Controllers.Controller" {
 		);
 
 		if (IsObject(bookmark)) {
-			// Remove bookmark
+			// Remove bookmark (only from bookmarks page)
 			bookmark.delete();
-			renderWith(text="<button onclick=""toggleBookmark(#params.blogId#, this)"" class=""bg--primary text-white fs-16 rounded-2 px-3 py-1"">Bookmark</button>", format="html");
+			renderWith(data="", layout=false);
 		} else {
 			// Add bookmark
 			model("Bookmark").create(
 				userId=session.userID,
 				blogId=params.blogId
 			);
-			renderWith(text="<button onclick=""toggleBookmark(#params.blogId#, this)"" class=""bg--danger text-white fs-16 rounded-2 px-3 py-1"">Remove</button>", format="html");
+			renderWith(data="<span class=""text-success fw-bold"">★ Bookmarked</span><script>if (typeof notifier !== 'undefined') notifier.show('Success!', 'Article bookmarked successfully.', '', '/img/ok-48.png', 3000);</script>", layout=false);
 		}
 	}
 
