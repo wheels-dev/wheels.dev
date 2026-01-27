@@ -534,15 +534,15 @@ component extends="app.Controllers.Controller" {
             comments = getAllCommentsByBlogid(blog.id);
 
             // Track reading history
-            if (StructKeyExists(session, "user")) {
+            if (StructKeyExists(session, "userID")) {
                 history = model("ReadingHistory").findOne(
-                    where="userId=#session.user.id# AND blogId=#blog.id#"
+                    where="userId=#session.userID# AND blogId=#blog.id#"
                 );
                 if (IsObject(history)) {
                     history.update(lastReadAt=Now());
                 } else {
                     history = model("ReadingHistory").create(
-                        userId=session.user.id,
+                        userId=session.userID,
                         blogId=blog.id,
                         lastReadAt=Now()
                     );
