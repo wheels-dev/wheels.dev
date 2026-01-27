@@ -9,8 +9,19 @@
                             Back
                         </span>
                     </a>
-                    <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
-                        <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Bookmark Button -->
+                        <cfif StructKeyExists(session, "userId")>
+                          <cfif isBookmarked>
+                            <span class="text-success fw-bold">★ Bookmarked</span>
+                          <cfelse>
+                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #blog.id#}' hx-target="this" hx-swap="outerHTML"
+                                    class="btn btn-outline-primary">
+                              ☆ Bookmark
+                            </button>
+                          </cfif>
+                        </cfif>
+                        <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
                             <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
                                 <i class="bi bi-pencil"></i> Edit
                             </a> 
@@ -24,8 +35,8 @@
                                     <i class="bi bi-eye-slash"></i> Unpublish
                                 </button>
                             </cfif>
-                        </div>
-                    </cfif>
+                        </cfif>
+                    </div>
                 </div>
                 <div class="bg-white rounded-5 shadow-sm mt-4 p-4">
                     <div class="row gy-4 pb-3">
@@ -92,6 +103,10 @@
                                     </cfif>
                                 </div>
                             </cfif>
+
+                            <!-- Add data attribute for JS -->
+                            <div data-blog-id="#blog.id#">
+
 
                         </div>
 
@@ -275,5 +290,20 @@
             window.location.href = "/blog";
         }
     });
+</script>
+<script>
+    let completed = false;
+    window.addEventListener('scroll', function() {
+        if (!completed && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+            completed = true;
+            const blogId = document.querySelector('[data-blog-id]').getAttribute('data-blog-id');
+            fetch('/reading-history/complete', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'blogId=' + blogId
+            });
+        }
+    });
+
 </script>
 <script src="/js/showBlog.js"></script>
