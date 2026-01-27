@@ -536,10 +536,15 @@ component extends="app.Controllers.Controller" {
             // Track reading history
             if (StructKeyExists(session, "userID")) {
                 history = model("ReadingHistory").findOne(
-                    where="userId=#session.userID# AND blogId=#blog.id#"
+                    where="userId=#session.userID# AND blogId=#blog.id#",
+                    includeSoftDeletes=true
                 );
                 if (IsObject(history)) {
-                    history.update(lastReadAt=Now());
+                    if (history.deletedAt != "") {
+                        history.update(lastReadAt=Now(), deletedAt="");
+                    } else {
+                        history.update(lastReadAt=Now());
+                    }
                 } else {
                     history = model("ReadingHistory").create(
                         userId=session.userID,
@@ -550,7 +555,7 @@ component extends="app.Controllers.Controller" {
 
                 // Check if bookmarked
                 isBookmarked = model("Bookmark").exists(
-                    where="userId=#session.user.id# AND blogId=#blog.id#"
+                    where="userId=#session.userId# AND blogId=#blog.id#"
                 );
             } else {
                 isBookmarked = false;

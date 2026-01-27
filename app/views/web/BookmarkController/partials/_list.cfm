@@ -5,7 +5,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="p-4 bg-white rounded-5 shadow-sm">
                     <div>
-                        <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#bookmarks.Blog.title#</p>
+                        <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#bookmarks.title#</p>
                         <div class="fs-16 mb-3 text--lightGray">
                             Bookmarked: #dateTimeFormat(bookmarks.createdAt, "mmm dd, yyyy")#
                         </div>
