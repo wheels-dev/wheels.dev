@@ -48,6 +48,10 @@
 			.get(name = "loadCategories", pattern = "blog/loadCategories", to = "web.BlogController##loadCategories")
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
+
+			.get(name = "reading-history-search", pattern = "reading-history/search", to = "web.ReadingHistoryController##search")
+			.get(name = "reading-history-list", pattern = "reading-history/list", to = "web.ReadingHistoryController##list")
+			.get(name = "bookmarks-search", pattern = "bookmarks/search", to = "web.BookmarkController##search")
 			.get(name = "Categories", pattern = "blog/Categories", to = "web.BlogController##Categories")
 			// .get(name = "blogsCategory", pattern = "blog/[category]/[slug]", to = "web.BlogController##Index")
 			.get(name = "blogsFilter", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
