@@ -8,13 +8,13 @@ component extends="app.Controllers.Controller" {
 
 	// POST /bookmark/toggle
 	function toggle() {
-		if (!StructKeyExists(session, "userId")) {
+		if (!StructKeyExists(session, "userID")) {
 			renderWith(text="<div class='alert alert-danger'>Not logged in</div>", format="html");
 			return;
 		}
 
 		bookmark = model("Bookmark").findOne(
-			where="userId=#session.userId# AND blogId=#params.blogId#"
+			where="userId=#session.userID# AND blogId=#params.blogId#"
 		);
 
 		if (IsObject(bookmark)) {
@@ -24,7 +24,7 @@ component extends="app.Controllers.Controller" {
 		} else {
 			// Add bookmark
 			model("Bookmark").create(
-				userId=session.userId,
+				userId=session.userID,
 				blogId=params.blogId
 			);
 			renderWith(text="<button onclick=""toggleBookmark(#params.blogId#, this)"" class=""bg--danger text-white fs-16 rounded-2 px-3 py-1"">Remove</button>", format="html");
@@ -33,7 +33,7 @@ component extends="app.Controllers.Controller" {
 
 	// GET /bookmarks
 	function index() {
-		if (!StructKeyExists(session, "userId")) {
+		if (!StructKeyExists(session, "userID")) {
 			redirectTo(route="auth-login");
 			return;
 		}
@@ -44,7 +44,7 @@ component extends="app.Controllers.Controller" {
 
 		bookmarks = model("Bookmark")
 			.findAll(
-				where="userId=#session.userId#",
+				where="userId=#session.userID#",
 				include="Blog",
 				order="createdAt DESC",
 				perPage=20,
@@ -54,7 +54,7 @@ component extends="app.Controllers.Controller" {
 
 	// GET /bookmarks/search
 	function search() {
-		if (!StructKeyExists(session, "userId")) {
+		if (!StructKeyExists(session, "userID")) {
 			renderWith(text="<div class='alert alert-danger'>Not logged in</div>", format="html");
 			return;
 		}
@@ -63,7 +63,7 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		where = "userId=#session.userId#";
+		where = "userId=#session.userID#";
 		if (StructKeyExists(params, "searchTerm") && params.searchTerm != "") {
 			where &= " AND Blog.title LIKE '%#params.searchTerm#%'";
 		}
