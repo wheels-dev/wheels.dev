@@ -12,10 +12,14 @@
                     <div class="d-flex align-items-center gap-3">
                         <!-- Bookmark Button -->
                         <cfif StructKeyExists(session, "userId")>
-                          <button onclick="toggleBookmark(#blog.id#, this)"
-                                  class="btn btn-outline-primary #isBookmarked ? 'bookmarked' : ''#">
-                            #isBookmarked ? '★' : '☆'# #isBookmarked ? 'Bookmarked' : 'Bookmark'#
-                          </button>
+                          <cfif isBookmarked>
+                            <span class="text-success fw-bold">★ Bookmarked</span>
+                          <cfelse>
+                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #blog.id#}' hx-target="this" hx-swap="outerHTML"
+                                    class="btn btn-outline-primary">
+                              ☆ Bookmark
+                            </button>
+                          </cfif>
                         </cfif>
                         <cfif isLoggedInUser() AND (isUserAdmin() OR session.userID EQ blog.createdBy)>
                             <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
@@ -300,9 +304,6 @@
             });
         }
     });
-    // Prevent auto scroll to bottom
-    window.addEventListener('load', function() {
-        window.scrollTo(0, 0);
-    });
+
 </script>
 <script src="/js/showBlog.js"></script>

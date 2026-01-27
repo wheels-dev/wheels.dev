@@ -38,7 +38,7 @@
                                             </div>
                                         </div>
                                         <div class="d-flex gap-2 justify-content-end align-items-center">
-                                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #bookmarks.blogId#}' hx-target="this" hx-swap="outerHTML"
+                                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #bookmarks.blogId#}' hx-target="closest .col-lg-4" hx-swap="outerHTML"
                                                     class="bg--danger text-white fs-16 rounded-2 px-3 py-1">
                                                 Remove
                                             </button>
