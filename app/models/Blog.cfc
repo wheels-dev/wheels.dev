@@ -38,6 +38,8 @@ component extends="app.Models.Model" {
         belongsTo(name="PostType", foreignKey="postTypeId");
         hasMany(name="BlogCategory", foreignKey="blogId");
         hasmany(name="tag", foreignKey="blogId"); 
+        hasMany("ReadingHistories");
+        hasMany("Bookmarks"); 
 
     }
 

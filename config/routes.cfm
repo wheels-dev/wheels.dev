@@ -48,6 +48,10 @@
 			.get(name = "loadCategories", pattern = "blog/loadCategories", to = "web.BlogController##loadCategories")
 			.get(name = "loadStatuses", pattern = "blog/loadStatuses", to = "web.BlogController##loadStatuses")
 			.get(name = "loadPostTypes", pattern = "blog/loadPostTypes", to = "web.BlogController##loadPostTypes")
+
+			.get(name = "reading-history-search", pattern = "reading-history/search", to = "web.ReadingHistoryController##search")
+			.get(name = "reading-history-list", pattern = "reading-history/list", to = "web.ReadingHistoryController##list")
+			.get(name = "bookmarks-search", pattern = "bookmarks/search", to = "web.BookmarkController##search")
 			.get(name = "Categories", pattern = "blog/Categories", to = "web.BlogController##Categories")
 			// .get(name = "blogsCategory", pattern = "blog/[category]/[slug]", to = "web.BlogController##Index")
 			.get(name = "blogsFilter", pattern = "blog/[filterType]/[filterValue]", to = "web.BlogController##Index")
@@ -83,6 +87,16 @@
 			.post(name="newsletter-subscribe", pattern="newsletter/subscribe", to="web.NewsletterController##subscribe")
 			.get(name="newsletter-verify", pattern="newsletter/verify/[token]", to="web.NewsletterController##verify")
 			.post(name="newsletter-unsubscribe", pattern="newsletter/unsubscribe", to="web.NewsletterController##unsubscribe")
+			
+			// Reading History
+			.get(name="readingHistory", pattern="reading-history", to="web.ReadingHistoryController##index")
+			.post(name="trackReading", pattern="reading-history/track", to="web.ReadingHistoryController##track")
+			.post(name="completeReading", pattern="reading-history/complete", to="web.ReadingHistoryController##complete")
+			.delete(name="clearHistory", pattern="reading-history/clear", to="web.ReadingHistoryController##clear")
+
+			// Bookmarks
+			.get(name="bookmarks", pattern="bookmarks", to="web.BookmarkController##index")
+			.post(name="toggleBookmark", pattern="bookmark/toggle", to="web.BookmarkController##toggle")
 			
 			// route for function docs
 			.get(name="loadMoreFunctions", pattern="api/*[version]/functions", to="web.ApiController##loadMoreFunctions")
