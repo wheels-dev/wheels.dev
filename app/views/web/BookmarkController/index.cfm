@@ -13,7 +13,6 @@
             <div class="pt-5">
                 <div class="row">
                     <div class="col-lg-6 col-12">
-                        <input id="bookmarkSearchInput" placeholder="Search bookmarks..." type="text" hx-get="/bookmarks/search?infiniteScroll=true" hx-trigger="keyup changed delay:500ms" hx-target="##bookmarksContainer" hx-swap="innerHTML" name="searchTerm" class="fs-14 flex-grow-1 form-control form-check-input-primary py-2 px-6 rounded-18" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;max-width:100%;">
                     </div>
                     <div class="col-lg-6 mt-lg-0 mt-3 col-12">
                         <div class="d-flex align-items-center justify-content-lg-end justify-content-start gap-3 flex-wrap">
@@ -30,20 +29,23 @@
                         <div class="row gy-3">
                             <cfloop query="bookmarks">
                                 <div class="col-lg-4 col-md-6">
-                                    <div class="p-4 bg-white rounded-5 shadow-sm">
-                                        <div>
-                                            <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#bookmarks.title#</p>
-                                            <div class="fs-16 mb-3 text--lightGray">
-                                                Bookmarked: #dateTimeFormat(bookmarks.createdAt, "mmm dd, yyyy")#
+                                    <a href="/blog/#bookmarks.slug#" class="text-decoration-none">
+                                        <div class="p-4 bg-white rounded-5 shadow-sm h-100 d-flex flex-column">
+                                            <div class="flex-grow-1">
+                                                <p class="fs-18 mb-3 text--secondary/70 fw-bold line-clamp-1">#bookmarks.title#</p>
+                                                <div class="fs-16 mb-3 text--lightGray">
+                                                    Bookmarked: #dateTimeFormat(bookmarks.createdAt, "mmm dd, yyyy")#
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2 justify-content-end align-items-center">
+                                                <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #bookmarks.blogId#}' hx-target="closest .col-lg-4" hx-swap="outerHTML"
+                                                        class="btn btn-outline-danger fs-16 rounded-2 px-3 py-1"
+                                                        onclick="event.preventDefault(); event.stopPropagation();">
+                                                    Remove
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="d-flex gap-2 justify-content-end align-items-center">
-                                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #bookmarks.blogId#}' hx-target="closest .col-lg-4" hx-swap="outerHTML"
-                                                    class="bg--danger text-white fs-16 rounded-2 px-3 py-1">
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </cfloop>
                         </div>
