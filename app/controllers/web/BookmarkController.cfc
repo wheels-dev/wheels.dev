@@ -9,26 +9,59 @@ component extends="app.Controllers.Controller" {
 	// POST /bookmark/toggle
 	function toggle() {
 		if (!StructKeyExists(session, "userID")) {
-			renderWith(data="<div class='alert alert-danger'>Not logged in</div>", layout=false);
+			data = {
+				"success" = false,
+				"message" = "Not logged in"
+			};
+			renderWith(data=data, layout="/responseLayout");
 			return;
 		}
 
+		// Find bookmark
 		bookmark = model("Bookmark").findOne(
 			where="userId=#session.userID# AND blogId=#params.blogId#"
 		);
 
 		if (IsObject(bookmark)) {
-			// Remove bookmark (only from bookmarks page)
+			// Active bookmark exists - soft delete it
 			bookmark.delete();
-			renderWith(data="", layout=false);
+			data = {
+				"success" = true,
+				"message" = "Bookmark removed",
+				"bookmarked" = false,
+				"removed" = true
+			};
 		} else {
-			// Add bookmark
-			model("Bookmark").create(
-				userId=session.userID,
-				blogId=params.blogId
+			// Check if a soft-deleted bookmark exists
+			deletedBookmark = model("Bookmark").findOne(
+				where="userId=#session.userID# AND blogId=#params.blogId#",
+				includeSoftDeletes=true
 			);
-			renderWith(data="<span class=""text-success fw-bold"">★ Bookmarked</span><script>if (typeof notifier !== 'undefined') notifier.show('Success!', 'Article bookmarked successfully.', '', '/img/ok-48.png', 3000);</script>", layout=false);
+
+			if (IsObject(deletedBookmark)) {
+				// Reactivate the deleted bookmark
+				deletedBookmark.update(deletedAt="", updatedAt=Now());
+				data = {
+					"success" = true,
+					"message" = "Article bookmarked successfully",
+					"bookmarked" = true,
+					"removed" = false
+				};
+			} else {
+				// Create new bookmark
+				model("Bookmark").create(
+					userId=session.userID,
+					blogId=params.blogId
+				);
+				data = {
+					"success" = true,
+					"message" = "Article bookmarked successfully",
+					"bookmarked" = true,
+					"removed" = false
+				};
+			}
 		}
+		renderWith(data=data, layout="/responseLayout");
 	}
 
 	// GET /bookmarks
