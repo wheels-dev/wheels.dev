@@ -107,9 +107,11 @@
                             <p class="text--secondary mb-3">
                                 Install Wheels using the command line interface for more control and automation.
                             </p>
-                            <a href="#urlfor(route='load-Guides')" class="text--primary fw-semibold text-decoration-none">
-                                View Installation Guide →
-                            </a>
+                            <cfoutput>
+                                <a href="#urlfor(route='load-Guides')#" class="text--primary fw-semibold text-decoration-none">
+                                    View Installation Guide →
+                                </a>
+                            </cfoutput>
                         </div>
                     </div>
                     
