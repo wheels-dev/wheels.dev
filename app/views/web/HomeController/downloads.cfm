@@ -121,7 +121,7 @@
                             <p class="text--secondary mb-3">
                                 Download the latest release manually and extract it to your preferred directory.
                             </p>
-                            <a href="https://github.com/wheels-dev/wheels/releases" target="_blank" class="text--primary fw-semibold text-decoration-none">
+                            <a href="https://github.com/wheels-dev/wheels/releases/latest" target="_blank" class="text--primary fw-semibold text-decoration-none">
                                 Download from GitHub →
                             </a>
                         </div>
@@ -129,44 +129,52 @@
                 </div>
 
                 <!-- Manual Installation Accordion -->
-                <div class="accordion mt-4" id="manualInstallAccordion">
-                    <div class="accordion-item bg-white border border--lightGray rounded-4">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed btn important:text--primary px-4 py-3 rounded-3 border border--primary hover:bg--primary hover:text-white bg-transparent text--secondary transition" type="button" data-bs-toggle="collapse" data-bs-target="#manualInstall">
-                                <span class="fw-bold fs-5">Manual Installation & Setup Instructions</span>
-                            </button>
-                        </h2>
-                        <div id="manualInstall" class="accordion-collapse collapse" data-bs-parent="#manualInstallAccordion">
-                            <div class="accordion-body bg-white px-4 py-4 border-top border--lightGray">
-                                <h4 class="fs-6 fw-bold mb-3">Required Packages</h4>
-                                <ul class="mb-4">
-                                    <li><strong>wheels-core</strong> – framework core (routing, ORM, request lifecycle)</li>
-                                    <li><strong>wheels-base-template</strong> – standard app structure (controllers, models, views, config, events)</li>
-                                    <li><strong>WireBox</strong> – required for dependency injection</li>
-                                    <li><strong>TestBox</strong> – optional for testing</li>
-                                </ul>
-                                
-                                <h4 class="fs-6 fw-bold mb-3">Installation Steps</h4>
-                                <ol class="mb-3">
-                                    <li class="mb-2">Create your application directory.</li>
-                                    <li class="mb-2">Download latest stable versions of required packages.</li>
-                                    <li class="mb-2">Extract <strong>wheels-base-template</strong> in your app directory:
-                                        <pre class="bg-dark text-white p-3 rounded-3 mt-2 mb-2 small overflow-auto">/my-wheels-app
+                <div class="mt-4">
+                    <div class="bg-white border border--lightGray rounded-4">
+                        
+                        <!-- Header (no accordion, no collapse) -->
+                        <div class="px-4 py-3 rounded-3 border-bottom border--lightGray">
+                            <span class="fw-bold fs-5 text--primary">
+                                Manual Installation & Setup Instructions
+                            </span>
+                        </div>
+
+                        <!-- Body (always visible) -->
+                        <div class="bg-white px-4 py-4">
+                            <h4 class="fs-6 fw-bold mb-3">Required Packages</h4>
+                            <ul class="mb-4">
+                                <li><strong>wheels-core</strong> – framework core (routing, ORM, request lifecycle)</li>
+                                <li><strong>wheels-base-template</strong> – standard app structure (controllers, models, views, config, events)</li>
+                                <li><strong>WireBox</strong> – required for dependency injection</li>
+                                <li><strong>TestBox</strong> – optional for testing</li>
+                            </ul>
+
+                            <h4 class="fs-6 fw-bold mb-3">Installation Steps</h4>
+                            <ol class="mb-3">
+                                <li class="mb-2">Create your application directory.</li>
+                                <li class="mb-2">Download latest stable versions of required packages.</li>
+                                <li class="mb-2">
+                                    Extract <strong>wheels-base-template</strong> in your app directory:
+                                    <pre class="bg-dark text-white p-3 rounded-3 mt-2 mb-2 small overflow-auto">
+/my-wheels-app
     /app
     /config
     /db
     /public
     /vendor
     /tests</pre>
-                                    </li>
-                                    <li class="mb-2">Extract <strong>wheels-core</strong>, <strong>WireBox</strong>, <strong>TestBox</strong> inside <code>/vendor</code>.</li>
-                                    <li class="mb-2">Set <code>/public/index.cfm</code> as the entry point in IIS/Apache/Nginx.</li>
-                                </ol>
-                            </div>
-                        </div>
+                            </li>
+                            <li class="mb-2">
+                                Extract <strong>wheels-core</strong>, <strong>WireBox</strong>, <strong>TestBox</strong> inside <code>/vendor</code>.
+                            </li>
+                            <li class="mb-2">
+                                Set <code>/public/index.cfm</code> as the entry point in IIS/Apache/Nginx.
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>
+
 
             <!-- Section Divider -->
             <hr class="my-5">
