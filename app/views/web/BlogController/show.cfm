@@ -281,6 +281,11 @@
             </div>
         </div>
     </div>
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" class="position-fixed bottom-0 end-0 m-4 btn bg--primary text-white rounded-circle" 
+            style="width: 50px; height: 50px; display: none; z-index: 99; border: none; padding: 0;">
+        <i class="bi bi-arrow-up fs-20"></i>
+    </button>
 </main>
 <script>
     document.body.addEventListener("htmx:afterRequest", function (e) {
@@ -290,19 +295,42 @@
             window.location.href = "/blog";
         }
     });
-</script>
-<script>
+
     let completed = false;
+    // Scroll to top button functionality
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
     window.addEventListener('scroll', function() {
-        if (!completed && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
-            completed = true;
-            const blogId = document.querySelector('[data-blog-id]').getAttribute('data-blog-id');
-            fetch('/reading-history/complete', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'blogId=' + blogId
-            });
+        if (!completed) {
+            const commentSection = document.querySelector('#comment');
+            if (commentSection) {
+                const rect = commentSection.getBoundingClientRect();
+                // Trigger when comment section comes into view (50px from bottom of viewport)
+                if (rect.top <= window.innerHeight - 50) {
+                    completed = true;
+                    const blogId = document.querySelector('[data-blog-id]').getAttribute('data-blog-id');
+                    fetch('/reading-history/complete', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: 'blogId=' + blogId
+                    });
+                }
+            }
         }
+        
+        // Show/hide scroll to top button
+        if (window.scrollY > 300) {
+            scrollToTopBtn.style.display = 'block';
+        } else {
+            scrollToTopBtn.style.display = 'none';
+        }
+    });
+
+    // Scroll to top on button click
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     });
 
 </script>

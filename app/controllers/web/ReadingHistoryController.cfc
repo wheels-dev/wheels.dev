@@ -1,7 +1,7 @@
 component extends="app.Controllers.Controller" {
 
 	function config() {
-		verifies(except="index,track,complete,clear", params="key", paramsTypes="integer", handler="index");
+		verifies(except="index,track,complete,clear,search,list", params="key", paramsTypes="integer", handler="index");
 		filters(through="restrictAccess");
 		usesLayout("/layout");
 	}
@@ -37,7 +37,11 @@ component extends="app.Controllers.Controller" {
 	// POST /reading-history/track
 	function track() {
 		if (!StructKeyExists(session, "userID")) {
-			renderWith(data="<div class='alert alert-danger'>Not logged in</div>", layout=false);
+			data = {
+				"success" = false,
+				"message" = "Not logged in"
+			};
+			renderWith(data=data, layout="/responseLayout");
 			return;
 		}
 
@@ -55,13 +59,21 @@ component extends="app.Controllers.Controller" {
 			);
 		}
 
-		renderWith(text="<div class='alert alert-success'>Reading progress updated.</div>", format="html");
+		data = {
+			"success" = true,
+			"message" = "Reading progress updated"
+		};
+		renderWith(data=data, layout="/responseLayout");
 	}
 
 	// POST /reading-history/complete
 	function complete() {
 		if (!StructKeyExists(session, "userID")) {
-			renderWith(text="<div class='alert alert-danger'>Not logged in</div>", format="html");
+			data = {
+				"success" = false,
+				"message" = "Not logged in"
+			};
+			renderWith(data=data, layout="/responseLayout");
 			return;
 		}
 
@@ -73,7 +85,11 @@ component extends="app.Controllers.Controller" {
 			history.update(isCompleted=true);
 		}
 
-		renderWith(text="<div class='alert alert-success'>Article marked as completed.</div>", format="html");
+		data = {
+			"success" = true,
+			"message" = "Article marked as completed"
+		};
+		renderWith(data=data, layout="/responseLayout");
 	}
 
 	// DELETE /reading-history/clear
@@ -115,7 +131,7 @@ component extends="app.Controllers.Controller" {
 			page=params.page
 		);
 
-		renderPartial("_list");
+		renderPartial("_list", layout=false);
 	}
 
 	// GET /reading-history/list
@@ -146,6 +162,6 @@ component extends="app.Controllers.Controller" {
 			page=params.page
 		);
 
-		renderPartial("_list");
+		renderPartial("_list", layout=false);
 	}
 }
