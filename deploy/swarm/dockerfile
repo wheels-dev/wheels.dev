@@ -20,4 +20,4 @@ RUN mkdir -p /app/public/WEB-INF/lib && \
     cp /app/public/urlrewrite.xml /app/public/WEB-INF/urlrewrite.xml
 
 # Point Tomcat docbase to our public directory
-RUN sed -i 's|docBase="/var/www"|docBase="/app/public"|g' /usr/local/tomcat/conf/server.xml
+RUN sed -i 's|docBase="/var/www/"|docBase="/app/public/"|g' /usr/local/tomcat/conf/server.xml
