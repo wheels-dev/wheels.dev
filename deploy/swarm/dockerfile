@@ -1,8 +1,5 @@
 FROM lucee/lucee:6.0
 
-# Install Lucee extensions needed by the app
-RUN cfpm install image mail zip caching mysql postgresql sqlserver
-
 # Java security config for SQL Server SHA1 cert compatibility
 COPY deploy/swarm/custom.java.security /tmp/custom.java.security
 RUN JAVA_SECURITY=$(find / -name "java.security" -path "*/conf/security/*" 2>/dev/null | head -1) && \
