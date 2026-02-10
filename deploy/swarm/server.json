@@ -1,0 +1,20 @@
+{
+    "name":"wheelsdev",
+    "web":{
+        "host":"0.0.0.0",
+        "http":{
+            "enable":true,
+            "port":"60150"
+        },
+        "webroot":"public",
+        "directoryBrowsing":false,
+        "rewrites":{
+            "enable":true,
+            "config":"public/urlrewrite.xml"
+        }
+    },
+    "openbrowser":"false",
+    "app":{
+        "cfengine":"lucee@6"
+    }
+}
