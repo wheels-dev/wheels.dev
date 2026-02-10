@@ -1,30 +1,24 @@
-FROM ortussolutions/commandbox:latest
+FROM lucee/lucee:6.0
 
-# Set working directory
-WORKDIR /app
+# Install Lucee extensions needed by the app
+RUN cfpm install image mail zip caching mysql postgresql sqlserver
 
-# Copy files to working directory
-COPY . .
-
-# Append custom Java security properties for SQL Server SHA1 cert compatibility.
-# The modern JDK in this image disables SHA1 by default; we re-enable it for
-# the legacy certificate on the database server.
-RUN JAVA_SECURITY=$(find /usr -name "java.security" -path "*/conf/security/*" 2>/dev/null | head -1) && \
+# Java security config for SQL Server SHA1 cert compatibility
+COPY deploy/swarm/custom.java.security /tmp/custom.java.security
+RUN JAVA_SECURITY=$(find / -name "java.security" -path "*/conf/security/*" 2>/dev/null | head -1) && \
     if [ -n "$JAVA_SECURITY" ]; then \
         echo "" >> "$JAVA_SECURITY" && \
         echo "# Custom overrides for SQL Server SHA1 cert compatibility" >> "$JAVA_SECURITY" && \
-        cat deploy/swarm/custom.java.security >> "$JAVA_SECURITY"; \
-    else \
-        echo "WARNING: java.security not found, skipping custom security config"; \
-    fi
+        cat /tmp/custom.java.security >> "$JAVA_SECURITY"; \
+    fi && rm -f /tmp/custom.java.security
 
-# Expose the port
-EXPOSE 60150
-ENV PORT=60150
-ENV HEALTHCHECK_URI="http://127.0.0.1:60150/"
+# Copy full application (ForgeBox dependencies resolved in CI via box install)
+COPY . /app/
 
-# Keep the server from trying to open in a browser
-RUN box config set server.defaults.openBrowser=false
+# Set up URL rewriting: copy default WEB-INF (contains Tuckey filter config)
+# into our webroot and add our rewrite rules
+RUN cp -r /var/www/WEB-INF /app/public/WEB-INF && \
+    cp /app/public/urlrewrite.xml /app/public/WEB-INF/urlrewrite.xml
 
-# Start the server
-CMD ["box", "server", "start", "--console"]
+# Point Tomcat docbase to our public directory
+RUN sed -i 's|docBase="/var/www"|docBase="/app/public"|g' /usr/local/tomcat/conf/server.xml
