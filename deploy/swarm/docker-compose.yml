@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   wheels-dev:
-    image: ghcr.io/paiindustries/wheels-dev:latest
+    image: ghcr.io/wheels-dev/wheels-dev:latest
     deploy:
       replicas: 2
       restart_policy:

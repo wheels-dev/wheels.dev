@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ghcr.io/paiindustries/wheels-dev
+  IMAGE_NAME: ghcr.io/wheels-dev/wheels-dev
   REGISTRY: ghcr.io
 
 jobs:
