@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  wheels-dev:
+    image: ghcr.io/paiindustries/wheels-dev:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 15s
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+      placement:
+        constraints: []
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      labels:
+        - "traefik.enable=true"
+        # Main router for wheels.dev
+        - "traefik.http.routers.wheels-dev.rule=Host(`wheels.dev`)"
+        - "traefik.http.routers.wheels-dev.entrypoints=websecure"
+        - "traefik.http.routers.wheels-dev.tls=true"
+        - "traefik.http.routers.wheels-dev.middlewares=wheels-dev-www-redirect"
+        # Backend service
+        - "traefik.http.services.wheels-dev.loadbalancer.server.port=60150"
+        - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie=true"
+        - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie.name=wheels_affinity"
+        - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie.httponly=true"
+        # www -> apex redirect middleware
+        - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.regex=^https?://www\\.wheels\\.dev/(.*)"
+        - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.replacement=https://wheels.dev/$${1}"
+        - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.permanent=true"
+        # Router to catch www.wheels.dev
+        - "traefik.http.routers.wheels-dev-www.rule=Host(`www.wheels.dev`)"
+        - "traefik.http.routers.wheels-dev-www.entrypoints=websecure"
+        - "traefik.http.routers.wheels-dev-www.tls=true"
+        - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
+    environment:
+      - PORT=60150
+      - HEALTHCHECK_URI=http://127.0.0.1:60150/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:60150/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    networks:
+      - proxy
+    volumes:
+      - shared-images:/app/public/images
+      - shared-files:/app/public/files
+      - shared-sitemap-prod:/app/public/sitemap
+      - shared-dev-docs:/app/docs/3.0.0/guides
+      - shared-json-folder:/app/public/json
+      - wheels-data:/data
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  shared-images:
+    external: true
+  shared-files:
+    external: true
+  shared-sitemap-prod:
+    external: true
+  shared-dev-docs:
+    external: true
+  shared-json-folder:
+    external: true
+  wheels-data:
+    external: true
