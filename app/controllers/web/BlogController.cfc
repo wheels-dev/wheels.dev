@@ -533,6 +533,34 @@ component extends="app.Controllers.Controller" {
             attachments = getAttachmentsByBlogid(blog.id);
             comments = getAllCommentsByBlogid(blog.id);
 
+            // Track reading history
+            if (StructKeyExists(session, "userID")) {
+                history = model("ReadingHistory").findOne(
+                    where="userId=#session.userID# AND blogId=#blog.id#",
+                    includeSoftDeletes=true
+                );
+                if (IsObject(history)) {
+                    if (history.deletedAt != "") {
+                        history.update(lastReadAt=Now(), deletedAt="");
+                    } else {
+                        history.update(lastReadAt=Now());
+                    }
+                } else {
+                    history = model("ReadingHistory").create(
+                        userId=session.userID,
+                        blogId=blog.id,
+                        lastReadAt=Now()
+                    );
+                }
+
+                // Check if bookmarked
+                isBookmarked = model("Bookmark").exists(
+                    where="userId=#session.userId# AND blogId=#blog.id#"
+                );
+            } else {
+                isBookmarked = false;
+            }
+
         } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",
@@ -884,8 +912,8 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'",
-                order="createdat DESC",
+                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished='true'",
+                order="postCreatedDate DESC",
                 include="User",
                 returnAs="query",
                 page = arguments.page,
@@ -896,7 +924,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved'"
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished='true'"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -1054,7 +1082,7 @@ component extends="app.Controllers.Controller" {
                         newBlog.publishedAt = blogData.publishedAt;
                     }
 
-                    if(blogData.postCreatedDate neq " "){
+                    if(isNull(blogData.postCreatedDate)){
                         newBlog.postCreatedDate = blogData.postCreatedDate;
                     } else {
                         newBlog.postCreatedDate = now();
