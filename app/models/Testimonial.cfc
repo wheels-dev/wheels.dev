@@ -60,7 +60,8 @@ component extends="app.Models.Model" {
             order = "#mergedOptions.sortBy# #mergedOptions.sortOrder#",
             page = mergedOptions.page,
             perPage = mergedOptions.perPage,
-            include = "User"
+            include = "User",
+            cache = 1440
         );
     }
     

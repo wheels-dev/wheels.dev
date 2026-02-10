@@ -22,8 +22,12 @@ component extends="app.Controllers.Controller" {
             perPage = 10
         );
 
-        // GitHub contributors API
-        contributors = getContributors();
+        // Contributors cached in application scope (rebuilds every 24h)
+        if (!structKeyExists(application, "contributorsCache") || !structKeyExists(application, "contributorsCacheTime") || dateDiff("h", application.contributorsCacheTime, now()) >= 24) {
+            application.contributorsCache = getContributors();
+            application.contributorsCacheTime = now();
+        }
+        contributors = application.contributorsCache;
         settings = model("Setting").findAll(cache=60);
         blogs = model('Blog').getTenLatest(); // Get blog list
         features = getAllFeatures();
