@@ -29,8 +29,15 @@ component extends="app.Controllers.Controller" {
         }
         contributors = application.contributorsCache;
         settings = model("Setting").findAll(cache=60);
-        blogs = model('Blog').getTenLatest(); // Get blog list
-        features = getAllFeatures();
+        blogs = model('Blog').getTenLatest();
+
+        // Features cached in application scope (rebuilds every 24h)
+        if (!structKeyExists(application, "featuresCache") || !structKeyExists(application, "featuresCacheTime") || dateDiff("h", application.featuresCacheTime, now()) >= 24) {
+            application.featuresCache = getAllFeatures();
+            application.featuresCacheTime = now();
+        }
+        features = application.featuresCache;
+
         renderView();
     }
     
