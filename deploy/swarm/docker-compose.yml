@@ -25,13 +25,9 @@ services:
           memory: 512M
       labels:
         - "traefik.enable=true"
-        # HTTPS router for wheels.dev (direct/internal access)
+        # wheels.dev router (HTTP only - Cloudflare handles TLS)
         - "traefik.http.routers.wheels-dev.rule=Host(`wheels.dev`)"
-        - "traefik.http.routers.wheels-dev.entrypoints=websecure"
-        - "traefik.http.routers.wheels-dev.tls=true"
-        # HTTP router for wheels.dev (Cloudflare Tunnel traffic via port 80)
-        - "traefik.http.routers.wheels-dev-http.rule=Host(`wheels.dev`)"
-        - "traefik.http.routers.wheels-dev-http.entrypoints=web"
+        - "traefik.http.routers.wheels-dev.entrypoints=web"
         # Backend service
         - "traefik.http.services.wheels-dev.loadbalancer.server.port=8888"
         - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie=true"
@@ -41,15 +37,10 @@ services:
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.regex=^https?://www\\.wheels\\.dev/(.*)"
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.replacement=https://wheels.dev/$${1}"
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.permanent=true"
-        # HTTPS router for www.wheels.dev
+        # www.wheels.dev router (redirects to apex)
         - "traefik.http.routers.wheels-dev-www.rule=Host(`www.wheels.dev`)"
-        - "traefik.http.routers.wheels-dev-www.entrypoints=websecure"
-        - "traefik.http.routers.wheels-dev-www.tls=true"
+        - "traefik.http.routers.wheels-dev-www.entrypoints=web"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
-        # HTTP router for www.wheels.dev (Cloudflare Tunnel)
-        - "traefik.http.routers.wheels-dev-www-http.rule=Host(`www.wheels.dev`)"
-        - "traefik.http.routers.wheels-dev-www-http.entrypoints=web"
-        - "traefik.http.routers.wheels-dev-www-http.middlewares=wheels-dev-www-redirect"
     environment:
       JAVA_OPTS: "-Xms512m -Xmx1536m"
     healthcheck:
