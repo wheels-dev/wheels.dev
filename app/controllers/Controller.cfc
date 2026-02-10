@@ -102,7 +102,8 @@ component extends="wheels.Controller" {
     public function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
             where="blog_posts.slug = '#arguments.slug#' AND status ='Approved' AND isPublished='true' ",
-            include="User,PostStatus"
+            include="User,PostStatus",
+            cache=10
         );
     }
 

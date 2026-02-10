@@ -43,7 +43,8 @@ component extends="app.Controllers.Controller" {
             var blogQuery = model("Blog").findAll(
                 select = "title, slug, content, postDate",
                 where  = "statusid <> 1 AND status = 'Approved' AND isPublished = 'true'",
-                order  = "createdAt DESC"
+                order  = "createdAt DESC",
+                cache  = 10
             );
 
             var blogsArray = [];
