@@ -27,7 +27,7 @@ services:
         - "traefik.enable=true"
         # Main router for wheels.dev
         - "traefik.http.routers.wheels-dev.rule=Host(`wheels.dev`)"
-        - "traefik.http.routers.wheels-dev.entrypoints=websecure"
+        - "traefik.http.routers.wheels-dev.entrypoints=web,websecure"
         - "traefik.http.routers.wheels-dev.tls=true"
         - "traefik.http.routers.wheels-dev.middlewares=wheels-dev-www-redirect"
         # Backend service
@@ -41,7 +41,7 @@ services:
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.permanent=true"
         # Router to catch www.wheels.dev
         - "traefik.http.routers.wheels-dev-www.rule=Host(`www.wheels.dev`)"
-        - "traefik.http.routers.wheels-dev-www.entrypoints=websecure"
+        - "traefik.http.routers.wheels-dev-www.entrypoints=web,websecure"
         - "traefik.http.routers.wheels-dev-www.tls=true"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
     healthcheck:
