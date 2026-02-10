@@ -108,19 +108,20 @@ component extends="wheels.Controller" {
     }
 
     function getTagsByBlogid(required numeric id) {
-        return model("Tag").findAllByBlogId("#arguments.id#");
+        return model("Tag").findAllByBlogId(value="#arguments.id#", cache=10);
     }
 
 
     function getCategoriesByBlogid(required numeric id) {
         return model("BlogCategory").findAll(
             where = "blogId = #arguments.id#",
-            include = "Blog,Category"
+            include = "Blog,Category",
+            cache = 10
         );
     }
 
     function getAttachmentsByBlogid(required numeric id) {
-      return model("Attachment").findAllByBlogId("#arguments.id#")
+      return model("Attachment").findAllByBlogId(value="#arguments.id#", cache=10);
     }
 
     function saveRedirectUrl(url) {

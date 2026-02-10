@@ -1250,7 +1250,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function getAllCommentsByBlogid(required numeric id) {
-        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ");
+        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ", cache=5);
 
         return comments;
     }
