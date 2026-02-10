@@ -7,17 +7,6 @@ component extends="app.Controllers.Controller" {
     }
 
     function index() {
-        model("Log").log(
-            category = "wheels.home",
-            level = "INFO",
-            message = "Home page accessed",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR,
-                "user_agent": cgi.HTTP_USER_AGENT
-            },
-            userId = GetSignedInUserId()
-        );
-
         // Check if user is logged in and has not submitted testimonial
        showTestimonialPopup = false;
         if (structKeyExists(session, "userID")) {
@@ -35,14 +24,14 @@ component extends="app.Controllers.Controller" {
 
         // GitHub contributors API
         contributors = getContributors();
-        settings = model("Setting").findAll();
+        settings = model("Setting").findAll(cache=60);
         blogs = model('Blog').getTenLatest(); // Get blog list
         features = getAllFeatures();
         renderView();
     }
     
     private function getContributors(){
-        var contributorsList = model("contributors").findAll(where="username!='dependabot[bot]'");
+        var contributorsList = model("contributors").findAll(where="username!='dependabot[bot]'", cache=60);
 
         if(contributorsList.recordCount == 0){
             return [];
@@ -116,7 +105,7 @@ component extends="app.Controllers.Controller" {
         contributorsArray = [];
         // Preload all roles to avoid N+1 queries
         var rolesMap = {};
-        for (r in model("contributor_role").findAll()) {
+        for (r in model("contributor_role").findAll(cache=60)) {
             rolesMap[r.id] = r.rolename;
         }
 
@@ -285,7 +274,7 @@ component extends="app.Controllers.Controller" {
 
         // Get all features
     function getAllFeatures() {
-        var featuresQuery = model("Feature").findAll();
+        var featuresQuery = model("Feature").findAll(cache=60);
         var svgIcons = getAllSvgIcons();
         var columnList = listToArray(featuresQuery.columnList);
         var totalIcons = arrayLen(svgIcons);

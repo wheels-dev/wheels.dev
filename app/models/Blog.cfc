@@ -52,10 +52,11 @@ component extends="app.Models.Model" {
     // Fetch ten latest blog posts with corresponding users
     public function getTenLatest() {
         var blogs = findAll(
-            where='statusid <> 1', 
-            include="User", 
+            where='statusid <> 1',
+            include="User",
             maxRows=10,
-            order="random"
+            order="createdAt DESC",
+            cache=10
         );
         return blogs;
     }
