@@ -25,11 +25,13 @@ services:
           memory: 256M
       labels:
         - "traefik.enable=true"
-        # Main router for wheels.dev
+        # HTTPS router for wheels.dev (direct/internal access)
         - "traefik.http.routers.wheels-dev.rule=Host(`wheels.dev`)"
-        - "traefik.http.routers.wheels-dev.entrypoints=web,websecure"
+        - "traefik.http.routers.wheels-dev.entrypoints=websecure"
         - "traefik.http.routers.wheels-dev.tls=true"
-        - "traefik.http.routers.wheels-dev.middlewares=wheels-dev-www-redirect"
+        # HTTP router for wheels.dev (Cloudflare Tunnel traffic via port 80)
+        - "traefik.http.routers.wheels-dev-http.rule=Host(`wheels.dev`)"
+        - "traefik.http.routers.wheels-dev-http.entrypoints=web"
         # Backend service
         - "traefik.http.services.wheels-dev.loadbalancer.server.port=8888"
         - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie=true"
@@ -39,11 +41,15 @@ services:
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.regex=^https?://www\\.wheels\\.dev/(.*)"
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.replacement=https://wheels.dev/$${1}"
         - "traefik.http.middlewares.wheels-dev-www-redirect.redirectregex.permanent=true"
-        # Router to catch www.wheels.dev
+        # HTTPS router for www.wheels.dev
         - "traefik.http.routers.wheels-dev-www.rule=Host(`www.wheels.dev`)"
-        - "traefik.http.routers.wheels-dev-www.entrypoints=web,websecure"
+        - "traefik.http.routers.wheels-dev-www.entrypoints=websecure"
         - "traefik.http.routers.wheels-dev-www.tls=true"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
+        # HTTP router for www.wheels.dev (Cloudflare Tunnel)
+        - "traefik.http.routers.wheels-dev-www-http.rule=Host(`www.wheels.dev`)"
+        - "traefik.http.routers.wheels-dev-www-http.entrypoints=web"
+        - "traefik.http.routers.wheels-dev-www-http.middlewares=wheels-dev-www-redirect"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:8888/"]
       interval: 30s
