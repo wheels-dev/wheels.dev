@@ -160,6 +160,9 @@ component extends="app.Models.Model" {
         
         // Testimonial Relationship - One user has one testimonial
         hasOne(name="Testimonial", foreignKey="userId");
+        
+        hasMany("ReadingHistories");
+        hasMany("Bookmarks");
     }
 
     // Fetch all users with their roles
