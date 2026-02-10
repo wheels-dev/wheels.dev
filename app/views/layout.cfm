@@ -22,14 +22,18 @@
 
 	<cfif isBlog>
 		<cfset blogSlug = listLast(pathInfo, "/")>
+		<cfset isSingleBlogPost = (listLen(pathInfo, "/") GT 1 AND blogSlug NEQ "blog" AND blogSlug NEQ "create" AND blogSlug NEQ "feed" AND NOT find("/blog/category/", pathInfo) AND NOT find("/blog/author/", pathInfo) AND NOT find("/blog/tag/", pathInfo))>
 
-		<!--- Fetch the blog post by slug --->
-		<cfset post = model("Blog").findOne(
-			where="slug = '#blogSlug#'",
-			include="User"
-		)>
+		<cfif isSingleBlogPost>
+			<!--- Only fetch blog post for individual post pages, not listings --->
+			<cfset post = model("Blog").findOne(
+				where="slug = '#blogSlug#'",
+				include="User",
+				cache=10
+			)>
+		</cfif>
 
-		<cfif isStruct(post) && structKeyExists(post, "id")>
+		<cfif isDefined("post") AND isStruct(post) AND structKeyExists(post, "id")>
 			<cfset metaDescription = this.generateMetaDescription(post.content)>
 
 			<cfset pageTitle = post.title & " - Wheels">
@@ -294,7 +298,7 @@
 				}
 			}
 			</cfoutput></script>
-			<cfif isBlog and isStruct(post) && structKeyExists(post, "id")><script type="application/ld+json"><cfoutput>
+			<cfif isBlog and isDefined("post") and isStruct(post) and structKeyExists(post, "id")><script type="application/ld+json"><cfoutput>
 			{
 				"@context": "https://schema.org",
 				"@type": "BlogPosting",
@@ -392,7 +396,7 @@
 						"name": "Blog",
 						"item": "https://wheels.dev/blog"
 					}
-					<cfif isStruct(post) && structKeyExists(post, "id")>
+					<cfif isDefined("post") and isStruct(post) and structKeyExists(post, "id")>
 					,{
 						"@type": "ListItem",
 						"position": 3,

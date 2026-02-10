@@ -11,16 +11,6 @@ component extends="app.Controllers.Controller" {
     // Function to list all blogs
     public void function index() {
         isEditor = hasEditorAccess();
-        model("Log").log(
-            category = "wheels.blog",
-            level = "INFO",
-            message = "Blog index page accessed",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR,
-                "user_agent": cgi.HTTP_USER_AGENT
-            },
-            userId = GetSignedInUserId()
-        );
     }
 
     public void function blogs() {
@@ -72,23 +62,8 @@ component extends="app.Controllers.Controller" {
         return trim(arguments.param);
     }
 
-    // Helper function to log blog requests
+    // Helper function to log blog requests (no-op for performance; enable for debugging)
     private void function logBlogRequest(filterType, filterValue, page, perPage, userId) {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "DEBUG", 
-            message = "Blog listing page accessed",
-            details = {
-                "filter_type": arguments.filterType,
-                "filter_value": arguments.filterValue,
-                "page": arguments.page,
-                "per_page": arguments.perPage,
-                "ip_address": cgi.REMOTE_ADDR,
-                "user_agent": cgi.HTTP_USER_AGENT,
-                "timestamp": now()
-            },
-            userId = arguments.userId
-        );
     }
 
     // Main data retrieval logic
@@ -388,16 +363,7 @@ component extends="app.Controllers.Controller" {
     }
     // Function to load categories for the blog list
     function categories() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "DEBUG",
-            message = "Categories loaded",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR
-            },
-            userId = GetSignedInUserId()
-        );
-        categorylist = model("Category").findAll(where="isActive='true'");
+        categorylist = model("Category").findAll(where="isActive='true'", cache=60);
         renderPartial(partial="partials/categorylist");
     }
 
@@ -506,17 +472,6 @@ component extends="app.Controllers.Controller" {
     // Function to show a specific blog
     function show() {
         try {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "INFO",
-                message = "Blog post viewed",
-                details = {
-                    "slug": params.slug,
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = GetSignedInUserId()
-            );
-
             blogModel = model("Blog");
 
             // Get the blog by its slug
@@ -753,79 +708,33 @@ component extends="app.Controllers.Controller" {
 
     // Function to load categories for the dropdown
     function loadCategories() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "DEBUG",
-            message = "Categories dropdown loaded",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR
-            },
-            userId = GetSignedInUserId()
-        );
         categories = model("Category").getAll();
         renderPartial(partial="partials/categories");
     }
 
     // Function to load statuses for the dropdown
     function loadStatuses() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "DEBUG",
-            message = "Statuses dropdown loaded",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR
-            },
-            userId = GetSignedInUserId()
-        );
         statuses = model("PostStatus").getAll();
         renderPartial(partial="partials/statuses");
     }
 
     // Function to load post types for the dropdown
     function loadPostTypes() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "DEBUG",
-            message = "Post types dropdown loaded",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR
-            },
-            userId = GetSignedInUserId()
-        );
         postTypes = model("PostType").getAll();
         renderPartial(partial="partials/postTypes");
     }
 
     function error() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "ERROR",
-            message = "Error page displayed",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR
-            },
-            userId = GetSignedInUserId()
-        );
-        // Add code to render the error page if needed
         renderPartial(partial="partials/_error");
     }
 
     public function feed() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "INFO",
-            message = "Blog feed accessed",
-            details = {
-                "ip_address": cgi.REMOTE_ADDR
-            },
-            userId = GetSignedInUserId()
-        );
-
         // Fetch all blogs
         blogPosts = model("Blog").findAll(
             where="status = 'Approved' AND isPublished = 'true'",
             include="User",
-            order="postDate DESC"
+            order="postDate DESC",
+            cache=10
         );
 
         // Render the feed view
@@ -833,14 +742,6 @@ component extends="app.Controllers.Controller" {
     }
 
     public function commentsFeed() {
-        model("Log").log(
-            category = "wheels.blog",
-            level = "INFO",
-            message = "Blog comments feed accessed",
-            details = { "ip_address": cgi.REMOTE_ADDR },
-            userId = GetSignedInUserId()
-        );
-
         // Get recent comments with related blog post
         comments = model("Comment").findAll(
             where = "isPublished = 1",
@@ -891,14 +792,16 @@ component extends="app.Controllers.Controller" {
                 include="User",
                 order="postDate DESC",
                 page = arguments.page,
-                perPage = arguments.perPage
+                perPage = arguments.perPage,
+                cache = 5
             ),
             hasMore = false,
             totalCount = 0
         };
 
         result.totalCount = model("Blog").count(
-            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'"
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 'true'",
+            cache = 5
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
