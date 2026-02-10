@@ -102,14 +102,14 @@ Database and service configuration uses environment variables (set in `.env`):
 
 ## Deployment
 
-- **Staging**: Push to `develop` branch → deploys via GitHub Actions to staging server
-- **Production**: Push to `main` branch → deploys via GitHub Actions to production server
+The app runs on a **Docker Swarm cluster** (PAI Industries). Push to `main` triggers GitHub Actions:
 
-Both use self-hosted runners that:
-1. Sync files to application directory
-2. Copy environment-specific config from `deploy/stage/` or `deploy/prod/`
-3. Install dependencies via CommandBox
-4. Restart the systemd service (`wheelsdev.service`)
+1. **Build job** (ubuntu-latest): installs deps via CommandBox, builds Docker image (`ghcr.io/wheels-dev/wheels-dev`), pushes to GHCR
+2. **Deploy job** (self-hosted swarm runner): runs `docker stack deploy` with the compose file at `deploy/swarm/docker-compose.yml`
+
+Active deployment config lives in `deploy/swarm/`. See `deploy/swarm/DEPLOYMENT-GUIDE.md` for full Swarm cluster details.
+
+> `deploy/prod/` and `deploy/stage/` are legacy (pre-Swarm systemd deployment) and kept for reference only.
 
 ## Key URLs
 
