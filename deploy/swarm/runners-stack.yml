@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  runner-wheels-dev:
+    image: myoung34/github-runner:latest
+    environment:
+      - RUNNER_SCOPE=org
+      - ORG_NAME=wheels-dev
+      - ACCESS_TOKEN=${GH_TOKEN_WHEELS_DEV}
+      - LABELS=swarm
+      - RUNNER_NAME=swarm-wheels-dev
+      - RUNNER_WORKDIR=/tmp/runner
+      - DISABLE_AUTO_UPDATE=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  runner-paiindustries:
+    image: myoung34/github-runner:latest
+    environment:
+      - RUNNER_SCOPE=org
+      - ORG_NAME=paiindustries
+      - ACCESS_TOKEN=${GH_TOKEN_PAIINDUSTRIES}
+      - LABELS=swarm
+      - RUNNER_NAME=swarm-paiindustries
+      - RUNNER_WORKDIR=/tmp/runner
+      - DISABLE_AUTO_UPDATE=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
