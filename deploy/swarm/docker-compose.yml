@@ -19,10 +19,10 @@ services:
       resources:
         limits:
           cpus: '2.0'
-          memory: 3G
+          memory: 4G
         reservations:
           cpus: '0.25'
-          memory: 512M
+          memory: 1G
       labels:
         - "traefik.enable=true"
         # wheels.dev router (HTTP only - Cloudflare handles TLS)
@@ -42,7 +42,7 @@ services:
         - "traefik.http.routers.wheels-dev-www.entrypoints=web"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
     environment:
-      JAVA_OPTS: "-Xms512m -Xmx1536m"
+      JAVA_OPTS: "-Xms1g -Xmx2560m"
     healthcheck:
       test: ["CMD", "curl", "-f", "-m", "30", "http://127.0.0.1:8888/"]
       interval: 30s
