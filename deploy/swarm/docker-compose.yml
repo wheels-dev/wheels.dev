@@ -31,7 +31,7 @@ services:
         - "traefik.http.routers.wheels-dev.tls=true"
         - "traefik.http.routers.wheels-dev.middlewares=wheels-dev-www-redirect"
         # Backend service
-        - "traefik.http.services.wheels-dev.loadbalancer.server.port=60150"
+        - "traefik.http.services.wheels-dev.loadbalancer.server.port=8888"
         - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie=true"
         - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie.name=wheels_affinity"
         - "traefik.http.services.wheels-dev.loadbalancer.sticky.cookie.httponly=true"
@@ -44,11 +44,8 @@ services:
         - "traefik.http.routers.wheels-dev-www.entrypoints=websecure"
         - "traefik.http.routers.wheels-dev-www.tls=true"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
-    environment:
-      - PORT=60150
-      - HEALTHCHECK_URI=http://127.0.0.1:60150/
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:60150/"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8888/"]
       interval: 30s
       timeout: 10s
       retries: 3

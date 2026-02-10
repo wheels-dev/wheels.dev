@@ -21,7 +21,6 @@ jobs:
       - name: Copy swarm config files to root
         run: |
           cp ./deploy/swarm/.env ./
-          cp ./deploy/swarm/server.json ./
           cp ./deploy/swarm/dockerfile ./
 
       - name: Install CommandBox
