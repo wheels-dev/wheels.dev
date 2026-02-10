@@ -57,44 +57,23 @@ jobs:
 
   deploy:
     name: Deploy to Swarm
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, swarm]
     needs: build
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SWARM_SSH_PRIVATE_KEY }}" > ~/.ssh/swarm_key
-          chmod 600 ~/.ssh/swarm_key
-          ssh-keyscan -H 10.100.10.234 >> ~/.ssh/known_hosts 2>/dev/null
-          cat > ~/.ssh/config <<'EOF'
-          Host swarm-manager
-            HostName 10.100.10.234
-            User petera
-            IdentityFile ~/.ssh/swarm_key
-            StrictHostKeyChecking no
-          EOF
-          sed -i 's/^          //' ~/.ssh/config
-          chmod 600 ~/.ssh/config
-
-      - name: Create Docker context for swarm manager
-        run: |
-          docker context create swarm --docker "host=ssh://swarm-manager"
-          docker context use swarm
-
-      - name: Login to GHCR on swarm
+      - name: Login to GHCR
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
         run: |
-          echo "$GHCR_TOKEN" | docker --context swarm login ghcr.io -u "$GH_ACTOR" --password-stdin
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
       - name: Deploy stack to swarm
         run: |
-          docker --context swarm stack deploy \
+          docker stack deploy \
             --with-registry-auth \
             -c deploy/swarm/docker-compose.yml \
             wheels-dev
@@ -103,7 +82,7 @@ jobs:
         run: |
           echo "Waiting for services to stabilize..."
           sleep 30
-          docker --context swarm service ls
+          docker service ls
           echo ""
           echo "Checking wheels-dev service replicas..."
-          docker --context swarm service ps wheels-dev_wheels-dev --no-trunc
+          docker service ps wheels-dev_wheels-dev --no-trunc
