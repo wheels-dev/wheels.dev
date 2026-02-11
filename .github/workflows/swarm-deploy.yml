@@ -73,6 +73,8 @@ jobs:
 
       - name: Deploy stack to swarm
         run: |
+          # Use commit SHA tag to force Swarm to pull the new image
+          sed -i "s|ghcr.io/wheels-dev/wheels-dev:latest|ghcr.io/wheels-dev/wheels-dev:${GITHUB_SHA}|" deploy/swarm/docker-compose.yml
           docker stack deploy \
             --with-registry-auth \
             -c deploy/swarm/docker-compose.yml \
