@@ -527,16 +527,16 @@
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='readingHistory')#">Reading History</a></li>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='bookmarks')#">Bookmarks</a></li>
 										
-										<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-											data-bs-target="##navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-											aria-label="Toggle navigation">
-											<span class="navbar-toggler-icon"></span>
-										</button>
 									</cfoutput>
 								</ul>
 							</div>
 						</cfif>
 					</div>
+					<button class="navbar-toggler d-xl-none border-0" type="button" data-bs-toggle="collapse"
+						data-bs-target="##navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+						aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav divide-x-primary ms-auto mb-2 mb-lg-0 align-items-center">
 							<cfoutput>
