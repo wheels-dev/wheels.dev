@@ -1,4 +1,4 @@
-FROM lucee/lucee:6.0
+FROM ortussolutions/commandbox:lucee6
 
 # Java security config for SQL Server SHA1 cert compatibility
 COPY deploy/swarm/custom.java.security /tmp/custom.java.security
@@ -12,12 +12,8 @@ RUN JAVA_SECURITY=$(find / -name "java.security" -path "*/conf/security/*" 2>/de
 # Copy full application (ForgeBox dependencies resolved in CI via box install)
 COPY . /app/
 
-# Set up Tuckey URLRewriteFilter for Wheels pretty URLs
-RUN mkdir -p /app/public/WEB-INF/lib && \
-    curl -sfL -o /app/public/WEB-INF/lib/urlrewritefilter-4.0.4.jar \
-        https://repo1.maven.org/maven2/org/tuckey/urlrewritefilter/4.0.4/urlrewritefilter-4.0.4.jar && \
-    cp /app/deploy/swarm/web.xml /app/public/WEB-INF/web.xml && \
-    cp /app/public/urlrewrite.xml /app/public/WEB-INF/urlrewrite.xml
+# Overwrite dev server.json with production config
+COPY deploy/swarm/server.json /app/server.json
 
-# Point Tomcat docbase to our public directory
-RUN sed -i 's|docBase="/var/www/"|docBase="/app/public/"|g' /usr/local/tomcat/conf/server.xml
+# Disable CommandBox open browser on start
+RUN box config set server.defaults.openBrowser=false

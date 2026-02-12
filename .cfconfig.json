@@ -1,0 +1,4 @@
+{
+    "requestTimeout": "0,0,5,0",
+    "adminPassword": "${cfconfig_adminPassword}"
+}
