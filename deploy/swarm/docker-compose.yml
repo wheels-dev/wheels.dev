@@ -42,7 +42,9 @@ services:
         - "traefik.http.routers.wheels-dev-www.entrypoints=web"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
     environment:
-      LUCEE_JAVA_OPTS: "-Xms2g -Xmx3g"
+      PORT: 8888
+      HEALTHCHECK_URI: "http://127.0.0.1:8888/"
+      BOX_SERVER_JVM_ARGS: "-Xms2g -Xmx3g"
     healthcheck:
       test: ["CMD", "curl", "-f", "-m", "30", "http://127.0.0.1:8888/"]
       interval: 30s
