@@ -9,6 +9,7 @@ component output="false" {
 	// this.name = Hash(this.wheels.rootPath);
 
 	this.bufferOutput = true;
+	this.requestTimeout = createTimespan(0, 0, 3, 0); // 3 minutes for cold-start compilation
 
 	// Set up the application paths.
 	this.appDir     = expandPath("../app/");

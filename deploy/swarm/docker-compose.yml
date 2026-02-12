@@ -4,7 +4,7 @@ services:
   wheels-dev:
     image: ghcr.io/wheels-dev/wheels-dev:latest
     deploy:
-      replicas: 2
+      replicas: 3
       restart_policy:
         condition: on-failure
       update_config:
@@ -42,13 +42,13 @@ services:
         - "traefik.http.routers.wheels-dev-www.entrypoints=web"
         - "traefik.http.routers.wheels-dev-www.middlewares=wheels-dev-www-redirect"
     environment:
-      JAVA_OPTS: "-Xms1g -Xmx2560m"
+      LUCEE_JAVA_OPTS: "-Xms2g -Xmx3g"
     healthcheck:
       test: ["CMD", "curl", "-f", "-m", "30", "http://127.0.0.1:8888/"]
       interval: 30s
       timeout: 35s
       retries: 5
-      start_period: 180s
+      start_period: 300s
     networks:
       - proxy
     volumes:
