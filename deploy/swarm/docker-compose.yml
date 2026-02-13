@@ -4,7 +4,7 @@ services:
   wheels-dev:
     image: ghcr.io/wheels-dev/wheels-dev:latest
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         condition: on-failure
       update_config:
@@ -46,11 +46,7 @@ services:
       HEALTHCHECK_URI: "http://127.0.0.1:8888/"
       BOX_SERVER_JVM_ARGS: "-Xms2g -Xmx3g"
     healthcheck:
-      test: ["CMD", "curl", "-f", "-m", "30", "http://127.0.0.1:8888/"]
-      interval: 30s
-      timeout: 35s
-      retries: 5
-      start_period: 300s
+      disable: true
     networks:
       - proxy
     volumes:
