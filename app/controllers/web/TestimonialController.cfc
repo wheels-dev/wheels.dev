@@ -13,7 +13,7 @@ component extends="app.Controllers.Controller" {
      */
     public void function publicList() {
         testimonials = model("Testimonial").findAll(
-            where="isApproved IS TRUE",
+            where="isApproved = 1",
             include="User",
             order="createdAt DESC"
         );

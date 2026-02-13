@@ -101,7 +101,7 @@ component extends="wheels.Controller" {
     // Shared business logic across multiple controllers
     public function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
-            where="blog_posts.slug = '#arguments.slug#' AND status ='Approved' AND isPublished IS TRUE ",
+            where="blog_posts.slug = '#arguments.slug#' AND status ='Approved' AND isPublished = 1 ",
             include="User,PostStatus",
             cache=10
         );
