@@ -659,7 +659,7 @@ component extends="app.Controllers.Controller" {
                     var newToken = model("UserToken").new();
                     newToken.token = verificationToken;
                     newToken.user_id = newUser.id;
-                    newToken.status = 0; // Not verified
+                    newToken.status = false; // Not verified
                     newToken.save();
                     // Send verification email
                     if(sendVerificationEmail(newUser.email, verificationToken)){
@@ -797,7 +797,7 @@ component extends="app.Controllers.Controller" {
         
         try {
             // Check if user already has a verification token
-            var existingToken = model("UserToken").findOne(where="user_id='#user.id#' AND status='0'");
+            var existingToken = model("UserToken").findOne(where="user_id='#user.id#' AND status=false");
             
             if (!isObject(existingToken)) {
                 // Generate a new verification token
@@ -805,7 +805,7 @@ component extends="app.Controllers.Controller" {
                 var newToken = model("UserToken").new();
                 newToken.token = verificationToken;
                 newToken.user_id = user.id;
-                newToken.status = 0; // Not verified
+                newToken.status = false; // Not verified
                 newToken.save();
             } else {
                 var verificationToken = existingToken.token;
