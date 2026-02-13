@@ -13,7 +13,7 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				execute("INSERT INTO roles (id, name, createdat, updatedat) VALUES (3, 'user', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
 				// users
-				execute("INSERT INTO users (first_name, last_name, email, password_hash, profile_picture, profile_url, status, role_id, createdat, updatedat) VALUES ('Peter', 'Amiri', 'petera@pai.com', '$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu', 'avatar-rounded.webp', '', true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO users (id, first_name, last_name, email, password_hash, profile_picture, profile_url, status, role_id, createdat, updatedat) VALUES (1, 'Peter', 'Amiri', 'petera@pai.com', '$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu', 'avatar-rounded.webp', '', true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
 				// categories
 				execute("INSERT INTO categories (name, parent_id, description, createdat, updatedat) VALUES ('CLI', NULL, 'Learn about command-line tools, tips, and tricks for enhancing your development workflow using the command line.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
