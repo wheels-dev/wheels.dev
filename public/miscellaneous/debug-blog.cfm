@@ -84,18 +84,54 @@ if (q4.recordCount > 0) {
 	writeOutput("  user #q4.id# (#q4.first_name#) deletedat: [#isNull(q4.deletedat) ? 'NULL' : q4.deletedat#]" & chr(10));
 }
 
-// 5. Sample of deletedat values across blog_posts
-writeOutput(chr(10) & "=== Sample deletedat values in blog_posts ===" & chr(10));
-q5 = queryExecute("
-	SELECT deletedat, count(*) as cnt
-	FROM blog_posts
-	GROUP BY deletedat
-	ORDER BY cnt DESC
-	LIMIT 10
+// 5. Check deletedat NULL vs empty string
+writeOutput(chr(10) & "=== deletedat NULL check ===" & chr(10));
+q5a = queryExecute("
+	SELECT count(*) as cnt FROM blog_posts WHERE deletedat IS NULL
 ", {}, { datasource: TARGET_DS });
-for (var i = 1; i <= q5.recordCount; i++) {
-	writeOutput("  deletedat=[#isNull(q5.deletedat[i]) ? 'NULL' : q5.deletedat[i]#] count=#q5.cnt[i]#" & chr(10));
+writeOutput("  blog_posts WHERE deletedat IS NULL: #q5a.cnt#" & chr(10));
+
+q5b = queryExecute("
+	SELECT count(*) as cnt FROM blog_posts WHERE deletedat IS NOT NULL
+", {}, { datasource: TARGET_DS });
+writeOutput("  blog_posts WHERE deletedat IS NOT NULL: #q5b.cnt#" & chr(10));
+
+q5c = queryExecute("
+	SELECT count(*) as cnt FROM blog_posts
+", {}, { datasource: TARGET_DS });
+writeOutput("  blog_posts total: #q5c.cnt#" & chr(10));
+
+// Check specific blog
+q5d = queryExecute("
+	SELECT deletedat IS NULL as is_null, deletedat::text as dat_text
+	FROM blog_posts WHERE slug = :slug
+", { slug: slug }, { datasource: TARGET_DS });
+if (q5d.recordCount > 0) {
+	writeOutput("  Target blog deletedat IS NULL: #q5d.is_null#" & chr(10));
+	writeOutput("  Target blog deletedat::text: [#q5d.dat_text#]" & chr(10));
 }
+
+// Check users too
+writeOutput(chr(10) & "=== users deletedat NULL check ===" & chr(10));
+q5e = queryExecute("
+	SELECT count(*) as cnt FROM users WHERE deletedat IS NULL
+", {}, { datasource: TARGET_DS });
+writeOutput("  users WHERE deletedat IS NULL: #q5e.cnt#" & chr(10));
+q5f = queryExecute("
+	SELECT count(*) as cnt FROM users WHERE deletedat IS NOT NULL
+", {}, { datasource: TARGET_DS });
+writeOutput("  users WHERE deletedat IS NOT NULL: #q5f.cnt#" & chr(10));
+
+// Check post_statuses
+writeOutput(chr(10) & "=== post_statuses deletedat NULL check ===" & chr(10));
+q5g = queryExecute("
+	SELECT count(*) as cnt FROM post_statuses WHERE deletedat IS NULL
+", {}, { datasource: TARGET_DS });
+writeOutput("  post_statuses WHERE deletedat IS NULL: #q5g.cnt#" & chr(10));
+q5h = queryExecute("
+	SELECT count(*) as cnt FROM post_statuses WHERE deletedat IS NOT NULL
+", {}, { datasource: TARGET_DS });
+writeOutput("  post_statuses WHERE deletedat IS NOT NULL: #q5h.cnt#" & chr(10));
 
 writeOutput("</pre>");
 </cfscript>
