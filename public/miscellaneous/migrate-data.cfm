@@ -171,7 +171,8 @@ function buildInsert(required string tableName, required query data, required nu
 			var colLower = lCase(col);
 			if (!structKeyExists(boolCols, colLower) && !structKeyExists(dateCols, colLower)) {
 				var scanVal = arguments.data[col][r];
-				if (!isNull(scanVal) && isDate(scanVal) && !(isSimpleValue(scanVal) && scanVal == "")) {
+				if (!isNull(scanVal) && isDate(scanVal) && !(isSimpleValue(scanVal) && scanVal == "")
+					&& (!isSimpleValue(scanVal) || reFind("^\d{4}[-/]\d{1,2}[-/]\d{1,2}", scanVal))) {
 					dateCols[colLower] = true;
 				}
 			}
@@ -203,7 +204,8 @@ function buildInsert(required string tableName, required query data, required nu
 				var boolVal = (isBoolean(val) && val) || (isNumeric(val) && val == 1);
 				params[paramName] = { value: boolVal ? "true" : "false", cfsqltype: "cf_sql_varchar" };
 				arrayAppend(placeholders, "CAST(:#paramName# AS BOOLEAN)");
-			} else if (structKeyExists(dateCols, colLower)) {
+			} else if (structKeyExists(dateCols, colLower) && isDate(val)
+				&& (!isSimpleValue(val) || reFind("^\d{4}[-/]\d{1,2}[-/]\d{1,2}", val))) {
 				// Convert timestamps to ISO string to avoid JDBC {ts '...'} escape format
 				params[paramName] = { value: dateTimeFormat(val, "yyyy-MM-dd HH:nn:ss"), cfsqltype: "cf_sql_varchar" };
 				arrayAppend(placeholders, "CAST(:#paramName# AS TIMESTAMP)");
