@@ -9,7 +9,7 @@
 				t.timestamps();
 				t.create();
 
-				addRecord(table = 'settings', enable_testimonial = false);
+				execute("INSERT INTO settings (enable_testimonial, createdat, updatedat) VALUES (false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 	    	}
 	    	catch (any ex){
 	    		hasError = true;
