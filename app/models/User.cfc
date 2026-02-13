@@ -32,7 +32,7 @@ component extends="app.Models.Model" {
         // Full Name Computed Property
         property(
             name="fullName", 
-            sql="first_name + ' ' + last_name", 
+            sql="first_name || ' ' || last_name",
             label="Full Name"
         );
 
