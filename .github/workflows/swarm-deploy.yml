@@ -18,9 +18,63 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy swarm config files to root
+      - name: Generate .env from secrets
+        env:
+          RELOAD_PASSWORD: ${{ secrets.RELOAD_PASSWORD }}
+          CFCONFIG_ADMIN_PASSWORD: ${{ secrets.CFCONFIG_ADMIN_PASSWORD }}
+          WHEELSDEV_HOST: ${{ secrets.WHEELSDEV_HOST }}
+          WHEELSDEV_PORT: ${{ secrets.WHEELSDEV_PORT }}
+          WHEELSDEV_DATABASENAME: ${{ secrets.WHEELSDEV_DATABASENAME }}
+          WHEELSDEV_USERNAME: ${{ secrets.WHEELSDEV_USERNAME }}
+          WHEELSDEV_PASSWORD: ${{ secrets.WHEELSDEV_PASSWORD }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          WHEELS_ID_SALT: ${{ secrets.WHEELS_ID_SALT }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: |
-          cp ./deploy/swarm/.env ./
+          cat > .env << ENVEOF
+          LUCEE_EXTENSIONS=BEC20D47-3268-1B354-C0E8E70B5CBC15A1;name=PostgreSQL;version=42.7.4
+
+          environment=production
+          reloadPassword=${RELOAD_PASSWORD}
+
+          cfconfig_adminPassword=${CFCONFIG_ADMIN_PASSWORD}
+
+          application_host=https://wheels.dev
+          datasource=wheels.dev
+
+          wheelsdev_host=${WHEELSDEV_HOST}
+          wheelsdev_port=${WHEELSDEV_PORT}
+          wheelsdev_databasename=${WHEELSDEV_DATABASENAME}
+          wheelsdev_username=${WHEELSDEV_USERNAME}
+          wheelsdev_password=${WHEELSDEV_PASSWORD}
+          wheelsdev_clob=true
+          wheelsdev_connectionlimit=100
+          wheelsdev_storage=true
+
+          wheelsdev_storage=true
+          sessionStorage=wheels.dev
+          sessionCluster=true
+
+          test_case=false
+          mail_from=noreply@wheels.dev
+
+          smtp_host=smtp.postmarkapp.com
+          smtp_port=587
+          smtp_username=${SMTP_USERNAME}
+          smtp_password=${SMTP_PASSWORD}
+          smtp_ssl=false
+          smtp_tls=true
+
+          wheels_id_salt=${WHEELS_ID_SALT}
+
+          SENTRY_DSN=${SENTRY_DSN}
+          SENTRY_ENVIRONMENT=production
+          ENVEOF
+          sed -i 's/^          //' .env
+
+      - name: Copy swarm Dockerfile to root
+        run: |
           cp ./deploy/swarm/dockerfile ./
 
       - name: Install CommandBox

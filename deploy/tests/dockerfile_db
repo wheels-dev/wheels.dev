@@ -6,7 +6,8 @@ LABEL maintainer "Wheels Core Team"
 USER root
 
 # Set environment variables
-ENV MSSQL_SA_PASSWORD="@bjs0016"
+ARG MSSQL_SA_PASSWORD=TestPassword123!
+ENV MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
 ENV ACCEPT_EULA="Y"
 ENV MSSQL_PID="Express"
 

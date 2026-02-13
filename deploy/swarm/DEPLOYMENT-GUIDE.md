@@ -17,9 +17,9 @@ Internet → Cloudflare (SSL termination) → cloudflared tunnel → Traefik (po
 
 | Method | Details |
 |--------|---------|
-| SSH | `ssh petera@10.100.10.234` (key-based auth; see vault for key) |
-| Docker context | `docker context create swarm --docker "host=ssh://petera@10.100.10.234"` |
-| Portainer | `https://portainer.apps.paiindustries.com` |
+| SSH | `ssh <username>@<manager-ip>` (key-based auth; see vault for key and credentials) |
+| Docker context | `docker context create swarm --docker "host=ssh://<username>@<manager-ip>"` |
+| Portainer | See vault for URL |
 
 Only key-based SSH access is available. Deploy commands run on any **manager node** (swarm-01, swarm-02, or swarm-03).
 
@@ -156,14 +156,10 @@ volumes:
 Applications can connect to the CockroachDB cluster via the VIP:
 
 ```
-postgresql://username:password@10.100.10.230:26257/database?sslmode=disable
+postgresql://username:password@<cockroachdb-vip>:26257/database?sslmode=disable
 ```
 
-| Database | User | Password |
-|----------|------|----------|
-| titan_sessiondb | titan_sessions | (see vault) |
-| paiman_db | paiman_user | (see vault) |
-| wheels_db | wheels_user | (see vault) |
+Database names, users, and passwords are stored in the vault. Contact the cluster admin for access.
 
 To request a new database/user, ask the cluster admin.
 
@@ -281,13 +277,7 @@ networks:
 
 ## Swarm Nodes
 
-| Hostname | IP | Role | Notes |
-|----------|----|------|-------|
-| swarm-01 | 10.100.10.234 | Manager (Leader) | Deploy here |
-| swarm-02 | 10.100.10.235 | Manager | |
-| swarm-03 | 10.100.10.245 | Manager | |
-| swarm-04 | 10.100.10.251 | Worker | |
-| VIP | 10.100.10.252 | Keepalived | Floats between nodes |
+Node hostnames, IPs, and roles are documented in the vault. The swarm consists of 3 manager nodes and 1 worker node with a Keepalived VIP.
 
 Each node: 16 vCPU, 64GB RAM, 200GB disk, CephFS at `/mnt/cephfs`.
 
@@ -307,10 +297,10 @@ Each node: 16 vCPU, 64GB RAM, 200GB disk, CephFS at `/mnt/cephfs`.
 
 | Tool | URL |
 |------|-----|
-| Portainer | `https://portainer.apps.paiindustries.com` |
-| Grafana | `https://grafana.apps.paiindustries.com` (see vault for credentials) |
-| Prometheus | `https://prometheus.apps.paiindustries.com` |
-| Traefik Dashboard | `http://10.100.10.234:8080` |
+| Portainer | See vault for URL |
+| Grafana | See vault for URL and credentials |
+| Prometheus | See vault for URL |
+| Traefik Dashboard | `http://<manager-ip>:8080` |
 
 Logs for any service: `docker service logs <service-name> --tail 100 -f`
 

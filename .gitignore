@@ -31,6 +31,10 @@ settings.xml
 !public/files/
 !/public/files/json/
 !/public/files/json/**
-/.env
+# Environment files (may contain secrets)
+.env
+.env.*
+!.env.example
+
 /server.json
 public/images/Headshot.jpg

@@ -11,7 +11,7 @@ services:
       DB_PORT: 1433
       DB_DATABASE: wheels_dev
       DB_USERNAME: sa
-      DB_PASSWORD: "@bjs0016"
+      DB_PASSWORD: "${MSSQL_SA_PASSWORD:-TestPassword123!}"
     ports:
       - "60151:60151" # change if your app uses a different port
     networks:
@@ -26,7 +26,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
-      MSSQL_SA_PASSWORD: "@bjs0016"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-TestPassword123!}"
     ports:
       - "1433:1433"
     networks:
