@@ -744,7 +744,7 @@ component extends="app.Controllers.Controller" {
     public function commentsFeed() {
         // Get recent comments with related blog post
         comments = model("Comment").findAll(
-            where = "isPublished = 1",
+            where = "isPublished = true",
             include = "Blog",
             order = "createdAt DESC",
             limit = 20,
@@ -1250,7 +1250,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function getAllCommentsByBlogid(required numeric id) {
-        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ", cache=5);
+        var comments = model("Comment").findAll(include="User", where="isPublished = true AND blogid = '#arguments.id#' AND commentParentId ISNULL ", cache=5);
 
         return comments;
     }
@@ -1300,7 +1300,7 @@ component extends="app.Controllers.Controller" {
                 response = saveComment(params);
             }
             if(structKeyExists(response, "Id")){
-                comments = commentModel.findAll(include="User", where="id ='#response.Id#' AND isPublished = 1");
+                comments = commentModel.findAll(include="User", where="id ='#response.Id#' AND isPublished = true");
                 renderPartial(partial="partials/comment");
             }
         } catch (any e) {
