@@ -1,13 +1,25 @@
 # wheels generate property
 
-Add properties to existing model files.
+Add properties to existing model files with database migrations and view updates.
 
 ## Synopsis
 
 ```bash
-wheels generate property [name] [options]
-wheels g property [name] [options]
+wheels generate property name=<modelName> columnName=<propertyName> [options]
+
+#Can also be used as:
+wheels g property name=<modelName> columnName=<propertyName> [options]
 ```
+
+## Parameter Syntax
+
+CommandBox supports multiple parameter formats:
+
+- **Named parameters**: `name=value` (e.g., `name=User`, `columnName=email`)
+- **Flag parameters**: `--flag` equals `flag=true` (e.g., `--allowNull` equals `allowNull=true`)
+- **Flag with value**: `--flag=value` equals `flag=value` (e.g., `--dataType=boolean`)
+
+**Note**: Flag syntax (`--flag`) avoids positional/named parameter conflicts and is recommended for boolean options.
 
 ## Description
 
@@ -17,458 +29,132 @@ The `wheels generate property` command generates a database migration to add a p
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `name` | Table name | Required |
+| `name` | Model name (table name) | Required |
+| `columnName` | Name of column to add | Required |
 
 ## Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `column-name` | Name of column | Required |
-| `data-type` | Type of column | `string` |
-| `default` | Default value for column | |
-| `--null` | Whether to allow null values | |
-| `limit` | Character or integer size limit for column | |
-| `precision` | Precision value for decimal columns | |
-| `scale` | Scale value for decimal columns | |
+| Option | Description | Valid Values | Default |
+|--------|-------------|--------------|---------|
+| `dataType` | Type of column | `biginteger`, `binary`, `boolean`, `date`, `datetime`, `decimal`, `float`, `integer`, `string`, `text`, `time`, `timestamp`, `uuid` | `string` |
+| `default` | Default value for column | Any valid default value | `""` |
+| `allowNull` | Whether to allow null values | `true`, `false` | `true` |
+| `limit` | Character or integer size limit | Numeric value | `0` |
+| `precision` | Precision for decimal columns | Numeric value | `0` |
+| `scale` | Scale for decimal columns | Numeric value | `0` |
 
-## Property Syntax
+## Data Type Options
 
-### Basic Format
-```
-propertyName:type:option1:option2
-```
-
-### Data Type Options
-- `biginteger` - Large integer
-- `binary` - Binary data
-- `boolean` - Boolean (true/false)
-- `date` - Date only
-- `datetime` - Date and time
-- `decimal` - Decimal numbers
-- `float` - Floating point
-- `integer` - Integer
-- `string` - Variable character (VARCHAR)
-- `text` - Long text
-- `time` - Time only
-- `timestamp` - Timestamp
-- `uuid` - UUID/GUID
+| Type | Database Type | Description |
+|------|---------------|-------------|
+| `biginteger` | BIGINT | Large integer values |
+| `binary` | BLOB | Binary data |
+| `boolean` | BOOLEAN | Boolean (true/false) values |
+| `date` | DATE | Date only |
+| `datetime` | DATETIME | Date and time |
+| `decimal` | DECIMAL | Decimal numbers with precision/scale |
+| `float` | FLOAT | Floating point numbers |
+| `integer` | INTEGER | Integer values |
+| `string` | VARCHAR | Variable character strings |
+| `text` | TEXT | Long text content |
+| `time` | TIME | Time only |
+| `timestamp` | TIMESTAMP | Timestamp values |
+| `uuid` | VARCHAR(35) | UUID/GUID strings |
 
 ## Examples
 
-### String property
+### Basic string property
 ```bash
-wheels generate property user column-name=firstname
+wheels generate property name=User columnName=firstName
 ```
-Creates a string/textField property called `firstname` on the User model.
+Creates a string property called `firstName` on the User model.
 
 ### Boolean property with default
 ```bash
-wheels generate property user column-name=isActive data-type=boolean default=0
+wheels generate property name=User columnName=isActive --dataType=boolean --default=0
 ```
-Creates a boolean/checkbox property with default value of 0 (false).
+Creates a boolean property with default value of 0 (false).
 
 ### Datetime property
 ```bash
-wheels generate property user column-name=lastloggedin data-type=datetime
+wheels generate property name=User columnName=lastLoggedIn --dataType=datetime
 ```
 Creates a datetime property on the User model.
 
 ### Decimal property with precision
 ```bash
-wheels generate property product column-name=price data-type=decimal precision=10 scale=2
+wheels generate property name=Product columnName=price --dataType=decimal --precision=10 --scale=2
 ```
+Creates a decimal property with 10 total digits and 2 decimal places.
 
-### Add calculated property
+### String with character limit
 ```bash
-wheels generate property user "fullName:calculated"
+wheels generate property name=User columnName=username --dataType=string --limit=50 --allowNull=false
 ```
+Creates a required string property with maximum 50 characters.
 
-## Generated Code Examples
+## What the Command Does
 
-### Basic Property Addition
+1. **Creates Database Migration**: Generates a migration file to add the column to the database
+2. **Updates Form View**: Adds the property to `_form.cfm` if it exists
+3. **Updates Index View**: Adds the property to `index.cfm` table if it exists
+4. **Updates Show View**: Adds the property to `show.cfm` if it exists
+5. **Offers Migration**: Prompts to run the migration immediately
 
-Before:
-```cfc
-component extends="Model" {
-    
-    function init() {
-        // Existing code
-    }
-    
-}
-```
+## Generated Files
 
-After:
-```cfc
-component extends="Model" {
-    
-    function init() {
-        // Existing code
-        
-        // Properties
-        property(name="email", sql="email");
-        
-        // Validations
-        validatesPresenceOf(properties="email");
-        validatesUniquenessOf(properties="email");
-        validatesFormatOf(property="email", regEx="^[^@\s]+@[^@\s]+\.[^@\s]+$");
-    }
-    
-}
-```
-
-### Multiple Properties
-
-Command:
-```bash
-wheels generate property product "name:string:required description:text price:float:required:default=0.00 inStock:boolean:default=true"
-```
-
-Generated:
-```cfc
-component extends="Model" {
-    
-    function init() {
-        // Properties
-        property(name="name", sql="name");
-        property(name="description", sql="description");
-        property(name="price", sql="price", default=0.00);
-        property(name="inStock", sql="in_stock", default=true);
-        
-        // Validations
-        validatesPresenceOf(properties="name,price");
-        validatesNumericalityOf(property="price", allowBlank=false, greaterThanOrEqualTo=0);
-    }
-    
-}
-```
-
-### Association Property
-
-Command:
-```bash
-wheels generate property comment "userId:integer:required:belongsTo=user postId:integer:required:belongsTo=post"
-```
-
-Generated:
-```cfc
-component extends="Model" {
-    
-    function init() {
-        // Associations
-        belongsTo(name="user", foreignKey="userId");
-        belongsTo(name="post", foreignKey="postId");
-        
-        // Properties
-        property(name="userId", sql="user_id");
-        property(name="postId", sql="post_id");
-        
-        // Validations
-        validatesPresenceOf(properties="userId,postId");
-    }
-    
-}
-```
-
-### Calculated Property
-
-Command:
-```bash
-wheels generate property user fullName:calculated --callbacks
-```
-
-Generated:
-```cfc
-component extends="Model" {
-    
-    function init() {
-        // Properties
-        property(name="fullName", sql="", calculated=true);
-    }
-    
-    // Calculated property getter
-    function getFullName() {
-        return this.firstName & " " & this.lastName;
-    }
-    
-}
-```
-
-## Migration Generation
-
-When `--migrate=true` (default), generates migration:
-
-### Migration File
-`app/migrator/migrations/[timestamp]_add_properties_to_[model].cfc`:
+### Database Migration
+**File**: `app/migrator/migrations/[timestamp]_create_column__[tableName]_[columnName].cfc`
 
 ```cfc
-component extends="wheels.migrator.Migration" hint="Add properties to product" {
+component extends="wheels.migrator.Migration" {
 
     function up() {
         transaction {
-            addColumn(table="products", columnName="sku", columnType="string", limit=50, null=false);
-            addColumn(table="products", columnName="price", columnType="decimal", precision=10, scale=2, null=false, default=0.00);
-            addColumn(table="products", columnName="stock", columnType="integer", null=true, default=0);
-            
-            addIndex(table="products", columnNames="sku", unique=true);
+            addColumn(
+                table = "users",
+                columnName = "firstName",
+                columnType = "string",
+                limit = 255,
+                allowNull = true
+            );
         }
     }
-    
+
     function down() {
         transaction {
-            removeIndex(table="products", columnNames="sku");
-            removeColumn(table="products", columnName="stock");
-            removeColumn(table="products", columnName="price");
-            removeColumn(table="products", columnName="sku");
+            removeColumn(table = "users", columnName = "firstName");
         }
     }
-
 }
 ```
 
-## Validation Rules
+### View Updates
+When views exist, the command adds the new property:
 
-### Automatic Validations
-
-Based on property type and options:
-
-| Type | Validations Applied |
-|------|-------------------|
-| `string:required` | validatesPresenceOf, validatesLengthOf |
-| `string:unique` | validatesUniquenessOf |
-| `email` | validatesFormatOf with email regex |
-| `integer` | validatesNumericalityOf(onlyInteger=true) |
-| `float` | validatesNumericalityOf |
-| `boolean` | validatesInclusionOf(list="true,false,0,1") |
-| `date` | validatesFormatOf with date pattern |
-
-### Custom Validations
-
-Add custom validation rules:
-```bash
-wheels generate property user "age:integer:min=18:max=120"
+**Form View**: Adds appropriate input field
+```cfm
+#textField(objectName="user", property="firstName")#
 ```
 
-Generated:
-```cfc
-validatesNumericalityOf(property="age", greaterThanOrEqualTo=18, lessThanOrEqualTo=120);
+**Index View**: Adds column to table
+```cfm
+<th>First Name</th>
+<td>#user.firstName#</td>
 ```
 
-## Property Callbacks
-
-Generate with callbacks:
-```bash
-wheels generate property user lastLoginAt:datetime --callbacks
-```
-
-Generated:
-```cfc
-function init() {
-    // Properties
-    property(name="lastLoginAt", sql="last_login_at");
-    
-    // Callbacks
-    beforeUpdate("updateLastLoginAt");
-}
-
-private function updateLastLoginAt() {
-    if (hasChanged("lastLoginAt")) {
-        // Custom logic here
-    }
-}
-```
-
-## Complex Properties
-
-### Enum-like Property
-```bash
-wheels generate property order "status:string:default=pending:inclusion=pending,processing,shipped,delivered"
-```
-
-Generated:
-```cfc
-property(name="status", sql="status", default="pending");
-validatesInclusionOf(property="status", list="pending,processing,shipped,delivered");
-```
-
-### File Upload Property
-```bash
-wheels generate property user "avatar:string:fileField"
-```
-
-Generated:
-```cfc
-property(name="avatar", sql="avatar");
-
-// In the init() method
-afterSave("processAvatarUpload");
-beforeDelete("deleteAvatarFile");
-
-private function processAvatarUpload() {
-    if (hasChanged("avatar") && isUploadedFile("avatar")) {
-        // Handle file upload
-    }
-}
-```
-
-### JSON Property
-```bash
-wheels generate property user "preferences:text:json"
-```
-
-Generated:
-```cfc
-property(name="preferences", sql="preferences");
-
-function getPreferences() {
-    if (isJSON(this.preferences)) {
-        return deserializeJSON(this.preferences);
-    }
-    return {};
-}
-
-function setPreferences(required struct value) {
-    this.preferences = serializeJSON(arguments.value);
-}
-```
-
-## Property Modifiers
-
-### Encrypted Property
-```bash
-wheels generate property user "ssn:string:encrypted"
-```
-
-Generated:
-```cfc
-property(name="ssn", sql="ssn");
-
-beforeSave("encryptSSN");
-afterFind("decryptSSN");
-
-private function encryptSSN() {
-    if (hasChanged("ssn") && Len(this.ssn)) {
-        this.ssn = encrypt(this.ssn, application.encryptionKey);
-    }
-}
-
-private function decryptSSN() {
-    if (Len(this.ssn)) {
-        this.ssn = decrypt(this.ssn, application.encryptionKey);
-    }
-}
-```
-
-### Slugged Property
-```bash
-wheels generate property post "slug:string:unique:fromProperty=title"
-```
-
-Generated:
-```cfc
-property(name="slug", sql="slug");
-validatesUniquenessOf(property="slug");
-
-beforeValidation("generateSlug");
-
-private function generateSlug() {
-    if (!Len(this.slug) && Len(this.title)) {
-        this.slug = createSlug(this.title);
-    }
-}
-
-private function createSlug(required string text) {
-    return reReplace(
-        lCase(trim(arguments.text)),
-        "[^a-z0-9]+",
-        "-",
-        "all"
-    );
-}
-```
-
-## Batch Operations
-
-### Add Multiple Related Properties
-```bash
-wheels generate property user "
-    profile.bio:text
-    profile.website:string
-    profile.twitter:string
-    profile.github:string
-" --nested
-```
-
-### Add Timestamped Properties
-```bash
-wheels generate property post "publishedAt:timestamp deletedAt:timestamp:nullable"
-```
-
-## Integration with Existing Code
-
-### Preserve Existing Structure
-The command intelligently adds properties without disrupting:
-- Existing properties
-- Current validations
-- Defined associations
-- Custom methods
-- Comments and formatting
-
-### Conflict Resolution
-```bash
-wheels generate property user email:string
-> Property 'email' already exists. Options:
-> 1. Skip this property
-> 2. Update existing property
-> 3. Add with different name
-> Choice:
+**Show View**: Adds property display
+```cfm
+<p><strong>First Name:</strong> #user.firstName#</p>
 ```
 
 ## Best Practices
 
-1. Add properties incrementally
-2. Always generate migrations
-3. Include appropriate validations
-4. Use semantic property names
-5. Add indexes for query performance
-6. Consider default values carefully
-7. Document complex properties
-
-## Common Patterns
-
-### Soft Delete
-```bash
-wheels generate property model deletedAt:timestamp:nullable
-```
-
-### Versioning
-```bash
-wheels generate property document "version:integer:default=1 versionedAt:timestamp"
-```
-
-### Status Tracking
-```bash
-wheels generate property order "status:string:default=pending statusChangedAt:timestamp"
-```
-
-### Audit Fields
-```bash
-wheels generate property model "createdBy:integer:belongsTo=user updatedBy:integer:belongsTo=user"
-```
-
-## Testing
-
-After adding properties:
-```bash
-# Run migration
-wheels dbmigrate latest
-
-# Generate property tests
-wheels generate test model user
-
-# Run tests
-wheels test
-```
+1. Run migrations immediately when prompted
+2. Use semantic property names (firstName, not fname)
+3. Set appropriate defaults for boolean and numeric fields
+4. Consider null constraints based on business logic
+5. Add one property at a time for better change tracking
 
 ## See Also
 

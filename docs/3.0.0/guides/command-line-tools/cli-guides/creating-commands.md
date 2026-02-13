@@ -6,15 +6,40 @@ Learn how to extend Wheels CLI with your own custom commands.
 
 Wheels CLI is built on CommandBox, making it easy to add custom commands. Commands can be simple scripts or complex operations using the service architecture.
 
+## Setup for Contributors
+
+### Step 1. Create a box.json if not exist in Directory "cli/src"
+
+Make sure these properties exist: "name", "version", "slug" and "type"
+
+```json
+{
+    "name": "wheels-cli",
+    "version": "3.0.0-SNAPSHOT",
+    "slug": "wheels-cli",
+    "type": "modules"
+}
+```
+
+### Step 2. Link the CLI Module
+
+Open CommandBox in the directory "cli/src" and link this directory as a module:
+
+```bash
+box package link --force
+```
+
+This allows you to develop and test CLI commands locally.
+
 ## Basic Command Structure
 
-### 1. Create Command File
+### Step 3. Create Command File
 
-Create a new file in `/commands/wheels/`:
+Create a new file in `cli/src/commands/wheels/`:
 
 ```cfc
 // commands/wheels/hello.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     /**
      * Say hello
@@ -26,7 +51,7 @@ component extends="wheels.cli.models.BaseCommand" {
 }
 ```
 
-### 2. Run Your Command
+### Step 4. Run Your Command
 
 ```bash
 wheels hello
@@ -41,7 +66,7 @@ wheels hello John
 ### Component Structure
 
 ```cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     // Command metadata
     property name="name" default="mycommand";
@@ -62,6 +87,9 @@ component extends="wheels.cli.models.BaseCommand" {
         required string name,
         boolean force = false
     ) {
+        // Reconstruct arguments for handling -- prefixed options
+        arguments = reconstructArgs(argStruct=arguments);
+
         // Command logic here
     }
     
@@ -97,21 +125,21 @@ Create nested command structure:
 
 ```cfc
 // commands/wheels/deploy.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     function run() {
         print.line("Usage: wheels deploy [staging|production]");
     }
 }
 
 // commands/wheels/deploy/staging.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     function run() {
         print.line("Deploying to staging...");
     }
 }
 
 // commands/wheels/deploy/production.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     function run() {
         print.line("Deploying to production...");
     }
@@ -129,7 +157,7 @@ wheels deploy production
 Get user input:
 
 ```cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     function run() {
         // Simple input
@@ -163,7 +191,7 @@ component extends="wheels.cli.models.BaseCommand" {
 Show progress for long operations:
 
 ```cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     function run() {
         // Progress bar
@@ -201,7 +229,7 @@ component extends="wheels.cli.models.BaseCommand" {
 ### 1. Inject Existing Services
 
 ```cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     property name="codeGenerationService" inject="CodeGenerationService@wheels-cli";
     property name="templateService" inject="TemplateService@wheels-cli";
@@ -395,18 +423,18 @@ function run(required string name) {
     if (!isValidName(arguments.name)) {
         error("Invalid name. Names must be alphanumeric.");
     }
-    
+
     // Warnings
     if (hasSpecialChars(arguments.name)) {
-        print.yellowLine("⚠ Warning: Special characters detected");
+        print.yellowLine("Warning: Special characters detected");
     }
-    
+
     // Success
-    print.greenLine("✓ Name is valid");
+    print.greenLine("Name is valid");
 }
 
 private function error(required string message) {
-    print.redLine("✗ #arguments.message#");
+    print.redLine("#arguments.message#");
     exit(1);
 }
 ```
@@ -417,7 +445,7 @@ private function error(required string message) {
 
 ```cfc
 // tests/commands/HelloTest.cfc
-component extends="testbox.system.BaseSpec" {
+component extends="wheels.Testbox" {
     
     function run() {
         describe("Hello Command", function() {
@@ -569,11 +597,13 @@ box forgebox publish
 
 ```cfc
 // commands/wheels/db/backup.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     property name="datasource" inject="coldbox:datasource";
     
     function run(string file = "backup-#dateFormat(now(), 'yyyy-mm-dd')#.sql") {
+        arguments = reconstructArgs(argStruct=arguments);
+
         print.line("Creating database backup...").toConsole();
         
         var spinner = progressSpinner.create();
@@ -604,11 +634,14 @@ component extends="wheels.cli.models.BaseCommand" {
 
 ```cfc
 // commands/wheels/quality.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     property name="analysisService" inject="AnalysisService@wheels-cli";
     
     function run(string path = ".", boolean fix = false) {
+        arguments = reconstructArgs(argStruct=arguments);
+
+        var analysisService = application.wirebox.getInstance("AnalysisService@wheels-cli");
         var issues = analysisService.analyze(arguments.path);
         
         if (arrayLen(issues)) {
@@ -636,4 +669,4 @@ component extends="wheels.cli.models.BaseCommand" {
 - [Service Architecture](service-architecture.md)
 - [Testing Guide](testing.md)
 - [CommandBox Documentation](https://commandbox.ortusbooks.com/)
-- [Contributing to Wheels CLI](/3.0.0/guides/working-with-cfwheels/contributing-to-cfwheels)
+- [Contributing to Wheels CLI](../CONTRIBUTING.md)

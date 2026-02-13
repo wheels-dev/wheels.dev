@@ -8,7 +8,7 @@ Wheels allows you to set up different _environments_ that match stages in your d
 
 The **Development** environment is the most convenient one to use as you start building your application because it does not cache any data. Therefore, if you make any changes to your controllers and actions, for example, it will immediately be picked up by Wheels.
 
-Other environment modes cache this information in order to speed up your application as much as possible. Making changes to the database in these most modes will cause Wheels to throw an error. (Although that can be avoided with a `reload` call. More on that later.)
+Other environment modes cache this information in order to speed up your application as much as possible. Making changes to the database in most of these modes will cause Wheels to throw an error. (Although that can be avoided with a `reload` call. More on that later.)
 
 The fastest environment mode in terms of page load time is the **Production** mode. This is what you should set your application to run in before you launch your website.
 
@@ -41,53 +41,106 @@ Besides the 2 environments mentioned above, there are 2 more. Let's go through t
 
 **Maintenance**
 
-* Shows your custom maintenance page unless the requesting IP address or user agent is in the exception list (set by calling `set(ipExceptions="127.0.0.1")` in `app/config/settings.cfm` or passed along in the URL as `except=127.0.0.1`, or as `except=myuseragentstring` to match against the user agent instead. Please note that if passing an exception on the URL using the `except` parameter, you must also provide the `password` parameter if a reload password has been defined. This eliminates the possibility of a rogue actor breaking out of maintenance mode by simply adding an `except` to the URL.
+* Shows your custom maintenance page unless the requesting IP address or user agent is in the exception list (set by calling `set(ipExceptions="127.0.0.1")` in `/config/settings.cfm` or passed along in the URL as `except=127.0.0.1`, or as `except=myuseragentstring` to match against the user agent instead. Please note that if passing an exception on the URL using the `except` parameter, you must also provide the `password` parameter if a reload password has been defined. This eliminates the possibility of a rogue actor breaking out of maintenance mode by simply adding an `except` to the URL.
 
 This environment mode comes in handy when you want to briefly take your website offline to upload changes or modify databases on production servers.
 
 ### How to Switch Modes
 
-You can change the current environment by modifying the `app/config/environment.cfm` file. After you've modified it, you need to either restart the ColdFusion service or issue a `reload` request. (See below for more info.)
+Wheels provides multiple ways to switch between environments. Choose the method that best fits your workflow:
 
-**The reload Request**&#x20;
+## Method 1: Using the CLI Command (Recommended)
 
-Issuing a reload request is the easiest way to go from one environment to another. It's done by passing in reload as a parameter in the URL, like this:
+The easiest and most reliable way to switch environments is using the Wheels CLI command:
 
-{% code title="HTTP" %}
+```cfml
+wheels env switch production
+```
+
+This command will:
+1. Update the `set(environment="...")` setting in `/config/environment.cfm`
+2. Automatically reload the application to apply the changes
+3. Validate that the target environment exists before switching
+
+**Examples:**
+```cfml
+# Switch to production environment
+wheels env switch production
+
+# Switch to testing environment
+wheels env switch testing
+
+# Switch to development environment
+wheels env switch development
+```
+
+## Method 2: Manual File Editing
+
+If you prefer not to use the CLI command, you can manually change the environment by editing the `/config/environment.cfm` file:
+
+```cfml
+// /config/environment.cfm
+<cfscript>
+    // Change this value to your desired environment
+    set(environment="production");
+</cfscript>
+```
+
+**Available environment values:**
+- `development` - For local development with full debugging
+- `production` - For live production servers with caching enabled
+- `testing` - For automated testing with production-like caching
+- `maintenance` - For temporarily taking your site offline
+
+After manually editing the file, you **must** reload the application using one of these methods:
+
+### Option A: URL-Based Reload
+
+Issue a reload request by passing `reload` as a URL parameter:
+
 ```
 http://www.mysite.com/?reload=true
 ```
-{% endcode %}
 
-This tells Wheels to reload the entire framework (it will also run your code in the `app/events/onapplicationstart.cfm`file), thus picking up any changes made in the `app/config/environment.cfm` file.
+This tells Wheels to reload the entire framework (including your `/app/events/onapplicationstart.cfm` file), picking up any changes made in the `/config/environment.cfm` file.
 
-**Lazy Reloading**&#x20;
+### Option B: Lazy URL Reloading
 
-There's also a shortcut for lazy developers who don't want to change this file at all. To use it, just issue the reload request like this instead:
+For quick testing, you can temporarily switch environments without editing any files:
 
-{% code title="HTTP" %}
 ```
 http://www.mysite.com/?reload=testing
 ```
-{% endcode %}
 
-This will make Wheels skip your `app/config/environment.cfm` file and just use the URL value instead (`testing`, in this case).
+This will make Wheels skip your `/config/environment.cfm` file and use the URL value instead (`testing` in this case). **Note:** This is temporary and will revert to the configured environment on the next application restart.
 
-**Password-Protected Reloads**&#x20;
+### Option C: Server Restart
 
-For added protection, you can set the `reloadPassword` variable in `app/config/settings.cfm`. When set, a reload request will only be honored when the correct password is also supplied, like this:
+Alternatively, you can restart the ColdFusion/Lucee service to reload the application and apply environment changes.
 
-{% code title="HTTP" %}
+## Password-Protected Reloads
+
+When using URL-based reload methods (Options A and B above), you should add protection by setting the `reloadPassword` variable in `/config/settings.cfm`:
+
+```cfml
+// /config/settings.cfm
+<cfscript>
+    set(reloadPassword="mySecurePassword");
+</cfscript>
 ```
-http://www.mysite.com/?reload=testing&password=mypass
+
+When a password is set, reload requests must include the password parameter:
+
 ```
-{% endcode %}
+http://www.mysite.com/?reload=true&password=mySecurePassword
+http://www.mysite.com/?reload=testing&password=mySecurePassword
+```
 
-{% hint style="warning" %}
-#### Don't forget your reload password in production
+> **⚠️ WARNING: Always use a reload password in production**
+>
+> You really don't want random users hitting `?reload=development` on a production server, as it could expose sensitive data about your application and error messages. **Always set a reload password for production environments!**
 
-You really don't want random users hitting ?reload=development on a production server, as it could potentially expose data about your application and error messages. Always set a reload password!
-{% endhint %}
+**Note:** The `wheels env switch` CLI command bypasses URL-based reloads and directly updates the configuration file, so it's not affected by the reload password setting.
 
 ### Disabling Environment Switching
 
@@ -104,7 +157,7 @@ Wheels provides IP-based access control for the debug GUI and debug information 
 
 ### Configuration Settings
 
-Add these settings to your environment-specific configuration files (e.g., `app/config/production/settings.cfm`):
+Add these settings to your environment-specific configuration files (e.g., `/config/production/settings.cfm`):
 
 ```cfml
 // Define allowed IP addresses that can access debug features
@@ -126,18 +179,18 @@ When these settings are configured:
 
 Here's a typical setup for different environments:
 
-**Development** (`app/config/development/settings.cfm`):
+**Development** (`/config/development/settings.cfm`):
 ```cfml
 // Debug GUI is enabled by default in development, no additional settings needed
 ```
 
-**Testing** (`app/config/testing/settings.cfm`):
+**Testing** (`/config/testing/settings.cfm`):
 ```cfml
 set(debugAccessIPs = ["127.0.0.1", "192.168.1.100"]);
 set(allowIPBasedDebugAccess = true);
 ```
 
-**Production** (`app/config/production/settings.cfm`):
+**Production** (`/config/production/settings.cfm`):
 ```cfml
 set(debugAccessIPs = ["10.0.0.5"]); // Only specific admin IPs
 set(allowIPBasedDebugAccess = true);

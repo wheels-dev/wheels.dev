@@ -5,9 +5,19 @@ Generate a model with properties, validations, and associations.
 ## Synopsis
 
 ```bash
-wheels generate model [name] [options]
-wheels g model [name] [options]
+wheels generate model name=<modelName> [options]
+
+#Can also be used as:
+wheels g model name=<modelName> [options]
 ```
+
+## CommandBox Parameter Syntax
+
+- **Named parameters**: `param=value` (e.g., `name=User`, `properties=name:string,email:string`)
+- **Flag parameters**: `--flag` equals `flag=true` (e.g., `--migration` equals `migration=true`)
+- **Param with value**: `--param=value` equals `param=value` (e.g., `--primaryKey=uuid`)
+
+**Recommended:** Use flags for options: `wheels generate model name=User --properties="name:string,email:string" --migration`
 
 ## Description
 
@@ -19,52 +29,30 @@ The `wheels generate model` command creates a new model CFC file with optional p
 |----------|-------------|---------|
 | `name` | Model name (singular) | Required |
 
+### Model Name Validation
+- Must be singular (User, not Users)
+- Must be PascalCase (User, BlogPost)
+- Cannot contain spaces or special characters
+- Must be valid CFML component name
+
 ## Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--migration` | Generate database migration | `true` |
-| `properties` | Model properties (format: name:type,name2:type2) | |
-| `belongs-to` | Parent model relationships (comma-separated) | |
-| `has-many` | Child model relationships (comma-separated) | |
-| `has-one` | One-to-one relationships (comma-separated) | |
-| `primary-key` | Primary key column name(s) | `id` |
-| `table-name` | Custom database table name | |
-| `description` | Model description | |
-| `--force` | Overwrite existing files | `false` |
+| Option | Description | Valid Values | Default |
+|--------|-------------|--------------|---------|
+| `properties` | Model properties (format: name:type,name2:type2) | Property format: `name:type[,name2:type2]` where type is valid column type | `""` |
+| `belongsTo` | Parent model relationships (comma-separated) | Valid model names (PascalCase), comma-separated | `""` |
+| `hasMany` | Child model relationships (comma-separated) | Valid model names (PascalCase), comma-separated | `""` |
+| `hasOne` | One-to-one relationships (comma-separated) | Valid model names (PascalCase), comma-separated | `""` |
+| `primaryKey` | Primary key column name(s) | Valid column name (alphanumeric, underscore) | `id` |
+| `tableName` | Custom database table name | Valid table name (alphanumeric, underscore) | `""` |
+| `description` | Model description | Any descriptive text | `""` |
+| `migration` | Generate database migration | `true`, `false` | `true` |
+| `force` | Overwrite existing files | `true`, `false` | `false` |
 
-## Examples
-
-### Basic model
-```bash
-wheels generate model user
-```
-Creates:
-- `/models/User.cfc`
-- Migration file (if enabled)
-
-### Model with properties
-```bash
-wheels generate model user properties="firstName:string,lastName:string,email:string,age:integer"
-```
-
-### Model with associations
-```bash
-wheels generate model post belongs-to="user" has-many="comments"
-```
-
-### Model without migration
-```bash
-wheels generate model setting --migration=false
-```
-
-### Complex model
-```bash
-wheels generate model product \
-  properties="name:string,price:decimal,stock:integer,active:boolean" \
-  belongs-to="category,brand" \
-  has-many="reviews,orderItems"
-```
+### Relationship Validation
+- Relationship model names must follow model naming conventions
+- Models referenced in relationships should exist or be created
+- Comma-separated values cannot contain spaces around commas
 
 ## Property Types
 
@@ -83,7 +71,69 @@ wheels generate model product \
 | `binary` | BLOB | binary |
 | `uuid` | VARCHAR(35) | string |
 
-## Generated Code
+## Examples
+
+### Basic model
+```bash
+wheels generate model name=User
+```
+Creates:
+- `/models/User.cfc`
+- Migration file (if enabled)
+
+### Model with properties
+```bash
+wheels generate model name=User --properties="firstName:string,lastName:string,email:string,age:integer"
+```
+
+### Model with associations
+```bash
+wheels generate model name=Post --belongsTo="User" --hasMany="Comments"
+```
+
+### Model without migration
+```bash
+wheels generate model name=Setting --migration=false
+```
+
+### Complex model
+```bash
+wheels generate model name=Product --properties="name:string,price:decimal,stock:integer,active:boolean" --belongsTo="Category,Brand" --hasMany="Reviews,OrderItems"
+```
+
+#### Invalid Model Names
+```bash
+# Error: Model name cannot be empty
+wheels generate model name=""
+# Result: Invalid model name error
+
+# Error: Model name should be singular
+wheels generate model name=Users
+# Result: Warning about plural name
+
+# Error: Invalid characters
+wheels generate model name="Blog Post"
+# Result: Invalid model name error
+```
+
+#### Invalid Property Types
+```bash
+# Error: Invalid property type
+wheels generate model name=User --properties="name:varchar,age:int"
+# Result: Use 'string' instead of 'varchar', 'integer' instead of 'int'
+
+# Error: Missing property type
+wheels generate model name=User --properties="name,email:string"
+# Result: Property format must be 'name:type'
+```
+
+**Important Validation Rules:**
+- Model names must be singular and PascalCase (User, not Users or user)
+- Property format: `name:type,name2:type2` (no spaces)
+- Relationship names must be PascalCase (User, not user)
+- Use valid property types from the table above
+
+## Basic Model Examples
 
 ### Basic Model
 ```cfc
@@ -111,7 +161,7 @@ component extends="Model" {
 }
 ```
 
-### Model with Properties
+### Model with Properties and Validations
 ```cfc
 component extends="Model" {
 
@@ -152,9 +202,7 @@ component extends="Model" {
 }
 ```
 
-## Validations
-
-Common validation methods:
+### Common Validation Methods
 
 ```cfc
 // Presence
@@ -186,7 +234,7 @@ validatesConfirmationOf("password");
 validate("customValidation");
 ```
 
-## Associations
+### Common Association Methods
 
 ### Belongs To
 ```cfc
@@ -212,9 +260,7 @@ hasMany("categorizations");
 hasMany(name="categories", through="categorizations");
 ```
 
-## Callbacks
-
-Lifecycle callbacks:
+### Common Callbacks
 
 ```cfc
 // Before callbacks
@@ -234,44 +280,15 @@ afterFind("method12");
 afterInitialization("method13");
 ```
 
-## Generated Migration
-
-When `--migration` is enabled:
-
-```cfc
-component extends="wheels.migrator.Migration" {
-
-    function up() {
-        transaction {
-            t = createTable("users");
-            t.string("firstName");
-            t.string("lastName");
-            t.string("email");
-            t.integer("age");
-            t.timestamps();
-            t.create();
-            
-            addIndex(table="users", columns="email", unique=true);
-        }
-    }
-
-    function down() {
-        transaction {
-            dropTable("users");
-        }
-    }
-
-}
-```
-
 ## Best Practices
 
 1. **Naming**: Use singular names (User, not Users)
-2. **Properties**: Define all database columns
-3. **Validations**: Add comprehensive validations
-4. **Associations**: Define all relationships
+2. **Properties**: Define all database columns with correct types
+3. **Validations**: Add comprehensive validations in model code
+4. **Associations**: Define all relationships using PascalCase
 5. **Callbacks**: Use for automatic behaviors
 6. **Indexes**: Add to migration for performance
+7. **Validation**: Always validate parameters before running command
 
 ## Common Patterns
 
@@ -320,8 +337,8 @@ private function setDefaults() {
 
 Generate model tests:
 ```bash
-wheels generate model user properties="email:string,name:string"
-wheels generate test model user
+wheels generate model name=User --properties="email:string,name:string"
+wheels generate test type=model name=User
 ```
 
 ## See Also

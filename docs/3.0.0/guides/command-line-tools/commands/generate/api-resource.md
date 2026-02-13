@@ -1,42 +1,27 @@
 # wheels generate api-resource
 
-Generate a complete API resource with model, API controller, and routes.
-
-> ⚠️ **Note**: This command is currently marked as broken/disabled in the codebase. The documentation below represents the intended functionality when the command is restored.
+Generate a complete RESTful API controller with advanced features like pagination, filtering, sorting, and authentication.
 
 ## Synopsis
 
 ```bash
-wheels generate api-resource [name] [properties] [options]
-wheels g api-resource [name] [properties] [options]
+wheels generate api-resource [name] [options]
+wheels g api-resource [name] [options]
 ```
 
 ## Description
 
-The `wheels generate api-resource` command creates a complete RESTful API resource including model, API-specific controller (no views), routes, and optionally database migrations and tests. It's optimized for building JSON APIs following REST conventions.
+The `wheels generate api-resource` command creates a production-ready RESTful API controller optimized for JSON APIs. It generates API-specific controllers with no view rendering logic, including optional features like pagination, filtering, sorting, authentication, and API versioning.
 
-## Current Status
+The generated controllers use `provides("json")` and `renderWith()` to return JSON responses with proper HTTP status codes for REST operations.
 
-**This command is temporarily disabled.** Use alternative approaches:
-
-```bash
-# Option 1: Use regular resource with --api flag
-wheels generate resource product name:string price:float --api
-
-# Option 2: Generate components separately
-wheels generate model product name:string price:float
-wheels generate controller api/products --api
-wheels generate route products --api --namespace=api
-```
-
-## Arguments (When Enabled)
+## Arguments
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `name` | Resource name (typically singular) | Required |
-| `properties` | Property definitions (name:type) | |
+| `name` | Resource name (singular or plural) | Required |
 
-## Options (When Enabled)
+## Options
 
 | Option | Description | Default |
 |--------|-------------|---------|
@@ -46,519 +31,480 @@ wheels generate route products --api --namespace=api
 | `--pagination` | Include pagination | `true` |
 | `--filtering` | Include filtering | `true` |
 | `--sorting` | Include sorting | `true` |
-| `--skip-model` | Skip model generation | `false` |
-| `--skip-migration` | Skip migration generation | `false` |
-| `--skip-tests` | Skip test generation | `false` |
+| `--skipModel` | Skip model generation | `false` |
+| `--skipMigration` | Skip migration generation | `false` |
+| `--skipTests` | Skip test generation | `false` |
 | `--namespace` | API namespace | `api` |
+| `--docs` | Generate API documentation template | `false` |
 | `--force` | Overwrite existing files | `false` |
-| `--help` | Show help information | |
 
-## Intended Functionality
+## CommandBox Parameter Syntax
 
-### Basic API Resource
+This command supports multiple parameter formats:
+
+- **Named parameters**: `name=value` (e.g., `name=products`, `version="v2"`)
+- **Flag parameters**: `--flag` equals `flag=true` (e.g., `--auth` equals `auth=true`)
+- **Flag with value**: `--flag=value` equals `flag=value` (e.g., `--version=v2`)
+
+**Parameter Mixing Rules:**
+
+**ALLOWED:**
+- All positional: `wheels generate api-resource products`
+- All named: `name=products version="v2" auth=true`
+- Positional + flags: `wheels generate api-resource products --auth --skipModel`
+
+**NOT ALLOWED:**
+- Positional + named: `wheels generate api-resource products version="v2"` (causes error)
+
+**Recommendation:** Use positional for name + flags for options: `wheels generate api-resource products --auth --version=v2`
+
+---
+
+## Examples
+
+### Basic API Controller
+
+Generate a simple API controller:
+
 ```bash
-wheels generate api-resource product name:string price:float description:text
+# Positional name only
+wheels generate api-resource products
 ```
 
-Would generate:
-- Model: `/models/Product.cfc`
-- Controller: `/controllers/api/v1/Products.cfc`
-- Route: API namespace with versioning
-- Migration: Database migration file
-- Tests: API integration tests
+Creates:
+- `/models/Product.cfc` - Model file
+- `/controllers/api/v1/Products.cfc` - Versioned API controller with pagination, filtering, sorting
 
-### Generated API Controller
-`/controllers/api/v1/Products.cfc`:
+### Without Advanced Features
+
+Generate a minimal API controller without optional features:
+
+```bash
+# Using named parameters (all named)
+wheels g api-resource name=products pagination=false filtering=false sorting=false
+
+# OR using flags (positional + flags) - RECOMMENDED
+wheels g api-resource products --pagination=false --filtering=false --sorting=false
+```
+
+Creates a simple controller with only basic CRUD operations.
+
+### With Authentication
+
+Generate API controller with authentication:
+
+```bash
+# Using flag
+wheels generate api-resource products --auth
+```
+
+Includes Bearer token authentication that requires Authorization header for create, update, delete actions.
+
+### Custom Version and Namespace
+
+Generate API controller with custom versioning:
+
+```bash
+# Using flags with values
+wheels generate api-resource products --version=v2 --namespace=public
+```
+
+Creates `/controllers/public/v2/Products.cfc`
+
+### Skip Model Generation
+
+Generate only the controller (model already exists):
+
+```bash
+# Using flag
+wheels generate api-resource products --skipModel
+```
+
+### Complete Setup with Documentation
+
+Generate everything with API documentation:
+
+```bash
+# Multiple flags
+wheels generate api-resource products --auth --docs
+```
+
+Creates:
+- `/models/Product.cfc`
+- `/controllers/api/v1/Products.cfc` with authentication
+- `/app/docs/api/products.md` - API documentation
+
+## Generated Controller Features
+
+### With All Features Enabled
+
+```bash
+wheels generate api-resource products --auth --pagination --filtering --sorting
+```
+
+Generates:
+
 ```cfc
-component extends="Controller" {
-    
-    function init() {
+component extends="wheels.Controller" {
+
+    function config() {
         provides("json");
-        
-        // Filters
+        filters(through="setJsonResponse");
         filters(through="authenticate", except="index,show");
-        filters(through="findProduct", only="show,update,delete");
-        filters(through="parseApiParams", only="index");
     }
-    
+
+    /**
+     * GET /products
+     * Supports: ?page=1&perPage=25&sort=name,-price&filter[name]=widget
+     */
     function index() {
-        // Pagination
-        page = params.page ?: 1;
-        perPage = Min(params.perPage ?: 25, 100);
-        
-        // Filtering
-        where = [];
-        if (StructKeyExists(params, "filter")) {
-            if (StructKeyExists(params.filter, "name")) {
-                ArrayAppend(where, "name LIKE :name");
-                params.name = "%#params.filter.name#%";
-            }
-            if (StructKeyExists(params.filter, "minPrice")) {
-                ArrayAppend(where, "price >= :minPrice");
-                params.minPrice = params.filter.minPrice;
-            }
+        local.page = params.page ?: 1;
+        local.perPage = params.perPage ?: 25;
+        local.options = {};
+        local.options.page = local.page;
+        local.options.perPage = local.perPage;
+
+        if (structKeyExists(params, "sort")) {
+            local.options.order = parseSort(params.sort);
         }
-        
-        // Sorting
-        order = "createdAt DESC";
-        if (StructKeyExists(params, "sort")) {
-            order = parseSort(params.sort);
+
+        if (structKeyExists(params, "filter")) {
+            local.options.where = parseFilter(params.filter);
         }
-        
-        // Query
-        products = model("Product").findAll(
-            where=ArrayToList(where, " AND "),
-            order=order,
-            page=page,
-            perPage=perPage,
-            returnAs="objects"
-        );
-        
-        // Response
-        renderWith({
-            data: serializeProducts(products),
-            meta: {
-                pagination: {
-                    page: products.currentPage,
-                    perPage: products.perPage,
-                    total: products.totalRecords,
-                    pages: products.totalPages
+
+        local.products = model("Product").findAll(argumentCollection=local.options);
+
+        local.response = {
+            data = local.products,
+            meta = {
+                pagination = {
+                    page = local.products.currentPage ?: local.page,
+                    perPage = local.perPage,
+                    total = local.products.totalRecords ?: 0,
+                    pages = local.products.totalPages ?: 1
                 }
-            },
-            links: {
-                self: urlFor(route="apiV1Products", params=params),
-                first: urlFor(route="apiV1Products", params=params, page=1),
-                last: urlFor(route="apiV1Products", params=params, page=products.totalPages),
-                prev: products.currentPage > 1 ? urlFor(route="apiV1Products", params=params, page=products.currentPage-1) : "",
-                next: products.currentPage < products.totalPages ? urlFor(route="apiV1Products", params=params, page=products.currentPage+1) : ""
-            }
-        });
-    }
-    
-    function show() {
-        renderWith({
-            data: serializeProduct(product),
-            links: {
-                self: urlFor(route="apiV1Product", key=product.id)
-            }
-        });
-    }
-    
-    function create() {
-        product = model("Product").new(deserializeProduct(params));
-        
-        if (product.save()) {
-            renderWith(
-                data={
-                    data: serializeProduct(product),
-                    links: {
-                        self: urlFor(route="apiV1Product", key=product.id)
-                    }
-                },
-                status=201,
-                headers={"Location": urlFor(route="apiV1Product", key=product.id)}
-            );
-        } else {
-            renderWith(
-                data={
-                    errors: formatErrors(product.allErrors())
-                },
-                status=422
-            );
-        }
-    }
-    
-    function update() {
-        if (product.update(deserializeProduct(params))) {
-            renderWith({
-                data: serializeProduct(product),
-                links: {
-                    self: urlFor(route="apiV1Product", key=product.id)
-                }
-            });
-        } else {
-            renderWith(
-                data={
-                    errors: formatErrors(product.allErrors())
-                },
-                status=422
-            );
-        }
-    }
-    
-    function delete() {
-        if (product.delete()) {
-            renderWith(data={}, status=204);
-        } else {
-            renderWith(
-                data={
-                    errors: [{
-                        status: "400",
-                        title: "Bad Request",
-                        detail: "Could not delete product"
-                    }]
-                },
-                status=400
-            );
-        }
-    }
-    
-    // Private methods
-    
-    private function findProduct() {
-        product = model("Product").findByKey(params.key);
-        if (!IsObject(product)) {
-            renderWith(
-                data={
-                    errors: [{
-                        status: "404",
-                        title: "Not Found",
-                        detail: "Product not found"
-                    }]
-                },
-                status=404
-            );
-        }
-    }
-    
-    private function authenticate() {
-        if (!StructKeyExists(headers, "Authorization")) {
-            renderWith(
-                data={
-                    errors: [{
-                        status: "401",
-                        title: "Unauthorized",
-                        detail: "Missing authentication"
-                    }]
-                },
-                status=401
-            );
-        }
-        // Implement authentication logic
-    }
-    
-    private function parseApiParams() {
-        // Parse JSON API params
-        if (StructKeyExists(params, "_json")) {
-            StructAppend(params, params._json, true);
-        }
-    }
-    
-    private function parseSort(required string sort) {
-        local.allowedFields = ["name", "price", "createdAt"];
-        local.parts = ListToArray(arguments.sort);
-        local.order = [];
-        
-        for (local.part in local.parts) {
-            local.desc = Left(local.part, 1) == "-";
-            local.field = local.desc ? Right(local.part, Len(local.part)-1) : local.part;
-            
-            if (ArrayFindNoCase(local.allowedFields, local.field)) {
-                ArrayAppend(local.order, local.field & (local.desc ? " DESC" : " ASC"));
-            }
-        }
-        
-        return ArrayToList(local.order);
-    }
-    
-    private function serializeProducts(required array products) {
-        local.result = [];
-        for (local.product in arguments.products) {
-            ArrayAppend(local.result, serializeProduct(local.product));
-        }
-        return local.result;
-    }
-    
-    private function serializeProduct(required any product) {
-        return {
-            type: "products",
-            id: arguments.product.id,
-            attributes: {
-                name: arguments.product.name,
-                price: arguments.product.price,
-                description: arguments.product.description,
-                createdAt: DateTimeFormat(arguments.product.createdAt, "iso"),
-                updatedAt: DateTimeFormat(arguments.product.updatedAt, "iso")
-            },
-            links: {
-                self: urlFor(route="apiV1Product", key=arguments.product.id)
             }
         };
+
+        renderWith(data=local.response);
     }
-    
-    private function deserializeProduct(required struct data) {
-        if (StructKeyExists(arguments.data, "data")) {
-            return arguments.data.data.attributes;
-        }
-        return arguments.data;
-    }
-    
-    private function formatErrors(required array errors) {
-        local.result = [];
-        for (local.error in arguments.errors) {
-            ArrayAppend(local.result, {
-                status: "422",
-                source: {pointer: "/data/attributes/#local.error.property#"},
-                title: "Validation Error",
-                detail: local.error.message
-            });
-        }
-        return local.result;
-    }
-    
+
+    function show() { /* ... */ }
+    function create() { /* ... */ }
+    function update() { /* ... */ }
+    function delete() { /* ... */ }
+
+    // Helper methods for pagination, filtering, sorting, auth
+    private function authenticate() { /* ... */ }
+    private function parseSort(required string sort) { /* ... */ }
+    private function parseFilter(required struct filter) { /* ... */ }
 }
 ```
 
-### API Routes
-Generated in `/config/routes.cfm`:
+## Adding Routes
+
+After generating your API resource, add routes to `/config/routes.cfm`:
+
+### Default Namespaced Routes
+
 ```cfm
-<cfset namespace("api")>
-    <cfset namespace("v1")>
-        <cfset resources(name="products", except="new,edit")>
-        
-        <!--- Additional API routes --->
-        <cfset post(pattern="products/[key]/activate", to="products##activate", on="member")>
-        <cfset get(pattern="products/search", to="products##search", on="collection")>
-    </cfset>
-</cfset>
+// Add inside mapper() block
+namespace(name="api", function() {
+    namespace(name="v1", function() {
+        resources(name="products", except="new,edit");
+    });
+});
 ```
 
-### API Documentation
-Would generate OpenAPI/Swagger documentation:
+Creates routes:
+- `GET /api/v1/products`
+- `GET /api/v1/products/:key`
+- `POST /api/v1/products`
+- `PUT /api/v1/products/:key`
+- `DELETE /api/v1/products/:key`
 
-```yaml
-openapi: 3.0.0
-info:
-  title: Products API
-  version: 1.0.0
-  
-paths:
-  /api/v1/products:
-    get:
-      summary: List products
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: integer
-        - name: perPage
-          in: query
-          schema:
-            type: integer
-        - name: filter[name]
-          in: query
-          schema:
-            type: string
-        - name: sort
-          in: query
-          schema:
-            type: string
-      responses:
-        200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductList'
-    
-    post:
-      summary: Create product
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProductInput'
-      responses:
-        201:
-          description: Created
-        422:
-          description: Validation error
-```
+### Custom Version
 
-## Workaround Implementation
-
-Until the command is fixed, implement API resources manually:
-
-### 1. Generate Model
-```bash
-wheels generate model product name:string price:float description:text
-```
-
-### 2. Create API Controller
-Create `/controllers/api/v1/Products.cfc` manually with the code above.
-
-### 3. Add Routes
 ```cfm
-<!--- In /config/routes.cfm --->
-<cfset namespace("api")>
-    <cfset namespace("v1")>
-        <cfset resources(name="products", except="new,edit")>
-    </cfset>
-</cfset>
+namespace(name="api", function() {
+    namespace(name="v2", function() {
+        resources(name="products", except="new,edit");
+    });
+});
 ```
 
-### 4. Create Tests
+### No Namespace
+
+If you used `--namespace=""`:
+
+```cfm
+resources(name="products", except="new,edit");
+```
+
+## Feature Details
+
+### Pagination
+
+When `--pagination` is enabled (default):
+
+**Request:**
 ```bash
-wheels generate test controller api/v1/products
+curl "http://localhost:8080/api/v1/products?page=2&perPage=10"
 ```
 
-## API Features
+**Response:**
+```json
+{
+  "data": [ /* products */ ],
+  "meta": {
+    "pagination": {
+      "page": 2,
+      "perPage": 10,
+      "total": 100,
+      "pages": 10
+    }
+  }
+}
+```
+
+### Filtering
+
+When `--filtering` is enabled (default):
+
+**Request:**
+```bash
+curl "http://localhost:8080/api/v1/products?filter[name]=widget&filter[minPrice]=10"
+```
+
+The generated controller includes a `parseFilter()` method with TODO comments for you to implement your filtering logic.
+
+### Sorting
+
+When `--sorting` is enabled (default):
+
+**Request:**
+```bash
+# Sort by name ascending, then price descending
+curl "http://localhost:8080/api/v1/products?sort=name,-price"
+```
+
+The `-` prefix indicates descending order.
 
 ### Authentication
-```cfc
-// Bearer token authentication
-private function authenticate() {
-    local.token = GetHttpRequestData().headers["Authorization"] ?: "";
-    local.token = ReReplace(local.token, "^Bearer\s+", "");
-    
-    if (!Len(local.token) || !isValidToken(local.token)) {
-        renderWith(
-            data={error: "Unauthorized"},
-            status=401
-        );
+
+When `--auth` is enabled:
+
+**Request:**
+```bash
+curl -X POST http://localhost:8080/api/v1/products \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{"product":{"name":"Widget"}}'
+```
+
+The generated controller includes authentication methods that you need to implement with your actual token validation logic.
+
+## HTTP Status Codes
+
+The generated controller uses proper REST HTTP status codes:
+
+| Action | Success Status | Error Status |
+|--------|---------------|--------------|
+| `index` | 200 OK | - |
+| `show` | 200 OK | 404 Not Found |
+| `create` | 201 Created | 422 Unprocessable Entity |
+| `update` | 200 OK | 404 Not Found, 422 Unprocessable Entity |
+| `delete` | 204 No Content | 404 Not Found |
+| `auth failure` | - | 401 Unauthorized |
+
+## Testing Your API
+
+### Basic Requests
+
+```bash
+# List products with pagination
+curl "http://localhost:8080/api/v1/products?page=1&perPage=25"
+
+# Get specific product
+curl http://localhost:8080/api/v1/products/1
+
+# Create product
+curl -X POST http://localhost:8080/api/v1/products \
+  -H "Content-Type: application/json" \
+  -d '{"product":{"name":"Widget","price":29.99}}'
+
+# Update product
+curl -X PUT http://localhost:8080/api/v1/products/1 \
+  -H "Content-Type: application/json" \
+  -d '{"product":{"price":39.99}}'
+
+# Delete product
+curl -X DELETE http://localhost:8080/api/v1/products/1
+```
+
+### With Filtering and Sorting
+
+```bash
+# Filter and sort
+curl "http://localhost:8080/api/v1/products?filter[name]=widget&sort=-createdAt"
+
+# Pagination with filters
+curl "http://localhost:8080/api/v1/products?page=1&perPage=10&filter[minPrice]=20&sort=name"
+```
+
+### With Authentication
+
+```bash
+# With Bearer token
+curl -X POST http://localhost:8080/api/v1/products \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"product":{"name":"Widget"}}'
+```
+
+## Example Responses
+
+**Success with Pagination (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Widget",
+      "price": 29.99,
+      "createdAt": "2023-01-01T12:00:00Z",
+      "updatedAt": "2023-01-01T12:00:00Z"
     }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "perPage": 25,
+      "total": 1,
+      "pages": 1
+    }
+  }
 }
 ```
 
-### Rate Limiting
-```cfc
-// In controller init()
-filters(through="rateLimit");
-
-private function rateLimit() {
-    local.key = "api_rate_limit_" & request.remoteAddress;
-    local.limit = 100; // requests per hour
-    
-    if (!StructKeyExists(application, local.key)) {
-        application[local.key] = {
-            count: 0,
-            reset: DateAdd("h", 1, Now())
-        };
+**Validation Error (422):**
+```json
+{
+  "error": "Validation failed",
+  "errors": [
+    {
+      "property": "name",
+      "message": "This field is required"
     }
-    
-    if (application[local.key].reset < Now()) {
-        application[local.key] = {
-            count: 0,
-            reset: DateAdd("h", 1, Now())
-        };
-    }
-    
-    application[local.key].count++;
-    
-    if (application[local.key].count > local.limit) {
-        renderWith(
-            data={error: "Rate limit exceeded"},
-            status=429,
-            headers={
-                "X-RateLimit-Limit": local.limit,
-                "X-RateLimit-Remaining": 0,
-                "X-RateLimit-Reset": DateTimeFormat(application[local.key].reset, "iso")
-            }
-        );
-    }
+  ]
 }
 ```
 
-### CORS Headers
-```cfc
-// In controller init()
-filters(through="setCorsHeaders");
-
-private function setCorsHeaders() {
-    header name="Access-Control-Allow-Origin" value="*";
-    header name="Access-Control-Allow-Methods" value="GET, POST, PUT, DELETE, OPTIONS";
-    header name="Access-Control-Allow-Headers" value="Content-Type, Authorization";
-    
-    if (request.method == "OPTIONS") {
-        renderWith(data={}, status=200);
-    }
+**Not Found (404):**
+```json
+{
+  "error": "Record not found"
 }
 ```
 
-## Testing API Resources
+**Unauthorized (401):**
+```json
+{
+  "error": "Unauthorized"
+}
+```
 
-### Integration Tests
-```cfc
-component extends="wheels.Test" {
-    
-    function setup() {
-        super.setup();
-        model("Product").deleteAll();
+## Customization
+
+### Implementing Filter Logic
+
+Edit the generated `parseFilter()` method:
+
+```cfm
+private function parseFilter(required struct filter) {
+    local.where = [];
+    local.params = {};
+
+    if (structKeyExists(arguments.filter, "name")) {
+        arrayAppend(local.where, "name LIKE :name");
+        local.params.name = "%#arguments.filter.name#%";
     }
-    
-    function test_get_products_returns_json() {
-        products = createProducts(3);
-        
-        result = $request(
-            route="apiV1Products",
-            method="GET",
-            headers={"Accept": "application/json"}
-        );
-        
-        assert(result.status == 200);
-        data = DeserializeJSON(result.body);
-        assert(ArrayLen(data.data) == 3);
-        assert(data.meta.pagination.total == 3);
+
+    if (structKeyExists(arguments.filter, "minPrice")) {
+        arrayAppend(local.where, "price >= :minPrice");
+        local.params.minPrice = arguments.filter.minPrice;
     }
-    
-    function test_create_product_with_valid_data() {
-        params = {
-            data: {
-                type: "products",
-                attributes: {
-                    name: "Test Product",
-                    price: 29.99,
-                    description: "Test description"
-                }
-            }
-        };
-        
-        result = $request(
-            route="apiV1Products",
-            method="POST",
-            params=params,
-            headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        );
-        
-        assert(result.status == 201);
-        assert(StructKeyExists(result.headers, "Location"));
-        data = DeserializeJSON(result.body);
-        assert(data.data.attributes.name == "Test Product");
+
+    if (structKeyExists(arguments.filter, "category")) {
+        arrayAppend(local.where, "category = :category");
+        local.params.category = arguments.filter.category;
     }
-    
-    function test_authentication_required() {
-        result = $request(
-            route="apiV1Products",
-            method="POST",
-            params={},
-            headers={"Accept": "application/json"}
-        );
-        
-        assert(result.status == 401);
+
+    return arrayLen(local.where) ? arrayToList(local.where, " AND ") : "";
+}
+```
+
+### Implementing Authentication
+
+Edit the generated `isValidToken()` method:
+
+```cfm
+private function isValidToken(required string token) {
+    // Example: Check against database
+    local.apiKey = model("ApiKey").findOne(where="token = :token", token=arguments.token);
+
+    if (isObject(local.apiKey) && local.apiKey.active) {
+        // Store user context in session/request
+        request.user = local.apiKey.user();
+        return true;
     }
-    
+
+    return false;
+}
+```
+
+### Adding More Sortable Fields
+
+Edit the `parseSort()` method:
+
+```cfm
+private function parseSort(required string sort) {
+    local.allowedFields = ["id", "name", "price", "category", "createdAt", "updatedAt"];
+    // ... rest of method
 }
 ```
 
 ## Best Practices
 
-1. **Version your API**: Use URL versioning (/api/v1/)
-2. **Use consistent formats**: JSON API or custom format
-3. **Include pagination**: Limit response sizes
-4. **Add filtering**: Allow query parameters
-5. **Implement sorting**: Support field sorting
-6. **Handle errors consistently**: Standard error format
-7. **Document thoroughly**: OpenAPI/Swagger specs
-8. **Add authentication**: Secure endpoints
-9. **Rate limit**: Prevent abuse
-10. **Test extensively**: Integration tests
+1. **Use Versioning**: Always version your APIs (`--version=v1`)
+2. **Enable Pagination**: Prevent performance issues with large datasets
+3. **Add Authentication**: Secure your API endpoints with `--auth`
+4. **Document Your API**: Use `--docs` flag and keep documentation updated
+5. **Implement Filtering**: Customize `parseFilter()` for your model fields
+6. **Whitelist Sort Fields**: Only allow sorting on indexed fields
+7. **Use Proper Status Codes**: 201 for creation, 204 for deletion
+8. **Return Error Details**: Always include error messages for 4xx/5xx
+9. **Rate Limiting**: Consider adding rate limiting for public APIs
+10. **CORS Headers**: Add CORS support for browser-based clients
+
+## Comparison with Other Commands
+
+| Feature | `api-resource` | `controller --api` | `scaffold` |
+|---------|----------------|-------------------|------------|
+| Generates model | Optional | No | Yes |
+| Generates views | No | No | Yes |
+| Actions | REST only | REST only | Full CRUD |
+| Format | Configurable | JSON only | HTML + JSON |
+| Versioning | Yes | No | No |
+| Pagination | Optional | No | No |
+| Filtering | Optional | No | No |
+| Sorting | Optional | No | No |
+| Authentication | Optional | No | No |
+| Best for | Production APIs | Simple APIs | Full-stack apps |
 
 ## See Also
 
-- [wheels generate resource](resource.md) - Generate full resources
-- [wheels generate controller](controller.md) - Generate controllers
+- [wheels generate controller](controller.md) - Generate standard controllers
 - [wheels generate model](model.md) - Generate models
-- [wheels generate route](route.md) - Generate routes
+- [wheels generate scaffold](scaffold.md) - Generate full CRUD resources
+- [Wheels REST Documentation](https://wheels.dev) - REST API best practices

@@ -9,6 +9,26 @@ wheels destroy <name>
 wheels d <name>
 ```
 
+## CommandBox Parameter Syntax
+
+This command supports multiple parameter formats:
+
+- **Positional parameters**: `wheels destroy user` (resource name as positional)
+- **Named parameters**: `name=value` (e.g., `name=user`)
+
+**Parameter Mixing Rules:**
+
+**ALLOWED:**
+- Positional: `wheels destroy user`
+- Named: `wheels destroy name=user`
+
+**NOT ALLOWED:**
+- Positional + named for same parameter: `wheels destroy user name=other`
+
+**Recommendation:** Use positional parameter for simplicity: `wheels destroy user`
+
+**Note:** This command always prompts for confirmation before proceeding. There is no `--force` flag to skip confirmation.
+
 ## Description
 
 The `wheels destroy` command removes all files and code associated with a resource that was previously generated. It's useful for cleaning up mistakes or removing features completely. This command will also drop the associated database table and remove resource routes.
@@ -29,62 +49,41 @@ When you destroy a resource, the following items are deleted:
 - Model file (`/app/models/[Name].cfc`)
 - Controller file (`/app/controllers/[Names].cfc`)
 - Views directory (`/app/views/[names]/`)
-- Model test file (`/tests/Testbox/specs/models/[Name].cfc`)
-- Controller test file (`/tests/Testbox/specs/controllers/[Names].cfc`)
-- View test directory (`/tests/Testbox/specs/views/[names]/`)
-- Resource route entry in `/app/config/routes.cfm`
+- Model test file (`/tests/specs/models/[Name].cfc`)
+- Controller test file (`/tests/specs/controllers/[Names].cfc`)
+- View test directory (`/tests/specs/views/[names]/`)
+- Resource route entry in `/config/routes.cfm`
 - Database table (if confirmed)
 
 ## Examples
 
 ### Basic destroy
 ```bash
+# Positional (recommended)
 wheels destroy user
+
+# OR named
+wheels destroy name=user
+
+# OR alias (positional)
+wheels d user
 ```
 
-This will prompt:
+This will prompt this along with a confirmation:
 ```
-================================================
-= Watch Out!                                   =
-================================================
+==================================================
+                    Watch Out!
+==================================================
 This will delete the associated database table 'users', and
 the following files and directories:
 
 /app/models/User.cfc
 /app/controllers/Users.cfc
 /app/views/users/
-/tests/Testbox/specs/models/User.cfc
-/tests/Testbox/specs/controllers/Users.cfc
-/tests/Testbox/specs/views/users/
-/app/config/routes.cfm
-.resources("users")
-
-Are you sure? [y/n]
-```
-
-### Using the alias
-```bash
-wheels d product
-```
-
-## Confirmation
-
-The command always asks for confirmation and shows exactly what will be deleted:
-
-```
-================================================
-= Watch Out!                                   =
-================================================
-This will delete the associated database table 'users', and
-the following files and directories:
-
-/app/models/User.cfc
-/app/controllers/Users.cfc
-/app/views/users/
-/tests/Testbox/specs/models/User.cfc
-/tests/Testbox/specs/controllers/Users.cfc
-/tests/Testbox/specs/views/users/
-/app/config/routes.cfm
+/tests/specs/models/User.cfc
+/tests/specs/controllers/Users.cfc
+/tests/specs/views/users/
+/config/routes.cfm
 .resources("users")
 
 Are you sure? [y/n]
@@ -92,26 +91,10 @@ Are you sure? [y/n]
 
 ## Safety Features
 
-1. **Confirmation Required**: Always asks for confirmation before proceeding
+1. **Confirmation**: Always asks for confirmation before proceeding
 2. **Shows All Changes**: Lists all files and directories that will be deleted
 3. **Database Migration**: Creates and runs a migration to drop the table
 4. **Route Cleanup**: Automatically removes resource routes from routes.cfm
-
-## What Gets Destroyed
-
-1. **Files Deleted**:
-   - Model file
-   - Controller file 
-   - Views directory and all view files
-   - Test files (model, controller, and view tests)
-
-2. **Database Changes**:
-   - Creates a migration to drop the table
-   - Runs `wheels dbmigrate latest` to execute the migration
-
-3. **Route Changes**:
-   - Removes `.resources("name")` from routes.cfm
-   - Cleans up extra whitespace
 
 ## Best Practices
 
@@ -133,12 +116,12 @@ wheels generate resource product # Create correct one
 ### Clean up after experimentation
 ```bash
 # Try out a feature
-wheels generate scaffold blog_post title:string content:text
+wheels generate scaffold blog_post title:string,content:text
 # Decide you don't want it
 wheels destroy blog_post
 ```
 
-## Notes
+## Important
 
 - Cannot be undone - files are permanently deleted
 - Database table is dropped via migration

@@ -2,26 +2,47 @@
 
 Removes an installed Wheels CLI plugin.
 
-## Usage
+## Synopsis
 
 ```bash
-wheels plugins remove <name> [--global] [--force]
+wheels plugins remove <name> [--force]
 ```
+
+## CommandBox Parameter Syntax
+
+This command supports multiple parameter formats:
+
+- **Positional parameters**: `wheels plugins remove cfwheels-bcrypt` (plugin name)
+- **Named parameters**: `name=value` (e.g., `name=cfwheels-bcrypt`)
+- **Flag parameters**: `--flag` equals `flag=true` (e.g., `--force` equals `force=true`)
+
+**Parameter Mixing Rules:**
+
+**ALLOWED:**
+- Positional: `wheels plugins remove cfwheels-bcrypt`
+- Positional + flags: `wheels plugins remove cfwheels-bcrypt --force`
+- All named: `name=cfwheels-bcrypt force=true`
+
+**NOT ALLOWED:**
+- Positional + named for same param: `wheels plugins remove cfwheels-bcrypt name=other`
+
+**Recommendation:** Use positional for plugin name, flags for options: `wheels plugins remove cfwheels-bcrypt --force`
 
 ## Parameters
 
-- `name` - (Required) Plugin name to remove
-- `--global` - (Optional) Remove globally installed plugin
-- `--force` - (Optional) Force removal without confirmation
+| Parameter | Required | Type    | Description                              |
+|-----------|----------|---------|------------------------------------------|
+| `name`    | Yes      | string  | Plugin name to remove                    |
+| `--force` | No       | boolean | Force removal without confirmation       |
 
 ## Description
 
 The `plugins remove` command safely uninstalls a plugin from your Wheels application. It:
 
-- Checks for dependent plugins
-- Creates a backup (by default)
-- Removes plugin files
-- Cleans up configuration
+- Checks if the plugin is installed
+- Prompts for confirmation (unless `--force` is used)
+- Removes plugin from box.json
+- Cleans up plugin files
 - Updates plugin registry
 
 ## Examples
@@ -31,45 +52,44 @@ The `plugins remove` command safely uninstalls a plugin from your Wheels applica
 wheels plugins remove wheels-vue-cli
 ```
 
-### Remove global plugin
-```bash
-wheels plugins remove wheels-docker --global
-```
-
 ### Force removal (skip confirmation)
 ```bash
 wheels plugins remove wheels-testing --force
 ```
 
-### Remove global plugin without confirmation
-```bash
-wheels plugins remove wheels-cli-tools --global --force
-```
-
 ## Removal Process
 
-1. **Dependency Check**: Ensures no other plugins depend on this one
-2. **Backup Creation**: Saves plugin files to backup directory
-3. **Deactivation**: Disables plugin in application
-4. **File Removal**: Deletes plugin files and directories
-5. **Cleanup**: Removes configuration entries
-6. **Verification**: Confirms successful removal
+1. **Installation Check**: Verifies the plugin is installed in box.json or plugins folder
+2. **Confirmation**: Prompts user to confirm removal (unless --force is used)
+3. **Removal**: Removes plugin entry from box.json
+4. **File Cleanup**: Deletes plugin files via CommandBox package service
+5. **Verification**: Confirms successful removal
 
 ## Output
 
 ### With confirmation prompt (default)
 ```
 Are you sure you want to remove the plugin 'wheels-vue-cli'? (y/n): y
-🗑️  Removing plugin: wheels-vue-cli...
+Removing plugin: wheels-vue-cli...
+[SUCCESS]: Plugin removed successfully
 
-✅ Plugin removed successfully
+[INFO]: Run 'wheels plugins list' to see remaining plugins
 ```
 
 ### With force flag
 ```
-🗑️  Removing plugin: wheels-vue-cli...
+[*] Removing plugin: wheels-vue-cli...
+[SUCCESS]: Plugin removed successfully
 
-✅ Plugin removed successfully
+[INFO]: Run 'wheels plugins list' to see remaining plugins
+```
+
+### Plugin not installed
+```
+Are you sure you want to remove the plugin 'bcrypt'? (y/n): y
+[*] Removing plugin: bcrypt...
+
+[FAILED]: Failed to remove plugin: Plugin 'wheels-vue-cli' is not installed in plugins folder
 ```
 
 ### Cancellation
@@ -81,7 +101,7 @@ Plugin removal cancelled.
 ## Notes
 
 - The `--force` flag skips the confirmation prompt
-- Use `--global` to remove plugins installed globally
 - Use `wheels plugins list` to verify removal
-- Some plugins may require manual cleanup of configuration files
+- The command checks if plugin is actually installed before removal
+- Plugin must exist in box.json dependencies, devDependencies, or plugins folder
 - Restart your application after removing plugins that affect core functionality

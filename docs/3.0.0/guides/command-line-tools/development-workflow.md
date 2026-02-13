@@ -1,3 +1,9 @@
+---
+description: >-
+  Enhance your development workflow with Wheels CLI commands for framework
+  upgrades, performance testing, and documentation generation.
+---
+
 # Development Workflow Commands
 
 This guide covers the Wheels CLI commands designed to enhance your development workflow, including framework upgrades, performance testing, and documentation generation.
@@ -47,7 +53,7 @@ The command creates three essential files:
 When you run `wheels init`, it will ask for:
 
 - **Application Name**: Used for unique server naming (special characters are removed)
-- **Default CFML Engine**: Your preference (e.g., lucee@5, adobe@2023)
+- **Default CFML Engine**: Your preference (e.g., lucee5, adobe2023)
 
 ### Example
 
@@ -61,7 +67,7 @@ You don't have a box.json. Let's create one
 Application name: My Awesome App
 We'll use: myawesomeapp for the server name
 
-What's your preferred CFML Engine [lucee@5]: lucee@5
+What's your preferred CFML Engine [lucee5]: lucee5
 
 ✓ Created vendor/wheels/box.json
 ✓ Created server.json
@@ -140,7 +146,7 @@ By default, upgrades create a backup in `backups/upgrade-[timestamp]/` containin
 After a successful upgrade:
 
 1. Run your test suite: `wheels test run`
-2. Check the upgrade guide at https://wheels.dev/guides/introduction/upgrading
+2. Check the upgrade guide at <https://wheels.dev/3.0.0/guides/introduction/upgrading>
 3. Review deprecated features
 4. Update your plugins to compatible versions
 

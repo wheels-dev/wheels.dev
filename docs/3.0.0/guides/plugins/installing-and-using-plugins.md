@@ -12,13 +12,19 @@ By using plugins created by the community or yourself, you're able to add brand 
 
 ### Manually Installing and Uninstalling Plugins
 
-This couldn't be any simpler. To install a plugin, just download the plugin's `zip` file and drop it in the `app/plugins` folder.
+This couldn't be any simpler. To install a plugin, just download the plugin's `zip` file and drop it in the `/plugins` folder.
 
 If you want to remove it later simply delete the `zip` file. (Wheels will clean up any leftover folders and files.)
 
 Reloading Wheels is required when installing/uninstalling. (Issue a `reload=true` request.)
 
 ### Installing via Commandbox
+
+{% hint style="info" %}
+**Installing Wheels CLI**
+
+Before working with plugins through CommandBox, make sure you have the Wheels CLI installed by running `box install wheels-cli`.
+{% endhint %}
 
 With the Wheels CLI installed, you can just do:
 
@@ -41,11 +47,11 @@ $ install select-string
 ```
 {% endcode %}
 
-When run in the root of a Wheels application, it should automatically add the plugin to `/app/plugins` and generate a `.zip` file with the corresponding name and version number.
+When run in the root of a Wheels application, it should automatically add the plugin to `/plugins` and generate a `.zip` file with the corresponding name and version number.
 
 ### File Permissions on plugins Folder
 
-You may need to change access permissions on your application's `app/plugins` folder so that Wheels can write the subfolders and files that it needs to run. If you get an error when testing out a plugin, you may need to loosen up the permission level.
+You may need to change access permissions on your application's `/plugins` folder so that Wheels can write the subfolders and files that it needs to run. If you get an error when testing out a plugin, you may need to loosen up the permission level.
 
 ### Plugin Naming, Versioning, and Dependencies
 

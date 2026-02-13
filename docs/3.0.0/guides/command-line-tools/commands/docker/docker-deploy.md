@@ -1,234 +1,114 @@
 # wheels docker deploy
 
-Deploy your Wheels application using Docker containers.
+Unified Docker deployment command for Wheels apps. Deploys applications locally or to remote servers with support for Blue/Green deployment.
 
 ## Synopsis
 
 ```bash
-wheels docker deploy [target] [options]
+wheels docker deploy [options]
 ```
 
 ## Description
 
-The `wheels docker deploy` command deploys your containerized Wheels application to various Docker environments including Docker Swarm, Kubernetes, or cloud container services.
+The `wheels docker deploy` command manages the deployment lifecycle of your Dockerized application. It can start containers locally for development or testing, and perform robust deployments to remote servers, including zero-downtime Blue/Green deployments.
 
-## Arguments
-
-| Argument | Description | Default |
-|----------|-------------|---------|
-| `target` | Deployment target (local, swarm, kubernetes, ecs, gcp, azure) | `local` |
+**Centralized Configuration**:
+- **Source of Truth**: This command prioritizes settings from `config/deploy.yml` for server lists and target environments.
+- **Interactive Versioning**: When multiple images or tags are detected, the command provides an interactive picker to choose exactly which version to deploy.
 
 ## Options
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--tag` | Docker image tag | `latest` |
-| `--registry` | Docker registry URL | Docker Hub |
-| `--namespace` | Kubernetes namespace or project name | `default` |
-| `--replicas` | Number of replicas | `1` |
-| `--cpu` | CPU limit (e.g., "0.5", "2") | Platform default |
-| `--memory` | Memory limit (e.g., "512Mi", "2Gi") | Platform default |
-| `--env-file` | Environment file path | `.env` |
-| `--config-file` | Deployment configuration file | Auto-detect |
-| `--dry-run` | Preview deployment without applying | `false` |
-| `--force` | Force deployment even if up-to-date | `false` |
-| `--help` | Show help information |
+| `--local` | Deploy to local Docker environment | `false` |
+| `--remote` | Deploy to remote server(s) | `false` |
+| `--environment` | Deployment environment (production, staging) - for local deployment | `production` |
+| `--db` | Database to use (h2, mysql, postgres, mssql) - for local deployment | `mysql` |
+| `--cfengine` | ColdFusion engine to use (lucee, adobe) - for local deployment | `lucee` |
+| `--optimize` | Enable production optimizations - for local deployment | `true` |
+| `--servers` | Server configuration file (defaults to `config/deploy.yml`) | `""` |
+| `--skipDockerCheck` | Skip Docker installation check on remote servers | `false` |
+| `--blueGreen` | Enable Blue/Green deployment strategy (zero downtime) - for remote deployment | `false` |
 
-## Examples
+## Detailed Examples
 
-### Deploy locally
+### Local Deployment
+
+**Quick Start (Production Mode)**
+Starts the application locally, mimicking a production environment (optimized settings, no hot-reload).
 ```bash
-wheels docker deploy local
+wheels docker deploy --local
 ```
 
-### Deploy to Docker Swarm
+**Staging Environment**
+Deploys locally with staging environment variables.
 ```bash
-wheels docker deploy swarm --replicas=3
+wheels docker deploy --local --environment=staging
 ```
 
-### Deploy to Kubernetes
+**Custom Stack**
+Deploys locally using PostgreSQL and Adobe ColdFusion.
 ```bash
-wheels docker deploy kubernetes --namespace=production --tag=v1.2.3
+wheels docker deploy --local --db=postgres --cfengine=adobe
 ```
 
-### Deploy to AWS ECS
+### Remote Deployment
+
+**Standard Deployment**
+Deploys to all servers defined in your configuration (starting with `config/deploy.yml`). This stops the existing container, pulls/builds the new one, and starts it.
 ```bash
-wheels docker deploy ecs --registry=123456789.dkr.ecr.us-east-1.amazonaws.com
+wheels docker deploy --remote
 ```
 
-### Dry run deployment
+**Zero-Downtime Blue/Green Deployment**
+Uses a Blue/Green strategy to ensure no downtime. Requires Nginx (automatically handled).
 ```bash
-wheels docker deploy kubernetes --dry-run
+wheels docker deploy --remote --blueGreen
 ```
 
-### Deploy with resource limits
+**Deploy to Specific Servers**
+Uses an override server list file for deployment.
 ```bash
-wheels docker deploy swarm --cpu=2 --memory=4Gi --replicas=5
+wheels docker deploy --remote --servers=staging-servers.yml
 ```
 
-## What It Does
-
-1. **Build and Tag**:
-   - Builds Docker image if needed
-   - Tags with specified version
-   - Validates image integrity
-
-2. **Push to Registry**:
-   - Authenticates with registry
-   - Pushes image to registry
-   - Verifies push success
-
-3. **Deploy to Target**:
-   - Generates deployment manifests
-   - Applies configuration
-   - Monitors deployment status
-   - Performs health checks
-
-4. **Post-Deployment**:
-   - Runs database migrations
-   - Clears caches
-   - Sends notifications
-
-## Deployment Targets
-
-### Local
-- Uses docker-compose
-- Development/testing
-- No registry required
-
-### Docker Swarm
-- Creates/updates services
-- Load balancing
-- Rolling updates
-- Secrets management
-
-### Kubernetes
-- Creates deployments, services, ingress
-- ConfigMaps and Secrets
-- Horizontal pod autoscaling
-- Rolling updates
-
-### AWS ECS
-- Task definitions
-- Service updates
-- Load balancer configuration
-- Auto-scaling
-
-### Google Cloud Run
-- Serverless containers
-- Automatic scaling
-- HTTPS endpoints
-
-### Azure Container Instances
-- Container groups
-- Managed instances
-- Integration with Azure services
-
-## Configuration Files
-
-### Kubernetes Example (k8s.yml)
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: wheels-app
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: wheels
-  template:
-    metadata:
-      labels:
-        app: wheels
-    spec:
-      containers:
-      - name: app
-        image: myregistry/wheels-app:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: WHEELS_ENV
-          value: production
-```
-
-### Docker Swarm Example (swarm.yml)
-```yaml
-version: '3.8'
-services:
-  app:
-    image: myregistry/wheels-app:latest
-    deploy:
-      replicas: 3
-      update_config:
-        parallelism: 1
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-    ports:
-      - "80:8080"
-    secrets:
-      - db_password
-```
-
-## Environment Management
-
-Environment variables can be provided via:
-1. `--env-file` option
-2. Platform-specific secrets
-3. Configuration files
-4. Command line overrides
-
-## Health Checks
-
-The deployment includes health checks:
-- Readiness probes
-- Liveness probes
-- Startup probes
-- Custom health endpoints
-
-## Rollback
-
-To rollback a deployment:
+**Skip Docker Checks**
+Speeds up deployment if you know Docker is already installed and configured on the remote servers.
 ```bash
-wheels docker deploy [target] --rollback
+wheels docker deploy --remote --skipDockerCheck
 ```
 
-Or manually:
-```bash
-# Kubernetes
-kubectl rollout undo deployment/wheels-app
+## Deployment Strategies Explained
 
-# Docker Swarm
-docker service rollback wheels-app
-```
+### 1. Standard Remote Deployment
+This is the default strategy when `--remote` is used.
+1.  **Upload**: Tars and uploads your project source code to the remote server.
+2.  **Build/Compose**:
+    *   If `docker-compose.yml` exists: Runs `docker compose down` followed by `docker compose up -d --build`.
+    *   If `Dockerfile` exists: Builds the image, stops/removes the old container, and runs the new one.
+3.  **Downtime**: There is a short period (seconds to minutes) where the service is unavailable while the container restarts.
 
-## Use Cases
-
-1. **Staging Deployments**: Test production configurations
-2. **Production Releases**: Deploy new versions with zero downtime
-3. **Scaling**: Adjust replicas based on load
-4. **Multi-Region**: Deploy to multiple regions/zones
-5. **Blue-Green Deployments**: Switch between environments
-
-## Notes
-
-- Ensure Docker images are built before deployment
-- Registry authentication must be configured
-- Database migrations should be handled separately or via init containers
-- Monitor deployment logs for troubleshooting
-- Use `--dry-run` to preview changes before applying
+### 2. Blue/Green Deployment (`--blueGreen`)
+This strategy is designed for zero-downtime updates.
+1.  **State Detection**: The script checks which "color" (Blue or Green) is currently active.
+2.  **Parallel Deployment**: It spins up the *new* version (e.g., Green) alongside the *old* version (Blue).
+3.  **Health Check**: It waits for the new container to initialize.
+4.  **Traffic Switch**: It updates an Nginx proxy to point traffic to the new container.
+5.  **Cleanup**: The old container is stopped and removed.
+*   **Requirement**: This strategy automatically sets up an `nginx-proxy` container on the remote server if one doesn't exist.
 
 ## Troubleshooting
 
-Common issues:
-- **Image not found**: Ensure image is pushed to registry
-- **Auth failures**: Check registry credentials
-- **Resource limits**: Adjust CPU/memory settings
-- **Port conflicts**: Check service port mappings
+**"User requires passwordless sudo access"**
+If the remote user is not part of the `docker` group, the CLI tries to use `sudo`. If `sudo` requires a password, deployment will fail.
+*   **Fix**: SSH into the server and run `sudo usermod -aG docker $USER`, then log out and back in. Or configure passwordless sudo.
 
-## See Also
+**"SSH connection failed"**
+*   **Fix**: Ensure your SSH keys are correctly loaded (`ssh-add -l`) and you can manually SSH into the server (`ssh user@host`).
 
-- [wheels docker init](docker-init.md) - Initialize Docker configuration
-- [wheels deploy](../deploy/deploy.md) - General deployment commands
-- [wheels deploy push](../deploy/deploy-push.md) - Push deployments
+**"Deployment script failed"**
+*   **Fix**: Run with verbose output or check the logs on the remote server. Ensure the remote server has enough disk space.
+
+## Server Configuration
+
+See [wheels docker build](docker-build.md#server-configuration) for details on `deploy-servers.txt` and `deploy-servers.json`.

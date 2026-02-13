@@ -14,7 +14,7 @@ Getting this to work in Wheels can be broken down in 3 steps. We'll walk you thr
 
 We recommend using Wheels ability to set global defaults for [sendEmail()](https://wheels.dev/api/v3.0.0/controller.sendemail.html) so that you don't have to specify more arguments than necessary in your controller files. Because it's likely that you will use the same mail server across your application, this makes it worthwhile to set a global default for it.
 
-This setting should be done in the `app/config/settings.cfm` file and can look something like this:
+This setting should be done in the `/config/settings.cfm` file and can look something like this:
 
 {% code title="Example" %}
 ```javascript
@@ -31,9 +31,9 @@ By specifying these values here, these arguments can be omitted from all [sendEm
 
 But you are not limited to setting only these 3 variables. In fact, you can set a global default for any optional argument to  [sendEmail()](https://wheels.dev/api/v3.0.0/controller.sendemail.html) and since it accepts the same arguments that `cfmail` does. That's quite a few.
 
-Alternatively, most modern CFML engines allow setting SMTP information directly within the application configuration. So you can actually add this in `/app/config/app.cfm`: here's an example configuration:
+Alternatively, most modern CFML engines allow setting SMTP information directly within the application configuration. So you can actually add this in `/config/app.cfm`: here's an example configuration:
 
-{% code title="app/config/app.cfm" %}
+{% code title="/config/app.cfm" %}
 ```javascript
 // Lucee:
 this.tag.mail.server="smtp.mydomain.com";
@@ -55,14 +55,16 @@ this.smtpServersettings = {
 
 An email template is required for [sendEmail()](https://wheels.dev/api/v3.0.0/controller.sendemail.html) to work and forms the basis for the mail message content. Think of an email template as the content of your email.
 
+**Note:** The `template`, `from`, `to`, and `subject` parameters are all required when calling `sendEmail()`. You cannot send an email without specifying these values.
+
 Templates may be stored anywhere within the `/app/views/` folder, but we recommend a structured, logical approach. If different controllers utilize [sendEmail()](https://wheels.dev/api/v3.0.0/controller.sendemail.html)\
-and each require a unique template, place each email template within the `app/views/controllername` folder structure.
+and each require a unique template, place each email template within the `/app/views/controllername` folder structure.
 
 Consider this example scenario:
 
-| Controller:  | Email Template:                             |
-| ------------ | ------------------------------------------- |
-| `Membership` | `/app/views/membership/myemailtemplate.cfm` |
+| Controller:  | Email Template:                                                |
+| ------------ | -------------------------------------------------------------- |
+| `Membership` | `app/views/membership/myemailtemplate.cfm` |
 
 Multiple templates may be stored within this directory should there be a need.
 
@@ -88,7 +90,7 @@ Here's an example for `myemailtemplate.cfm`, which will contain HTML content.
 
 ### Sending the Email
 
-As we've said before, [sendEmail()](https://wheels.dev/api/v3.0.0/controller.sendemail.html) accepts all attribute of CFML's `cfmail` tag as arguments. But it also accepts any variables that you need to pass to the email template itself.
+The [sendEmail()](https://wheels.dev/api/v3.0.0/controller.sendemail.html) function requires 4 parameters: `template`, `from`, `to`, and `subject`. Additionally, it accepts all attributes of CFML's `cfmail` tag as arguments, plus any variables that you need to pass to the email template itself.
 
 Consider the following example:
 
@@ -161,13 +163,12 @@ sendEmail(
 
 ### Using Email Layouts
 
-Much like the layouts outlined in the [Layouts](/3.0.0/guides/displaying-views-to-users/layouts) chapter, you can also create layouts for your emails.
+Much like the layouts outlined in the [Layouts](https://wheels.dev/3.0.0/guides/displaying-views-to-users/layouts) chapter, you can also create layouts for your emails.
 
 A layout should be used just as the name implies: for layout and stylistic aspects of the email body. Based on the example given above, let's assume that the same email content needs to be sent twice.
 
 * Message is sent to a new member with a stylized header and footer.
-* A copy of message is sent to an admin at your company with a generic header\
-  and footer.
+* A copy of message is sent to an admin at your company with a generic header and footer.
 
 Best practice is that variables (such as `recipientName` and `startDate`, in the example above) be placed as outputs in the template file.
 

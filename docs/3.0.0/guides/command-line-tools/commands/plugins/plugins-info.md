@@ -1,145 +1,166 @@
-# wheels plugin info
+# plugins info
 
-Show detailed information about a Wheels plugin.
+Shows detailed information about a Wheels plugin, including version, description, author, and links.
 
-## Synopsis
+## Usage
 
 ```bash
-wheels plugin info <name>
+wheels plugins info <name>
 ```
+
+## Parameters
+
+| Parameter | Required | Type   | Description                           |
+|-----------|----------|--------|---------------------------------------|
+| `name`    | Yes      | string | Name or slug of the plugin to inspect |
 
 ## Description
 
-The `wheels plugin info` command displays comprehensive information about a specific Wheels plugin. It shows both ForgeBox metadata and local installation status, helping you make informed decisions about plugin usage.
+The `plugins info` command displays comprehensive information about a Wheels plugin. It prioritizes local installation data when available, only querying ForgeBox when the plugin is not installed locally.
 
-## Arguments
+### Information Displayed
 
-### name (required)
-The name of the plugin to show information for.
+When the plugin is **installed locally**, the command shows:
+- Installation status
+- Plugin name and version
+- Slug
+- Type (mvc, plugin, etc.)
+- Author information
+- Description
+- Homepage URL
+- Repository URL
+- Documentation URL
+- Issues/Bugs URL
+- Keywords
+
+When the plugin is **not installed**, the command shows:
+- Installation status
+- ForgeBox package information
+- Available versions
+- Installation instructions
 
 ## Examples
 
-### Show plugin information
+### Check installed plugin
 ```bash
-wheels plugin info wheels-auth
+wheels plugins info wheels-core
 ```
 
-### Check a specific plugin
+**Output:**
+```
+===========================================================
+  Plugin Information: wheels-core
+===========================================================
+
+
+Status
+--------------------------------------------------
+  [OK] Installed locally
+
+Wheels Core
+Wheels Framework Core Directory
+
+Details:
+  Version:     3.0.0-SNAPSHOT+1030
+  Slug:        wheels-core
+  Type:        mvc
+  Author:      Wheels Core Team and Community
+  Keywords:    mvc, rails, wheels, wheels.dev, core
+
+Links:
+  Homepage:    https://wheels.dev/
+  Repository:  https://github.com/wheels-dev/wheels
+  Docs:        https://wheels.dev/docs
+  Issues:      https://github.com/wheels-dev/wheels/issues
+
+Commands
+--------------------------------------------------
+  - Update:  wheels plugin update wheels-core
+  - Search:  wheels plugin search
+```
+
+### Check plugin not installed
 ```bash
-wheels plugin info wheels-api-builder
+wheels plugins info wheels-vue-cli
 ```
 
-## Output Example
-
+**Output:**
 ```
-📦 Plugin Information: wheels-auth
+==================================================
+        Plugin Information: wheels-vue-cli
+==================================================
 
-✅ Status: Installed locally
-📌 Version: 2.0.0
 
-ForgeBox Information:
-📝 Name: Wheels Authentication Plugin
-🔗 Slug: wheels-auth
-🏷️  Latest Version: 2.1.0
-📁 Type: cfwheels-plugins
-📄 Description: Complete authentication and authorization system for Wheels applications
-👤 Author: John Doe
-📊 Downloads: 15,432
-📅 Created: 2022-03-15
-🔄 Updated: 2024-01-15
-🌐 Homepage: https://github.com/johndoe/wheels-auth
-💻 Repository: https://github.com/johndoe/wheels-auth.git
-🐛 Issues: https://github.com/johndoe/wheels-auth/issues
-⚖️  License: MIT
 
-Dependencies:
-  • wheels-validation: >=1.0.0
-  • bcrypt: >=1.0.0
+Status
+--------------------------------------------------
+[WARNING]: Not installed
 
-Available Versions:
-  • 2.1.0 (2024-01-15)
-  • 2.0.0 (2023-11-20)
-  • 1.9.5 (2023-09-10)
-  • 1.9.0 (2023-07-05)
-  • 1.8.0 (2023-05-01)
-  ... and 12 more
+[FAILED]: Plugin Not Found
 
-Installation:
-To update this plugin:
-  wheels plugin update wheels-auth
+The plugin 'wheels-vue-cli' was not found in:
+  - Local installation (box.json dependencies)
+  - ForgeBox repository
 
-To see all available plugins:
-  wheels plugin search
+[INFO]: Possible reasons
+  - Plugin name may be misspelled
+  - Plugin may not exist on ForgeBox
+  - Network connection issues
+
+[INFO]: Suggestions
+  - Search for available plugins: wheels plugin list --available
+  - Verify the correct plugin name
 ```
 
-## Information Sections
-
-### Status Information
-- **Installation Status**: Whether plugin is installed locally or globally
-- **Installed Version**: Current version if installed
-- **Update Available**: Shows if newer version exists
-
-### ForgeBox Metadata
-- **Name & Description**: Official plugin name and purpose
-- **Version Info**: Latest version and version history
-- **Author Details**: Plugin creator information
-- **Statistics**: Download count and activity metrics
-- **Links**: Homepage, repository, and issue tracker
-- **License**: Distribution license
-
-### Dependencies
-Lists required dependencies with version constraints.
-
-### Version History
-Shows recent versions with release dates (limited to 5 most recent).
-
-## Installation Commands
-
-Based on status, suggests appropriate commands:
-- **Not Installed**: `wheels plugin install <name>`
-- **Installed**: `wheels plugin update <name>`
-- **Outdated**: Shows update command with version
-
-## Use Cases
-
-### Pre-Installation Check
+### Plugin not found anywhere
 ```bash
-# Check plugin before installing
-wheels plugin info wheels-cache-manager
+wheels plugins info nonexistent-plugin
 ```
 
-### Version Verification
-```bash
-# Check if update available
-wheels plugin info wheels-api-builder
+**Output:**
+```
+==================================================
+      Plugin Information: nonexistent-plugin
+==================================================
+
+
+
+Status
+--------------------------------------------------
+[WARNING]: Not installed
+
+[FAILED]: Plugin Not Found
+
+The plugin 'nonexistent-plugin' was not found in:
+  - Local installation (box.json dependencies)
+  - ForgeBox repository
+
+[INFO]: Possible reasons
+  - Plugin name may be misspelled
+  - Plugin may not exist on ForgeBox
+  - Network connection issues
+
+[INFO]: Suggestions
+  - Search for available plugins: wheels plugin list --available
+  - Verify the correct plugin name
 ```
 
-### Dependency Review
-```bash
-# Review dependencies before installation
-wheels plugin info wheels-payment-gateway
-```
+## How It Works
+
+1. **Check Local Installation**: First checks if the plugin is installed in:
+   - `box.json` dependencies
+   - `box.json` devDependencies
+   - Reads plugin's local `box.json` for detailed information
+
+2. **Display Local Information**: If installed, shows all metadata from the plugin's `box.json`
+
+3. **ForgeBox Fallback**: Only queries ForgeBox if the plugin is not installed locally
+
+4. **Installation Commands**: Shows appropriate commands based on installation status
 
 ## Notes
 
-- Requires internet connection for ForgeBox data
-- Shows local installation status first
-- Caches ForgeBox data for 5 minutes
-- Works with both installed and uninstalled plugins
-
-## Error Handling
-
-### Plugin Not Found
-```
-Error: Plugin 'wheels-unknown' not found on ForgeBox or installed locally
-```
-
-### Network Issues
-Shows local information if available, with warning about missing ForgeBox data.
-
-## See Also
-
-- [wheels plugin search](plugins-search.md) - Search for plugins
-- [wheels plugin install](plugins-install.md) - Install plugins
-- [wheels plugin update](plugins-update.md) - Update plugins
-- [wheels plugin list](plugins-list.md) - List installed plugins
+- The command prioritizes local plugin data over ForgeBox data for accuracy
+- No network call is made for installed plugins (faster response)
+- Use `wheels plugin search` to browse all available plugins
+- Plugin names can include variations (e.g., "wheels-core", "cfwheels-core")

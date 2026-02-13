@@ -26,54 +26,52 @@ wheels about
 
 Output:
 ```
-  _____ _______          ___               _     
- / ____|  ____\ \        / / |             | |    
-| |    | |__   \ \  /\  / /| |__   ___  ___| |___ 
-| |    |  __|   \ \/  \/ / | '_ \ / _ \/ _ \ / __|
-| |____| |       \  /\  /  | | | |  __/  __/ \__ \
- \_____|_|        \/  \/   |_| |_|\___|\___|_|___/
+ __          ___               _     
+ \ \        / / |             | |    
+  \ \  /\  / /| |__   ___  ___| |___ 
+   \ \/  \/ / | '_ \ / _ \/ _ \ / __|
+    \  /\  /  | | | |  __/  __/ \__ \
+     \/  \/   |_| |_|\___|\___|_|___/
 
 Wheels Framework
-  Version: 2.5.0
+  Version: 3.0.0
 
 Wheels CLI
-  Version: 1.0.0
-  Location: /commandbox/modules/cfwheels-cli/
+  Version: 3.0.0
+  Location: /commandbox/modules/wheels-cli/
 
 Application
   Path: /Users/developer/myapp
-  Name: MyWheelsApp
   Environment: development
   Database: Configured
 
 Server Environment
-  CFML Engine: Lucee 5.4.1.8
-  Java Version: 11.0.15
-  OS: macOS 13.0
+  CFML Engine: Lucee 7.0.1+100
+  Java Version: 17.0.17
+  OS: Mac OS X 15.7.3
   Architecture: x86_64
 
 CommandBox
-  Version: 5.9.0
-  Home: /Users/developer/.CommandBox
+  Version: 6.3.1+00853
 
 Application Statistics
-  Controllers: 12
-  Models: 8
-  Views: 45
-  Tests: 23
-  Migrations: 15
+  Controllers: 15
+  Models: 7
+  Views: 31
+  Tests: 3
+  Migrations: 9
 
 Resources
-  Documentation: https://guides.cfwheels.org
-  API Reference: https://api.cfwheels.org
-  GitHub: https://github.com/cfwheels/cfwheels
-  Community: https://community.cfwheels.org
+  Documentation: https://wheels.dev/guides
+  API Reference: https://wheels.dev/api/v3.0.0
+  GitHub: https://github.com/wheels-dev/wheels
+  Community: https://wheels.dev/community
 ```
 
 ## Information Sections
 
 ### Wheels Framework
-- **Version**: The version of CFWheels framework installed
+- **Version**: The version of Wheels framework installed
 - Shows the core framework version your app is using
 
 ### Wheels CLI

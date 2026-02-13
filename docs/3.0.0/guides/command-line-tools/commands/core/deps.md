@@ -16,7 +16,7 @@ The `wheels deps` command provides a streamlined interface for managing your Whe
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `action` | **Required** - Action to perform: `list`, `install`, `update`, `remove`, `report` | None |
+| `action` | **Required** - Action to perform: `list`, `install`, `update`, `remove`, `report` | Required |
 | `name` | Package name (required for install/update/remove actions) | None |
 | `version` | Specific version to install (optional, for install action only) | Latest version |
 
@@ -44,13 +44,12 @@ Output shows:
 Example output:
 ```
 Dependencies:
-  wheels-core @ ^3.0.0 (Production) - Installed
-  wirebox @ ^7 (Production) - Installed
-  testbox @ ^5 (Production) - Installed
+  wirebox @ ^7.0.0 (Production) - Installed
+  testbox @ ^6.0.0 (Production) - Installed
+  wheels-core @ ^3.0.0-SNAPSHOT.rc.1 (Production) - Installed
 
 Dev Dependencies:
-  commandbox-dotenv @ * (Development) - Not Installed
-  commandbox-cfformat @ * (Development) - Installed
+  shortcodes @ ^0.0.4 (Production) - Not Installed
 ```
 
 ### Install
@@ -70,9 +69,11 @@ wheels deps install cbvalidation
 # Install specific version
 wheels deps install cbvalidation 3.0.0
 
-# Install as development dependency
+# Install as development dependency (saves to devDependencies)
 wheels deps install testbox --dev
 ```
+
+**Important**: The `--dev` flag uses CommandBox's `--saveDev` flag internally, ensuring packages are correctly saved to the `devDependencies` section of box.json.
 
 ### Update
 Update an existing dependency to the latest version allowed by its version specification.
@@ -125,31 +126,48 @@ The report includes:
 
 Example output:
 ```
-Dependency Report:
+==================================================
+            Wheels Dependency Manager
+==================================================
 
-Generated: 2025-06-04 10:05:35
-Project: my-wheels-app
-Project Version: 1.0.0
-Wheels Version: 3.0.0
+Generating dependency report...
+==================================================
+                Dependency Report
+==================================================
+
+Generated: 2025-09-19 11:38:44
+Wheels Version: 3.0.0-SNAPSHOT
 CFML Engine: Lucee 5.4.6.9
 
 Dependencies:
-  wheels-core @ ^3.0.0 - Installed: Yes
-  wirebox @ ^7 - Installed: Yes
+--------------------------------------------------
+  cbvalidation @ ^4.6.0+28 - Installed: No
+  shortcodes @ ^0.0.4 - Installed: No
+  wirebox @ ^7.4.2+24 - Installed: No
 
 Dev Dependencies:
-  testbox @ ^5 - Installed: Yes
+--------------------------------------------------
+  testbox @ ^6.4.0+17 - Installed: Yes
 
 Checking for outdated packages...
-All packages are up to date!
+┌────────────────┬───────────┬──────────┬──────────┬─────────────────────┐
+│ Package        │ Installed │ Update   │ Latest   │ Location            │
+├────────────────┼───────────┼──────────┼──────────┼─────────────────────┤
+│ testbox@^6.4.. │ 6.4.0+17  │ 6.4.0+17 │ 6.4.0+17 │ /testbox            │
+└────────────────┴───────────┴──────────┴──────────┴─────────────────────┘
 
-Full report exported to: dependency-report-20250604-100535.json
+Checking for outdated packages...
+
+Checking for outdated dependencies, please wait...
+There are no outdated dependencies!
+
+[SUCCESS]: Full report exported to: dependency-report-20250919-113851.json
 ```
 
 ## Integration with CommandBox
 
 The `wheels deps` commands delegate to CommandBox's package management system:
-- `install` uses `box install`
+- `install` uses `box install` with `--saveDev` flag for dev dependencies
 - `update` uses `box update`
 - `remove` uses `box uninstall`
 - `report` uses `box outdated`
@@ -174,7 +192,7 @@ The command manages two dependency sections in box.json:
 ```json
 {
   "devDependencies": {
-    "testbox": "^5",
+    "testbox": "^6",
     "commandbox-cfformat": "*"
   }
 }
@@ -182,10 +200,28 @@ The command manages two dependency sections in box.json:
 
 ## Installation Status
 
-The command checks for installed packages in the `/modules` directory. It handles various package naming conventions:
+The command checks for installed packages using the `installPaths` defined in box.json to determine actual installation locations. This ensures accurate detection regardless of where packages are installed:
+
+### Detection Method:
+1. **Primary**: Checks the exact path specified in `box.json` → `installPaths`
+2. **Fallback**: Checks standard locations like `/modules` directory
+
+### Supported Package Formats:
 - Simple names: `wirebox`
 - Namespaced: `forgebox:wirebox`
 - Versioned: `wirebox@7.0.0`
+
+### Example Install Paths:
+```json
+"installPaths": {
+    "testbox": "testbox/",
+    "wirebox": "wirebox/",
+    "cbvalidation": "modules/cbvalidation/",
+    "shortcodes": "plugins/Shortcodes/"
+}
+```
+
+The installation status reflects the physical presence of packages on the filesystem, not just their listing in box.json dependencies.
 
 ## Error Handling
 
