@@ -24,7 +24,7 @@
 		class: "org.postgresql.Driver",
 		bundleName: "org.postgresql.jdbc",
 		bundleVersion: "42.7.7",
-		connectionString: "jdbc:postgresql://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#/#this.env.wheelsdev_databasename#?sslmode=disable",
+		connectionString: "jdbc:postgresql://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#/#this.env.wheelsdev_databasename#?sslmode=require",
 		username: "#this.env.wheelsdev_username#",
 		password: "#this.env.wheelsdev_password#",
 		clob: #not(!this.env.wheelsdev_clob)#,
