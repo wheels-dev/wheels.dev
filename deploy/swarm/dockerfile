@@ -1,14 +1,5 @@
 FROM ortussolutions/commandbox:lucee6
 
-# Java security config for SQL Server SHA1 cert compatibility
-COPY deploy/swarm/custom.java.security /tmp/custom.java.security
-RUN JAVA_SECURITY=$(find / -name "java.security" -path "*/conf/security/*" 2>/dev/null | head -1) && \
-    if [ -n "$JAVA_SECURITY" ]; then \
-        echo "" >> "$JAVA_SECURITY" && \
-        echo "# Custom overrides for SQL Server SHA1 cert compatibility" >> "$JAVA_SECURITY" && \
-        cat /tmp/custom.java.security >> "$JAVA_SECURITY"; \
-    fi && rm -f /tmp/custom.java.security
-
 # Copy full application (ForgeBox dependencies resolved in CI via box install)
 COPY . /app/
 

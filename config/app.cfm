@@ -21,17 +21,15 @@
   	// Set up all datasources.
   	// wheels-dev
 	this.datasources["wheels.dev"] = {
-		class: "com.microsoft.sqlserver.jdbc.SQLServerDriver",
-		bundleName: "org.lucee.mssql",
-		bundleVersion: "#this.env.wheelsdev_bundleversion#",
-		connectionString: "jdbc:sqlserver://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#;DATABASENAME=#this.env.wheelsdev_databasename#;encrypt=false;trustServerCertificate=true;SelectMethod=direct",
+		class: "org.postgresql.Driver",
+		bundleName: "org.lucee.postgresql",
+		bundleVersion: "42.7.4",
+		connectionString: "jdbc:postgresql://#this.env.wheelsdev_host#:#this.env.wheelsdev_port#/#this.env.wheelsdev_databasename#?sslmode=disable",
 		username: "#this.env.wheelsdev_username#",
-		password: "encrypted:#this.env.wheelsdev_password#",
-
-		// optional settings
-		clob:#not(!this.env.wheelsdev_clob)#, // default: false
-		connectionLimit:#toNumeric(this.env.wheelsdev_connectionlimit)#, // default:-1
-		storage:#not(!this.env.wheelsdev_storage)# // default: false
+		password: "#this.env.wheelsdev_password#",
+		clob: #not(!this.env.wheelsdev_clob)#,
+		connectionLimit: #toNumeric(this.env.wheelsdev_connectionlimit)#,
+		storage: #not(!this.env.wheelsdev_storage)#
 	};
 	this.cache.connections["contributors"] = {
 		class: 'lucee.runtime.cache.ram.RamCache'

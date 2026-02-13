@@ -163,6 +163,7 @@ postgresql://username:password@10.100.10.230:26257/database?sslmode=disable
 |----------|------|----------|
 | titan_sessiondb | titan_sessions | (see vault) |
 | paiman_db | paiman_user | (see vault) |
+| wheels_db | wheels_user | (see vault) |
 
 To request a new database/user, ask the cluster admin.
 

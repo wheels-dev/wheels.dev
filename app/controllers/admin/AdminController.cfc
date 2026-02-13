@@ -586,24 +586,22 @@ component extends="app.Controllers.Controller" {
         order="createdat DESC");
 
         last_7Days_Users = queryExecute("
-            WITH DateSeries AS (
-                SELECT FORMAT(DATEADD(DAY, number, :startDate), 'yyyy-MM-dd') AS day
-                FROM master.dbo.spt_values 
-                WHERE type = 'P' AND number BETWEEN 0 AND 6
-            )
-            SELECT 
-                ds.day, 
-                COUNT(u.createdat) AS usercount
-            FROM DateSeries ds
-            LEFT JOIN users u 
-                ON FORMAT(u.createdat, 'yyyy-MM-dd') = ds.day 
+            SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,
+                   COUNT(u.createdat) AS usercount
+            FROM generate_series(
+                :startDate::date,
+                :startDate::date + INTERVAL '6 days',
+                INTERVAL '1 day'
+            ) AS d
+            LEFT JOIN users u
+                ON TO_CHAR(u.createdat, 'YYYY-MM-DD') = TO_CHAR(d::date, 'YYYY-MM-DD')
                 AND u.deletedat IS NULL
-            GROUP BY ds.day
-            ORDER BY ds.day ASC
-        ", 
+            GROUP BY d::date
+            ORDER BY d::date ASC
+        ",
         {
             startDate: dateFormat(now() - 6, "yyyy-MM-dd")
-        }, 
+        },
         {datasource="wheels.dev"}
         );
 
@@ -627,25 +625,23 @@ component extends="app.Controllers.Controller" {
 
 
         last_7Days_Blogs = queryExecute("
-            WITH DateSeries AS (
-                SELECT FORMAT(DATEADD(DAY, number, :startDate), 'yyyy-MM-dd') AS day
-                FROM master.dbo.spt_values 
-                WHERE type = 'P' AND number BETWEEN 0 AND 6
-            )
-            SELECT 
-                ds.day, 
-                COUNT(b.createdat) AS blogcount
-            FROM DateSeries ds
-            LEFT JOIN blog_posts b 
-                ON FORMAT(b.createdat, 'yyyy-MM-dd') = ds.day 
+            SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,
+                   COUNT(b.createdat) AS blogcount
+            FROM generate_series(
+                :startDate::date,
+                :startDate::date + INTERVAL '6 days',
+                INTERVAL '1 day'
+            ) AS d
+            LEFT JOIN blog_posts b
+                ON TO_CHAR(b.createdat, 'YYYY-MM-DD') = TO_CHAR(d::date, 'YYYY-MM-DD')
                 AND b.deletedat IS NULL
-            GROUP BY ds.day
-            ORDER BY ds.day ASC
-        ", 
+            GROUP BY d::date
+            ORDER BY d::date ASC
+        ",
         {
             startDate: dateFormat(now() - 6, "yyyy-MM-dd")
-        }, 
-        {datasource="wheels.dev"} // Replace with your actual datasource name
+        },
+        {datasource="wheels.dev"}
         );
 
         // Prepare data for chart
@@ -663,26 +659,24 @@ component extends="app.Controllers.Controller" {
         totalUnPublishComments = model("comment").count(where="isPublished ='false'");
 
         last_7Days_Comments = queryExecute("
-            WITH DateSeries AS (
-                SELECT FORMAT(DATEADD(DAY, number, :startDate), 'yyyy-MM-dd') AS day
-                FROM master.dbo.spt_values 
-                WHERE type = 'P' AND number BETWEEN 0 AND 6
-            )
-            SELECT 
-                ds.day, 
-                COUNT(c.published_at) AS commentcount
-            FROM DateSeries ds
-            LEFT JOIN comments c 
-                ON FORMAT(c.published_at, 'yyyy-MM-dd') = ds.day 
+            SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,
+                   COUNT(c.published_at) AS commentcount
+            FROM generate_series(
+                :startDate::date,
+                :startDate::date + INTERVAL '6 days',
+                INTERVAL '1 day'
+            ) AS d
+            LEFT JOIN comments c
+                ON TO_CHAR(c.published_at, 'YYYY-MM-DD') = TO_CHAR(d::date, 'YYYY-MM-DD')
                 AND c.deletedat IS NULL
-                AND c.is_published = 1
-            GROUP BY ds.day
-            ORDER BY ds.day ASC
-        ", 
+                AND c.is_published = true
+            GROUP BY d::date
+            ORDER BY d::date ASC
+        ",
         {
             startDate: dateFormat(now() - 6, "yyyy-MM-dd")
-        }, 
-        {datasource="wheels.dev"} // Replace this with your actual datasource or remove if using app.cfm connection string
+        },
+        {datasource="wheels.dev"}
         );
 
         // Prepare data for chart
