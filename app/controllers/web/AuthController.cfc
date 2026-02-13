@@ -619,10 +619,10 @@ component extends="app.Controllers.Controller" {
         return user;
     }
     
-    private function saveUser(required struct userData) {        
-        var message = "";
+
+    private string function saveUser(required struct userData) {        
         try {
-            // check required fields
+            // Validate required fields
             if (!structKeyExists(userData, "firstname") || !len(trim(userData.firstname))) {
                 return "First name is required.";
             }
@@ -638,41 +638,96 @@ component extends="app.Controllers.Controller" {
             if (!structKeyExists(userData, "passwordHash") || !len(trim(userData.passwordHash))) {
                 return "Password is required.";
             }
-            // Check if a user with the same email already exists
-            var existingUser = model("User").findFirst( where="email = '#userData.email#'");
-            if (!isObject(existingUser)) {
-                // Create a new user
-                var newUser = model("User").new();
-                newUser.firstname = userData.firstname;
-                newUser.lastname = userData.lastname;
-                newUser.email = userData.email;
-                newUser.passwordhash = bCryptHashPW(userData.passwordHash, bCryptGenSalt());
-                newUser.roleid = GetUserRoleId(); // user role
-                newUser.status = SetInactive(); // set inactive
-                if(structKeyExists(userData, "newsletter")){
-                    newUser.newsletter = true;
-                }
-                if(newUser.save()){
-                    // Generate a unique verification token
-                    var verificationToken = Hash(createUUID());
-                    // Save token to the user_tokens table
-                    var newToken = model("UserToken").new();
-                    newToken.token = verificationToken;
-                    newToken.user_id = newUser.id;
-                    newToken.status = false; // Not verified
-                    newToken.save();
-                    // Send verification email
-                    if(sendVerificationEmail(newUser.email, verificationToken)){
-                        message = "Registration successful. Please check your email to verify your account.";
-                    }else{
-                        message = "Unable to send verification email. Please try again or contact support.";
-                    }
-                }else{
-                    message = "Unable to create user account. Please try again or contact support.";
-                }
-            } else {
-                message = "An account with this email address already exists.";
+            if (len(userData.passwordHash) < 8) {
+                return "Password must be at least 8 characters long.";
             }
+            
+            // Check for duplicate email - CORRECTED: Use Dynamic Finder
+            var existingUser = model("User").findOneByEmail(userData.email);
+            if (isObject(existingUser)) {
+                return message = "An account with this email address already exists.";
+            }
+            
+             // Create a new user
+            var newUser = model("User").new();
+            newUser.firstname = userData.firstname;
+            newUser.lastname = userData.lastname;
+            newUser.email = userData.email;
+            newUser.passwordhash = bCryptHashPW(userData.passwordHash, bCryptGenSalt());
+            newUser.roleid = toString(GetUserRoleId()); // Convert to string
+            newUser.status = SetInactive();
+            
+            if (structKeyExists(userData, "newsletter")) {
+                newUser.newsletter = true;
+            }
+            
+            if (!newUser.save()) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "ERROR",
+                    message = "Failed to save new user",
+                    details = {
+                        "email": userData.email,
+                        "errors": newUser.allErrors()
+                    }
+                );
+                return "Unable to create user account. Please try again or contact support.";
+            }
+            
+            // After save, ID should now be populated as a string
+            var userId = newUser.id; // Already a string due to model config
+            
+            // Validate we got a proper ID
+            if (!len(userId)) {
+                // Fallback: re-fetch from database
+                var savedUser = model("User").findOneByEmail(userData.email);
+                if (isObject(savedUser)) {
+                    userId = savedUser.id;
+                } else {
+                    model("Log").log(
+                        category = "wheels.auth",
+                        level = "ERROR",
+                        message = "User saved but ID is empty and cannot re-fetch",
+                        details = {"email": userData.email}
+                    );
+                    return "Registration error. Please contact support.";
+                }
+            }
+            
+            // Generate and save verification token
+            var verificationToken = Hash(createUUID());
+            
+            var newToken = model("UserToken").new();
+            newToken.token = verificationToken;
+            newToken.user_id = userId; // Now a string, safe
+            newToken.status = false;
+            
+            if (!newToken.save()) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "ERROR",
+                    message = "Failed to save verification token",
+                    details = {
+                        "user_id": userId,
+                        "errors": newToken.allErrors()
+                    }
+                );
+                return "Registration error. Please contact support.";
+            }
+            
+            // Send verification email
+            if (!sendVerificationEmail(userData.email, verificationToken)) {
+                model("Log").log(
+                    category = "wheels.auth",
+                    level = "WARN",
+                    message = "User created but verification email failed",
+                    details = {"user_id": userId, "email": userData.email}
+                );
+                return "Registration completed but we couldn't send the verification email. Please contact support to resend the verification link.";
+            }
+            
+            return "Registration successful. Please check your email to verify your account.";
+            
         } catch (any e) {
             // Log internal error, but return generic message
             model("Log").log(
@@ -681,12 +736,12 @@ component extends="app.Controllers.Controller" {
                 message = "Exception in saveUser",
                 details = {
                     "error_message": e.message,
-                    "error_detail": e.detail
+                    "error_detail": e.detail,
+                    "email": structKeyExists(userData, "email") ? userData.email : ""
                 }
             );
-            message = "An error occurred while creating your account. Please try again later.";
+            return "An error occurred while creating your account. Please try again later.";
         }
-        return message;
     }
 
     private function sendVerificationEmail(required string email, required string token) {

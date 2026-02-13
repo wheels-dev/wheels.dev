@@ -2,11 +2,12 @@ component extends="app.Models.Model" {
     function config() {
         table("users");
 
+        // Tell Wheels to treat the ID as a string, not an integer -- CockroachDB is storing INT8 (BIGINT), which is a 64-bit integer that ColdFusion cannot safely represent as a number.
         // ID Property
         property(
             name="id", 
             column="id", 
-            dataType="integer", 
+            dataType="string", 
             automaticValidations=false
         );
 
@@ -152,8 +153,8 @@ component extends="app.Models.Model" {
             label="WordPress ID"
         );
         
-        property(name="website", column="website", dataType="string", default="");
-        property(name="ip", column="ip", dataType="string", default="");
+        property(name="website", column="website", dataType="string", defaultValue = "");
+        property(name="ip", column="ip", dataType="string", defaultValue = "");
         
         // Relationships
         belongsTo(name="Role", foreignKey="roleId");
