@@ -215,14 +215,14 @@ component extends="app.Controllers.Controller" {
      * Count active users
      */
     private function countActive() {
-        return model("User").count(where="status = true");
+        return model("User").count(where="status = 'true'");
     }
 
     /**
      * Count pending users
      */
     private function countPending() {
-        return model("User").count(where="status = false");
+        return model("User").count(where="status = 'false'");
     }
 
     /**
