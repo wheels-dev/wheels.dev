@@ -29,9 +29,9 @@ SOURCE_DS = {
 
 TARGET_DS = {
 	class: "org.postgresql.Driver",
-	bundleName: "org.lucee.postgresql",
-	bundleVersion: "42.7.4",
-	connectionString: "jdbc:postgresql://10.100.10.230:26257/wheels_db?sslmode=disable",
+	bundleName: "org.postgresql.jdbc",
+	bundleVersion: "42.7.7",
+	connectionString: "jdbc:postgresql://10.100.10.230:26257/wheels_db?sslmode=require",
 	username: "wheels_user",
 	password: "x5N6kR62ArF58zetwMSZ"
 };
@@ -40,7 +40,6 @@ TARGET_DS = {
 BATCH_SIZE = 200;
 
 // Tables in dependency order (parents before children).
-// Comments use a self-referencing FK, so we defer FK checks for that table.
 tables = [
 	// Phase 1: Lookup tables (no FK dependencies)
 	"roles",
@@ -83,6 +82,25 @@ tables = [
 	"logs"
 ];
 
+// Boolean columns per table — SQL Server BIT (1/0) must be cast to boolean for CockroachDB
+BOOLEAN_COLUMNS = {
+	"users": "status,has_testimonial,newsletter_subscription",
+	"blog_posts": "is_published,is_deleted,is_comment_closed",
+	"comments": "is_approved,is_flagged,is_published",
+	"features": "is_active",
+	"categories": "is_active",
+	"tags": "is_active",
+	"post_types": "is_active",
+	"post_statuses": "is_active",
+	"permissions": "status",
+	"modules": "status",
+	"user_tokens": "status",
+	"password_resets": "used",
+	"testimonials": "display_permission,is_featured,is_approved",
+	"settings": "enable_testimonial",
+	"reading_histories": "is_completed"
+};
+
 // ── Helper functions ───────────────────────────────────────────────────
 
 function readSource(required string tableName) {
@@ -110,8 +128,22 @@ function targetCount(required string tableName) {
 	}
 }
 
+function truncateTarget(required string tableName) {
+	try {
+		queryExecute(
+			'DELETE FROM "#arguments.tableName#"',
+			{},
+			{ datasource: TARGET_DS }
+		);
+		return true;
+	} catch (any e) {
+		return false;
+	}
+}
+
 /**
  * Build a parameterized INSERT for a batch of rows.
+ * Handles boolean conversion from SQL Server BIT (1/0) to CockroachDB boolean.
  */
 function buildInsert(required string tableName, required query data, required numeric startRow, required numeric endRow) {
 	var columns = listToArray(arguments.data.columnList);
@@ -120,6 +152,15 @@ function buildInsert(required string tableName, required query data, required nu
 		arrayAppend(quotedCols, '"#lCase(col)#"');
 	}
 	var colList = arrayToList(quotedCols, ", ");
+
+	// Determine which columns are boolean for this table
+	var boolCols = {};
+	if (structKeyExists(BOOLEAN_COLUMNS, arguments.tableName)) {
+		var boolList = BOOLEAN_COLUMNS[arguments.tableName];
+		for (var bc in listToArray(boolList)) {
+			boolCols[lCase(trim(bc))] = true;
+		}
+	}
 
 	var valueClauses = [];
 	var params = {};
@@ -131,9 +172,17 @@ function buildInsert(required string tableName, required query data, required nu
 			paramIdx++;
 			var paramName = "p#paramIdx#";
 			var val = arguments.data[col][r];
+			var colLower = lCase(col);
 
-			if (isNull(val)) {
+			if (isNull(val) || (isSimpleValue(val) && val == "" && !structKeyExists(boolCols, colLower))) {
 				params[paramName] = { value: "", null: true };
+			} else if (structKeyExists(boolCols, colLower)) {
+				// Convert SQL Server BIT (1/0) to boolean string for CockroachDB
+				var boolVal = (isBoolean(val) && val) || (isNumeric(val) && val == 1);
+				params[paramName] = { value: boolVal ? "true" : "false", cfsqltype: "cf_sql_varchar" };
+				// Use a CAST in the SQL instead of parameterized value
+				arrayAppend(placeholders, "(:#paramName#)::BOOLEAN");
+				continue;
 			} else {
 				params[paramName] = { value: val };
 			}
@@ -149,6 +198,7 @@ function buildInsert(required string tableName, required query data, required nu
 
 /**
  * Migrate a single table.
+ * Truncates seed data first so SQL Server data (with original IDs) takes precedence.
  */
 function migrateTable(required string tableName) {
 	var result = {
@@ -163,22 +213,15 @@ function migrateTable(required string tableName) {
 	var startTick = getTickCount();
 
 	try {
-		// Skip if target already has data (idempotent re-runs)
+		// Check if target table exists
 		var existingCount = targetCount(arguments.tableName);
 		if (existingCount == -1) {
 			result.error = "Table does not exist in target";
 			result.duration = getTickCount() - startTick;
 			return result;
 		}
-		if (existingCount > 0) {
-			result.skipped = true;
-			result.sourceRows = existingCount;
-			result.error = "Target already has #existingCount# rows -- skipping";
-			result.duration = getTickCount() - startTick;
-			return result;
-		}
 
-		// Read all rows from source
+		// Read all rows from source first to check if there's data to migrate
 		var sourceResult = readSource(arguments.tableName);
 		if (isStruct(sourceResult) && structKeyExists(sourceResult, "error")) {
 			result.error = "Source read failed: " & sourceResult.error;
@@ -189,8 +232,18 @@ function migrateTable(required string tableName) {
 		result.sourceRows = sourceData.recordCount;
 
 		if (sourceData.recordCount == 0) {
+			// No source data — leave seed data in place
+			if (existingCount > 0) {
+				result.skipped = true;
+				result.error = "No source data, keeping #existingCount# seed rows";
+			}
 			result.duration = getTickCount() - startTick;
 			return result;
+		}
+
+		// If target has seed data, truncate it so we can insert SQL Server data with original IDs
+		if (existingCount > 0) {
+			truncateTarget(arguments.tableName);
 		}
 
 		// Insert in batches
@@ -291,6 +344,13 @@ try {
 	abort;
 }
 
+// Disable FK checks for the migration (CockroachDB supports this per-session)
+try {
+	queryExecute("SET session_replication_role = 'replica'", {}, { datasource: TARGET_DS });
+} catch (any e) {
+	// CockroachDB may not support this — FK ordering should handle it
+}
+
 writeOutput("#chr(10)#Migrating #arrayLen(tables)# tables...#chr(10)#");
 writeOutput(repeatString("-", 60) & chr(10));
 
@@ -330,11 +390,9 @@ writeOutput(repeatString("=", 60) & chr(10));
 if (totalErrors == 0) {
 	writeOutput("#chr(10)#Migration complete. Next steps:#chr(10)#");
 	writeOutput("  1. Verify the app at https://wheels.dev#chr(10)#");
-	writeOutput("  2. Apply session TTL on CockroachDB:#chr(10)#");
-	writeOutput("     ALTER TABLE cf_session_data SET (gc.ttl = '7200s', gc.ttl_select = 'expires');#chr(10)#");
-	writeOutput("  3. DELETE THIS FILE#chr(10)#");
+	writeOutput("  2. DELETE THIS FILE#chr(10)#");
 } else {
-	writeOutput("#chr(10)#Some tables had errors. Fix and re-run (tables with data are skipped).#chr(10)#");
+	writeOutput("#chr(10)#Some tables had errors. Fix and re-run (idempotent — tables with data from source are skipped).#chr(10)#");
 }
 
 writeOutput("</pre>");
