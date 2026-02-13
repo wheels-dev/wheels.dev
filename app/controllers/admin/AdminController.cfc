@@ -574,121 +574,144 @@ component extends="app.Controllers.Controller" {
      * Admin Dashboard
      */
     function dashboard(){
+        // Basic counts
         totalBlogs = model("blog").count();
         totalTestimonials = model("testimonial").count();
         totalNewUser = model("user").count(where="createdat >= '#dateFormat(now(), "yyyy-mm-dd")#'");
         totalUser = model("user").count();
         activeUsers = model("user").count(where="status = 'true'"); 
-
-        sevenDaysAgo = dateAdd("d", -7, now());
+        
+        // ==================== USER DATA ====================
+        sevenDaysAgo = dateAdd("d", -6, now()); // 6 days ago = 7 days total
+        
+        // Get list of users from last 7 days (for display)
         last_seven_days_user = model("user").findAll(
-        where="createdat >= '#sevenDaysAgo#'",
-        order="createdat DESC");
-
-        last_7Days_Users = queryExecute("
-            SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,
-                   COUNT(u.createdat) AS usercount
-            FROM generate_series(
-                :startDate::date,
-                :startDate::date + INTERVAL '6 days',
-                INTERVAL '1 day'
-            ) AS d
-            LEFT JOIN users u
-                ON TO_CHAR(u.createdat, 'YYYY-MM-DD') = TO_CHAR(d::date, 'YYYY-MM-DD')
-                AND u.deletedat IS NULL
-            GROUP BY d::date
-            ORDER BY d::date ASC
+            where="createdat >= '#dateFormat(sevenDaysAgo, "yyyy-mm-dd")#'",
+            order="createdat DESC"
+        );
+        
+        // Get actual user counts for chart
+        userCounts = queryExecute("
+            SELECT DATE(createdat) AS day, COUNT(*) AS usercount
+            FROM users
+            WHERE createdat >= :startDate
+            AND deletedat IS NULL
+            GROUP BY DATE(createdat)
+            ORDER BY DATE(createdat) ASC
         ",
         {
-            startDate: dateFormat(now() - 6, "yyyy-MM-dd")
+            startDate: {value: dateFormat(sevenDaysAgo, "yyyy-mm-dd"), cfsqltype: "cf_sql_date"}
         },
-        {datasource="wheels.dev"}
+        {datasource: "wheels.dev"}
         );
-
-        userChartData = []; // Save chart data from query
-
-        for (i = 1; i <= last_7Days_Users.recordCount; i++) {
-            arrayAppend(userChartData, { 
-                "day": last_7Days_Users.day[i], 
-                "usercount": last_7Days_Users.usercount[i] 
+        
+        // Build complete 7-day series in ColdFusion
+        userChartData = [];
+        for (i = 0; i < 7; i++) {
+            currentDay = dateAdd("d", i, sevenDaysAgo);
+            dayString = dateFormat(currentDay, "yyyy-mm-dd");
+            
+            // Find count for this day (default to 0 if no data)
+            dayCount = 0;
+            for (row in userCounts) {
+                if (dateFormat(row.day, "yyyy-mm-dd") == dayString) {
+                    dayCount = row.usercount;
+                    break;
+                }
+            }
+            
+            arrayAppend(userChartData, {
+                "day": dayString,
+                "usercount": dayCount
             });
         }
         userJsonData = serializeJSON(userChartData);
-
+        
+        // ==================== BLOG DATA ====================
         distinctCategories = model("BlogCategory").findAll(select="categoryId", DISTINCT=true);
         totalCategories = distinctCategories.recordcount;
-
-        totalBlogs = model("blog").count();
+        
         totalApprovedBlogs = model("blog").count(where="status = 'Approved'");
         rejectedBlogs = model("blog").count(where="status = 'Rejected'");
         waitingforApprovalBlogs = model("blog").count(where="status IS NULL");
-
-
-        last_7Days_Blogs = queryExecute("
-            SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,
-                   COUNT(b.createdat) AS blogcount
-            FROM generate_series(
-                :startDate::date,
-                :startDate::date + INTERVAL '6 days',
-                INTERVAL '1 day'
-            ) AS d
-            LEFT JOIN blog_posts b
-                ON TO_CHAR(b.createdat, 'YYYY-MM-DD') = TO_CHAR(d::date, 'YYYY-MM-DD')
-                AND b.deletedat IS NULL
-            GROUP BY d::date
-            ORDER BY d::date ASC
+        
+        // Get actual blog counts for chart
+        blogCounts = queryExecute("
+            SELECT DATE(createdat) AS day, COUNT(*) AS blogcount
+            FROM blog_posts
+            WHERE createdat >= :startDate
+            AND deletedat IS NULL
+            GROUP BY DATE(createdat)
+            ORDER BY DATE(createdat) ASC
         ",
         {
-            startDate: dateFormat(now() - 6, "yyyy-MM-dd")
+            startDate: {value: dateFormat(sevenDaysAgo, "yyyy-mm-dd"), cfsqltype: "cf_sql_date"}
         },
-        {datasource="wheels.dev"}
+        {datasource: application.env.datasource}
         );
-
-        // Prepare data for chart
+        
+        // Build complete 7-day series
         blogChartData = [];
-        for (i = 1; i <= last_7Days_Blogs.recordCount; i++) {
-            arrayAppend(blogChartData, { 
-                "day": last_7Days_Blogs.day[i], 
-                "blogcount": last_7Days_Blogs.blogcount[i] 
+        for (i = 0; i < 7; i++) {
+            currentDay = dateAdd("d", i, sevenDaysAgo);
+            dayString = dateFormat(currentDay, "yyyy-mm-dd");
+            
+            dayCount = 0;
+            for (row in blogCounts) {
+                if (dateFormat(row.day, "yyyy-mm-dd") == dayString) {
+                    dayCount = row.blogcount;
+                    break;
+                }
+            }
+            
+            arrayAppend(blogChartData, {
+                "day": dayString,
+                "blogcount": dayCount
             });
         }
         blogJsonData = serializeJSON(blogChartData);
-
+        
+        // ==================== COMMENT DATA ====================
         totalComments = model("comment").count();
         totalPublishComments = model("comment").count(where="isPublished = 1");
         totalUnPublishComments = model("comment").count(where="isPublished = 0");
-
-        last_7Days_Comments = queryExecute("
-            SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,
-                   COUNT(c.published_at) AS commentcount
-            FROM generate_series(
-                :startDate::date,
-                :startDate::date + INTERVAL '6 days',
-                INTERVAL '1 day'
-            ) AS d
-            LEFT JOIN comments c
-                ON TO_CHAR(c.published_at, 'YYYY-MM-DD') = TO_CHAR(d::date, 'YYYY-MM-DD')
-                AND c.deletedat IS NULL
-                AND c.is_published = true
-            GROUP BY d::date
-            ORDER BY d::date ASC
+        
+        // Get actual comment counts for chart
+        commentCounts = queryExecute("
+            SELECT DATE(published_at) AS day, COUNT(*) AS commentcount
+            FROM comments
+            WHERE published_at >= :startDate
+            AND deletedat IS NULL
+            AND is_published = true
+            GROUP BY DATE(published_at)
+            ORDER BY DATE(published_at) ASC
         ",
         {
-            startDate: dateFormat(now() - 6, "yyyy-MM-dd")
+            startDate: {value: dateFormat(sevenDaysAgo, "yyyy-mm-dd"), cfsqltype: "cf_sql_date"}
         },
-        {datasource="wheels.dev"}
+        {datasource: "wheels.dev"}
         );
-
-        // Prepare data for chart
+        
+        // Build complete 7-day series
         commentChartData = [];
-        for (i = 1; i <= last_7Days_Comments.recordCount; i++) {
-            arrayAppend(commentChartData, { 
-                "day": last_7Days_Comments.day[i], 
-                "commentcount": last_7Days_Comments.commentcount[i] 
+        for (i = 0; i < 7; i++) {
+            currentDay = dateAdd("d", i, sevenDaysAgo);
+            dayString = dateFormat(currentDay, "yyyy-mm-dd");
+            
+            dayCount = 0;
+            for (row in commentCounts) {
+                if (dateFormat(row.day, "yyyy-mm-dd") == dayString) {
+                    dayCount = row.commentcount;
+                    break;
+                }
+            }
+            
+            arrayAppend(commentChartData, {
+                "day": dayString,
+                "commentcount": dayCount
             });
         }
         commentJsonData = serializeJSON(commentChartData);
-
     }
 
     /**
