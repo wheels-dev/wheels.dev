@@ -76,11 +76,11 @@ By default, these validations will run without your needing to set up anything i
 
 Note these extra behaviors as well:
 
-* Automatic validations will not run for [Automatic Time Stamps](/3.0.0/guides/database-interaction-through-models/automatic-time-stamps).
+* Automatic validations will not run for [Automatic Time Stamps](https://wheels.dev/3.0.0/guides/database-interaction-through-models/automatic-time-stamps).
 * If you've already set a validation on a particular property in your model, the automatic validations will be overridden by your settings.
 * If your database column provides a default value for a given field, Wheels will not enforce a [validatesPresenceOf()](https://wheels.dev/api/v3.0.0/model.validatespresenceof.html)rule on that property.
 
-To disable automatic validations in your Wheels application, change this setting in `app/config/settings.cfm:`
+To disable automatic validations in your Wheels application, change this setting in `/config/settings.cfm:`
 
 ```javascript
 set(automaticValidations=false);
@@ -88,7 +88,7 @@ set(automaticValidations=false);
 
 You can also turn on or off the automatic validations on a per model basis by calling the [automaticValidations()](https://wheels.dev/api/v3.0.0/v2.2/model.automaticValidations.html) method from a model's `config()` method.
 
-See the chapter on [Configuration and Defaults](/3.0.0/guides/working-with-wheels/configuration-and-defaults) for more information on available Wheels ORM settings.
+See the chapter on [Configuration and Defaults](https://wheels.dev/3.0.0/guides/working-with-wheels/configuration-and-defaults) for more information on available Wheels ORM settings.
 
 ### Use when, condition, or unless to Limit the Scope of Validation
 
@@ -145,7 +145,7 @@ We then should create a method called `validateEmailFormat`, which in this case 
 ```javascript
 private function validateEmailFormat() {
     if ( !IsValid("email", this.email) ) {
-        addError(property="email", message="Email address != in a valid format.");
+        addError(property="email", message="Email address is not in a valid format.");
     }
 }
 ```
@@ -201,7 +201,7 @@ The first line of the action creates a `newUser` based on the `user` model and t
 
 Now, to persist the object to the database, the model's [save()](https://wheels.dev/api/v3.0.0/model.save.html) call can be placed within a `<cfif>` test. If the save succeeds, the [save()](https://wheels.dev/api/v3.0.0/model.save.html) method will return `true`, and the contents of the `<cfif>` will be executed. But if any of the validations set up in the model fail, the [save()](https://wheels.dev/api/v3.0.0/model.save.html) method returns `false`, and the `<cfelse>` will execute.
 
-The important step here is to recognize that the `<cfelse>` renders the original form input page using the [renderView()](https://wheels.dev/api/v3.0.0/controller.renderWith.html) function. When this happens, the view will use the `newUser` object defined in our [save()](https://wheels.dev/api/v3.0.0/model.save.html) method. If a [redirectTo()](https://wheels.dev/api/v3.0.0/controller.redirectto.html) were used instead, the validation information loaded in our [save()](https://wheels.dev/api/v3.0.0/model.save.html) method would be lost.
+The important step here is to recognize that the `<cfelse>` renders the original form input page using the [renderView()](https://wheels.dev/api/v3.0.0/controller.renderView.html) function. When this happens, the view will use the `newUser` object defined in our [save()](https://wheels.dev/api/v3.0.0/model.save.html) method. If a [redirectTo()](https://wheels.dev/api/v3.0.0/controller.redirectto.html) were used instead, the validation information loaded in our [save()](https://wheels.dev/api/v3.0.0/model.save.html) method would be lost.
 
 ### The View
 
@@ -230,7 +230,7 @@ Wheels factors out much of the error display code that you'll ever need. As you 
 
 The biggest thing to note in this example is that a field called `passwordConfirmation` was provided so that the [validatesConfirmationOf()](https://wheels.dev/api/v3.0.0/model.validatesConfirmationOf.html) validation in the model can be properly tested.
 
-For more information on how this code behaves when there is an error, refer to the [Form Helpers and Showing Errors](/3.0.0/guides/displaying-views-to-users/form-helpers-and-showing-errors) chapter.
+For more information on how this code behaves when there is an error, refer to the [Form Helpers and Showing Errors](https://wheels.dev/3.0.0/guides/displaying-views-to-users/form-helpers-and-showing-errors) chapter.
 
 ### Error Messages
 
@@ -255,7 +255,7 @@ There are 2 ways to accomplish this: through global defaults in your config file
 
 ### Setting Global Defaults for Error Messages
 
-Using basic global defaults for the validation functions, you can set error messages in your config file at `app/config/settings.cfm`.
+Using basic global defaults for the validation functions, you can set error messages in your config file at `/config/settings.cfm`.
 
 ```javascript
 set(functionName="validatesPresenceOf", message="Please provide a value for [property]");
@@ -270,7 +270,7 @@ Another way of adding a custom error message is by going into an individual prop
 Here's a change that we may apply in the `config()` method of our model:
 
 ```javascript
-validatesNumericalityOf(
+validatesUniquenessOf(
     property="email",
     message="Email address is already in use in another account"
 );

@@ -10,7 +10,7 @@ When a user submits a form, you do not want to show any content on the page that
 
 To avoid the above problem, it is recommended to always redirect the user after submitting a form. In Wheels this is done with the [redirectTo()](https://wheels.dev/api/v3.0.0/controller.redirectto.html) function. It is basically a wrapper around the `cflocation` tag in CFML.
 
-Being that [redirectTo()](https://wheels.dev/api/v3.0.0/controller.redirectto.html) is a Wheels function, it can accept the `route, controller, action`, and `key` arguments so that you can easily redirect\
+Being that [redirectTo()](https://wheels.dev/api/v3.0.0/controller.redirectto.html) is a Wheels function, it can accept the `route, controller, action`, and `key` arguments so that you can easily redirect
 to other actions in your application.
 
 ### Three Ways to Redirect
@@ -23,7 +23,7 @@ You can redirect the user to another action in your application simply by passin
 
 ### 2. Redirection Using Routes
 
-If you have configured any routes in `app/config/routes.cfm`, you can use them when redirecting as well. Just pass in the route's name to the route argument together with any additional arguments needed for the route in question. You can read more about routing in the [Routing](/3.0.0/guides/handling-requests-with-controllers/routing) chapter.
+If you have configured any routes in `/config/routes.cfm`, you can use them when redirecting as well. Just pass in the route's name to the route argument together with any additional arguments needed for the route in question. You can read more about routing in the [Routing](https://wheels.dev/3.0.0/guides/handling-requests-with-controllers/routing) chapter.
 
 ### 3. Redirecting to the Referring URL
 

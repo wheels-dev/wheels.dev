@@ -23,7 +23,7 @@ None.
 The command displays:
 
 1. **Datasource**: The database connection being used
-2. **Database Type**: The type of database (MySQL, PostgreSQL, etc.)
+2. **Database Type**: The type of database (MySQL, PostgreSQL, H2, MSSQL(SQL Server), Oracle.)
 3. **Total Migrations**: Count of all migration files found
 4. **Available Migrations**: Number of pending migrations
 5. **Current Version**: The latest migration that has been run
@@ -33,21 +33,59 @@ The command displays:
 ## Example Output
 
 ```
-+-----------------------------------------+-----------------------------------------+
-| Datasource: myapp_development           | Total Migrations: 6                     |
-| Database Type: MySQL                    | Available Migrations: 2                 |
-|                                         | Current Version: 20240115120000         |
-|                                         | Latest Version: 20240125160000          |
-+-----------------------------------------+-----------------------------------------+
-+----------+------------------------------------------------------------------------+
-| migrated | 20240101100000_create_users_table.cfc                                 |
-| migrated | 20240105150000_create_products_table.cfc                              |
-| migrated | 20240110090000_add_email_to_users.cfc                                 |
-| migrated | 20240115120000_create_orders_table.cfc                                |
-|          | 20240120140000_add_status_to_orders.cfc                               |
-|          | 20240125160000_create_categories_table.cfc                            |
-+----------+------------------------------------------------------------------------+
-```
+
+Database Information
+--------------------------------------------------
+Datasource:               dbapp_test
+Database Type:            MySQL
+
+Migration Status
+--------------------------------------------------
+Total Migrations:         17
+Available Migrations:     14
+Current Version:          20260116163515
+Latest Version:           20260123185445
+--------------------------------------------------
+
+Migration Files
+--------------------------------------------------
+╔══════════╤══════════════════════════════════════════════════════╗
+║ STATUS   │ FILE                                                 ║
+╠══════════╪══════════════════════════════════════════════════════╣
+║          │ 20260123185445_cli_create_table_user                 ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260123183026_cli_remove_table_blog_posts           ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260123182948_create_blog_posts_table               ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260122173254_cli_create_table_user_roles           ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119145114_cli_create_column_parts_feature       ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119144642_cli_blank_students                    ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119112924_cli_create_table_students             ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119111943_cli_create_table_books                ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116170453_cli_create_table_users                ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116170311_cli_create_table_users                ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116165727_cli_create_column_user_required_field ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116164432_cli_create_column_product_price       ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116164211_cli_create_column_user_bio            ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116163907_cli_create_column_user_email          ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║ migrated │ 20260116163515_cli_blank_create_reporting_procedures ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║ migrated │ 20260116160315_cli_remove_table_resources            ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║ migrated │ 20260116155320_cli_remove_table_users                ║
+╚══════════╧══════════════════════════════════════════════════════╝```
 
 ## Migration Files Location
 
@@ -69,10 +107,10 @@ Example:
 
 ## Database Schema Table
 
-Migration status is tracked in `schema_migrations` table:
+Migration status is tracked in `c_o_r_e_migrator_versions` table:
 
 ```sql
-SELECT * FROM schema_migrations;
+SELECT * FROM c_o_r_e_migrator_versions;
 +----------------+
 | version        |
 +----------------+
@@ -101,28 +139,6 @@ SELECT * FROM schema_migrations;
    - Identify pending migrations
    - Confirm database version
 
-## Common Scenarios
-
-### All Migrations Complete
-```
-Current Version: 20240125160000
-Status: 6 completed, 0 pending
-✓ Database is up to date
-```
-
-### Fresh Database
-```
-Current Version: 0
-Status: 0 completed, 6 pending
-⚠ No migrations have been run
-```
-
-### Partial Migration
-```
-Current Version: 20240110090000
-Status: 3 completed, 3 pending
-⚠ Database needs migration
-```
 
 ## Troubleshooting
 
@@ -132,7 +148,7 @@ Status: 3 completed, 3 pending
 - Ensure proper timestamp format
 
 ### Version Mismatch
-- Check `schema_migrations` table
+- Check `c_o_r_e_migrator_versions` table
 - Verify migration files haven't been renamed
 - Look for duplicate timestamps
 

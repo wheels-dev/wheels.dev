@@ -1,6 +1,6 @@
 ---
 description: >-
-  An overview of Wheels configuration and how is it used in your applications.
+  An overview of Wheels configuration and how it is used in your applications.
   Learn how to override a Wheels convention to make it your own.
 ---
 
@@ -10,7 +10,7 @@ We all love the "Convention over Configuration" motto of Wheels, but what about 
 
 ### Where Configurations Happen
 
-You will find configuration files in the `app/config` folder of your Wheels application. In general, most of your settings will go in `app/config/settings.cfm`.
+You will find configuration files in the `config` folder at the root of your Wheels application. In general, most of your settings will go in `/config/settings.cfm`.
 
 You can also set values based on what environment you have set. For example, you can have different values for your settings depending on whether you're in `development` mode or `production` mode. See the chapter on [Switching Environments](switching-environments.md) for more details.
 
@@ -34,11 +34,11 @@ if (get("environment") == "production") {
 
 ### Setting CFML Application Configurations
 
-In CFML's standard `Application.cfc`, you can normally set values for your application's properties in the `this`scope. Wheels still provides these options to you in the file at `app/config/app.cfm`.
+In CFML's standard `Application.cfc`, you can normally set values for your application's properties in the `this`scope. Wheels still provides these options to you in the file at `config/app.cfm`.
 
-Here is an example of what can go in `app/config/app.cfm`:
+Here is an example of what can go in `config/app.cfm`:
 
-{% code title="app/config/app.cfm" %}
+{% code title="config/app.cfm" %}
 ```javascript
 this.name = "TheNextSiteToBeatTwitter";
 this.sessionManagement = false;
@@ -50,24 +50,106 @@ this.customTagPaths = ListAppend(
 ```
 {% endcode %}
 
+### Using Environment Variables in config/app.cfm
+
+**Important:** When your application starts, Wheels automatically loads `.env` files and makes their values available in `this.env` **before** `config/app.cfm` is executed. This means you can access environment variables directly in `config/app.cfm` using `this.env`.
+
+#### Accessing Environment Variables
+
+Use `this.env` to access values from your `.env` file:
+
+{% code title="config/app.cfm" %}
+```javascript
+// Access environment variables using this.env
+this.name = this.env["APP_NAME"] ?: "MyWheelsApp";
+
+// Database configuration using environment variables
+this.datasources["myapp"] = {
+    class: this.env["DB_CLASS"] ?: "org.h2.Driver",
+    connectionString: this.env["DB_CONNECTION_STRING"],
+    username: this.env["DB_USER"],
+    password: this.env["DB_PASSWORD"]
+};
+
+// Multiple datasources from environment variables
+this.datasources["primary"] = {
+    class: "com.mysql.cj.jdbc.Driver",
+    connectionString: "jdbc:mysql://" & this.env["DB_HOST"] & ":" & this.env["DB_PORT"] & "/" & this.env["DB_NAME"],
+    username: this.env["DB_USER"],
+    password: this.env["DB_PASSWORD"]
+};
+```
+{% endcode %}
+
+#### Example .env File
+
+{% code title=".env" %}
+```bash
+# Application Settings
+APP_NAME=MyWheelsApp
+WHEELS_ENV=development
+
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=myapp_dev
+DB_USER=dbuser
+DB_PASSWORD=secret123
+DB_CLASS=com.mysql.cj.jdbc.Driver
+DB_CONNECTION_STRING=jdbc:mysql://localhost:3306/myapp_dev?useSSL=false
+```
+{% endcode %}
+
+#### Environment-Specific Configuration
+
+You can create environment-specific `.env` files:
+
+- `.env` - Default values for all environments
+- `.env.development` - Development-specific values
+- `.env.production` - Production-specific values
+- `.env.testing` - Testing-specific values
+
+Wheels will automatically load the appropriate file `(.env.[environment])` based the variable `WHEELS_ENV` defined in your current .env file.
+
+#### Best Practices for Environment Variables
+
+1. **Never commit sensitive credentials** - Add `.env` to your `.gitignore` file
+2. **Use `.env.example` as a template** - Commit a template with placeholder values
+3. **Use the null coalescing operator** - Provide defaults: `this.env["KEY"] ?: "default"`
+4. **Document required variables** - List all required environment variables in your README
+
+{% code title=".env.example" %}
+```bash
+# Copy this file to .env and fill in your values
+# Never commit .env to version control!
+
+APP_NAME=YourAppName
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=your_database
+DB_USER=your_username
+DB_PASSWORD=your_password
+```
+{% endcode %}
+
 ### Types of Configurations Available
 
 There are several types of configurations that you can perform in Wheels to override all those default behaviors. In Wheels, you can find all these configuration options:
 
-* [Environment settings](configuration-and-defaults#environment-settings)
-* [URL rewriting settings](configuration-and-defaults#url-rewriting-settings)
-* [Data source settings](configuration-and-defaults#data-source-settings)
-* [Function settings](configuration-and-defaults#function-settings)
-* [Debugging and error settings](configuration-and-defaults#debugging-and-error-settings)
-* [Caching settings](configuration-and-defaults#caching-settings)
-* [ORM settings](configuration-and-defaults#orm-settings)
-* [Plugin settings](configuration-and-defaults#plugin-settings)
-* [Media settings](configuration-and-defaults#media-settings)
-* [Routing settings](configuration-and-defaults#routing-settings)
-* [View helper settings](configuration-and-defaults#view-helper-settings)
-* [CSRF protection settings](configuration-and-defaults#csrf-protection-settings)
-* [Miscellaneous Settings](configuration-and-defaults#miscellaneous-settings)
-* [Migrator settings](configuration-and-defaults#migrator-configuration-settings)
+* [Environment settings](configuration-and-defaults.md#environment-settings)
+* [URL rewriting settings](configuration-and-defaults.md#url-rewriting-settings)
+* [Data source settings](configuration-and-defaults.md#data-source-settings)
+* [Function settings](configuration-and-defaults.md#function-settings)
+* [Debugging and error settings](configuration-and-defaults.md#debugging-and-error-settings)
+* [Caching settings](configuration-and-defaults.md#caching-settings)
+* [ORM settings](configuration-and-defaults.md#orm-settings)
+* [Plugin settings](configuration-and-defaults.md#plugin-settings)
+* [Media settings](configuration-and-defaults.md#media-settings)
+* [Routing settings](configuration-and-defaults.md#routing-settings)
+* [View helper settings](configuration-and-defaults.md#view-helper-settings)
+* [CSRF protection settings](configuration-and-defaults.md#csrf-protection-settings)
+* [Miscellaneous Settings](configuration-and-defaults.md#miscellaneous-settings)
+* [Migrator settings](configuration-and-defaults.md#migrator-configuration-settings)
 
 Let's take a closer look at each of these options.
 
@@ -75,9 +157,9 @@ Let's take a closer look at each of these options.
 
 Not only are the environments useful for separating your production settings from your "under development" settings, but they are also opportunities for you to override settings that will only take effect in a specified environment.
 
-The setting for the current environment can be found in `app/config/environment.cfm` and should look something like this:
+The setting for the current environment can be found in `config/environment.cfm` and should look something like this:
 
-{% code title="app/config/environment.cfm" %}
+{% code title="config/environment.cfm" %}
 ```javascript
 set(environment="development");
 ```
@@ -85,13 +167,13 @@ set(environment="development");
 
 **Full Listing of Environment Settings**
 
-| Name                         | Type    | Default                               | Description                                                                                                                                                                                                                                  |
-| ---------------------------- | ------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| environment                  | string  | development                           | Environment to load. Set this value in app/config/environment.cfm. Valid values are development, testing, maintenance, and production.                                                                                                       |
-| reloadPassword               | string  | \[empty string]                       | Password to require when reloading the Wheels application from the URL. Leave empty to require no password.                                                                                                                                |
-| redirectAfterReload          | boolean | Enabled in maintenance and production | Whether or not to redirect away from the current URL when it includes a reload request. This hinders accidentally exposing your application's reload URL and password in web analytics software, screenshots of the browser, etc.            |
-| ipExceptions                 | string  | \[empty string]                       | IP addresses that Wheels will ignore when the environment is set to maintenance. That way administrators can test the site while in maintenance mode, while the rest of users will see the message loaded in app/events/onmaintenance.cfm. |
-| allowEnvironmentSwitchViaUrl | boolean | true                                  | Set to false to disable switching of environment configurations via URL. You can still reload the application, but switching environments themselves will be disabled.                                                                       |
+| Name                         | Type    | Default                               | Description                                                                                                                                                                                                                                                     |
+| ---------------------------- | ------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| environment                  | string  | development                           | Environment to load. Set this value in config/environment.cfm. Valid values are development, testing, maintenance, and production.                                                                                                          |
+| reloadPassword               | string  | \[empty string]                       | Password to require when reloading the Wheels application from the URL. Leave empty to require no password.                                                                                                                                                     |
+| redirectAfterReload          | boolean | Enabled in maintenance and production | Whether or not to redirect away from the current URL when it includes a reload request. This hinders accidentally exposing your application's reload URL and password in web analytics software, screenshots of the browser, etc.                               |
+| ipExceptions                 | string  | \[empty string]                       | IP addresses that Wheels will ignore when the environment is set to maintenance. That way administrators can test the site while in maintenance mode, while the rest of users will see the message loaded in /app/events/onmaintenance.cfm.   |
+| allowEnvironmentSwitchViaUrl | boolean | true                                  | Set to false to disable switching of environment configurations via URL. You can still reload the application, but switching environments themselves will be disabled.                                                                                          |
 
 ### URL Rewriting Settings
 
@@ -107,21 +189,43 @@ The code above will tell Wheels to skip its automatic detection of the URL Rewri
 
 You can also set it to "Partial" if you believe that your web server is capable of rewriting the URL as folders after `index.cfm`.
 
-For more information, read the chapter about [URL Rewriting](/3.0.0/guides/handling-requests-with-controllers/url-rewriting/README).
+For more information, read the chapter about [URL Rewriting](https://wheels.dev/3.0.0/guides/handling-requests-with-controllers/url-rewriting/README).
 
 ### Data Source Settings
 
 Probably the most important configuration of them all. What is an application without a database to store all of its precious data?
 
-The data source configuration is what tells Wheels which database to use for all of its models. (This can be overridden on a per-model basis, but that will be covered later.) To set this up in Wheels, it's just as easy as the previous example:
+The data source configuration is what tells Wheels which database to use for all of its models. (This can be overridden on a per-model basis, but that will be covered later.)
 
-{% code title="CFScript" %}
+#### Basic Data Source Configuration
+
+{% code title="config/settings.cfm" %}
 ```javascript
 set(dataSourceName="yourDataSourceName");
 set(dataSourceUserName="yourDataSourceUsername");
 set(dataSourcePassword="yourDataSourcePassword");
 ```
 {% endcode %}
+
+#### Using Environment Variables for Data Sources
+
+**Recommended:** Use environment variables for database credentials to keep sensitive information secure. You can access environment variables using this scope:
+
+**In `config/app.cfm`** (recommended for datasource configuration):
+
+{% code title="config/app.cfm" %}
+```javascript
+// Use this.env to access .env file variables
+this.datasources["myapp"] = {
+    class: this.env["DB_CLASS"],
+    connectionString: this.env["DB_CONNECTION_STRING"],
+    username: this.env["DB_USER"],
+    password: this.env["DB_PASSWORD"]
+};
+```
+{% endcode %}
+
+See [Using Environment Variables in config/app.cfm](#using-environment-variables-in-configappcfm) for more details on working with environment variables.
 
 ### Function Settings
 
@@ -145,7 +249,7 @@ For example, let's say that we want to enable debugging information in our "deve
 
 {% code title="CFScript" %}
 ```javascript
-// /app/config/development/settings.cfm
+// config/development/settings.cfm
 set(showDebugInformation=false);
 ```
 {% endcode %}
@@ -157,10 +261,10 @@ set(showDebugInformation=false);
 | errorEmailServer      | string  | \[empty string]                                                          | Server to use to send out error emails. When left blank, this defaults to settings in the ColdFusion Administrator (if set).                                                        |
 | errorEmailAddress     | string  | \[empty string]                                                          | Comma-delimited list of email address to send error notifications to. Only applies if sendEmailOnError is set to true.                                                              |
 | errorEmailSubject     | string  | Error                                                                    | Subject of email that gets sent to administrators on errors. Only applies if sendEmailOnError is set to true.                                                                       |
-| excludeFromErrorEmail | string  | \[empty string]                                                          | List of variables available in the scopes to exclude from the scope dumps included in error emails. Use this to keep sensitive information from being sent in plain text over email.     |
-| sendEmailOnError      | boolean | Enabled in production environments that have a TLD like .com, .org, etc. | When set to true, Wheels will send an email to administrators whenever Wheels throws an error.                                                                                  |
-| showDebugInformation  | boolean | Enabled in development mode.                                             | When set to true, Wheels will show debugging information in the footers of your pages.                                                                                            |
-| showErrorInformation  | boolean | Enabled in development, maintenance, and testing mode.                   | When set to false, Wheels will run and display code stored at app/events/onerror.cfm instead of revealing CFML errors.                                                            |
+| excludeFromErrorEmail | string  | \[empty string]                                                          | List of variables available in the scopes to exclude from the scope dumps included in error emails. Use this to keep sensitive information from being sent in plain text over email.|
+| sendEmailOnError      | boolean | Enabled in production environments that have a TLD like .com, .org, etc. | When set to true, Wheels will send an email to administrators whenever Wheels throws an error.                                                                                      |
+| showDebugInformation  | boolean | Enabled in development mode.                                             | When set to true, Wheels will show debugging information in the footers of your pages.                                                                                              |
+| showErrorInformation  | boolean | Enabled in development, maintenance, and testing mode.                   | When set to false, Wheels will run and display code stored at /app/events/onerror.cfm instead of revealing CFML errors.                                           |
 
 For more information, refer to the chapter about [Switching Environments](switching-environments.md).
 
@@ -180,21 +284,21 @@ set(cacheRoutes=false);
 
 | Name                    | Type    | Default                                                      | Description                                                                                                                                                                                            |
 | ----------------------- | ------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| cacheActions            | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache output generated by actions when specified (in a caches() call, for example).                                                                                    |
-| cacheControllerConfig   | boolean | Enabled in development, maintenance, testing, and production  | When set to false, any changes you make to the config() function in the controller file will be picked up immediately.                                                                                 |
+| cacheActions            | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache output generated by actions when specified (in a caches() call, for example).                                                                                      |
+| cacheControllerConfig   | boolean | Enabled in development, maintenance, testing, and production  | When set to false, any changes you make to the config() function in the controller file will be picked up immediately.                                                                                |
 | cacheCullInterval       | numeric | 5                                                            | Number of minutes between each culling action. The reason the cache is not culled during each request is to keep performance as high as possible.                                                      |
 | cacheCullPercentage     | numeric | 10                                                           | If you set this value to 10, then at most, 10% of expired items will be deleted from the cache.                                                                                                        |
-| cacheDatabaseSchema     | boolean | Enabled in development, maintenance, testing, and production | When set to false, you can add a field to the database, and Wheels will pick that up right away.                                                                                                     |
-| cacheFileChecking       | boolean | Enabled in development, maintenance, testing, and production | When set to true, Wheels will cache whether or not controller, helper, and layout files exist                                                                                                        |
-| cacheImages             | boolean | Enabled in development, maintenance, testing, and production | When set to true, Wheels will cache general image information used in imageTag() like width and height.                                                                                              |
+| cacheDatabaseSchema     | boolean | Enabled in development, maintenance, testing, and production | When set to false, you can add a field to the database, and Wheels will pick that up right away.                                                                                                       |
+| cacheFileChecking       | boolean | Enabled in development, maintenance, testing, and production | When set to true, Wheels will cache whether or not controller, helper, and layout files exist                                                                                                          |
+| cacheImages             | boolean | Enabled in development, maintenance, testing, and production | When set to true, Wheels will cache general image information used in imageTag() like width and height.                                                                                                |
 | cacheModelConfig        | boolean | Enabled in development, maintenance, testing, and production | When set to false, any changes you make to the config() function in the model file will be picked up immediately.                                                                                      |
-| cachePages              | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache output generated by a view page when specified (in a renderView() call, for example).                                                                            |
-| cachePartials           | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache output generated by partials when specified (in a includePartial() call for example).                                                                            |
-| cacheQueries            | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache SQL queries when specified (in a findAll() call, for example).                                                                                                   |
-| clearQueryCacheOnReload | boolean | true                                                         | Set to true to clear any queries that Wheels has cached on application reload.                                                                                                                       |
-| cacheRoutes             | boolean | Enabled in development, maintenance, testing, and production | When set to true, Wheels will cache routes across all page views.                                                                                                                                     |
-| defaultCacheTime        | numeric | 60                                                           | Number of minutes an item should be cached when it has not been specifically set through one of the functions that perform the caching in Wheels (i.e., caches(), findAll(), includePartial(), etc.) |
-| maximumItemsToCache     | numeric | 5000                                                         | Maximum number of items to store in Wheels's cache at one time. When the cache is full, items will be deleted automatically at a regular interval based on the other cache settings.                 |
+| cachePages              | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache output generated by a view page when specified (in a renderView() call, for example).                                                                              |
+| cachePartials           | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache output generated by partials when specified (in a includePartial() call for example).                                                                              |
+| cacheQueries            | boolean | Enabled in maintenance, testing, and production              | When set to true, Wheels will cache SQL queries when specified (in a findAll() call, for example).                                                                                                     |
+| clearQueryCacheOnReload | boolean | true                                                         | Set to true to clear any queries that Wheels has cached on application reload.                                                                                                                         |
+| cacheRoutes             | boolean | Enabled in development, maintenance, testing, and production | When set to true, Wheels will cache routes across all page views.                                                                                                                                      |
+| defaultCacheTime        | numeric | 60                                                           | Number of minutes an item should be cached when it has not been specifically set through one of the functions that perform the caching in Wheels (i.e., caches(), findAll(), includePartial(), etc.)   |
+| maximumItemsToCache     | numeric | 5000                                                         | Maximum number of items to store in Wheels's cache at one time. When the cache is full, items will be deleted automatically at a regular interval based on the other cache settings.                   |
 
 For more information, refer to the chapter on [Caching](../handling-requests-with-controllers/caching.md).
 
@@ -217,21 +321,21 @@ Now your `post` model will map to the `blog_posts` table, `comment` model will m
 | Name                           | Type    | Default         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | ------------------------------ | ------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | afterFindCallbackLegacySupport | boolean | true            | When this is set to false and you're implementing an afterFind() callback, you need to write the same logic for both the this scope (for objects) and arguments scope (for queries). Setting this to false makes both ways use the arguments scope so you don't need to duplicate logic. Note that the default is true for backwards compatibility.                                                                                                                                                                                                                                          |
-| automaticValidations           | boolean | true            | Set to false to stop Wheels from automatically running object validations based on column settings in your database.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| setUpdatedAtOnCreate           | boolean | true            | Set to false to stop Wheels from populating the updatedAt timestamp with the createdAt timestamp's value.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| softDeleteProperty             | string  | deletedAt       | Name of database column that Wheels will look for in order to enforce soft deletes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| automaticValidations           | boolean | true            | Set to false to stop Wheels from automatically running object validations based on column settings in your database.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| setUpdatedAtOnCreate           | boolean | true            | Set to false to stop Wheels from populating the updatedAt timestamp with the createdAt timestamp's value.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| softDeleteProperty             | string  | deletedAt       | Name of database column that Wheels will look for in order to enforce soft deletes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | tableNamePrefix                | string  | \[empty string] | String to prefix all database tables with so you don't need to define your model objects including it. Useful in environments that have table naming conventions like starting all table names with tbl                                                                                                                                                                                                                                                                                                                                                                                      |
-| timeStampOnCreateProperty      | string  | createdAt       | Name of database column that Wheels will look for in order to automatically store a "created at" time stamp when records are created.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| timeStampOnUpdateProperty      | string  | updatedAt       | Name of the database column that Wheels will look for in order to automatically store an "updated at" time stamp when records are updated.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| timeStampOnCreateProperty      | string  | createdAt       | Name of database column that Wheels will look for in order to automatically store a "created at" time stamp when records are created.                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| timeStampOnUpdateProperty      | string  | updatedAt       | Name of the database column that Wheels will look for in order to automatically store an "updated at" time stamp when records are updated.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | transactionMode                | string  | commit          | Use commit, rollback, or none to set default transaction handling for creates, updates and deletes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| useExpandedColumnAliases       | boolean | false           | When set to true, Wheels will always prepend children objects' names to columns included via findAll()'s include argument, even if there are no naming conflicts. For example, model("post").findAll(include="comment") in a fictitious blog application would yield these column names: id, title, authorId, body, createdAt, commentID, commentName, commentBody, commentCreatedAt, commentDeletedAt. When this setting is set to false, the returned column list would look like this: id, title, authorId, body, createdAt, commentID, name, commentBody, commentCreatedAt, deletedAt. |
-| modelRequireConfig             | boolean | false           | Set to true to have Wheels throw an error when it can't find a config() method for a model. If you prefer to always use config() methods, this setting could save you some confusion when it appears that your configuration code isn't running due to misspelling "config" for example.                                                                                                                                                                                                                                                                                                   |
+| useExpandedColumnAliases       | boolean | false           | When set to true, Wheels will always prepend children objects' names to columns included via findAll()'s include argument, even if there are no naming conflicts. For example, model("post").findAll(include="comment") in a fictitious blog application would yield these column names: id, title, authorId, body, createdAt, commentID, commentName, commentBody, commentCreatedAt, commentDeletedAt. When this setting is set to false, the returned column list would look like this: id, title, authorId, body, createdAt, commentID, name, commentBody, commentCreatedAt, deletedAt.   |
+| modelRequireConfig             | boolean | false           | Set to true to have Wheels throw an error when it can't find a config() method for a model. If you prefer to always use config() methods, this setting could save you some confusion when it appears that your configuration code isn't running due to misspelling "config" for example.                                                                                                                                                                                                                                                                                                     |
 
 ### Plugin Settings
 
 There are several settings that make plugin development more convenient. We recommend only changing these settings in `development` mode so there aren't any deployment issues in `production`, `testing`, and `maintenance`modes. (At that point, your plugin should be properly packaged in a zip file.)
 
-If you want to keep what's stored in a plugin's zip file from overwriting changes that you made in its expanded folder, set this in `app/config/development/settings.cfm`:
+If you want to keep what's stored in a plugin's zip file from overwriting changes that you made in its expanded folder, set this in `config/development/settings.cfm`:
 
 {% code title="CFScript" %}
 ```javascript
@@ -239,7 +343,7 @@ set(overwritePlugins=false);
 ```
 {% endcode %}
 
-See the chapter on [Installing and Using Plugins](/3.0.0/guides/plugins/installing-and-using-plugins) for more information.
+See the chapter on [Installing and Using Plugins](https://wheels.dev/3.0.0/guides/plugins/installing-and-using-plugins) for more information.
 
 | Name                    | Type    | Default | Description                                                                                                                                                                                                                                                  |
 | ----------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -265,9 +369,9 @@ See the chapter about [Date, Media, and Text Helpers](../displaying-views-to-use
 
 Wheels includes a powerful routing system. Parts of it are configurable with the following settings.
 
-See the chapters about [Using Routes](/3.0.0/guides/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
+See the chapters about [Using Routes](https://wheels.dev/3.0.0/guides/handling-requests-with-controllers/routing) and [Obfuscating URLs](../handling-requests-with-controllers/obfuscating-urls.md) for more information about how this all works together.
 
-**Full Listing of Miscellaneous Settings**
+**Full Listing of Routing Settings**
 
 | Name              | Type    | Default | Description                                                                               |
 | ----------------- | ------- | ------- | ----------------------------------------------------------------------------------------- |
@@ -288,9 +392,9 @@ Wheels includes built-in Cross-Site Request Forgery (CSRF) protection for form p
 
 | Name                          | Type    | Default                | Description                                                                                                                                                                                                                                                                                                                                             |
 | ----------------------------- | ------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| csrfStore                     | string  | session                | <p>Which storage strategy to use for storing the CSRF authenticity token. Valid values are <code>session</code> or <code>cookie</code>.<br><br>Choosing <code>session</code> requires no additional configuration.<br><br>Choosing <code>cookie</code> for this requires additional configuration listed below.</p>                                     |
-| csrfCookieEncryptionAlgorithm | string  | AES                    | Encryption algorithm to use for encrypting the authenticity token cookie contents. This setting is ignored if you're using `session` storage. See your CF engine's documentation for the `Encrypt()`function for more information.                                                                                                                      |
-| csrfCookieEncryptionSecretKey | string  |                        | Secret key used to encrypt the authenticity token cookie contents. This value must be configured to a string compatible with the `csrfCookieEncryptionAlgorithm`setting if you're using `cookie` storage. This value is ignored if you're using `session` storage. See your CF engine's documentation for the `Encrypt()`function for more information. |
+| csrfStore                     | string  | session                | Which storage strategy to use for storing the CSRF authenticity token. Valid values are `session` or `cookie`. Choosing `session` requires no additional configuration. Choosing `cookie` for this requires additional configuration listed below.                                     |
+| csrfCookieEncryptionAlgorithm | string  | AES                    | Encryption algorithm to use for encrypting the authenticity token cookie contents. This setting is ignored if you're using `session` storage. See your CF engine's documentation for the `Encrypt()` function for more information.                                                                                                                      |
+| csrfCookieEncryptionSecretKey | string  |                        | Secret key used to encrypt the authenticity token cookie contents. This value must be configured to a string compatible with the `csrfCookieEncryptionAlgorithm`setting if you're using `cookie` storage. This value is ignored if you're using `session` storage. See your CF engine's documentation for the `Encrypt()` function for more information. |
 | csrfCookieEncryptionEncoding  | string  | Base64                 | Encoding to use to write the encrypted value to the cookie. This value is ignored if you're using `session` storage. See your CF engine's documentation for the `Encrypt()` function for more information.                                                                                                                                              |
 | csrfCookieName                | string  | \_wheels\_authenticity | The name of the cookie to be set to store CSRF token data. This value is ignored if you're using `session` storage.                                                                                                                                                                                                                                     |
 | csrfCookieDomain              | string  |                        | Domain to set the cookie on. See your CF engine's documentation for `cfcookie` for more information.                                                                                                                                                                                                                                                    |
@@ -314,7 +418,7 @@ In this first version, the user can enable this feature, which will allow reques
 
 | Name                    | Type    | Default | Description                                                                                                                              |
 | ----------------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| disableEngineCheck      | boolean | false   | Set to `true` if you don't want Wheels to block you from using older CFML engines (such as ColdFusion 9, Railo etc).                   |
+| disableEngineCheck      | boolean | false   | Set to `true` if you don't want Wheels to block you from using older CFML engines (such as `ColdFusion 9`, `Railo` etc).                     |
 | enableMigratorComponent | boolean | true    | Set to `false` to completely disable the migrator component which will prevent any Database migrations                                   |
 | enablePluginsComponent  | boolean | true    | Set to `false` to completely disable the plugins component which will prevent any plugin loading, and not load the entire plugins system |
 | enablePublicComponent   | boolean | true    | Set to `false` to completely disable the public component which will disable the GUI even in development mode                            |
@@ -324,8 +428,8 @@ In this first version, the user can enable this feature, which will allow reques
 | Setting               | Type    | Default                          | Description                                                                                                                    |
 | --------------------- | ------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | autoMigrateDatabase   | Boolean | false                            | Automatically runs available migration on applicationstart.                                                                    |
-| migratorTableName     | String  | migratorversions                 | The name of the table that stores the versions migrated.                                                                       |
-| createMigratorTable   | Boolean | true                             | Create the migratorversions database table.                                                                                    |
-| writeMigratorSQLFiles | Boolean | false                            | Writes the executed SQL to a .sql file in the app/migrator/sql directory.                                                         |
+| migratorTableName     | String  | c_o_r_e_migrator_versions        | The name of the table that stores the versions migrated.                                                                       |
+| createMigratorTable   | Boolean | true                             | Create the c_o_r_e_migrator_versions database table.                                                                           |
+| writeMigratorSQLFiles | Boolean | false                            | Writes the executed SQL to a .sql file in the /app/migrator/sql directory.                                                     |
 | migratorObjectCase    | String  | lower                            | Specifies the case of created database object. Options are 'lower', 'upper' and 'none' (which uses the given value unmodified) |
 | allowMigrationDown    | Boolean | false (true in development mode) | Prevents 'down' migrations (rollbacks)                                                                                         |

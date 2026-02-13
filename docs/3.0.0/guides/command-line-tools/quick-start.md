@@ -1,3 +1,9 @@
+---
+description: >-
+  Get up and running with Wheels CLI in minutes. Learn installation, creating
+  your first application, and common development tasks.
+---
+
 # Quick Start Guide
 
 Get up and running with Wheels CLI in minutes.
@@ -79,7 +85,7 @@ Let's create a blog post feature:
 ### 1. Generate Scaffold
 
 ```bash
-wheels scaffold name=post properties=title:string,content:text,published:boolean
+wheels generate scaffold name=post properties=title:string,content:text,published:boolean
 ```
 
 This generates:
@@ -120,16 +126,6 @@ You now have a fully functional blog post management system!
 
 ## Development Workflow
 
-### File Watching
-
-In a new terminal:
-
-```bash
-wheels watch
-```
-
-Now changes to `.cfc` and `.cfm` files trigger automatic reloads.
-
 ### Running Tests
 
 ```bash
@@ -150,7 +146,7 @@ Let's add comments to posts:
 ```bash
 # Generate comment model
 wheels generate model comment --properties="author:string,content:text,postId:integer" \
-  --belongs-to="post"
+  --belongsTo="post"
 
 # Update post model
 wheels generate property post comments --has-many
@@ -316,9 +312,9 @@ wheels db shell --web
 ## Next Steps
 
 1. **Read the Guides:**
-   - [Service Architecture](cli-guides/service-architecture.md)
-   - [Testing Guide](cli-guides/testing.md)
-   - [Migration Guide](cli-guides/migrations.md)
+   - [Service Architecture](service-architecture.md)
+   - [Testing Guide](testing.md)
+   - [Migration Guide](migrations.md)
 
 2. **Explore Commands:**
    - `wheels --help`
@@ -343,10 +339,10 @@ cd myblog
 wheels scaffold post title:string,slug:string,content:text,publishedAt:datetime
 wheels scaffold author name:string,email:string,bio:text
 wheels generate model comment author:string,email:string,content:text,postId:integer \
-  --belongs-to=post
+  --belongsTo=post
 
 # Update associations
-wheels generate property post authorId:integer --belongs-to=author
+wheels generate property post authorId:integer --belongsTo=author
 wheels generate property post comments --has-many
 wheels generate property author posts --has-many
 
@@ -359,7 +355,6 @@ wheels db setup --seed-count=10
 
 # Start development
 wheels server start
-wheels watch
 
 # Visit http://localhost:3000/posts
 ```

@@ -5,10 +5,27 @@ Generate a migration file for creating a new database table.
 ## Synopsis
 
 ```bash
-wheels dbmigrate create table name=<table_name> [--force] [--id] primary-key=<key_name>
+wheels dbmigrate create table name=<table_name> [--force] [--id] primaryKey=<key_name>
 ```
 
-Alias: `wheels db create table`
+## CommandBox Parameter Syntax
+
+This command supports multiple parameter formats:
+
+- **Named parameters**: `name=value` (e.g., `name=users`, `primaryKey=userId`)
+- **Flag parameters**: `--flag` equals `flag=true` (e.g., `--force` equals `force=true`)
+- **Flag with value**: `--flag=value` equals `flag=value` (e.g., `--id=false`)
+
+**Parameter Mixing Rules:**
+
+**ALLOWED:**
+- All named: `name=users primaryKey=userId`
+- Named + flags: `name=users --force --id=false`
+
+**NOT ALLOWED:**
+- Positional parameters: This command does not support positional parameters
+
+**Recommendation:** Use named for required parameters, flags for booleans: `name=users --force`
 
 ## Description
 
@@ -21,7 +38,7 @@ The `dbmigrate create table` command generates a migration file that creates a n
 | `name` | string | Yes | - | The name of the table to create |
 | `--force` | boolean | No | false | Force the creation of the table |
 | `--id` | boolean | No | true | Auto create ID column as autoincrement ID |
-| `primary-key` | string | No | "id" | Overrides the default primary key column name |
+| `primaryKey` | string | No | "id" | Overrides the default primary key column name |
 
 ## Notes About Column Definition
 
@@ -31,22 +48,32 @@ The generated migration file will contain a basic table structure. You'll need t
 
 ### Create a basic table
 ```bash
-wheels dbmigrate create table name=user
+# Named parameter (required)
+wheels dbmigrate create table name=users
 ```
 
 ### Create table without ID column
 ```bash
+# Named + flag (recommended)
 wheels dbmigrate create table name=user_roles --id=false
+
+# OR all named
+wheels db create table name=user_roles id=false
 ```
 
 ### Create table with custom primary key
 ```bash
-wheels dbmigrate create table name=products primary-key=productCode
+# Named parameters (recommended)
+wheels dbmigrate create table name=products primaryKey=productCode
 ```
 
 ### Force creation (overwrite existing)
 ```bash
+# Named + flag (recommended)
 wheels dbmigrate create table name=users --force
+
+# OR all named
+wheels db create table name=users force=true
 ```
 
 ## Generated Migration Example
@@ -64,8 +91,8 @@ component extends="wheels.migrator.Migration" hint="create users table" {
         transaction {
             t = createTable(name="users", force=false, id=true, primaryKey="id");
             // Add your columns here
-            // t.string(columnName="name");
-            // t.integer(columnName="age");
+            // t.string(columnNames="name");
+            // t.integer(columnNames="age");
             t.timestamps();
             t.create();
         }
@@ -100,7 +127,7 @@ wheels dbmigrate create table name=products_categories --id=false
 ### Table with Custom Primary Key
 Create a table with non-standard primary key:
 ```bash
-wheels dbmigrate create table name=legacy_customer primary-key=customer_code
+wheels dbmigrate create table name=legacy_customer primaryKey=customer_code
 ```
 
 ## Best Practices
@@ -122,9 +149,9 @@ After generating the migration, edit it to add columns:
 ```cfml
 // In the generated migration file
 t = createTable(name="orders", force=false, id=true, primaryKey="id");
-t.integer(columnName="customer_id");
-t.decimal(columnName="total", precision=10, scale=2);
-t.string(columnName="status", default="pending");
+t.integer(columnNames="customer_id");
+t.decimal(columnNames="total", precision=10, scale=2);
+t.string(columnNames="status", default="pending");
 t.timestamps();
 t.create();
 ```

@@ -81,15 +81,15 @@ Finally, there is a way to specify that your plugin needs another plugin install
 
 ### Making Plugin Development More Convenient with Wheels Settings
 
-When your Wheels application first initializes, it will unzip and cache the zip files in the `app/plugins` folder. Each plugin then has its own expanded subfolder. If a subfolder exists but has no corresponding zip file, Wheels will delete the folder and its contents.
+When your Wheels application first initializes, it will unzip and cache the zip files in the `/plugins` folder. Each plugin then has its own expanded subfolder. If a subfolder exists but has no corresponding zip file, Wheels will delete the folder and its contents.
 
 This is convenient when you're deploying plugins but can be annoying when you're developing your own plugins. By default, every time you make a change to your plugin, you need to rezip your plugin files and reload the Wheels application by adding `?reload=true` to the URL.
 
 ### Disabling Plugin Overwriting
 
-To force Wheels to skip the unzipping process, set the `overwritePlugins` setting to `false` in the development\` environment.
+To force Wheels to skip the unzipping process, set the `overwritePlugins` setting to `false` in the development environment.
 
-{% code title="app/config/development/settings.cfm" %}
+{% code title="/config/development/settings.cfm" %}
 ```javascript
 set(overwritePlugins=false);
 ```
@@ -101,7 +101,7 @@ With this setting, you'll be able to reload your application without worrying ab
 
 To force Wheels to skip the folder deletion process, set the `deletePluginDirectories` setting to `false` for your `development` environment.
 
-{% code title="app/config/development/settings.cfm" %}
+{% code title="/config/development/settings.cfm" %}
 ```javascript
 set(deletePluginDirectories=false);
 ```
@@ -109,7 +109,7 @@ set(deletePluginDirectories=false);
 
 With this setting, you can now develop new plugins in your application without worrying about having a corresponding zip file in place.
 
-See the chapter on [Configuration and Defaults](/3.0.0/guides/working-with-wheels/configuration-and-defaults) for more details about changing Wheels settings.
+See the chapter on [Configuration and Defaults](https://wheels.dev/3.0.0/guides/working-with-wheels/configuration-and-defaults) for more details about changing Wheels settings.
 
 ### Stand-Alone Plugins
 
@@ -154,7 +154,7 @@ The javaDoc style comments will automatically show this function under Plugins >
 
 ### Box.json
 
-With `2.x`, a `box.json` is required for new plugins. Read the [Publishing Plugins](/3.0.0/guides/plugins/publishing-plugins) chapter for more details on that. One advantage is that Wheels now includes the version and meta data for each plugin when there's a `box.json` file.
+With `2.x`, a `box.json` is required for new plugins. Read the [Publishing Plugins](https://wheels.dev/3.0.0/guides/plugins/publishing-plugins) chapter for more details on that. One advantage is that Wheels now includes the version and meta data for each plugin when there's a `box.json` file.
 
 ```javascript
 // Version Number
@@ -194,7 +194,7 @@ install:
   # Install CLI: needed to repackage the plugin to a zip on install
   - box install wheels-cli
   # Install Master Branch; nb, installed into folder of the git repo name, i.e neokoenig/wheels-ical4j
-  - box install cfwheels/cfwheels
+  - box install wheels-dev/wheels
   # Install the Plugin: use gitHub path to get the absolute latest rather than the forgebox version
   - box install neokoenig/wheels-ical4j
 before_script:

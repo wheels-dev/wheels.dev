@@ -1,195 +1,224 @@
 # wheels plugin outdated
 
-List installed plugins that have newer versions available.
+Check for outdated Wheels plugins that have newer versions available on ForgeBox.
 
-## Synopsis
+## Usage
 
 ```bash
 wheels plugin outdated [--format=<format>]
 ```
 
+## Parameters
+
+| Parameter | Required | Type   | Options      | Default | Description                           |
+|-----------|----------|--------|--------------|---------|---------------------------------------|
+| `format`  | No       | string | table, json  | table   | Output format for outdated plugin list|
+
 ## Description
 
-The `wheels plugin outdated` command checks all installed plugins against ForgeBox to identify which ones have updates available. This helps maintain plugins at their latest versions for security and feature updates.
+The `plugins outdated` command checks all installed plugins in the `/plugins` folder against ForgeBox to identify which ones have updates available. It performs real-time version checks and displays the results in a clear, formatted output.
 
-## Options
+### Features
 
-### --format
-Output format for the results.
-- **Default**: `table`
-- **Options**: `table`, `json`
+- Checks only `cfwheels-plugins` type packages
+- Real-time version checking via ForgeBox
+- Color-coded status indicators
+- Detailed version comparison
+- Helpful update commands
 
 ## Examples
 
 ### Check for outdated plugins
+
 ```bash
 wheels plugin outdated
 ```
 
-### Get results in JSON format
+**Output (with outdated plugins):**
+```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
+
+  bcrypt                                  [OUTDATED] 0.0.3 -> 0.0.4
+  shortcodes                              [OK] v0.0.4
+  wheels-test                             [OK] v1.0.0
+
+===========================================================
+
+Found 1 outdated plugin:
+
+Plugin              Current     Latest
+-----------------------------------------------
+bcrypt              0.0.3       0.0.4
+
+-----------------------------------------------------------
+
+Commands:
+
+  wheels plugin update bcrypt
+```
+
+**Output (all up to date):**
+```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
+
+  bcrypt                                  [OK] v0.0.4
+  shortcodes                              [OK] v0.0.4
+  wheels-test                             [OK] v1.0.0
+
+===========================================================
+
+[OK] All plugins are up to date!
+```
+
+**Output (with errors):**
+```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
+
+  bcrypt                                  [OK] v0.0.4
+  problematic-plugin                      [ERROR] Could not check version
+  shortcodes                              [OK] v0.0.4
+
+===========================================================
+
+[OK] All plugins are up to date!
+
+Could not check 1 plugin:
+
+  - problematic-plugin
+```
+
+### Multiple outdated plugins
+
 ```bash
-wheels plugin outdated --format=json
+wheels plugin outdated
 ```
 
-## Output Example
-
-### Table Format (default)
+**Output:**
 ```
-📊 Checking for outdated plugins...
+===========================================================
+  Checking for Plugin Updates
+===========================================================
 
-Checking wheels-auth... outdated
-Checking wheels-api-builder... up to date
-Checking wheels-cache... outdated
-Checking wheels-validation... up to date
+  bcrypt                                  [OUTDATED] 0.0.3 -> 0.0.4
+  shortcodes                              [OUTDATED] 0.0.3 -> 0.0.4
+  wheels-test                             [OK] v1.0.0
 
-Outdated Plugins:
+===========================================================
 
-┌──────────────────────┬─────────┬────────┬──────┬────────────┐
-│ Plugin               │ Current │ Latest │ Type │ Updated    │
-├──────────────────────┼─────────┼────────┼──────┼────────────┤
-│ wheels-auth         │ 2.0.0   │ 2.1.0  │ prod │ 2024-01-15 │
-│ wheels-cache        │ 3.0.1   │ 3.1.0  │ prod │ 2024-01-10 │
-└──────────────────────┴─────────┴────────┴──────┴────────────┘
+Found 2 outdated plugins:
 
-Found 2 outdated plugins
+Plugin              Current     Latest
+-----------------------------------------------
+bcrypt              0.0.3       0.0.4
+shortcodes          0.0.3       0.0.4
 
-Update Commands:
+-----------------------------------------------------------
 
-Update all plugins:
+Commands:
+
+Update all outdated plugins:
   wheels plugin update:all
 
 Update specific plugin:
   wheels plugin update <plugin-name>
-
-Preview updates without installing:
-  wheels plugin update:all --dry-run
 ```
 
-### JSON Format
+### Export as JSON
+
+```bash
+wheels plugin outdated --format=json
+```
+
+**Output:**
 ```json
-[
-  {
-    "name": "wheels-auth",
-    "currentVersion": "2.0.0",
-    "latestVersion": "2.1.0",
-    "isDev": false,
-    "updateDate": "2024-01-15T10:30:00Z",
-    "author": "John Doe"
-  },
-  {
-    "name": "wheels-cache",
-    "currentVersion": "3.0.1",
-    "latestVersion": "3.1.0",
-    "isDev": false,
-    "updateDate": "2024-01-10T14:45:00Z",
-    "author": "Jane Smith"
-  }
-]
+{
+  "outdated": [
+    {
+      "name": "bcrypt",
+      "slug": "cfwheels-bcrypt",
+      "currentVersion": "0.0.3",
+      "latestVersion": "0.0.4"
+    },
+    {
+      "name": "shortcodes",
+      "slug": "cfwheels-shortcodes",
+      "currentVersion": "0.0.3",
+      "latestVersion": "0.0.4"
+    }
+  ],
+  "count": 2,
+  "errors": []
+}
 ```
 
 ## Status Indicators
 
-During checking:
-- `checking...` - Currently checking plugin
-- `outdated` - Newer version available
-- `up to date` - Already at latest version
-- `error` - Could not check (network issue, etc.)
+During checking, each plugin displays:
+- **[OUTDATED]** (yellow) - Newer version available
+- **[OK]** (green) - Already at latest version
+- **[ERROR]** (red) - Could not check version (network issue, plugin not on ForgeBox, etc.)
 
-## Information Shown
+## How It Works
 
-For each outdated plugin:
-- **Plugin Name**: Name of the plugin
-- **Current Version**: Currently installed version
-- **Latest Version**: Newest available version
-- **Type**: prod (production) or dev (development)
-- **Updated**: Date of latest version release
+1. **Plugin Discovery**: Scans `/plugins` folder for installed plugins
+2. **Version Query**: Uses `forgebox show` command for each plugin to get latest version
+3. **Version Comparison**: Cleans and compares version strings (strips non-numeric characters)
+4. **Display Results**: Shows outdated plugins with current and latest versions
+5. **Update Suggestions**: Provides appropriate update commands
+
+## Version Comparison
+
+The command performs string-based version comparison after cleaning:
+- Removes non-numeric characters except dots (e.g., "v0.0.4" becomes "0.0.4")
+- Compares cleaned versions for equality
+- Marks as outdated if versions differ
 
 ## Update Strategies
 
-Based on results, different update approaches:
-
-### Single Plugin Update
+### Update Single Plugin
 ```bash
-wheels plugin update wheels-auth
+wheels plugin update bcrypt
 ```
 
-### Batch Update
+### Update All Outdated Plugins
 ```bash
 wheels plugin update:all
 ```
 
-### Preview First
-```bash
-wheels plugin update:all --dry-run
-```
-
-## Version Comparison
-
-The command performs semantic version comparison:
-- **Major**: Breaking changes (1.x.x → 2.x.x)
-- **Minor**: New features (x.1.x → x.2.x)
-- **Patch**: Bug fixes (x.x.1 → x.x.2)
-
-## Check Frequency
-
-Best practices for checking:
-- **Development**: Weekly or before starting new features
-- **Staging**: Before deployment to production
-- **Production**: Monthly or quarterly
-- **CI/CD**: As part of build process
-
 ## Error Handling
 
 ### Network Issues
+If ForgeBox cannot be reached, the plugin is marked with `[ERROR]` and listed separately.
+
+### No Plugins Installed
 ```
-⚠️  Could not check 1 plugin:
-  • wheels-payment
-```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
 
-### All Up to Date
-```
-✅ All plugins are up to date!
-```
-
-## Integration with CI/CD
-
-Use in automated workflows:
-
-```bash
-# Check and fail if outdated
-wheels plugin outdated --format=json | jq 'length > 0' && exit 1
-```
-
-## Performance
-
-- Checks are performed in parallel
-- Results cached for 5 minutes
-- Only checks plugins in box.json
-
-## Filtering Options
-
-Future versions will support:
-```bash
-# Check only production dependencies
-wheels plugin outdated --production
-
-# Check only dev dependencies
-wheels plugin outdated --dev
-
-# Check specific plugin
-wheels plugin outdated wheels-auth
+No plugins installed in /plugins folder
+Install plugins with: wheels plugin install <plugin-name>
 ```
 
 ## Notes
 
-- Requires internet connection
-- Checks against ForgeBox registry
-- Respects version constraints in box.json
-- Does not modify any files
+- Only checks plugins from `/plugins` folder (not box.json dependencies)
+- Only works with `cfwheels-plugins` type packages
+- Requires internet connection to query ForgeBox
+- Version check is performed in real-time (not cached)
+- Plugins are checked sequentially with status updates
+- Use `wheels plugin update:all` to update all outdated plugins at once
+- Dynamic table formatting adjusts column widths based on content
 
 ## See Also
 
-- [wheels plugin update](plugins-update.md) - Update single plugin
+- [wheels plugin update](plugins-update.md) - Update a single plugin
 - [wheels plugin update:all](plugins-update-all.md) - Update all plugins
 - [wheels plugin list](plugins-list.md) - List installed plugins
 - [wheels plugin info](plugins-info.md) - Show plugin details

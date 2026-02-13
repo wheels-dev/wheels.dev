@@ -5,9 +5,26 @@ Generate a controller with actions and optional views.
 ## Synopsis
 
 ```bash
-wheels generate controller [name] [actions] [options]
-wheels g controller [name] [actions] [options]
+wheels generate controller name=<controllerName> [options]
+
+#Can also be used as:
+wheels g controller name=<controllerName> [options]
 ```
+
+## CommandBox Parameter Syntax
+
+- **Positional parameters**: `wheels generate controller Products` (controller name)
+- **Named parameters**: `param=value` (e.g., `name=Products`, `actions=index,show`)
+- **Flag parameters**: `--flag` equals `flag=true` (e.g., `--crud` equals `crud=true`)
+- **Params with value**: `--param=value` equals `param=value` (e.g., `--actions=index,show`)
+
+**Recommended Format:**
+- Positional for name: `wheels generate controller Products`
+- Flags for options: `wheels generate controller Products --crud --force`
+
+**Not Allowed:**
+- Use `--actions` (plural) not `--action` (singular)
+- Don't mix positional and named parameters (causes errors)
 
 ## Description
 
@@ -23,53 +40,88 @@ The `wheels generate controller` command creates a new controller CFC file with 
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `actions` | Actions to generate (comma-delimited, default: CRUD for REST) | |
-| `--rest` | Generate RESTful controller with CRUD actions | `false` |
-| `--api` | Generate API controller (no view-related actions) | `false` |
-| `description` | Controller description | |
-| `--force` | Overwrite existing files | `false` |
+| `actions` | Actions to generate (comma-delimited) - **HIGHEST PRIORITY**, overrides `--crud` | `index` |
+| `crud` | Generate CRUD controller with actions (index, show, new, create, edit, update, delete) **and scaffold-style views** (index, show, new, edit, _form) | `false` |
+| `api` | Generate API controller (no views generated, only JSON/XML endpoints) | `false` |
+| `noViews` | Skip view generation (only generate controller) | `false` |
+| `description` | Controller description comment | `""` |
+| `force` | Overwrite existing files | `false` |
+
+## How It Works
+
+### Decision Tree
+
+```
+ACTION GENERATION:
+├─ Has --actions? → Use those actions ONLY (highest priority, overrides --crud)
+├─ Has --api? → Generate 5 actions (index, show, create, update, delete)
+├─ Has --crud? → Generate 7 actions (index, show, new, create, edit, update, delete)
+└─ Default → Generate 1 action (index)
+
+VIEW GENERATION:
+├─ Has --api? → NO VIEWS (JSON/XML responses)
+├─ Has --noViews? → NO VIEWS (explicitly skipped)
+├─ Has --crud? → 5 VIEWS (index, show, new, edit, _form)
+└─ Default → CREATE 1 VIEW PER ACTION
+```
+
+### Common Use Cases
+
+| What You Want | Command | Actions | Views |
+|---------------|---------|---------|-------|
+| Traditional web app (scaffold-style) | `--crud` | 7 | 5 (index, show, new, edit, _form) |
+| REST API (JSON/XML) | `--api` | 5 | None |
+| Single page controller | (no flags) | 1 (index) | 1 (index) |
+| Custom actions with views | `--actions=dashboard,export` | 2 | 2 (dashboard, export) |
+| Controller only (no views) | `--crud --noViews` | 7 | None |
+
+### --crud vs --api
+
+| Aspect | --crud | --api |
+|--------|--------|-------|
+| Purpose | Traditional web application | API endpoints |
+| Actions | 7 (includes new, edit forms) | 5 (no form actions) |
+| Views | 5 scaffold-style views | None |
+| Response | HTML pages with forms | JSON/XML data |
+| Use Case | User-facing web apps | Mobile apps, SPAs, integrations |
 
 ## Examples
 
 ### Basic controller
 ```bash
-wheels generate controller products
+wheels generate controller Products
 ```
-Creates:
-- `/controllers/Products.cfc` with `index` action
-- `/views/products/index.cfm`
+Creates: `Products.cfc` with `index` action and `index.cfm` view
 
-### Controller with multiple actions
+### Controller with custom actions
 ```bash
-wheels generate controller products actions="index,show,new,create,edit,update,delete"
+wheels generate controller Products --actions=dashboard,reports,export
 ```
-Creates controller with all CRUD actions and corresponding views.
+Creates: `Products.cfc` with 3 custom actions and 3 views
 
-### RESTful controller
+### CRUD controller (scaffold-style)
 ```bash
-wheels generate controller products --rest
+wheels generate controller Products --crud
 ```
-Automatically generates all RESTful actions:
-- `index` - List all products
-- `show` - Show single product
-- `new` - New product form
-- `create` - Create product
-- `edit` - Edit product form
-- `update` - Update product
-- `delete` - Delete product
+Creates: `Products.cfc` with 7 CRUD actions + 5 views (index, show, new, edit, _form)
 
-### API controller
+### API controller (no views)
 ```bash
-wheels generate controller api/products --api
+wheels generate controller Orders --api
 ```
-Creates:
-- `/controllers/api/Products.cfc` with JSON responses
-- No view files
+Creates: `Orders.cfc` with 5 API actions, no views
 
-### Custom actions
+### Controller without views
 ```bash
-wheels generate controller reports actions="dashboard,monthly,yearly,export"
+wheels generate controller Products --crud --noViews
 ```
+Creates: `Products.cfc` with 7 actions, no views
+
+### Priority override example
+```bash
+wheels generate controller Products --crud --actions=dashboard
+```
+Creates: `Products.cfc` with only `dashboard` action (--actions overrides --crud)
 
 ## Generated Code
 
@@ -77,14 +129,42 @@ wheels generate controller reports actions="dashboard,monthly,yearly,export"
 ```cfc
 component extends="Controller" {
 
-    function init() {
-        // Constructor
-    }
+  /**
+	* Controller config settings
+	**/
+	function config() {
 
+	}
+
+    /**
+     * index action
+     */
     function index() {
-        products = model("Product").findAll();
+        // TODO: Implement index action
     }
+}
+```
 
+### Controller with Description
+```cfc
+/**
+ * Handles user management operations
+ */
+component extends="Controller" {
+
+  /**
+	* Controller config settings
+	**/
+	function config() {
+
+	}
+
+    /**
+     * index action
+     */
+    function index() {
+        // TODO: Implement index action
+    }
 }
 ```
 
@@ -92,115 +172,170 @@ component extends="Controller" {
 ```cfc
 component extends="Controller" {
 
-    function init() {
-        // Constructor
-    }
+	function config() {
+		verifies(except="index,new,create", params="key", paramsTypes="integer", handler="objectNotFound");
+	}
 
-    function index() {
-        products = model("Product").findAll();
-    }
+	/**
+	* View all Products
+	**/
+	function index() {
+		products=model("product").findAll();
+	}
 
-    function show() {
-        product = model("Product").findByKey(params.key);
-        if (!IsObject(product)) {
-            flashInsert(error="Product not found");
-            redirectTo(action="index");
-        }
-    }
+	/**
+	* View Product
+	**/
+	function show() {
+		product=model("product").findByKey(params.key);
+	}
 
-    function new() {
-        product = model("Product").new();
-    }
+	/**
+	* Add New Product
+	**/
+	function new() {
+		product=model("product").new();
+	}
 
-    function create() {
-        product = model("Product").new(params.product);
-        if (product.save()) {
-            flashInsert(success="Product created successfully");
-            redirectTo(action="index");
-        } else {
-            renderView(action="new");
-        }
-    }
+	/**
+	* Create Product
+	**/
+	function create() {
+		product=model("product").create(params.product);
+		if(product.hasErrors()){
+			renderView(action="new");
+		} else {
+			redirectTo(action="index", success="Product successfully created");
+		}
+	}
 
-    function edit() {
-        product = model("Product").findByKey(params.key);
-        if (!IsObject(product)) {
-            flashInsert(error="Product not found");
-            redirectTo(action="index");
-        }
-    }
+	/**
+	* Edit Product
+	**/
+	function edit() {
+		product=model("product").findByKey(params.key);
+	}
 
-    function update() {
-        product = model("Product").findByKey(params.key);
-        if (IsObject(product) && product.update(params.product)) {
-            flashInsert(success="Product updated successfully");
-            redirectTo(action="index");
-        } else {
-            renderView(action="edit");
-        }
-    }
+	/**
+	* Update Product
+	**/
+	function update() {
+		product=model("product").findByKey(params.key);
+		if(product.update(params.product)){
+			redirectTo(action="index", success="Product successfully updated");
+		} else {
+			renderView(action="edit");
+		}
+	}
 
-    function delete() {
-        product = model("Product").findByKey(params.key);
-        if (IsObject(product) && product.delete()) {
-            flashInsert(success="Product deleted successfully");
-        } else {
-            flashInsert(error="Could not delete product");
-        }
-        redirectTo(action="index");
-    }
+	/**
+	* Delete Product
+	**/
+	function delete() {
+		product=model("product").deleteByKey(params.key);
+		redirectTo(action="index", success="Product successfully deleted");
+	}
+
+	/**
+	* Redirect away if verifies fails, or if an object can't be found
+	**/
+	function objectNotFound() {
+		redirectTo(action="index", error="That Product wasn't found");
+	}
 
 }
 ```
 
 ### API Controller
 ```cfc
-component extends="Controller" {
+/**
+ * API endpoint for order processing
+ */
+component extends="wheels.Controller" {
 
     function init() {
         provides("json");
+		filters(through="setJsonResponse");
     }
 
+    /**
+     * GET /orders
+     * Returns a list of all orders
+     */
     function index() {
-        products = model("Product").findAll();
-        renderWith(products);
+        local.orders = model("order").findAll();
+        renderWith(data={ orders=local.orders });
     }
 
+    /**
+     * GET /orders/:key
+     * Returns a specific order by ID
+     */
     function show() {
-        product = model("Product").findByKey(params.key);
-        if (IsObject(product)) {
-            renderWith(product);
+        local.order = model("order").findByKey(params.key);
+
+        if (IsObject(local.order)) {
+            renderWith(data={ order=local.order });
         } else {
-            renderWith({error: "Product not found"}, status=404);
+            renderWith(data={ error="Record not found" }, status=404);
         }
     }
 
+    /**
+     * POST /orders
+     * Creates a new order
+     */
     function create() {
-        product = model("Product").new(params.product);
-        if (product.save()) {
-            renderWith(product, status=201);
+        local.order = model("order").new(params.order);
+
+        if (local.order.save()) {
+            renderWith(data={ order=local.order }, status=201);
         } else {
-            renderWith({errors: product.allErrors()}, status=422);
+            renderWith(data={ error="Validation failed", errors=local.order.allErrors() }, status=422);
         }
     }
 
+    /**
+     * PUT /orders/:key
+     * Updates an existing order
+     */
     function update() {
-        product = model("Product").findByKey(params.key);
-        if (IsObject(product) && product.update(params.product)) {
-            renderWith(product);
+        local.order = model("order").findByKey(params.key);
+
+        if (IsObject(local.order)) {
+            local.order.update(params.order);
+
+            if (local.order.hasErrors()) {
+                renderWith(data={ error="Validation failed", errors=local.order.allErrors() }, status=422);
+            } else {
+                renderWith(data={ order=local.order });
+            }
         } else {
-            renderWith({errors: product.allErrors()}, status=422);
+            renderWith(data={ error="Record not found" }, status=404);
         }
     }
 
+    /**
+     * DELETE /orders/:key
+     * Deletes a order
+     */
     function delete() {
-        product = model("Product").findByKey(params.key);
-        if (IsObject(product) && product.delete()) {
-            renderWith({message: "Product deleted"});
+        local.order = model("order").findByKey(params.key);
+
+        if (IsObject(local.order)) {
+            local.order.delete();
+            renderWith(data={}, status=204);
         } else {
-            renderWith({error: "Could not delete"}, status=400);
+            renderWith(data={ error="Record not found" }, status=404);
         }
     }
+
+	/**
+	* Set Response to JSON
+	*/
+	private function setJsonResponse() {
+		params.format = "json";
+	}
 
 }
 ```
@@ -252,45 +387,50 @@ Add routes in `/config/routes.cfm`:
 
 ### Traditional Routes
 ```cfm
-<cfset get(name="products", to="products##index")>
-<cfset get(name="product", to="products##show")>
-<cfset post(name="products", to="products##create")>
+<cfscript>
+mapper()
+    .get(name="products", to="products##index")
+    .get(name="product", to="products##show")
+    .post(name="products", to="products##create")
+    .wildcard()
+.end();
+</cfscript>
 ```
 
 ### RESTful Resources
 ```cfm
-<cfset resources("products")>
-```
-
-### Nested Resources
-```cfm
-<cfset namespace("api")>
-    <cfset resources("products")>
-</cfset>
+<cfscript>
+mapper()
+    .resources("products")
+    .wildcard()
+.end();
+</cfscript>
 ```
 
 ## Testing
 
 Generate tests alongside controllers:
 ```bash
-wheels generate controller products --rest
-wheels generate test controller products
+wheels generate controller name=products --crud
+wheels generate test controller name=products
 ```
 
 ## Best Practices
 
 1. Use plural names for resource controllers
 2. Keep controllers focused on single resources
-3. Use `--rest` for standard CRUD operations
-4. Implement proper error handling
-5. Add authentication in `init()` method
-6. Use filters for common functionality
+3. Use `--crud` for standard web app CRUD operations (with views and forms)
+4. Use `--api` for API endpoints (JSON/XML, no views)
+5. Use `--actions` when you need custom actions (HIGHEST PRIORITY - overrides `--crud`)
+6. Implement proper error handling
+7. Add authentication in `config()` method
+8. Use filters for common functionality
 
 ## Common Patterns
 
 ### Authentication Filter
 ```cfc
-function init() {
+function config() {
     filters(through="authenticate", except="index,show");
 }
 

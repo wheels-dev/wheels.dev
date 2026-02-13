@@ -16,44 +16,44 @@ Wheels CLI is a CommandBox module that provides a comprehensive set of tools for
 
 ## Documentation Structure
 
-### 📚 [Command Reference](commands/README.md)
+### [Command Reference](commands/README.md)
 Complete reference for all CLI commands organized by category:
-- [Core Commands](commands/core/init.md) - Essential commands like init, reload, watch
+- [Core Commands](commands/core/init.md) - Essential commands like init, reload.
 - [Code Generation](commands/generate/app.md) - Generate applications, models, controllers, views
-- [Database Commands](commands/database/database-management.md) - Complete database management and migrations
-- [Testing Commands](commands/testing/test.md) - Run tests and generate coverage
-- [Configuration](commands/config/config-list.md) - Manage application settings
+- [Database Commands](commands/database/db-create.md) - Complete database management and migrations
+- [Testing Commands](commands/test/test-run.md) - Run tests and generate coverage
+- [Configuration](commands/config/config-dump.md) - Manage application settings
 - [And more...](commands/README.md)
 
-### 🚀 [Quick Start Guide](guides/quick-start.md)
+### [Quick Start Guide](guides/quick-start.md)
 Get up and running with Wheels CLI in minutes. Learn how to:
 - Install Wheels CLI
 - Create your first application
 - Generate CRUD scaffolding
 - Run tests and migrations
 
-### 📖 Guides
+### Guides
 
 #### Development Guides
-- [Service Architecture](cli-guides/service-architecture.md) - Understand the CLI's architecture
-- [Creating Custom Commands](cli-guides/creating-commands.md) - Extend the CLI with your own commands
-- [Template System](cli-guides/template-system.md) - Customize code generation templates
-- [Testing Guide](cli-guides/testing.md) - Write and run tests effectively
+- [Service Architecture](guides/service-architecture.md) - Understand the CLI's architecture
+- [Creating Custom Commands](guides/creating-commands.md) - Extend the CLI with your own commands
+- [Template System](guides/template-system.md) - Customize code generation templates
+- [Testing Guide](guides/testing.md) - Write and run tests effectively
 
 #### Best Practices
-- [Migration Guide](cli-guides/migrations.md) - Database migration best practices
-- [Security Guide](commands/security/security.md) - Security scanning and hardening
-- [Performance Guide](commands/performance/optimize-performance.md) - Optimization techniques
+- [Migration Guide](guides/migrations.md) - Database migration best practices
+- [Security Guide](guides/security.md) - Security scanning and hardening
+- [Performance Guide](guides/performance.md) - Optimization techniques
 
-### 📋 Reference
-- [Configuration Options](configuration.md) - All available configuration settings
-- [Template Variables](cli-guides/template-system.md) - Variables available in templates
+### Reference
+- [Configuration Options](reference/configuration.md) - All available configuration settings
+- [Template Variables](reference/templates.md) - Variables available in templates
 - [Exit Codes](reference/exit-codes.md) - Understanding command exit codes
-- [Environment Variables](commands/environment/env-setup.md) - Environment configuration
+- [Environment Variables](reference/environment-variables.md) - Environment configuration
 
 ## Key Features
 
-### 🛠️ Code Generation
+### Code Generation
 
 Generate complete applications or individual components:
 
@@ -70,7 +70,7 @@ wheels generate controller users --rest
 wheels generate view users index
 ```
 
-### 🗄️ Database Management
+### Database Management
 
 Complete database lifecycle management:
 
@@ -90,7 +90,7 @@ wheels db status            # Check migration status
 wheels db rollback          # Rollback migrations
 ```
 
-### 🧪 Testing
+### Testing
 
 Comprehensive testing support:
 
@@ -106,13 +106,11 @@ wheels test:watch            # Watch mode
 wheels test:coverage         # Generate coverage reports
 ```
 
-### 👀 Development Tools
+### Development Tools
 
 Enhance your development workflow:
 
 ```bash
-# Watch for file changes
-wheels watch
 
 # Reload application
 wheels reload development
@@ -129,7 +127,7 @@ wheels security scan
    # macOS/Linux
    curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add -
    or
-	 brew install commandbox
+	brew install commandbox
 
    # Windows
    choco install commandbox
@@ -170,7 +168,7 @@ wheels security scan
 
 ## Contributing
 
-We welcome contributions! See our [Contributing Guide](/3.0.0/guides/working-with-wheels/contributing-to-wheels) for details on:
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details on:
 - Reporting issues
 - Suggesting features
 - Submitting pull requests
@@ -179,21 +177,21 @@ We welcome contributions! See our [Contributing Guide](/3.0.0/guides/working-wit
 ## Recent Updates
 
 ### Version 3.0.0
-- 🆕 Modernized service architecture
-- 🆕 Enhanced testing capabilities with watch mode
-- 🆕 Security scanning and performance optimization
-- 🆕 Plugin and environment management
-- 🆕 Improved code generation with more options
-- 🔧 Better error handling and user feedback
-- 📚 Comprehensive documentation
+- Modernized service architecture
+- Enhanced testing capabilities with watch mode
+- Security scanning and performance optimization
+- Plugin and environment management
+- Improved code generation with more options
+- Better error handling and user feedback
+- Comprehensive documentation
 
 ## Quick Links
 
 - [All Commands](commands/README.md) - Complete command reference
-- [Quick Start](quick-start.md) - Get started in minutes
-- [Creating Commands](cli-guides/creating-commands.md) - Extend the CLI
-- [Service Architecture](cli-guides/service-architecture.md) - Technical deep dive
-- [Testing Guide](cli-guides/testing.md) - Testing best practices
+- [Quick Start](guides/quick-start.md) - Get started in minutes
+- [Creating Commands](guides/creating-commands.md) - Extend the CLI
+- [Service Architecture](guides/service-architecture.md) - Technical deep dive
+- [Testing Guide](guides/testing.md) - Testing best practices
 
 ## License
 
@@ -201,4 +199,4 @@ Wheels CLI is open source software licensed under the Apache License 2.0. See [L
 
 ---
 
-Ready to get started? Head to the [Quick Start Guide](quick-start.md) or explore the [Command Reference](commands/README.md).
+Ready to get started? Head to the [Quick Start Guide](guides/quick-start.md) or explore the [Command Reference](commands/README.md).

@@ -1,12 +1,33 @@
 # dbmigrate create blank
 
+
 Create an empty database migration file with up and down methods.
 
 ## Synopsis
 
 ```bash
-wheels dbmigrate create blank --name=<name> [options]
+wheels dbmigrate create blank <name>
 ```
+
+## CommandBox Parameter Syntax
+
+This command supports multiple parameter formats:
+
+- **Positional parameters**: `wheels dbmigrate create blank addIndexes` (name as positional)
+- **Named parameters**: `name=value` (e.g., `name=addIndexes`, `description="Add indexes"`)
+- **Flag parameters**: `--flag=value` (e.g., `--name=addIndexes`)
+
+**Parameter Mixing Rules:**
+
+**ALLOWED:**
+- Positional: `wheels dbmigrate create blank addIndexes`
+- All named: `name=addIndexes description="Custom migration"`
+- Positional + named: `wheels dbmigrate create blank addIndexes description="Add indexes"`
+
+**NOT ALLOWED:**
+- Mixing positional + named for same parameter: `wheels dbmigrate create blank addIndexes name=other`
+
+**Recommendation:** Use positional for name, named for optional parameters: `wheels dbmigrate create blank addIndexes description="My migration"`
 
 ## Description
 
@@ -19,37 +40,38 @@ The `dbmigrate create blank` command generates a new empty migration file with t
 - **Required:** Yes
 - **Description:** The name of the migration (will be prefixed with timestamp)
 
-### `--datasource`
-- **Type:** String
-- **Default:** Application default
-- **Description:** Specify the datasource this migration targets
 
 ### `--description`
 - **Type:** String
 - **Default:** Empty
 - **Description:** Add a description comment to the migration file
 
-### `--template`
-- **Type:** String
-- **Default:** `blank`
-- **Description:** Use a custom template for the migration
-
 ## Examples
 
 ### Create a basic empty migration
 ```bash
+# Positional (recommended)
+wheels dbmigrate create blank add_custom_indexes
+
+# OR flag syntax
 wheels dbmigrate create blank --name=add_custom_indexes
+
+# OR named
+wheels dbmigrate create blank name=add_custom_indexes
 ```
 
 ### Create migration with description
 ```bash
+# Positional + named (recommended)
+wheels dbmigrate create blank update_user_permissions description="Add role-based permissions to users"
+
+# OR all flags
 wheels dbmigrate create blank --name=update_user_permissions --description="Add role-based permissions to users"
+
+# OR all named
+wheels dbmigrate create blank name=update_user_permissions description="Add role-based permissions to users"
 ```
 
-### Create migration for specific datasource
-```bash
-wheels dbmigrate create blank --name=legacy_data_cleanup --datasource=legacyDB
-```
 
 ## Generated File Structure
 
@@ -185,7 +207,7 @@ Within your blank migration, you can use these helper methods:
 - `addColumn(table, column, type, options)` - Add a column
 - `removeColumn(table, column)` - Remove a column
 - `changeColumn(table, column, type, options)` - Modify a column
-- `addIndex(table, column, options)` - Add an index
+- `addIndex(table, columnNames, unique, indexName)` - Add an index
 - `removeIndex(table, column)` - Remove an index
 - `execute(sql)` - Execute raw SQL
 - `announce(message)` - Output a message during migration

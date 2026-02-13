@@ -1,216 +1,337 @@
 # wheels plugin update:all
 
-Update all installed Wheels plugins to their latest versions.
+Update all installed Wheels plugins to their latest versions from ForgeBox.
 
-## Synopsis
+## Usage
 
 ```bash
-wheels plugin update:all [--dry-run] [--force]
+wheels plugin update:all [--dryRun]
 ```
+
+## Parameters
+
+| Parameter | Required | Type    | Description                                        |
+|-----------|----------|---------|----------------------------------------------------|
+| `dryRun` | No       | boolean | Preview updates without actually installing them   |
 
 ## Description
 
-The `wheels plugin update:all` command checks all installed plugins for available updates and updates them to their latest versions. It handles dependencies automatically and can preview changes before applying them.
+The `plugin update:all` command checks all installed plugins in the `/plugins` folder against ForgeBox and updates any outdated plugins to their latest versions. It provides a clear summary of what will be updated and handles each plugin update sequentially.
 
-## Options
+### Features
 
-### --dry-run
-Show what would be updated without actually updating.
-- **Default**: false
-
-### --force
-Force update even if already at latest version.
-- **Default**: false
+- Checks all plugins for updates in one command
+- Color-coded status indicators for each plugin
+- Detailed update summary
+- dryRun mode to preview changes
+- Individual plugin update tracking
+- Helpful error reporting
 
 ## Examples
 
 ### Update all plugins
+
 ```bash
 wheels plugin update:all
 ```
 
-### Preview updates
-```bash
-wheels plugin update:all --dry-run
+**Output (with updates available):**
+```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
+
+  bcrypt                                  [OUTDATED] 0.0.3 -> 0.0.4
+  shortcodes                              [OUTDATED] 0.0.3 -> 0.0.4
+  wheels-test                             [OK] v1.0.0
+
+===========================================================
+
+Found 2 outdated plugins
+
+Updating Plugins:
+
+Plugin                Current         Latest          Status
+---------------------------------------------------------------
+bcrypt                0.0.3           0.0.4           [UPDATE]
+shortcodes            0.0.3           0.0.4           [UPDATE]
+
+-----------------------------------------------------------
+
+Updating bcrypt from 0.0.3 to 0.0.4...
+[CommandBox installation output...]
+[OK] bcrypt updated successfully
+
+Updating shortcodes from 0.0.3 to 0.0.4...
+[CommandBox installation output...]
+[OK] shortcodes updated successfully
+
+===========================================================
+  Update Summary
+===========================================================
+
+[OK] 2 plugins updated successfully
+
+Updated plugins:
+  - bcrypt (0.0.3 -> 0.0.4)
+  - shortcodes (0.0.3 -> 0.0.4)
+
+Commands:
+  wheels plugin list              View all installed plugins
+  wheels plugin outdated          Check for more updates
 ```
 
-### Force update all
-```bash
-wheels plugin update:all --force
-```
-
-## Output Example
-
-### Checking Phase
-```
-🔄 Checking for plugin updates...
-
-Checking wheels-auth... update available (2.0.0 → 2.1.0)
-Checking wheels-api-builder... up to date (1.5.0)
-Checking wheels-cache... update available (3.0.1 → 3.1.0)
-Checking wheels-validation... up to date (2.2.0)
-
-Updates available:
-
-  📦 wheels-auth: 2.0.0 → 2.1.0
-  📦 wheels-cache: 3.0.1 → 3.1.0
-
-Update 2 plugins? (y/N):
-```
-
-### Update Phase
-```
-Updating wheels-auth...
-  ✅ Updated successfully!
-
-Updating wheels-cache...
-  ✅ Updated successfully!
-
-Update Summary:
-
-✅ 2 plugins updated successfully
-❌ 0 plugins failed to update
-⚠️  0 plugins could not be checked
-
-To see all installed plugins:
-  wheels plugin list
-```
-
-## Dry Run Mode
-
-Preview changes without updating:
+### All plugins up to date
 
 ```bash
-wheels plugin update:all --dry-run
+wheels plugin update:all
 ```
 
-Output:
+**Output:**
 ```
-Updates available:
+===========================================================
+  Checking for Plugin Updates
+===========================================================
 
-  📦 wheels-auth: 2.0.0 → 2.1.0
-  📦 wheels-cache: 3.0.1 → 3.1.0
+  bcrypt                                  [OK] v0.0.4
+  shortcodes                              [OK] v0.0.4
+  wheels-test                             [OK] v1.0.0
 
-Dry run mode - no updates will be performed
-Remove --dry-run to actually update plugins
+===========================================================
+
+[OK] All plugins are already up to date!
+
+No updates required.
+
+Commands:
+  wheels plugin list              View all installed plugins
+  wheels plugin outdated          Check for updates
+```
+
+### dryRun mode (preview only)
+
+```bash
+wheels plugin update:all --dryRun
+```
+
+**Output:**
+```
+===========================================================
+  Checking for Plugin Updates (DRY RUN)
+===========================================================
+
+  bcrypt                                  [OUTDATED] 0.0.3 -> 0.0.4
+  shortcodes                              [OUTDATED] 0.0.3 -> 0.0.4
+  wheels-test                             [OK] v1.0.0
+
+===========================================================
+
+Found 2 outdated plugins
+
+Would Update:
+
+Plugin                Current         Latest
+---------------------------------------------------------------
+bcrypt                0.0.3           0.0.4
+shortcodes            0.0.3           0.0.4
+
+-----------------------------------------------------------
+
+[DRY RUN] No updates performed
+
+To perform these updates:
+  wheels plugin update:all
+```
+
+### With some failures
+
+```bash
+wheels plugin update:all
+```
+
+**Output:**
+```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
+
+  bcrypt                                  [OUTDATED] 0.0.3 -> 0.0.4
+  problematic-plugin                      [ERROR] Could not check version
+  shortcodes                              [OK] v0.0.4
+
+===========================================================
+
+Found 1 outdated plugin
+
+Updating Plugins:
+
+Plugin                Current         Latest          Status
+---------------------------------------------------------------
+bcrypt                0.0.3           0.0.4           [UPDATE]
+
+-----------------------------------------------------------
+
+Updating bcrypt from 0.0.3 to 0.0.4...
+[CommandBox installation output...]
+[OK] bcrypt updated successfully
+
+===========================================================
+  Update Summary
+===========================================================
+
+[OK] 1 plugin updated successfully
+
+Updated plugins:
+  - bcrypt (0.0.3 -> 0.0.4)
+
+Could not check 1 plugin:
+  - problematic-plugin
+
+Commands:
+  wheels plugin list              View all installed plugins
+  wheels plugin outdated          Check for more updates
+```
+
+### No plugins installed
+
+```bash
+wheels plugin update:all
+```
+
+**Output:**
+```
+===========================================================
+  Checking for Plugin Updates
+===========================================================
+
+No plugins installed in /plugins folder
+Install plugins with: wheels plugin install <plugin-name>
 ```
 
 ## Update Process
 
-1. **Discovery**: Finds all installed plugins
-2. **Version Check**: Queries ForgeBox for latest versions
-3. **Comparison**: Identifies outdated plugins
-4. **Confirmation**: Asks for user confirmation (unless --force)
-5. **Sequential Updates**: Updates each plugin in dependency order
-6. **Summary**: Reports success/failure for each plugin
+1. **Display Header**: Shows command is checking for updates
+2. **Plugin Discovery**: Scans `/plugins` folder for installed plugins
+3. **Version Checking**: Queries ForgeBox for each plugin's latest version
+4. **Status Display**: Shows color-coded status for each plugin
+5. **Update List**: Displays table of plugins that need updating
+6. **Sequential Updates**: Updates each plugin one at a time
+7. **Progress Tracking**: Shows success/failure for each update
+8. **Summary Report**: Displays final update statistics
+9. **Helpful Commands**: Suggests next steps
 
-## Dependency Resolution
+## Status Indicators
 
-The command handles dependencies intelligently:
-- Updates dependencies before dependent plugins
-- Resolves version conflicts automatically
-- Warns about breaking changes
+During checking, each plugin displays:
+- **[OUTDATED]** (yellow) - Update available, will be updated
+- **[OK]** (green) - Already at latest version
+- **[ERROR]** (red) - Could not check version
 
-## Batch Operations
+During updates:
+- **[UPDATE]** (yellow) - Plugin will be updated
+- **[OK]** (green) - Update completed successfully
+- **[ERROR]** (red) - Update failed
 
-### Selective Updates
-While update:all updates everything, you can:
+## dryRun Mode
+
+Use `--dryRun` to preview updates without actually performing them. This is useful for:
+- Checking what would be updated before committing
+- Testing in CI/CD pipelines
+- Reviewing changes before production updates
+- Planning maintenance windows
+
 ```bash
-# Update only production dependencies
-wheels plugin update:all --production
-
-# Update only dev dependencies
-wheels plugin update:all --dev
+wheels plugin update:all --dryRun
 ```
+
+The dryRun mode:
+- Checks all plugins for updates
+- Shows what would be updated
+- Does NOT download or install anything
+- Provides command to perform actual updates
+
+## Update Strategy
+
+The command updates plugins sequentially:
+1. One plugin at a time (safer than parallel)
+2. Continues updating even if one fails
+3. Tracks success/failure for each plugin
+4. Provides detailed summary at the end
 
 ## Error Handling
 
-### Partial Failures
-If some plugins fail to update:
+### Version Check Failures
+Plugins where version cannot be checked are listed separately and skipped for updates.
+
+### Update Failures
+If a plugin update fails:
+- The failure is tracked
+- Other updates continue
+- Error is reported in summary
+- Plugin can be updated individually later
+
+### Network Issues
+If ForgeBox cannot be reached:
 ```
-Update Summary:
+===========================================================
+  Checking for Plugin Updates
+===========================================================
 
-✅ 3 plugins updated successfully
-❌ 1 plugin failed to update
-⚠️  1 plugin could not be checked
+  bcrypt                                  [ERROR] Could not check version
+  shortcodes                              [ERROR] Could not check version
 
-Failed updates:
-- wheels-payment: Network timeout
+===========================================================
 
-To retry failed updates individually:
-  wheels plugin update wheels-payment
-```
+[ERROR] Unable to check for updates
 
-### Rollback on Failure
-Each plugin update is isolated - failures don't affect other updates.
-
-## Progress Indicators
-
-For many plugins, shows progress:
-```
-🔄 Checking for plugin updates... [5/10]
-```
-
-## Conflict Resolution
-
-When conflicts arise:
-```
-Dependency conflict detected:
-  wheels-auth 2.1.0 requires wheels-validation >=3.0.0
-  Current: wheels-validation 2.2.0
-
-Options:
-1. Update wheels-validation first
-2. Skip wheels-auth update
-3. Force update (may cause issues)
-
-Choose option (1-3):
+Could not check 2 plugins due to network issues.
+Please check your internet connection and try again.
 ```
 
 ## Best Practices
 
-1. **Regular Updates**: Run weekly in development
-2. **Test First**: Always test in development environment
-3. **Dry Run**: Use --dry-run before production updates
-4. **Incremental**: Update frequently to avoid large jumps
-5. **Backup**: Backup before bulk updates
+1. **Regular Updates**: Run weekly or monthly to stay current
+2. **Test First**: Always test updates in development before production
+3. **Use dryRun**: Preview updates with `--dryRun` before applying
+4. **Read Release Notes**: Check ForgeBox for breaking changes
+5. **Commit First**: Commit your code before updating plugins
+6. **Update Individually**: For critical plugins, use `wheels plugin update <name>`
 
-## Performance
+## Integration with Other Commands
 
-- Checks are performed in parallel for speed
-- Updates are sequential for safety
-- Results are cached for 5 minutes
-
-## Common Workflows
-
-### Development Routine
+### Check Before Updating
 ```bash
-# Monday morning routine
+# See which plugins are outdated
 wheels plugin outdated
-wheels plugin update:all --dry-run
+
+# Update all outdated plugins
 wheels plugin update:all
-wheels test app
 ```
 
-### Production Updates
+### Update Individual Plugins
 ```bash
-# Production update process
-wheels plugin update:all --dry-run > updates.log
-# Review updates.log
-wheels plugin update:all
-wheels reload
+# Update all plugins except one
+wheels plugin update:all --dryRun  # See what would update
+wheels plugin update plugin1        # Update individually
+wheels plugin update plugin2
 ```
 
 ## Notes
 
-- Requires internet connection
-- Updates modify box.json
-- Some plugins may require restart
-- Updates are logged for troubleshooting
+- Only updates plugins from `/plugins` folder
+- Only works with `cfwheels-plugins` type packages
+- Updates are performed sequentially (not in parallel)
+- Each update is independent - failures don't affect other updates
+- Requires internet connection to query ForgeBox and download updates
+- Version checks are performed in real-time (not cached)
+- Progress is shown for each plugin update
+- After updates, plugins may require application reload
+- Failed updates can be retried individually with `wheels plugin update <name>`
+- The command does NOT update plugins that are already at latest version
 
 ## See Also
 
-- [wheels plugin update](plugins-update.md) - Update single plugin
-- [wheels plugin outdated](plugins-outdated.md) - Check for updates
+- [wheels plugin update](plugins-update.md) - Update a single plugin
+- [wheels plugin outdated](plugins-outdated.md) - Check for outdated plugins
 - [wheels plugin list](plugins-list.md) - List installed plugins
-- [wheels plugin info](plugins-info.md) - Show plugin details
+- [wheels plugin info](plugins-info.md) - View plugin details

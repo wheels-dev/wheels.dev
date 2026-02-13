@@ -16,11 +16,6 @@ The `wheels info` command displays information about the Wheels CLI module and i
 
 This command has no arguments.
 
-## Options
-
-| Option | Description |
-|--------|-------------|
-| `--help` | Show help information |
 
 ## Output
 
@@ -41,8 +36,8 @@ The command displays:
 '--'   '--'`--' `--' `----' `----'`--'`----'      `-----'`-----'`--' 
 ============================ Wheels CLI ============================
 Current Working Directory: /Users/username/myapp
-CommandBox Module Root: /Users/username/.CommandBox/cfml/modules/cfwheels-cli/
-Current Wheels Version in this directory: 2.5.0
+CommandBox Module Root: /Users/username/.CommandBox/cfml/modules/wheels-cli/
+Current Wheels Version in this directory: 3.0.0-SNAPSHOT
 ====================================================================
 ```
 

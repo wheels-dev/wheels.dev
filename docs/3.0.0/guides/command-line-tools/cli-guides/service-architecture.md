@@ -28,7 +28,7 @@ Commands are the user-facing interface:
 
 ```cfc
 // commands/wheels/generate/model.cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     property name="codeGenerationService" inject="CodeGenerationService@wheels-cli";
     property name="migrationService" inject="MigrationService@wheels-cli";
@@ -244,7 +244,7 @@ binder.map("MyNewService@wheels-cli")
 ### 3. Use in Commands
 
 ```cfc
-component extends="wheels.cli.models.BaseCommand" {
+component extends="wheels-cli.models.BaseCommand" {
     
     property name="myNewService" inject="MyNewService@wheels-cli";
     
@@ -305,7 +305,7 @@ component {
 ### Unit Testing Services
 
 ```cfc
-component extends="testbox.system.BaseSpec" {
+component extends="wheels.Testbox" {
     
     function beforeAll() {
         // Create service instance

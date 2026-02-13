@@ -1,10 +1,16 @@
+---
+description: >-
+  Learn how to manage configuration in Wheels using environment variables,
+  settings files, and CLI tools for configuration management.
+---
+
 # Configuration Management Guide
 
-This guide covers configuration management in CFWheels, including working with environment variables, settings files, and the CLI tools for managing configuration.
+This guide covers configuration management in Wheels, including working with environment variables, settings files, and the CLI tools for managing configuration.
 
 ## Overview
 
-CFWheels provides flexible configuration management through:
+Wheels provides flexible configuration management through:
 - Environment-specific settings files
 - Environment variables (.env files)
 - CLI commands for configuration management
@@ -14,7 +20,7 @@ CFWheels provides flexible configuration management through:
 
 ### .env File Format
 
-CFWheels supports two formats for .env files:
+Wheels supports two formats for .env files:
 
 #### Properties Format (Recommended)
 ```bash
@@ -50,7 +56,7 @@ CACHE_ENABLED=false
 
 ### Environment-Specific Files
 
-CFWheels automatically loads environment-specific .env files:
+Wheels automatically loads environment-specific .env files:
 
 1. `.env` - Base configuration (always loaded first)
 2. `.env.{environment}` - Environment-specific overrides (loaded second)
@@ -88,7 +94,7 @@ API_ORDERS_URL=${API_BASE_URL}/orders
 
 ### Type Casting
 
-CFWheels automatically casts certain values:
+Wheels automatically casts certain values:
 
 ```bash
 # Booleans (cast to true/false)

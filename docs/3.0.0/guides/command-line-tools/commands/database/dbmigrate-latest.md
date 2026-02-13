@@ -28,37 +28,80 @@ None.
 ## Example Output
 
 ```
-╔═══════════════════════════════════════════════╗
-║          Running Pending Migrations           ║
-╚═══════════════════════════════════════════════╝
+==================================================
+    Updating Database Schema to Latest Version
+==================================================
 
-Current Version: 20240110090000
-Target Version: 20240125160000
+Latest Version:           20260123185445
+==================================================
+               Migration Execution
+==================================================
 
-Migrating...
+Target Version:           20260123185445
+--------------------------------------------------
+Sending: http://0.0.0.0:8080/?controller=wheels&action=wheels&view=cli&command=migrateTo&version=20260123185445
+[SUCCESS]: Call to bridge was successful.
+[SUCCESS]: Migration completed successfully!
 
-→ Running 20240115120000_create_orders_table.cfc
-  Creating table: orders
-  Adding indexes...
-  ✓ Success (0.125s)
+Sending: http://0.0.0.0:8080/?controller=wheels&action=wheels&view=cli&command=info
+[SUCCESS]: Call to bridge was successful.
+==================================================
+            Database Migration Status
+==================================================
 
-→ Running 20240120140000_add_status_to_orders.cfc
-  Adding column: status to orders
-  ✓ Success (0.089s)
 
-→ Running 20240125160000_create_categories_table.cfc
-  Creating table: categories
-  Adding foreign keys...
-  ✓ Success (0.143s)
+Database Information
+--------------------------------------------------
+Datasource:               dbapp_test
+Database Type:            MySQL
 
-╔═══════════════════════════════════════════════╗
-║            Migration Complete                 ║
-╚═══════════════════════════════════════════════╝
+Migration Status
+--------------------------------------------------
+Total Migrations:         17
+Available Migrations:     14
+Current Version:          20260116163515
+Latest Version:           20260123185445
+--------------------------------------------------
 
-Previous Version: 20240110090000
-Current Version:  20240125160000
-Migrations Run:   3
-Total Time:       0.357s
+Migration Files
+--------------------------------------------------
+╔══════════╤══════════════════════════════════════════════════════╗
+║ STATUS   │ FILE                                                 ║
+╠══════════╪══════════════════════════════════════════════════════╣
+║          │ 20260123185445_cli_create_table_user                 ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260123183026_cli_remove_table_blog_posts           ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260123182948_create_blog_posts_table               ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260122173254_cli_create_table_user_roles           ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119145114_cli_create_column_parts_feature       ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119144642_cli_blank_students                    ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119112924_cli_create_table_students             ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260119111943_cli_create_table_books                ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116170453_cli_create_table_users                ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116170311_cli_create_table_users                ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116165727_cli_create_column_user_required_field ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116164432_cli_create_column_product_price       ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116164211_cli_create_column_user_bio            ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║          │ 20260116163907_cli_create_column_user_email          ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║ migrated │ 20260116163515_cli_blank_create_reporting_procedures ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║ migrated │ 20260116160315_cli_remove_table_resources            ║
+╟──────────┼──────────────────────────────────────────────────────╢
+║ migrated │ 20260116155320_cli_remove_table_users                ║
+╚══════════╧══════════════════════════════════════════════════════╝
 ```
 
 ## Migration Execution
@@ -111,7 +154,7 @@ function up() {
 ```cfc
 function up() {
     transaction {
-        addColumn(table="users", column="email", type="string");
+        addColumn(table="users", columnNames="email", type="string");
     }
 }
 ```
@@ -120,7 +163,7 @@ function up() {
 ```cfc
 function up() {
     transaction {
-        addIndex(table="users", columns="email", unique=true);
+        addIndex(table="users", columnNames="email", unique=true);
     }
 }
 ```
@@ -129,26 +172,11 @@ function up() {
 ```cfc
 function up() {
     transaction {
-        changeColumn(table="products", column="price", type="decimal", precision=10, scale=2);
+        changeColumn(table="products", columnNames="price", type="decimal", precision=10, scale=2);
     }
 }
 ```
 
-## Error Handling
-
-If a migration fails:
-
-```
-→ Running 20240120140000_add_status_to_orders.cfc
-  Adding column: status to orders
-  ✗ ERROR: Column 'status' already exists
-
-Migration failed at version 20240115120000
-Error: Column 'status' already exists in table 'orders'
-
-To retry: Fix the migration file and run 'wheels dbmigrate latest' again
-To skip: Run 'wheels dbmigrate up' to run one at a time
-```
 
 ## Best Practices
 

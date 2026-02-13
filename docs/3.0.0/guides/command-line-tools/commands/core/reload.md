@@ -18,13 +18,15 @@ The `wheels reload` command reloads your Wheels application, clearing caches and
 | Argument | Description | Default |
 |----------|-------------|---------|
 | `mode` | Reload mode: `development`, `testing`, `maintenance`, `production` | `development` |
-| `password` | **Required** - The reload password configured in your application | None |
+| `password` |The reload password configured in your application | Empty |
 
-## Options
+## Configuration
 
-| Option | Description |
-|--------|-------------|
-| `--help` | Show help information |
+Set the reload password in your Wheels `settings.cfm`:
+
+```cfml
+set(reloadPassword="mySecretPassword");
+```
 
 ## Reload Modes
 
@@ -61,41 +63,11 @@ wheels reload mode=production password=mypassword
 - Minimal error information
 - Optimized performance
 
-## Examples
-
-### Basic reload (development mode)
-```bash
-wheels reload password=wheels
-```
-
-### Reload in production mode
-```bash
-wheels reload mode=production password=mySecretPassword
-```
-
-### Using the alias
-```bash
-wheels r password=wheels
-```
-
-### Reload for testing
-```bash
-wheels reload mode=testing password=wheels
-```
-
 ## Security
 
 - The reload password must match the one configured in your Wheels application
 - Password is sent via URL parameter to the running application
 - Always use a strong password in production environments
-
-## Configuration
-
-Set the reload password in your Wheels `settings.cfm`:
-
-```cfml
-set(reloadPassword="mySecretPassword");
-```
 
 ## Notes
 
@@ -114,6 +86,5 @@ set(reloadPassword="mySecretPassword");
 
 ## See Also
 
-- [wheels init](init.md) - Initialize application configuration
-- [wheels watch](watch.md) - Auto-reload on file changes
+- [wheels init](init.md) - Initialize application configuration=
 - [wheels info](info.md) - Display application information

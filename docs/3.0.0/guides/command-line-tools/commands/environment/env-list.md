@@ -21,7 +21,6 @@ The `wheels env list` command displays all configured environments in your Wheel
 | `--check` | Validate environment configurations | `false` |
 | `--filter` | Filter by environment type | All |
 | `--sort` | Sort by (name, type, modified) | `name` |
-| `--help` | Show help information |
 
 ## Examples
 
@@ -54,25 +53,36 @@ wheels env list --filter=production
 
 ### Basic Output
 ```
-Available Environments
-=====================
+==================================================
+              Available Environments
+==================================================
 
-  NAME          TYPE         DATABASE           STATUS
-  development * Development  wheels_dev         ✓ Active
-  testing       Testing      wheels_test        ✓ Valid
-  staging       Staging      wheels_staging     ✓ Valid
-  production    Production   wheels_prod        ✓ Valid
-  qa            Custom       wheels_qa          ⚠ Issues
 
-* = Current environment
+╔═════════════╤═════════════╤══════════╤════════════╤════════╤═════════╗
+║ Name        │ Type        │ Database │ Status     │ Active │ DB Type ║
+╠═════════════╪═════════════╪══════════╪════════════╪════════╪═════════╣
+║ development │ Development │ mydb_app │ [OK] Valid │ NO     │ mysql   ║
+╚═════════════╧═════════════╧══════════╧════════════╧════════╧═════════╝
+
+
+Total Environments:       1
+Current Environment:
+[INFO]: * = Currently active environment
+[INFO]: Use 'wheels env list --verbose' for detailed information
 ```
 
 ### Verbose Output
 ```
-Available Environments
-=====================
+==================================================
+              Available Environments
+==================================================
+
+Total Environments:       1
+Current Environment:
+
 
 development * [Active]
+--------------------------------------------------
   Type:        Development
   Database:    wheels_dev
   Datasource:  wheels_development
@@ -82,6 +92,7 @@ development * [Active]
   Modified:    2024-01-10 14:23:45
   
 testing
+--------------------------------------------------
   Type:        Testing
   Database:    wheels_test
   Datasource:  wheels_testing
@@ -91,6 +102,7 @@ testing
   Modified:    2024-01-08 09:15:22
 
 staging
+--------------------------------------------------
   Type:        Staging
   Database:    wheels_staging
   Datasource:  wheels_staging
@@ -138,10 +150,9 @@ staging
 ## Environment Status
 
 ### Status Indicators
-- `✓ Valid` - Configuration is valid and working
-- `✓ Active` - Currently active environment
-- `⚠ Issues` - Configuration issues detected
-- `✗ Invalid` - Configuration errors
+- `OK Valid` - Configuration is valid and working
+- `Active` - Currently active environment
+- `WARN Invalid` - Configuration errors
 
 ### Validation Checks
 When using `--check`:
@@ -187,6 +198,9 @@ wheels env list --filter=issues
 ```bash
 # Environments containing "prod"
 wheels env list --filter="*prod*"
+
+# Can also be written as
+wheels env list --filter=*prod*
 ```
 
 ## Sorting Options
@@ -206,24 +220,6 @@ wheels env list --sort=type
 wheels env list --sort=modified
 ```
 
-## Integration
-
-### Script Usage
-```bash
-# Get current environment
-current=$(wheels env list --format=json | jq -r '.current')
-
-# List all environment names
-wheels env list --format=json | jq -r '.environments[].name'
-```
-
-### CI/CD Usage
-```bash
-# Verify environment exists
-if wheels env list | grep -q "staging"; then
-    wheels env switch staging
-fi
-```
 
 ## Environment Details
 
@@ -237,17 +233,12 @@ When using `--verbose`, shows:
 2. **Database**:
    - Database name
    - Datasource name
-   - Connection status
 
 3. **Settings**:
    - Debug mode
    - Cache settings
    - Custom configurations
 
-4. **Validation**:
-   - Syntax check
-   - Connection test
-   - Dependencies
 
 ## Troubleshooting
 
@@ -265,23 +256,6 @@ When using `--verbose`, shows:
 - Check WHEELS_ENV variable
 - Verify environment.cfm logic
 - Set environment explicitly
-
-## Export Capabilities
-
-### Export Configuration
-```bash
-# Export all environments
-wheels env list --format=json > environments.json
-
-# Export for documentation
-wheels env list --format=markdown > ENVIRONMENTS.md
-```
-
-### Environment Comparison
-```bash
-# Compare environments
-wheels env list --compare=development,production
-```
 
 ## Best Practices
 

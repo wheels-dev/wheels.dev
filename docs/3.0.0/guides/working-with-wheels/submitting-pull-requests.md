@@ -39,15 +39,6 @@ Add the main Wheels repository as an "upstream" remote to keep your fork in sync
 git remote add upstream https://github.com/wheels-dev/wheels.git
 ```
 
-### 4. Set Up Docker Test Environment
-
-Set up the Docker-based test environment to ensure your changes work across all supported platforms:
-
-```bash
-# Start the minimal test environment
-docker compose --profile quick-test up -d
-```
-
 See [Using the Test Environment](using-the-test-environment.md) for more detailed instructions.
 
 ## Contribution Workflow
@@ -96,9 +87,9 @@ The Docker test environment allows you to test your changes against multiple CFM
 
 ```bash
 # Start the test environment with specific components
-docker compose --profile lucee --profile mysql --profile ui up -d
+docker compose up lucee5 mysql testui -d
 
-# Access the TestUI at http://localhost:3001
+# Access the TestUI at http://localhost:3000
 ```
 
 #### Running Tests
@@ -108,10 +99,10 @@ Use the TestUI or run tests directly:
 ```bash
 # Run all tests across all engines (from TestUI)
 # or run specific tests via command line:
-docker exec -it cfwheels-test-lucee5 sh -c "cd /cfwheels-test-suite && box wheels test app"
+docker exec -it wheels-test-lucee5 sh -c "cd /wheels-test-suite && box wheels test app"
 
 # Run a specific test
-docker exec -it cfwheels-test-lucee5 sh -c "cd /cfwheels-test-suite && box wheels test app TestName"
+docker exec -it wheels-test-lucee5 sh -c "cd /wheels-test-suite && box wheels test app TestName"
 ```
 
 Make sure your changes:
@@ -193,7 +184,7 @@ Always include tests for your changes:
 ### Update Documentation
 
 If your changes affect user-facing functionality, update the relevant documentation:
-- Update guides in the `/guides` directory
+- Update guides in the `/docs` directory
 - Add inline documentation to code
 - Update the CHANGELOG.md if requested
 
