@@ -7,10 +7,10 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				// 1. Converts boolean true/false to integer 1/0 (IsNumeric check)
 				// 2. Calls get("adapterName") for date columns which doesn't exist in this context
 
-				// roles
-				execute("INSERT INTO roles (name, createdat, updatedat) VALUES ('admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-				execute("INSERT INTO roles (name, createdat, updatedat) VALUES ('editor', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-				execute("INSERT INTO roles (name, createdat, updatedat) VALUES ('user', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				// roles (explicit IDs because CockroachDB unique_rowid() doesn't produce sequential integers)
+				execute("INSERT INTO roles (id, name, createdat, updatedat) VALUES (1, 'admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO roles (id, name, createdat, updatedat) VALUES (2, 'editor', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO roles (id, name, createdat, updatedat) VALUES (3, 'user', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
 				// users
 				execute("INSERT INTO users (first_name, last_name, email, password_hash, profile_picture, profile_url, status, role_id, createdat, updatedat) VALUES ('Peter', 'Amiri', 'petera@pai.com', '$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu', 'avatar-rounded.webp', '', true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
