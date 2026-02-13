@@ -517,9 +517,20 @@ component extends="app.Controllers.Controller" {
             }
 
         } catch (any e) {
-            // TEMPORARY DEBUG
-            writeOutput("<pre>BLOG SHOW ERROR:#chr(10)#Message: #e.message##chr(10)#Detail: #e.detail##chr(10)#TagContext: #serializeJSON(e.tagContext[1])#</pre>");
-            abort;
+            model("Log").log(
+                category = "wheels.blog",
+                level = "ERROR",
+                message = "Blog post not found",
+                details = {
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "slug": params.slug,
+                    "ip_address": cgi.REMOTE_ADDR
+                },
+                userId = GetSignedInUserId()
+            );
+            redirectTo(action="index");
+            return;
         }
     }
 
