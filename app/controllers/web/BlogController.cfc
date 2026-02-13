@@ -517,21 +517,9 @@ component extends="app.Controllers.Controller" {
             }
 
         } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Blog post not found",
-                details = {
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "slug": params.slug,
-                    "ip_address": cgi.REMOTE_ADDR
-                },
-                userId = GetSignedInUserId()
-            );
-            // If an error occurs or blog not found, redirect to blog index
-            redirectTo(action="index");
-            return;
+            // TEMPORARY: show actual error for debugging
+            writeOutput("<pre>BLOG SHOW ERROR:#chr(10)#Message: #e.message##chr(10)#Detail: #e.detail##chr(10)#</pre>");
+            abort;
         }
     }
 
