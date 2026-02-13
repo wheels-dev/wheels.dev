@@ -8,26 +8,27 @@
 				t.string(columnNames='role_name', default='', null=true, limit='255');
 				t.timestamps();
 				t.create();
-				addRecord(table='contributor_roles', role_name="Software Developer");
-				addRecord(table='contributor_roles', role_name="Maintainer");
-				addRecord(table='contributor_roles', role_name="Plugin/Extension Author");
-				addRecord(table='contributor_roles', role_name="Documentation Writer");
-				addRecord(table='contributor_roles', role_name="Quality Assurance Engineer");
-				addRecord(table='contributor_roles', role_name="UI/UX Developer");
-				addRecord(table='contributor_roles', role_name="DevOps Engineer");
-				addRecord(table='contributor_roles', role_name="Community Manager");
-				addRecord(table='contributor_roles', role_name="Issue Triager");
-				addRecord(table='contributor_roles', role_name="Project Manager");
+				// Use execute() because addRecord() calls get("adapterName") for timestamp columns which fails on CockroachDB
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Software Developer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Maintainer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Plugin/Extension Author', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Documentation Writer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Quality Assurance Engineer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('UI/UX Developer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('DevOps Engineer', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Community Manager', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Issue Triager', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+				execute("INSERT INTO contributor_roles (role_name, createdat, updatedat) VALUES ('Project Manager', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 	    	}
 	    	catch (any ex){
 	    		hasError = true;
 		      	catchObject = ex;
 	    	}
-	      
+
 	    </cfscript>
 	     <cfif hasError>
 	    	<cftransaction action="rollback" />
-	    	<cfthrow 
+	    	<cfthrow
 			    detail = "#catchObject.detail#"
 			    errorCode = "1"
 			    message = "#catchObject.message#"
@@ -48,11 +49,11 @@
 	    		hasError = true;
 		      	catchObject = ex;
 	    	}
-	      
+
 	    </cfscript>
 	    <cfif hasError>
 	    	<cftransaction action="rollback" />
-	    	<cfthrow 
+	    	<cfthrow
 			    detail = "#catchObject.detail#"
 			    errorCode = "1"
 			    message = "#catchObject.message#"

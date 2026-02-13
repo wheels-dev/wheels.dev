@@ -24,7 +24,7 @@
   	<cftransaction>
 	    <cfscript>
 	    	try{
-				t = createTable(name='email_templates', force=false, id=true, primaryKey='id'); 
+				t = createTable(name='email_templates', force=false, id=true, primaryKey='id');
 				t.string(columnNames='title', default='', null=false, limit='255');
 				t.string(columnNames='subject', default='', null=false, limit='255');
 				t.string(columnNames='welcome_message', default='', null=true, limit='255');
@@ -37,57 +37,30 @@
 				t.timestamps();
 				t.create();
 
-				addRecord(table = 'email_templates', title = 'Reset Password', subject="Reset Your Password", welcome_message=""
-				, message="We received a request to reset the password for your account associated with this email address. If you made this request please click the button below to create a new password."
-				, footer_note="If you did not request reset password, you can safely ignore this email."
-				, footer_greatings="Thank you for being a part of the Wheels community."
-				, button_title="Reset Password" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				// Use execute() because addRecord() calls get("adapterName") for timestamp columns which fails on CockroachDB
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Reset Password', 'Reset Your Password', '', 'We received a request to reset the password for your account associated with this email address. If you made this request please click the button below to create a new password.', 'If you did not request reset password, you can safely ignore this email.', 'Thank you for being a part of the Wheels community.', 'Reset Password', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-				addRecord(table = 'email_templates', title = 'Sign Up Account Verification', subject="Verify Your Account", welcome_message="Welcome to Wheels.dev!"
-				, message="Thank you for signing up. Please click the button below to verify your account and get started."
-				, footer_note="If you did not initiate this registration, feel free to disregard this email."
-				, footer_greatings="Thank you for becoming a part of the Wheels community."
-				, button_title="Verify Your Account" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Sign Up Account Verification', 'Verify Your Account', 'Welcome to Wheels.dev!', 'Thank you for signing up. Please click the button below to verify your account and get started.', 'If you did not initiate this registration, feel free to disregard this email.', 'Thank you for becoming a part of the Wheels community.', 'Verify Your Account', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-				addRecord(table = 'email_templates', title = 'Register Your Account', subject="No Account Found : Get Started with Wheels Today!", welcome_message=""
-				, message="We noticed you tried to reset your password using this email address, but it looks like there's no account associated with it. No worries &mdash; it happens! If you're new to Wheels, we would love to have you on board. <br><br>Click below to create your free account and start building powerful ColdFusion applications with ease."
-				, footer_note="If you believe this is a mistake or you already have an account with a different email, feel free to try again or contact our support team for help.<br><br>If you did not request reset password, you can safely ignore this email."
-				, footer_greatings=""
-				, button_title="Register here" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Register Your Account', 'No Account Found : Get Started with Wheels Today!', '', 'We noticed you tried to reset your password using this email address, but it looks like there''s no account associated with it. No worries &mdash; it happens! If you''re new to Wheels, we would love to have you on board. <br><br>Click below to create your free account and start building powerful ColdFusion applications with ease.', 'If you believe this is a mistake or you already have an account with a different email, feel free to try again or contact our support team for help.<br><br>If you did not request reset password, you can safely ignore this email.', '', 'Register here', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-				addRecord(table = 'email_templates', title = 'Publish Testimonial', subject="Your testimonial has been approved and published.", welcome_message=""
-				, message="Thank you for writing a testimonial. Your testimonial has been approved and published on the Wheels website."
-				, footer_note="If you did not submit this testimonial, feel free to disregard this email."
-				, footer_greatings="Thank you for being a part of the Wheels community."
-				, button_title="View Your Testimonial" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Publish Testimonial', 'Your testimonial has been approved and published.', '', 'Thank you for writing a testimonial. Your testimonial has been approved and published on the Wheels website.', 'If you did not submit this testimonial, feel free to disregard this email.', 'Thank you for being a part of the Wheels community.', 'View Your Testimonial', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-				addRecord(table = 'email_templates', title = 'Publish Blog', subject="Your blog post has been published", welcome_message=""
-				, message="We appreciate your contribution. Your blog post, is now live on the Wheels website."
-				, footer_note="If you have not published a blog post, feel free to disregard this email."
-				, footer_greatings="Thank you for being a part of the Wheels community."
-				, button_title="View Your Post" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Publish Blog', 'Your blog post has been published', '', 'We appreciate your contribution. Your blog post, is now live on the Wheels website.', 'If you have not published a blog post, feel free to disregard this email.', 'Thank you for being a part of the Wheels community.', 'View Your Post', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-				addRecord(table = 'email_templates', title = 'Publish comment', subject="Your comment has been reviewed and published", welcome_message=""
-				, message="Thank you for commenting on our blog post! Your comment is now live on the Wheels website."
-				, footer_note="If you did not submit this comment, feel free to disregard this email."
-				, footer_greatings="Thank you for being a part of the Wheels community."
-				, button_title="View Your Post" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Publish comment', 'Your comment has been reviewed and published', '', 'Thank you for commenting on our blog post! Your comment is now live on the Wheels website.', 'If you did not submit this comment, feel free to disregard this email.', 'Thank you for being a part of the Wheels community.', 'View Your Post', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 
-				addRecord(table = 'email_templates', title = 'Reject blog', subject="Blog Post Submission Update : Not Approved for Publication", welcome_message=""
-				, message="Thank you for submitting your blog post. After review, it has not been approved for publication."
-				, footer_note="If you have not published a blog post, feel free to disregard this email."
-				, footer_greatings="Thank you for being a part of the Wheels community."
-				, button_title="" ,closing_remarks="Happy Reporting,", team_signature="The Team Wheels");
+				execute("INSERT INTO email_templates (title, subject, welcome_message, message, footer_note, footer_greatings, button_title, closing_remarks, team_signature, createdat, updatedat) VALUES ('Reject blog', 'Blog Post Submission Update : Not Approved for Publication', '', 'Thank you for submitting your blog post. After review, it has not been approved for publication.', 'If you have not published a blog post, feel free to disregard this email.', 'Thank you for being a part of the Wheels community.', '', 'Happy Reporting,', 'The Team Wheels', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
 	    	}
 	    	catch (any ex){
 	    		hasError = true;
 		      	catchObject = ex;
 	    	}
-	      
+
 	    </cfscript>
 	     <cfif hasError>
 	    	<cftransaction action="rollback" />
-	    	<cfthrow 
+	    	<cfthrow
 			    detail = "#catchObject.detail#"
 			    errorCode = "1"
 			    message = "#catchObject.message#"
@@ -108,11 +81,11 @@
 	    		hasError = true;
 		      	catchObject = ex;
 	    	}
-	      
+
 	    </cfscript>
 	    <cfif hasError>
 	    	<cftransaction action="rollback" />
-	    	<cfthrow 
+	    	<cfthrow
 			    detail = "#catchObject.detail#"
 			    errorCode = "1"
 			    message = "#catchObject.message#"
