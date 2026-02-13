@@ -381,7 +381,7 @@ component extends="app.Controllers.Controller" {
         }
         try {
             blog.statusId = 7;
-            blog.is_deleted = true;
+            blog.is_deleted = 'true';
             blog.deletedAt = now();
             blog.deletedBy = GetSignedInUserId();
             blog.save();

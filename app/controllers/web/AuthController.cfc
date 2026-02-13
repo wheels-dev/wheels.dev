@@ -797,7 +797,7 @@ component extends="app.Controllers.Controller" {
         
         try {
             // Check if user already has a verification token
-            var existingToken = model("UserToken").findOne(where="user_id='#user.id#' AND status=false");
+            var existingToken = model("UserToken").findOne(where="user_id='#user.id#' AND status='false'");
             
             if (!isObject(existingToken)) {
                 // Generate a new verification token

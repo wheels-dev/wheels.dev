@@ -30,7 +30,7 @@ component extends="app.Models.Model" {
     
     // fetch all comments
     public function getAllComments(){
-        var comments = findAll(where='isPublished = true', include="User");
+        var comments = findAll(where="isPublished = 'true'", include="User");
         return comments;
     }
 }
