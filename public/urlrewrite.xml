@@ -64,6 +64,7 @@ If you do not use Tuckey or Commandbox, this file can be safely deleted.
   <!-- New rule for converting format after dot to format query parameter -->
   <rule enabled="true">
     <name>Convert dot to format parameter</name>
+    <condition type="request-uri" operator="notequal">^/miscellaneous/</condition>
     <from>^/(.*)\\.(\\w+)$</from>
     <to>/$1?format=$2</to>
   </rule>
@@ -71,7 +72,7 @@ If you do not use Tuckey or Commandbox, this file can be safely deleted.
   <!-- Main framework router rule - should be last -->
   <rule enabled="true">
     <name>Wheels pretty URLs</name>
-    <condition type="request-uri" operator="notequal">^/(cf_script|flex2gateway|jrunscripts|CFIDE/administrator|lucee/admin|cfformgateway|cffileservlet|lucee|files|img|images|css|js|wheels/public/assets|wheels/guides-assets|robots.txt|favicon.ico|sitemap.xml|index.cfm)</condition>
+    <condition type="request-uri" operator="notequal">^/(cf_script|flex2gateway|jrunscripts|CFIDE/administrator|lucee/admin|cfformgateway|cffileservlet|lucee|miscellaneous|files|img|images|css|js|wheels/public/assets|wheels/guides-assets|robots.txt|favicon.ico|sitemap.xml|index.cfm)</condition>
     <from>^/(.*)$</from>
     <to type="passthrough">/index.cfm/$1</to>
   </rule>
