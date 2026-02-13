@@ -162,22 +162,28 @@ function buildInsert(required string tableName, required query data, required nu
 		}
 	}
 
-	// Pre-scan batch to detect which columns contain date values in any row.
-	// This ensures NULL values in those columns get CAST too (CockroachDB
-	// requires consistent types across all rows in a multi-row VALUES clause).
-	var dateCols = {};
+	// Pre-scan batch to detect which columns are purely date columns.
+	// A column is a "date column" if it has at least one date value AND no
+	// non-date, non-null values. This ensures consistent types across all
+	// rows in a multi-row VALUES clause (CockroachDB requirement).
+	var dateColCandidates = {};  // columns with at least one date
+	var dateColExcluded = {};    // columns with a non-date non-null value
 	for (var r = arguments.startRow; r <= arguments.endRow; r++) {
 		for (var col in columns) {
 			var colLower = lCase(col);
-			if (!structKeyExists(boolCols, colLower) && !structKeyExists(dateCols, colLower)) {
-				var scanVal = arguments.data[col][r];
-				if (!isNull(scanVal) && isDate(scanVal) && !(isSimpleValue(scanVal) && scanVal == "")
-					&& (!isSimpleValue(scanVal) || reFind("(^\d{4}[-/]|^\{ts\s)", scanVal))) {
-					dateCols[colLower] = true;
+			if (structKeyExists(boolCols, colLower) || structKeyExists(dateColExcluded, colLower)) continue;
+			var scanVal = arguments.data[col][r];
+			if (!isNull(scanVal) && isSimpleValue(scanVal) && scanVal != "") {
+				if (isDate(scanVal)) {
+					dateColCandidates[colLower] = true;
+				} else {
+					dateColExcluded[colLower] = true;
+					structDelete(dateColCandidates, colLower);
 				}
 			}
 		}
 	}
+	var dateCols = dateColCandidates;
 
 	var valueClauses = [];
 	var params = {};
@@ -204,8 +210,7 @@ function buildInsert(required string tableName, required query data, required nu
 				var boolVal = (isBoolean(val) && val) || (isNumeric(val) && val == 1);
 				params[paramName] = { value: boolVal ? "true" : "false", cfsqltype: "cf_sql_varchar" };
 				arrayAppend(placeholders, "CAST(:#paramName# AS BOOLEAN)");
-			} else if (structKeyExists(dateCols, colLower) && isDate(val)
-				&& (!isSimpleValue(val) || reFind("(^\d{4}[-/]|^\{ts\s)", val))) {
+			} else if (structKeyExists(dateCols, colLower)) {
 				// Convert timestamps to ISO string to avoid JDBC {ts '...'} escape format
 				params[paramName] = { value: dateTimeFormat(val, "yyyy-MM-dd HH:nn:ss"), cfsqltype: "cf_sql_varchar" };
 				arrayAppend(placeholders, "CAST(:#paramName# AS TIMESTAMP)");
