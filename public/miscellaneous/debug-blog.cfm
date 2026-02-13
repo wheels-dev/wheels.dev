@@ -84,7 +84,75 @@ if (q4.recordCount > 0) {
 	writeOutput("  user #q4.id# (#q4.first_name#) deletedat: [#isNull(q4.deletedat) ? 'NULL' : q4.deletedat#]" & chr(10));
 }
 
-// 5. Check deletedat NULL vs empty string
+// 5. Test the exact kind of query Wheels ORM would generate
+writeOutput(chr(10) & "=== Simulating Wheels ORM generated SQL ===" & chr(10));
+
+// Wheels generates INNER JOINs for belongsTo with include=
+// and adds deletedat IS NULL for soft-delete on all joined tables
+try {
+	q_wheels = queryExecute("
+		SELECT blog_posts.id, blog_posts.title, blog_posts.slug
+		FROM blog_posts
+		INNER JOIN users ON users.id = blog_posts.created_by
+		INNER JOIN post_statuses ON post_statuses.id = blog_posts.status_id
+		WHERE blog_posts.slug = :slug
+		  AND blog_posts.status = 'Approved'
+		  AND blog_posts.is_published = 'true'
+		  AND blog_posts.deletedat IS NULL
+		  AND users.deletedat IS NULL
+		  AND post_statuses.deletedat IS NULL
+		LIMIT 1
+	", { slug: slug }, { datasource: TARGET_DS });
+	writeOutput("  Full simulated query: #q_wheels.recordCount# rows" & chr(10));
+	if (q_wheels.recordCount > 0) {
+		writeOutput("  id=#q_wheels.id# title=#q_wheels.title#" & chr(10));
+	}
+} catch (any e) {
+	writeOutput("  ERROR: #e.message#" & chr(10));
+	if (len(e.detail)) writeOutput("  Detail: #e.detail#" & chr(10));
+}
+
+// Test each condition incrementally
+writeOutput(chr(10) & "=== Testing conditions one by one ===" & chr(10));
+conditions = [
+	"blog_posts.deletedat IS NULL",
+	"blog_posts.status = 'Approved'",
+	"blog_posts.is_published = 'true'",
+	"users.deletedat IS NULL",
+	"post_statuses.deletedat IS NULL"
+];
+accumulated = "blog_posts.slug = '#slug#'";
+for (cond in conditions) {
+	accumulated &= " AND " & cond;
+	try {
+		qtest = queryExecute("
+			SELECT count(*) as cnt
+			FROM blog_posts
+			INNER JOIN users ON users.id = blog_posts.created_by
+			INNER JOIN post_statuses ON post_statuses.id = blog_posts.status_id
+			WHERE #accumulated#
+		", {}, { datasource: TARGET_DS });
+		writeOutput("  + #cond# => #qtest.cnt# rows" & chr(10));
+	} catch (any e) {
+		writeOutput("  + #cond# => ERROR: #e.message#" & chr(10));
+	}
+}
+
+// 5b. Test via Wheels framework if available
+writeOutput(chr(10) & "=== Testing via Wheels ORM (if available) ===" & chr(10));
+try {
+	testBlog = application.wheels.models.Blog.$findAll(
+		where="blog_posts.slug = '#slug#' AND status ='Approved' AND isPublished='true' ",
+		include="User,PostStatus",
+		returnAs="query",
+		maxRows=1
+	);
+	writeOutput("  Wheels ORM returned: #testBlog.recordCount# rows" & chr(10));
+} catch (any e) {
+	writeOutput("  Not available or error: #e.message#" & chr(10));
+}
+
+// 6. Check deletedat NULL vs empty string
 writeOutput(chr(10) & "=== deletedat NULL check ===" & chr(10));
 q5a = queryExecute("
 	SELECT count(*) as cnt FROM blog_posts WHERE deletedat IS NULL
