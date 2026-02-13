@@ -50,9 +50,9 @@ component extends="app.Models.Model" {
 
         mergedOptions.append(options, true);
 
-        conditions = "isApproved = 'true' AND displayPermission = 'true'";
+        conditions = "isApproved IS TRUE AND displayPermission IS TRUE";
         if (mergedOptions.onlyFeatured) {
-            conditions &= " AND isFeatured = 'true'";
+            conditions &= " AND isFeatured IS TRUE";
         }
 
         return model("Testimonial").findAll(

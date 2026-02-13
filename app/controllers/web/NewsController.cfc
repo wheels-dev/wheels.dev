@@ -42,7 +42,7 @@ component extends="app.Controllers.Controller" {
         try {
             var blogQuery = model("Blog").findAll(
                 select = "title, slug, content, postDate",
-                where  = "statusid <> 1 AND status = 'Approved' AND isPublished = 'true'",
+                where  = "statusid <> 1 AND status = 'Approved' AND isPublished IS TRUE",
                 order  = "createdAt DESC",
                 cache  = 10
             );
