@@ -46,7 +46,6 @@ tables = [
 	"modules",
 	"post_statuses",
 	"post_types",
-	"features",
 	"contributor_roles",
 	"settings",
 	"cached_releases",
@@ -65,7 +64,8 @@ tables = [
 	"password_resets",
 	"user_tokens",
 
-	// Phase 4: Blog content (depends on users + lookups)
+	// Phase 4: Content (depends on users + lookups)
+	"features",
 	"blog_posts",
 	"tags",
 	"blog_categories",
@@ -131,7 +131,7 @@ function targetCount(required string tableName) {
 function truncateTarget(required string tableName) {
 	try {
 		queryExecute(
-			'DELETE FROM "#arguments.tableName#"',
+			'TRUNCATE TABLE "#arguments.tableName#" CASCADE',
 			{},
 			{ datasource: TARGET_DS }
 		);
@@ -162,6 +162,22 @@ function buildInsert(required string tableName, required query data, required nu
 		}
 	}
 
+	// Pre-scan batch to detect which columns contain date values in any row.
+	// This ensures NULL values in those columns get CAST too (CockroachDB
+	// requires consistent types across all rows in a multi-row VALUES clause).
+	var dateCols = {};
+	for (var r = arguments.startRow; r <= arguments.endRow; r++) {
+		for (var col in columns) {
+			var colLower = lCase(col);
+			if (!structKeyExists(boolCols, colLower) && !structKeyExists(dateCols, colLower)) {
+				var scanVal = arguments.data[col][r];
+				if (!isNull(scanVal) && isDate(scanVal) && !(isSimpleValue(scanVal) && scanVal == "")) {
+					dateCols[colLower] = true;
+				}
+			}
+		}
+	}
+
 	var valueClauses = [];
 	var params = {};
 	var paramIdx = 0;
@@ -176,22 +192,25 @@ function buildInsert(required string tableName, required query data, required nu
 
 			if (isNull(val) || (isSimpleValue(val) && val == "" && !structKeyExists(boolCols, colLower))) {
 				params[paramName] = { value: "", null: true };
+				// For columns that have dates in other rows, cast NULL to match
+				if (structKeyExists(dateCols, colLower)) {
+					arrayAppend(placeholders, "CAST(:#paramName# AS TIMESTAMP)");
+				} else {
+					arrayAppend(placeholders, ":#paramName#");
+				}
 			} else if (structKeyExists(boolCols, colLower)) {
 				// Convert SQL Server BIT (1/0) to boolean string for CockroachDB
 				var boolVal = (isBoolean(val) && val) || (isNumeric(val) && val == 1);
 				params[paramName] = { value: boolVal ? "true" : "false", cfsqltype: "cf_sql_varchar" };
 				arrayAppend(placeholders, "CAST(:#paramName# AS BOOLEAN)");
-				continue;
-			} else if (isDate(val)) {
+			} else if (structKeyExists(dateCols, colLower)) {
 				// Convert timestamps to ISO string to avoid JDBC {ts '...'} escape format
 				params[paramName] = { value: dateTimeFormat(val, "yyyy-MM-dd HH:nn:ss"), cfsqltype: "cf_sql_varchar" };
 				arrayAppend(placeholders, "CAST(:#paramName# AS TIMESTAMP)");
-				continue;
 			} else {
 				params[paramName] = { value: val };
+				arrayAppend(placeholders, ":#paramName#");
 			}
-
-			arrayAppend(placeholders, ":#paramName#");
 		}
 		arrayAppend(valueClauses, "(#arrayToList(placeholders, ', ')#)");
 	}
@@ -348,12 +367,13 @@ try {
 	abort;
 }
 
-// Disable FK checks for the migration (CockroachDB supports this per-session)
+// Disable FK checks for the migration (CockroachDB specific)
 try {
-	queryExecute("SET session_replication_role = 'replica'", {}, { datasource: TARGET_DS });
-} catch (any e) {
-	// CockroachDB may not support this — FK ordering should handle it
-}
+	queryExecute("SET sql_safe_updates = false", {}, { datasource: TARGET_DS });
+} catch (any e) {}
+try {
+	queryExecute("SET CLUSTER SETTING kv.bulk_ingest.max_index_buffer_size = '128 MiB'", {}, { datasource: TARGET_DS });
+} catch (any e) {}
 
 writeOutput("#chr(10)#Migrating #arrayLen(tables)# tables...#chr(10)#");
 writeOutput(repeatString("-", 60) & chr(10));
