@@ -61,10 +61,16 @@ If you do not use Tuckey or Commandbox, this file can be safely deleted.
     <to type="forward">/sitemap/sitemap.xml</to>
   </rule>
 
+  <!-- Let miscellaneous/ requests pass through directly (no rewriting) -->
+  <rule enabled="true" match-type="regex">
+    <name>Miscellaneous passthrough</name>
+    <from>^/miscellaneous/.*</from>
+    <to last="true">-</to>
+  </rule>
+
   <!-- New rule for converting format after dot to format query parameter -->
   <rule enabled="true">
     <name>Convert dot to format parameter</name>
-    <condition type="request-uri" operator="notequal">^/miscellaneous/</condition>
     <from>^/(.*)\\.(\\w+)$</from>
     <to>/$1?format=$2</to>
   </rule>
