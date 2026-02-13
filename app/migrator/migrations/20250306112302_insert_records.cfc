@@ -9,7 +9,7 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				addRecord(table='Roles',name = "user");
 
 				// users
-				addRecord(table="users", first_name="Peter", last_name="Amiri", email="petera@pai.com", password_hash="$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu", profile_picture='avatar-rounded.webp', profile_url='', status=1, role_id=1);
+				addRecord(table="users", first_name="Peter", last_name="Amiri", email="petera@pai.com", password_hash="$2a$10$P27CV/m.aramHhIxJTmzzu4dxIGfNqHWzLgVGJJTLDpXymnt4jPZu", profile_picture='avatar-rounded.webp', profile_url='', status=true, role_id=1);
 
 				// categories
 				addRecord(table='categories', name='CLI', parent_id='', description='Learn about command-line tools, tips, and tricks for enhancing your development workflow using the command line.');
@@ -25,41 +25,41 @@ component extends="wheels.migrator.Migration" hint="insert records" {
 				addRecord(table='categories', name='Website', parent_id='', description='News, updates, and improvements related to the website, including UI/UX enhancements and new features.');
 
 				// post_types
-				addRecord(table='post_types', name='Standard Post', description='Regular blog post with a title, content, and optional featured image.', is_active=1);
-				addRecord(table='post_types', name='Video Post', description='Contains embedded videos from platforms like YouTube.', is_active=1);
-				addRecord(table='post_types', name='Gallery Post', description='Displays multiple images in a gallery or slideshow format.', is_active=1);
-				addRecord(table='post_types', name='Audio Post', description='Includes audio players for podcasts or music.', is_active=1);
-				addRecord(table='post_types', name='Quote Post', description='Highlights a specific quote with proper attribution.', is_active=1);
-				addRecord(table='post_types', name='Link Post', description='Focuses on sharing a link with a brief description.', is_active=1);
-				addRecord(table='post_types', name='Status Post', description='Short, social media-style updates or announcements.', is_active=1);
-				addRecord(table='post_types', name='Review Post', description='Reviews of products, services, or experiences with a rating system.', is_active=1);
-				addRecord(table='post_types', name='Tutorial/How-to Post', description='Step-by-step guides or instructional content.', is_active=1);
-				addRecord(table='post_types', name='News Post', description='Updates or news articles relevant to the audience.', is_active=1);
-				addRecord(table='post_types', name='Interview Post', description='Q&A format featuring interviews with experts or influencers.', is_active=1);
-				addRecord(table='post_types', name='Case Study Post', description='In-depth analysis or success stories.', is_active=1);
-				addRecord(table='post_types', name='List Post', description='Lists of tips, resources, or best practices (e.g., "Top 10...").', is_active=1);
-				addRecord(table='post_types', name='Event Post', description='Announcements or recaps of events, workshops, or webinars.', is_active=1);
-				addRecord(table='post_types', name='Opinion Post', description='Editorial or opinion pieces.', is_active=1);
+				addRecord(table='post_types', name='Standard Post', description='Regular blog post with a title, content, and optional featured image.', is_active=true);
+				addRecord(table='post_types', name='Video Post', description='Contains embedded videos from platforms like YouTube.', is_active=true);
+				addRecord(table='post_types', name='Gallery Post', description='Displays multiple images in a gallery or slideshow format.', is_active=true);
+				addRecord(table='post_types', name='Audio Post', description='Includes audio players for podcasts or music.', is_active=true);
+				addRecord(table='post_types', name='Quote Post', description='Highlights a specific quote with proper attribution.', is_active=true);
+				addRecord(table='post_types', name='Link Post', description='Focuses on sharing a link with a brief description.', is_active=true);
+				addRecord(table='post_types', name='Status Post', description='Short, social media-style updates or announcements.', is_active=true);
+				addRecord(table='post_types', name='Review Post', description='Reviews of products, services, or experiences with a rating system.', is_active=true);
+				addRecord(table='post_types', name='Tutorial/How-to Post', description='Step-by-step guides or instructional content.', is_active=true);
+				addRecord(table='post_types', name='News Post', description='Updates or news articles relevant to the audience.', is_active=true);
+				addRecord(table='post_types', name='Interview Post', description='Q&A format featuring interviews with experts or influencers.', is_active=true);
+				addRecord(table='post_types', name='Case Study Post', description='In-depth analysis or success stories.', is_active=true);
+				addRecord(table='post_types', name='List Post', description='Lists of tips, resources, or best practices (e.g., "Top 10...").', is_active=true);
+				addRecord(table='post_types', name='Event Post', description='Announcements or recaps of events, workshops, or webinars.', is_active=true);
+				addRecord(table='post_types', name='Opinion Post', description='Editorial or opinion pieces.', is_active=true);
 
 				// post_statuses
-				addRecord(table='post_statuses', name='Draft', description='Post is saved but not published. Only visible to admins and authors.', is_active=1);
-				addRecord(table='post_statuses', name='Posted', description='Post is live and visible to the public.', is_active=1);
-				addRecord(table='post_statuses', name='Scheduled', description='Post is set to go live at a future date/time.', is_active=1);
-				addRecord(table='post_statuses', name='Pending Review', description='Post is awaiting review and approval before publishing.', is_active=1);
-				addRecord(table='post_statuses', name='Archived', description='Post is no longer public but saved for record-keeping.', is_active=1);
-				addRecord(table='post_statuses', name='Private', description='Post is only visible to specific users (e.g., admins or logged-in users).', is_active=1);
-				addRecord(table='post_statuses', name='Trash', description='Post is marked for deletion but can be restored or permanently deleted later.', is_active=1);
+				addRecord(table='post_statuses', name='Draft', description='Post is saved but not published. Only visible to admins and authors.', is_active=true);
+				addRecord(table='post_statuses', name='Posted', description='Post is live and visible to the public.', is_active=true);
+				addRecord(table='post_statuses', name='Scheduled', description='Post is set to go live at a future date/time.', is_active=true);
+				addRecord(table='post_statuses', name='Pending Review', description='Post is awaiting review and approval before publishing.', is_active=true);
+				addRecord(table='post_statuses', name='Archived', description='Post is no longer public but saved for record-keeping.', is_active=true);
+				addRecord(table='post_statuses', name='Private', description='Post is only visible to specific users (e.g., admins or logged-in users).', is_active=true);
+				addRecord(table='post_statuses', name='Trash', description='Post is marked for deletion but can be restored or permanently deleted later.', is_active=true);
 
 				// features
-				addRecord(table="features", title="A Complete Package", description="A full framework with tonnes of functionality - once you've started, you'll wonder how you ever did CFML development before!", is_active=1, created_by=1);
-				addRecord(table="features", title="RESTful Routing", description="<a href='https://guides.cfwheels.org/cfwheels-guides/handling-requests-with-controllers/routing'>Resource based routing</a> for GET, POST, PUT, PATCH &amp; DELETE", is_active=1, created_by=1);
-				addRecord(table="features", title="Database Migrations", description="Built in <a href='https://guides.cfwheels.org/cfwheels-guides/database-interaction-through-models/database-migrations'>database migration system</a> even across different DBMS", is_active=1, created_by=1);
-				addRecord(table="features", title="Automatic Documentation", description="Use our <a href='https://guides.cfwheels.org/cfwheels-guides/working-with-cfwheels/documenting-your-code'>built in doc viewer</a> which grows with your application with only minor markup required", is_active=1, created_by=1);
-				addRecord(table="features", title="Hybrid Development", description="Switch in and out of Wheels conventions - it's your call; Need to use a bog standard query? Go ahead!", is_active=1, created_by=1);
-				addRecord(table="features", title="Full Documentation", description="Lots of lovely <a href='https://guides.cfwheels.org/' title='Documentation'>documentation</a> available with <a href='https://guides.cfwheels.org/cfwheels-guides/introduction/readme/beginner-tutorial-hello-world'>tutorials</a> and a <a href='https://api.cfwheels.org/''>complete API reference</a>", is_active=1, created_by=1);
-				addRecord(table="features", title="Stay Relevant", description="Wheels uses industry established concepts, such as <a href='https://guides.cfwheels.org/cfwheels-guides/introduction/frameworks-and-cfwheels'>MVC</a> and <a href='https://guides.cfwheels.org/cfwheels-guides/database-interaction-through-models/object-relational-mapping'>ORM</a>. These essential principles make being a polyglot a reality!", is_active=1, created_by=1);
-				addRecord(table="features", title="A Helpful Community", description="Get in touch via our <a href='https://github.com/wheels-dev/wheels/discussions'>GitHub Discussions</a> - we're newbie friendly and just want to help out.", is_active=1, created_by=1);
-				addRecord(table="features", title="Good Organization", description="Stop thinking about how to organize your code and deal with your business specific problems instead.", is_active=1, created_by=1);
+				addRecord(table="features", title="A Complete Package", description="A full framework with tonnes of functionality - once you've started, you'll wonder how you ever did CFML development before!", is_active=true, created_by=1);
+				addRecord(table="features", title="RESTful Routing", description="<a href='https://guides.cfwheels.org/cfwheels-guides/handling-requests-with-controllers/routing'>Resource based routing</a> for GET, POST, PUT, PATCH &amp; DELETE", is_active=true, created_by=1);
+				addRecord(table="features", title="Database Migrations", description="Built in <a href='https://guides.cfwheels.org/cfwheels-guides/database-interaction-through-models/database-migrations'>database migration system</a> even across different DBMS", is_active=true, created_by=1);
+				addRecord(table="features", title="Automatic Documentation", description="Use our <a href='https://guides.cfwheels.org/cfwheels-guides/working-with-cfwheels/documenting-your-code'>built in doc viewer</a> which grows with your application with only minor markup required", is_active=true, created_by=1);
+				addRecord(table="features", title="Hybrid Development", description="Switch in and out of Wheels conventions - it's your call; Need to use a bog standard query? Go ahead!", is_active=true, created_by=1);
+				addRecord(table="features", title="Full Documentation", description="Lots of lovely <a href='https://guides.cfwheels.org/' title='Documentation'>documentation</a> available with <a href='https://guides.cfwheels.org/cfwheels-guides/introduction/readme/beginner-tutorial-hello-world'>tutorials</a> and a <a href='https://api.cfwheels.org/''>complete API reference</a>", is_active=true, created_by=1);
+				addRecord(table="features", title="Stay Relevant", description="Wheels uses industry established concepts, such as <a href='https://guides.cfwheels.org/cfwheels-guides/introduction/frameworks-and-cfwheels'>MVC</a> and <a href='https://guides.cfwheels.org/cfwheels-guides/database-interaction-through-models/object-relational-mapping'>ORM</a>. These essential principles make being a polyglot a reality!", is_active=true, created_by=1);
+				addRecord(table="features", title="A Helpful Community", description="Get in touch via our <a href='https://github.com/wheels-dev/wheels/discussions'>GitHub Discussions</a> - we're newbie friendly and just want to help out.", is_active=true, created_by=1);
+				addRecord(table="features", title="Good Organization", description="Stop thinking about how to organize your code and deal with your business specific problems instead.", is_active=true, created_by=1);
 
 			} catch (any e) {
 				local.exception = e;
