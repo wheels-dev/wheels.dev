@@ -11,7 +11,7 @@ component extends="wheels.migrator.Migration" hint="creates logs table" {
                 t.text(columnNames='details', null=true);
                 t.string(columnNames='ip_address', null=true, limit=50);
                 t.string(columnNames='user_agent', null=true, limit=255);
-                t.integer(columnNames='user_id', null=true, limit=36);
+                t.integer(columnNames='user_id', null=true);
                 t.timestamps();
                 t.create();
 
