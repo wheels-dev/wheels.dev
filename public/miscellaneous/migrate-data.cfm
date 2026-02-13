@@ -180,8 +180,12 @@ function buildInsert(required string tableName, required query data, required nu
 				// Convert SQL Server BIT (1/0) to boolean string for CockroachDB
 				var boolVal = (isBoolean(val) && val) || (isNumeric(val) && val == 1);
 				params[paramName] = { value: boolVal ? "true" : "false", cfsqltype: "cf_sql_varchar" };
-				// Use a CAST in the SQL instead of parameterized value
-				arrayAppend(placeholders, "(:#paramName#)::BOOLEAN");
+				arrayAppend(placeholders, "CAST(:#paramName# AS BOOLEAN)");
+				continue;
+			} else if (isDate(val)) {
+				// Convert timestamps to ISO string to avoid JDBC {ts '...'} escape format
+				params[paramName] = { value: dateTimeFormat(val, "yyyy-MM-dd HH:nn:ss"), cfsqltype: "cf_sql_varchar" };
+				arrayAppend(placeholders, "CAST(:#paramName# AS TIMESTAMP)");
 				continue;
 			} else {
 				params[paramName] = { value: val };
