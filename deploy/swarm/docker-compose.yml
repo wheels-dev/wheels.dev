@@ -11,6 +11,7 @@ services:
         parallelism: 1
         delay: 15s
         order: start-first
+        failure_action: rollback
       rollback_config:
         parallelism: 1
         delay: 10s
@@ -46,7 +47,11 @@ services:
       HEALTHCHECK_URI: "http://127.0.0.1:8888/"
       BOX_SERVER_JVM_ARGS: "-Xms2g -Xmx3g"
     healthcheck:
-      disable: true
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8888/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
     networks:
       - proxy
     volumes:
