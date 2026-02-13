@@ -38,7 +38,7 @@
         "testbox":"^5",
         "semver":"^1.2.6",
         "logbox":"7.3.1+17",
-        "wheels-core":"^3.0.0-snapshot",
+        "wheels-core":"^3.0.1-snapshot+1151",
         "cfwheels-bcrypt":"^1.0.2"
     },
     "type":"mvc",
