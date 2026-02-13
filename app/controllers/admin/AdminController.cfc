@@ -655,8 +655,8 @@ component extends="app.Controllers.Controller" {
         blogJsonData = serializeJSON(blogChartData);
 
         totalComments = model("comment").count();
-        totalPublishComments = model("comment").count(where="isPublished IS TRUE");
-        totalUnPublishComments = model("comment").count(where="isPublished IS FALSE");
+        totalPublishComments = model("comment").count(where="isPublished = 1");
+        totalUnPublishComments = model("comment").count(where="isPublished = 0");
 
         last_7Days_Comments = queryExecute("
             SELECT TO_CHAR(d::date, 'YYYY-MM-DD') AS day,

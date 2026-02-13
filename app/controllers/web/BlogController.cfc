@@ -271,7 +271,7 @@ component extends="app.Controllers.Controller" {
     private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="statusid <> 1 AND status = 'Approved' AND isPublished IS TRUE AND createdBy = #authorId#",
+                where="statusid <> 1 AND status = 'Approved' AND isPublished = 1 AND createdBy = #authorId#",
                 include="User",
                 order="postDate DESC",
                 page = arguments.page,
@@ -282,7 +282,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="statusid <> 1 AND status = 'Approved' AND isPublished IS TRUE AND createdBy = #authorId#"
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 1 AND createdBy = #authorId#"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -324,7 +324,7 @@ component extends="app.Controllers.Controller" {
 
         if (len(trim(searchTerm))) {
             var query = model("blog").findAll(
-                where="status ='Approved' AND isPublished IS TRUE
+                where="status ='Approved' AND isPublished = 1
                 AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')",
                 include="User, PostStatus, PostType",
                 order = "postDate DESC",
@@ -335,7 +335,7 @@ component extends="app.Controllers.Controller" {
             if (isInfiniteScroll) {
                 totalCount = model("blog").count(
                     include="User, PostStatus, PostType",
-                    where="status ='Approved' AND isPublished IS TRUE
+                    where="status ='Approved' AND isPublished = 1
                     AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')"
                 );
                 hasMore = (page * perPage) < totalCount;
@@ -363,7 +363,7 @@ component extends="app.Controllers.Controller" {
     }
     // Function to load categories for the blog list
     function categories() {
-        categorylist = model("Category").findAll(where="isActive IS TRUE", cache=60);
+        categorylist = model("Category").findAll(where="isActive = 1", cache=60);
         renderPartial(partial="partials/categorylist");
     }
 
@@ -731,7 +731,7 @@ component extends="app.Controllers.Controller" {
     public function feed() {
         // Fetch all blogs
         blogPosts = model("Blog").findAll(
-            where="status = 'Approved' AND isPublished IS TRUE",
+            where="status = 'Approved' AND isPublished = 1",
             include="User",
             order="postDate DESC",
             cache=10
@@ -744,7 +744,7 @@ component extends="app.Controllers.Controller" {
     public function commentsFeed() {
         // Get recent comments with related blog post
         comments = model("Comment").findAll(
-            where = "isPublished IS TRUE",
+            where = "isPublished = 1",
             include = "Blog",
             order = "createdAt DESC",
             limit = 20,
@@ -788,7 +788,7 @@ component extends="app.Controllers.Controller" {
     private function getAllBlogs(numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="statusid <> 1 AND status = 'Approved' AND isPublished IS TRUE",
+                where="statusid <> 1 AND status = 'Approved' AND isPublished = 1",
                 include="User",
                 order="postDate DESC",
                 page = arguments.page,
@@ -800,7 +800,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="statusid <> 1 AND status = 'Approved' AND isPublished IS TRUE",
+            where="statusid <> 1 AND status = 'Approved' AND isPublished = 1",
             cache = 5
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -815,7 +815,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished IS TRUE",
+                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished = 1",
                 order="postCreatedDate DESC",
                 include="User",
                 returnAs="query",
@@ -827,7 +827,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished IS TRUE"
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.isPublished = 1"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -850,7 +850,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished IS TRUE",
+                where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished = 1",
                 order="createdAt DESC",
                 include="User,BlogCategory",
                 returnAs="query",
@@ -862,7 +862,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished IS TRUE",
+            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND isPublished = 1",
             include="User,BlogCategory"
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -874,7 +874,7 @@ component extends="app.Controllers.Controller" {
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="name = '#tag#' AND status ='Approved' AND isPublished IS TRUE",
+                where="name = '#tag#' AND status ='Approved' AND isPublished = 1",
                 order="createdAt DESC",
                 include="User,tag",
                 returnAs="query",
@@ -885,7 +885,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="name = '#tag#' AND status ='Approved' AND isPublished IS TRUE", include="User,tag");
+        result.totalCount = model("Blog").count(where="name = '#tag#' AND status ='Approved' AND isPublished = 1", include="User,tag");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;
@@ -1250,7 +1250,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function getAllCommentsByBlogid(required numeric id) {
-        var comments = model("Comment").findAll(include="User", where="isPublished IS TRUE AND blogid = '#arguments.id#' AND commentParentId ISNULL ", cache=5);
+        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ", cache=5);
 
         return comments;
     }
@@ -1300,7 +1300,7 @@ component extends="app.Controllers.Controller" {
                 response = saveComment(params);
             }
             if(structKeyExists(response, "Id")){
-                comments = commentModel.findAll(include="User", where="id ='#response.Id#' AND isPublished IS TRUE");
+                comments = commentModel.findAll(include="User", where="id ='#response.Id#' AND isPublished = 1");
                 renderPartial(partial="partials/comment");
             }
         } catch (any e) {
