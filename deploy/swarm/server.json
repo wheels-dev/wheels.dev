@@ -11,7 +11,10 @@
         "rewrites": {
             "enable": true,
             "config": "public/urlrewrite.xml"
-        }
+        },
+        "rules": [
+            "warm-up-server( urls={'/index.cfm','/blog','/blog/list','/blog/Categories','/guides','/3.0.0/guides','/api','/api/3.0.0/','/docs','/community','/news','/downloads','/login'}, requestStrategy=queue, async=false, timeoutSeconds=300 )"
+        ]
     },
     "app": {
         "cfengine": "lucee@6.2.2+91",
