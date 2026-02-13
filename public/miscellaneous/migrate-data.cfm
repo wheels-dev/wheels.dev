@@ -354,11 +354,11 @@ try {
 writeOutput("#chr(10)#Migrating #arrayLen(tables)# tables...#chr(10)#");
 writeOutput(repeatString("-", 60) & chr(10));
 
-for (var tblName in tables) {
+for (tblName in tables) {
 	writeOutput("  #tblName# ... ");
 	cfflush();
 
-	var r = migrateTable(tblName);
+	r = migrateTable(tblName);
 
 	if (len(r.error) && !r.skipped) {
 		writeOutput("ERROR (#r.duration#ms)#chr(10)#");
@@ -376,13 +376,13 @@ for (var tblName in tables) {
 
 // Reset sequences
 writeOutput("#chr(10)#Resetting sequences...#chr(10)#");
-var seqResults = resetSequences();
-for (var line in seqResults) {
+seqResults = resetSequences();
+for (line in seqResults) {
 	writeOutput(line & chr(10));
 }
 
 // Summary
-var elapsed = numberFormat((getTickCount() - startTime) / 1000, "0.0");
+elapsed = numberFormat((getTickCount() - startTime) / 1000, "0.0");
 writeOutput("#chr(10)#" & repeatString("=", 60) & chr(10));
 writeOutput("Done in #elapsed#s | Rows inserted: #totalInserted# | Errors: #totalErrors##chr(10)#");
 writeOutput(repeatString("=", 60) & chr(10));
