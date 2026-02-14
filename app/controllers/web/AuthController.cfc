@@ -268,7 +268,7 @@ component extends="app.Controllers.Controller" {
             );
             
             // Determine redirect URL based on role or saved URL
-            if (isObject(user.role) && user.role.name == 'Admin') {
+            if (isObject(user.role) && lCase(user.role.name) == 'admin') {
                 redirectUrl = urlFor(route="adminDashboard");
                 model("Log").log(
                     category = "wheels.auth",

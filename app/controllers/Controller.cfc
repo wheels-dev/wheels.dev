@@ -43,7 +43,7 @@ component extends="wheels.Controller" {
         return (
             structKeyExists(session, "USERID") && 
             structKeyExists(session, "role") && 
-            session.role == "Admin"
+            lCase(session.role) == "admin"
         );
     }
 
