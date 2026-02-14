@@ -60,7 +60,7 @@ component extends="wheels.Controller" {
     }
 
     function checkRoleAccess(){
-        var controller = lCase(listLast(request.wheels.params.controller, "."));
+        var controller = listLast(request.wheels.params.controller, ".");
         var action = request.wheels.params.action;
         var accesspermission = model("RolePermission").findAll(
             select="roleId, permissionId, name, permissionName, permissionstatus, controller, permissiondescription",
