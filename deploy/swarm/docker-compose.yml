@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   wheels-dev:
     image: ghcr.io/wheels-dev/wheels-dev:latest
