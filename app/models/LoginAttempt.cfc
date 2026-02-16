@@ -55,18 +55,20 @@ component extends="app.Models.Model" {
         if (!isNull(user) && user.locked) {
             return true;
         }
-        
-        // Then check for automatic lock due to failed attempts
+
+        // Check for automatic lock due to failed attempts within the last 15 minutes
+        var cutoff = dateAdd("n", -15, now());
         var attempts = findAll(
-            where="email = ?", params=[arguments.email]
+            where="email = ? AND createdAt > ?", params=[arguments.email, cutoff]
         );
         return attempts.recordCount >= 3;
     }
 
     // Get remaining attempts before lockout
     public function getRemainingAttempts(required string email) {
+        var cutoff = dateAdd("n", -15, now());
         var attempts = findAll(
-            where="email = ?", params=[arguments.email]
+            where="email = ? AND createdAt > ?", params=[arguments.email, cutoff]
         );
         return 3 - attempts.recordCount;
     }

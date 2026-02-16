@@ -256,11 +256,11 @@
 			<meta property="og:title" content="#encodeForHTMLAttribute(ogTitle)#">
 			<meta property="og:description" content="#encodeForHTMLAttribute(ogDescription)#">
 			<meta property="og:type" content="<cfif isBlog>article<cfelse>website</cfif>">
-			<meta property="og:url" content="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
+			<meta property="og:url" content="#encodeForHTMLAttribute(getBaseUrl() & cgi.path_info)#<cfif len(cgi.query_string)>?#encodeForHTMLAttribute(cgi.query_string)#</cfif>">
 			<meta property="og:site_name" content="Wheels">
 			<cfif isDefined("ogImage")><meta property="og:image" content="#ogImage#"><cfelse><meta property="og:image" content="#getBaseUrl()#/images/wheels-logo.png"></cfif>
 			<meta property="og:locale" content="en_US">
-			<link rel="canonical" href="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
+			<link rel="canonical" href="#encodeForHTMLAttribute(getBaseUrl() & cgi.path_info)#<cfif len(cgi.query_string)>?#encodeForHTMLAttribute(cgi.query_string)#</cfif>">
 			<link rel="alternate" hreflang="en" href="#getBaseUrl()##cgi.path_info#">
 			</cfoutput>
 
@@ -317,7 +317,7 @@
 				},
 				"mainEntityOfPage": {
 					"@type": "WebPage",
-					"@id": "#getBaseUrl()##cgi.path_info#"
+					"@id": "#encodeForJavaScript(getBaseUrl() & cgi.path_info)#"
 				}
 			}
 			</cfoutput></script></cfif>
@@ -397,7 +397,7 @@
 						"@type": "ListItem",
 						"position": 3,
 						"name": "#encodeForJavaScript(post.title)#",
-						"item": "#getBaseUrl()##cgi.path_info#"
+						"item": "#encodeForJavaScript(getBaseUrl() & cgi.path_info)#"
 					}
 					</cfif>
 					<cfelseif isApi>
@@ -410,8 +410,8 @@
 					,{
 						"@type": "ListItem",
 						"position": 3,
-						"name": "#apiPath#",
-						"item": "#getBaseUrl()##cgi.path_info#"
+						"name": "#encodeForJavaScript(apiPath)#",
+						"item": "#encodeForJavaScript(getBaseUrl() & cgi.path_info)#"
 					}
 					<cfelseif isDocs>
 					,{
@@ -423,8 +423,8 @@
 					,{
 						"@type": "ListItem",
 						"position": 3,
-						"name": "#docsPath#",
-						"item": "#getBaseUrl()##cgi.path_info#"
+						"name": "#encodeForJavaScript(docsPath)#",
+						"item": "#encodeForJavaScript(getBaseUrl() & cgi.path_info)#"
 					}
 					</cfif>
 				]
@@ -475,7 +475,7 @@
 				ga('send', 'pageview');
 			</script>
 		</head>
-		<cfoutput><body data-scope="#cgi.path_info#"></cfoutput>
+		<cfoutput><body data-scope="#encodeForHTMLAttribute(cgi.path_info)#"></cfoutput>
 
 			<nav class="navbar <cfif isAuthPage>d-none</cfif> sticky-top shadow-sm navbar-expand-xl py-2 nav-bg">
 				<div class="container">

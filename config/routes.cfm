@@ -147,7 +147,7 @@
 			.get(name = "view-comment", pattern = "commentDetails/[id]", to = "AdminController##viewComments")
 			.post(name = "close-comments", pattern = "closeComments/[id]", to = "AdminController##closeComments")
 			.post(name = "publish-blog", pattern = "publishblog/[id]", to = "AdminController##publishblog")
-			.get(name = "import-data", pattern="import-data", to="AdminController##importData")
+			.post(name = "import-data", pattern="import-data", to="AdminController##importData")
 
 			// Admin Newsletter Routes
 			.get(name="newsletter", pattern="newsletter", to="NewsletterController##index")
@@ -185,7 +185,7 @@
 			.get(name = "loadUsers", pattern = "user/list", to = "UserController##loadUsers")
 			.get(name = "loadRoles", pattern = "user/loadRoles", to = "UserController##loadRoles")
 			.get(name = "user-add", pattern = "user/add", to = "UserController##addUser")
-			.get(name = "user-add", pattern = "user/edit/[id]", to = "UserController##addUser")
+			.get(name = "user-edit", pattern = "user/edit/[id]", to = "UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "UserController##store")
 			.delete(name = "user-delete", pattern= "user/delete/[obfuscatedId]", to="UserController##delete")
 			.post(name = "user-unlock", pattern = "user/unlockUser/[obfuscatedId]", to = "UserController##unlockUser")
@@ -200,8 +200,8 @@
 			// settings routes
 			.get(name="settings", pattern="settings", to="SettingsController##index")
 			.get(name="email-templates", pattern="email-content", to="EmailTemplatesController##index")
-			.get(name="email-view", pattern="email/edit/[id]", to="EmailTemplatesController##edit")
-			.get(name="email-edit", pattern="email/view/[id]", to="EmailTemplatesController##view")
+			.get(name="email-edit", pattern="email/edit/[id]", to="EmailTemplatesController##edit")
+			.get(name="email-view", pattern="email/view/[id]", to="EmailTemplatesController##view")
 			.post(name="email-save", pattern="email/save", to="EmailTemplatesController##save")
 			.post(name="testimonial-settings", pattern="settings/enableTestimonials", to="SettingsController##enableTestimonials")
 			.post(name="updateSlackInvite", pattern="settings/updateSlackInvite", to="SettingsController##updateSlackInvite")

@@ -443,14 +443,17 @@ component extends="app.Controllers.Controller" {
             var newLine = chr(13) & chr(10);
             var csvContent = "Email,Name,Type,Subscription Date" & newLine;
             
-            // Add user subscribers
+            // Add user subscribers (sanitize for CSV formula injection)
             for (var user in userSubscribers) {
-                csvContent &= '"#user.email#","#user.firstname# #user.lastname#","User","#dateFormat(user.createdAt, "yyyy-mm-dd")#"' & newLine;
+                var safeEmail = csvSanitize(user.email);
+                var safeName = csvSanitize(user.firstname & " " & user.lastname);
+                csvContent &= '"#safeEmail#","#safeName#","User","#dateFormat(user.createdAt, "yyyy-mm-dd")#"' & newLine;
             }
-            
+
             // Add non-user subscribers
             for (var subscriber in nonUserSubscribers) {
-                csvContent &= '"#subscriber.email#"," ","Subscriber","#dateFormat(subscriber.createdAt, "yyyy-mm-dd")#"' & newLine;
+                var safeSubEmail = csvSanitize(subscriber.email);
+                csvContent &= '"#safeSubEmail#"," ","Subscriber","#dateFormat(subscriber.createdAt, "yyyy-mm-dd")#"' & newLine;
             }
             
             // Set response headers for CSV download
@@ -495,4 +498,13 @@ component extends="app.Controllers.Controller" {
             return renderWith(data=data);
         }
     }
-} 
+
+    private string function csvSanitize(required string value) {
+        var result = arguments.value;
+        if (len(result) && findOneOf("=+\-@|", left(result, 1))) {
+            result = "'" & result;
+        }
+        result = replace(result, '"', '""', "all");
+        return result;
+    }
+}

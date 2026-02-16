@@ -690,7 +690,7 @@ component extends="app.Controllers.Controller" {
                 userId = GetSignedInUserId()
             );
             // Handle error
-            renderText('<span class="text-danger">Error checking title: ' & e.message & '</span>');
+            renderText('<span class="text-danger">Error checking title. Please try again.</span>');
         }
     }
 
@@ -1016,7 +1016,7 @@ component extends="app.Controllers.Controller" {
                         newBlog.publishedAt = blogData.publishedAt;
                     }
 
-                    if(isNull(blogData.postCreatedDate)){
+                    if(!isNull(blogData.postCreatedDate)){
                         newBlog.postCreatedDate = blogData.postCreatedDate;
                     } else {
                         newBlog.postCreatedDate = now();

@@ -542,16 +542,15 @@ component extends="app.Controllers.Controller" {
                     "email": user.email
                 }
             );
-            
-            if (isObject(user)) {
-                session.userID = user.id;
-                session.username = user.fullname;
-                session.role = user.role.name;
 
-                session.message = "Register and Login Successfully!"
-                redirectto(route="home");
-                return;
-            }
+            sessionRotate();
+            session.userID = user.id;
+            session.username = user.fullname;
+            session.role = user.role.name;
+
+            session.message = "Register and Login Successfully!"
+            redirectto(route="home");
+            return;
         } else {
             model("Log").log(
                 category = "wheels.auth",

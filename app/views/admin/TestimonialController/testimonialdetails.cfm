@@ -10,21 +10,21 @@
                 <table class="table fs-9 mb-0 border-top border-translucent">
                     <tr>
                         <th>User Name:</th>
-                        <td>#Testimonial.firstname# #Testimonial.lastname#</td>
+                        <td>#encodeForHTML(Testimonial.firstname)# #encodeForHTML(Testimonial.lastname)#</td>
                     </tr>
                     <tr>
                         <th>Logo:</th>
                         <td>
                             <cfif Testimonial.logoPath neq "" AND !isNull(Testimonial.logoPath) >
-                                <img src="/img/#Testimonial.logoPath#" alt=encodeForHtml(testimonial.companyName) style="width: 200px;">
+                                <img src="/img/#encodeForHTMLAttribute(Testimonial.logoPath)#" alt="#encodeForHTMLAttribute(Testimonial.companyName)#" style="width: 200px;">
                             <cfelse>
-                                #Testimonial.logoPath#
+                                #encodeForHTML(Testimonial.logoPath)#
                             </cfif>
                         </td>
                     </tr>
                     <tr>
                         <th>Company:</th>
-                        <td>#Testimonial.companyName#</td>
+                        <td>#encodeForHTML(Testimonial.companyName)#</td>
                     </tr>
                     <tr>
                         <th>Display Permission:</th>
@@ -38,15 +38,15 @@
                     </tr>
                     <tr>
                         <th>Experience Level:</th>
-                        <td>#Testimonial.ExperienceLevel#</td>
+                        <td>#encodeForHTML(Testimonial.ExperienceLevel)#</td>
                     </tr>
                     <tr>
                         <th>Title</th>
-                        <td>#Testimonial.Title#<td>
+                        <td>#encodeForHTML(Testimonial.Title)#</td>
                     </tr>
                     <tr>
                         <th>Testimonial Content:</th>
-                        <td>#Testimonial.TestimonialText#</td>
+                        <td>#encodeForHTML(Testimonial.TestimonialText)#</td>
                     </tr>
                     <tr>
                         <th>Rating:</th>
@@ -66,7 +66,7 @@
                     </tr>
                     <tr>
                         <th>WebSite URL:</th>
-                        <td>#Testimonial.websiteUrl#</td>
+                        <td>#encodeForHTML(Testimonial.websiteUrl)#</td>
                     </tr>
                 </table>
             </div>

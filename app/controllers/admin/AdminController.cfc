@@ -345,7 +345,7 @@ component extends="app.Controllers.Controller" {
 
     function unpublishComment(){
         try{
-            var comment = model("comment").findbyKey(key="#id#");
+            var comment = model("comment").findbyKey(key="#params.id#");
             if(!isNull(comment)){
                 comment.isPublished = false;
                 if(comment.save()){

@@ -9,11 +9,11 @@
         var isManuallyLocked = structKeyExists(users, "locked") ? users.locked[i] == 1 : false;
 
         writeOutput('<tr> <td>' & i & '</td>');
-        writeOutput('<td>' & users.firstname[i] & '</td>');
-        writeOutput('<td>' & users.lastname[i] & '</td>');
-        writeOutput('<td>' & users.email[i] & '</td>');
-        writeOutput('<td>' & statusText & '</td>'); // Show "Active" or "Inactive"
-        writeOutput('<td>' & users.name[i] & '</td>');
+        writeOutput('<td>' & encodeForHTML(users.firstname[i]) & '</td>');
+        writeOutput('<td>' & encodeForHTML(users.lastname[i]) & '</td>');
+        writeOutput('<td>' & encodeForHTML(users.email[i]) & '</td>');
+        writeOutput('<td>' & statusText & '</td>');
+        writeOutput('<td>' & encodeForHTML(users.name[i]) & '</td>');
         writeOutput('<td>' & (isLocked ? '<span class="badge bg-danger">Locked</span>' : '<span class="badge bg-success">Unlocked</span>') & '</td>');
         writeOutput('<td>
             <div class="dropdown">
@@ -25,7 +25,7 @@
                         <a href="admin/user/edit/#users.id[i]#" class="dropdown-item text-success fs-16">Edit</a>
                     </li>
                     <li>
-                        <a href="admin/user/delete/#obfuscateId(users.id[i])#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete('#obfuscateId(users.id[i])#');">Delete</a>
+                        <a href="admin/user/delete/#obfuscateId(users.id[i])#" class="dropdown-item text-danger fs-16" onclick="return confirmDelete(''#obfuscateId(users.id[i])#'');">Delete</a>
                     </li>
                     ');
         // Add toggle lock option

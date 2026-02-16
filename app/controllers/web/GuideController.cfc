@@ -12,10 +12,18 @@ component extends="app.Controllers.Controller" {
         try{
             param name="params.version" default="3.0.0";
             param name="params.filePath" default="";
-            
+
+            // Sanitize path traversal sequences
+            params.version = reReplace(params.version, "\.\.[\\/]", "", "all");
+            params.version = reReplace(params.version, "[^a-zA-Z0-9.\-]", "", "all");
+            if (len(trim(params.filePath))) {
+                params.filePath = reReplace(params.filePath, "\.\.[\\/]", "", "all");
+                params.filePath = reReplace(params.filePath, "[^a-zA-Z0-9.\-/]", "", "all");
+            }
+
             // Auto-generate search index if it doesn't exist
             ensureSearchIndexExists(params.version);
-            
+
             var filePath = (len(trim(params.filepath)) > 0)
             ? expandPath("../docs/#params.version#/guides/#params.filepath#.md")
             : expandPath("../docs/#params.version#/guides/README.md");
@@ -72,10 +80,18 @@ component extends="app.Controllers.Controller" {
     public function loadGuideDocs(){
         try{
             param name="params.version" default="3.0.0";
-            
+
+            // Sanitize path traversal sequences
+            params.version = reReplace(params.version, "\.\.[\\/]", "", "all");
+            params.version = reReplace(params.version, "[^a-zA-Z0-9.\-]", "", "all");
+            if (structKeyExists(params, "path") && len(trim(params.path))) {
+                params.path = reReplace(params.path, "\.\.[\\/]", "", "all");
+                params.path = reReplace(params.path, "[^a-zA-Z0-9.\-/]", "", "all");
+            }
+
             // Auto-generate search index if it doesn't exist
             ensureSearchIndexExists(params.version);
-            
+
             var filepath = params.path;
                 file = expandPath("../docs/#params.version#/guides/#filepath#.md");
             if(fileExists(file)){

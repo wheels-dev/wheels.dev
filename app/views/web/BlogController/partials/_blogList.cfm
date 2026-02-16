@@ -124,7 +124,7 @@
             <div id="infiniteScrollTrigger"
                 class="infinite-scroll-trigger w-100"
                 data-page="#page#"
-                hx-get="#urlFor(route="blog-Search")#?searchTerm=#searchTerm#&page=#page + 1#&perPage=#perPage#&infiniteScroll=true"
+                hx-get="#urlFor(route="blog-Search")#?searchTerm=#encodeForHTMLAttribute(searchTerm)#&page=#page + 1#&perPage=#perPage#&infiniteScroll=true"
                 hx-trigger="revealed"
                 hx-target="##blogsContainer"
                 hx-swap="beforeend"
