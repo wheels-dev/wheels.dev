@@ -1,4 +1,0 @@
-# Custom Java security properties to allow SHA1 certificates
-# This is needed for SQL Server connections using legacy SHA1withRSA certs
-jdk.certpath.disabledAlgorithms=MD2, MD5
-jdk.tls.disabledAlgorithms=MD5, RC4, DES, 3DES_EDE_CBC
