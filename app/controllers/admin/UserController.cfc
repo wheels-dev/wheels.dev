@@ -139,8 +139,8 @@ component extends="app.Controllers.Controller" {
 
         var hashedPassword = bCryptHashPW(params.passwordHash, bCryptGenSalt());
         var updateUserPassword = model("User").updateAll(
-                passwordHash = "#hashedPassword#",
-                where = "id = '#session.userId#'"
+                passwordHash = hashedPassword,
+                where = "id = ?", params=[session.userId]
             );
         renderText("Password updated successfully!");
         return;
@@ -170,6 +170,7 @@ component extends="app.Controllers.Controller" {
                 );
                 var fileExt = lcase(listLast(uploadedFile.serverFile, "."));
                 var allowedTypes = "jpg,jpeg,png,gif,webp";
+                var allowedContentTypes = "image/jpeg,image/png,image/gif,image/webp";
 
                 if (!listFindNoCase(allowedTypes, fileExt)) {
                     fileDelete(uploadPath & "/" & uploadedFile.serverFile);
@@ -177,8 +178,18 @@ component extends="app.Controllers.Controller" {
                     return;
                 }
 
+                // Validate MIME content type
+                if (structKeyExists(uploadedFile, "contentType") && structKeyExists(uploadedFile, "contentSubType")) {
+                    var detectedContentType = uploadedFile.contentType & "/" & uploadedFile.contentSubType;
+                    if (!listFindNoCase(allowedContentTypes, detectedContentType)) {
+                        fileDelete(uploadPath & "/" & uploadedFile.serverFile);
+                        renderText("Invalid file content type. Only JPEG, PNG, GIF, and WebP images are allowed.");
+                        return;
+                    }
+                }
+
                 var savedFileName = uploadedFile.serverFile;
-                model("User").updateAll(profilePicture = "#savedFileName#", where = "id = '#session.userId#'");
+                model("User").updateAll(profilePicture = savedFileName, where = "id = ?", params=[session.userId]);
                 session.profilePic = savedFileName;
                 renderText("Profile picture uploaded successfully!");
                 return;
@@ -242,7 +253,7 @@ component extends="app.Controllers.Controller" {
      * @id User identifier
      */
     private function findById(id) {
-        return model("User").findAll(where="id='#arguments.id#'", returnAs="query");
+        return model("User").findAll(where="id = ?", params=[arguments.id], returnAs="query");
     }
 
     /**
@@ -275,7 +286,7 @@ component extends="app.Controllers.Controller" {
                 }
             } else {
                 // Check if user with the same email already exists
-                var existingUser = model("User").findFirst( where="email = '#userData.email#'");
+                var existingUser = model("User").findFirst(where="email = ?", params=[userData.email]);
 
                 if (!isObject(existingUser)) {
                     // Create a new user
@@ -311,15 +322,17 @@ component extends="app.Controllers.Controller" {
      * @perPage Number of results per page
      */
     private function search(term = "", page = 1, perPage = 20) {
-        // Build dynamic where clause
         var whereCondition = "1=1";
-        
+        var searchParams = [];
+
         if (len(trim(arguments.term))) {
-            whereCondition &= " AND (name LIKE '%#arguments.term#%' OR email LIKE '%#arguments.term#%')";
+            whereCondition = "1=1 AND (name LIKE ? OR email LIKE ?)";
+            searchParams = ["%#arguments.term#%", "%#arguments.term#%"];
         }
 
         return model("User").findAll(
             where = whereCondition,
+            params = searchParams,
             order = "createdAt DESC",
             page = arguments.page,
             perPage = arguments.perPage,
@@ -337,7 +350,7 @@ component extends="app.Controllers.Controller" {
         if (!isNull(user)) {
             
             if (user.delete()) {
-                model("LoginAttempt").deleteAll(where="email = '#user.email#'");
+                model("LoginAttempt").deleteAll(where="email = ?", params=[user.email]);
                 return {
                     success = true,
                     message = "User soft deleted successfully"

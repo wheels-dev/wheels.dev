@@ -164,6 +164,11 @@ component extends="app.Models.Model" {
         
         hasMany("ReadingHistories");
         hasMany("Bookmarks");
+
+        validatesPresenceOf(properties="username,email");
+        validatesUniquenessOf(property="email");
+        validatesUniquenessOf(property="username");
+        validatesFormatOf(property="email", regex="^[^@\s]+@[^@\s]+\.[^@\s]+$", message="Email address is not valid.");
     }
 
     // Fetch all users with their roles
@@ -211,7 +216,7 @@ component extends="app.Models.Model" {
     
     // Check if user has submitted a testimonial
     public function hasSubmittedTestimonial() {
-        testimonial = model("Testimonial").findOne(where="userId=#this.id#");
+        testimonial = model("Testimonial").findOne(where="userId = ?", params=[this.id]);
         return IsObject(testimonial);
     }
     

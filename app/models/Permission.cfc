@@ -12,6 +12,8 @@ component extends="app.Models.Model" {
         // Defining the foreign key
         property(name="moduleId", column="module_id", type="integer", required=false, foreignkey=true, references="Module(id)");
 
+        validatesPresenceOf(property="name");
+        validatesUniquenessOf(property="name");
     }
 
     // fetch all permissions

@@ -52,7 +52,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
             // Check if user exists first (regardless of status)
-            var existingUser = model("User").findOne(where="email='#params.email#'", include="Role");
+            var existingUser = model("User").findOne(where="email = ?", params=[params.email], include="Role");
             
             // If user doesn't exist, send registration invitation
             if (!isObject(existingUser)) {
@@ -85,7 +85,7 @@ component extends="app.Controllers.Controller" {
             // Check if user is locked out
             if (model("LoginAttempt").isUserLocked(params.email)) {
                 // Check if it's a manual lock by admin
-                var user = model("User").findOne(where="email='#params.email#'");
+                var user = model("User").findOne(where="email = ?", params=[params.email]);
                 var isManuallyLocked = !isNull(user) && isStruct(user) && structKeyExists(user, "locked") && user.locked;
                 
                 model("Log").log(
@@ -305,7 +305,7 @@ component extends="app.Controllers.Controller" {
 
             // Check if user needs to submit testimonial
             if (isObject(user.role) && user.role.name != 'Admin') {
-                var testimonial = model("Testimonial").findOne(where="userId = '#user.id#'");
+                var testimonial = model("Testimonial").findOne(where="userId = ?", params=[user.id]);
                 
                 model("Log").log(
                     category = "wheels.auth",
@@ -370,7 +370,7 @@ component extends="app.Controllers.Controller" {
                 // Clear remember me token if exists
                 if (structKeyExists(cookie, "remember_me")) {
                     var token = cookie.remember_me;
-                    var rememberToken = model("RememberToken").findOne(where="token='#token#'");
+                    var rememberToken = model("RememberToken").findOne(where="token = ?", params=[token]);
                     if (isObject(rememberToken)) {
                         rememberToken.delete();
                     }
@@ -452,7 +452,7 @@ component extends="app.Controllers.Controller" {
                 return;
             }
             // Check for duplicate email before calling saveUser
-            var existingUser = model("User").findFirst(where="email = '#params.email#'");
+            var existingUser = model("User").findFirst(where="email = ?", params=[params.email]);
             if (isObject(existingUser)) {
                 renderText("<p style='color:red;'>An account with this email address already exists.</p>");
                 return;
@@ -609,7 +609,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function validateCredentials(required string email, required string password) {
-        var user = model("User").findOne(where="email='#email#' AND status='True'", include="Role");
+        var user = model("User").findOne(where="email = ? AND status = ?", params=[email, "True"], include="Role");
         if (!isObject(user)) {
             return false; // User not found
         }
@@ -749,8 +749,8 @@ component extends="app.Controllers.Controller" {
             // Skip email sending in test mode
             return true;
         }
-        var user = model("User").findOne(where="email='#email#'");
-        var emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
+        var user = model("User").findOne(where="email = ?", params=[email]);
+        var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Sign Up Account Verification"]);
         verifyUrl = urlFor(action="verify", onlyPath=false);
         verifyUrl = verifyUrl & "?token=" & token;
         var emailparams = {
@@ -793,10 +793,9 @@ component extends="app.Controllers.Controller" {
         
         try {
             // Use the existing "Register Your Account" template
-            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Register Your Account")#'");
+            var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Register Your Account"]);
             if (emaildata.recordCount == 0) {
-                // Fallback to sign up template if registration template doesn't exist
-                emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
+                emaildata = model("emailTemplate").findAll(where="title = ?", params=["Sign Up Account Verification"]);
             }
             
             var registerUrl = urlFor(action="register", onlyPath=false);
@@ -852,7 +851,7 @@ component extends="app.Controllers.Controller" {
         
         try {
             // Check if user already has a verification token
-            var existingToken = model("UserToken").findOne(where="user_id='#user.id#' AND status='false'");
+            var existingToken = model("UserToken").findOne(where="user_id = ? AND status = ?", params=[user.id, "false"]);
             
             if (!isObject(existingToken)) {
                 // Generate a new verification token
@@ -866,7 +865,7 @@ component extends="app.Controllers.Controller" {
                 var verificationToken = existingToken.token;
             }
             
-            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Sign Up Account Verification")#'");
+            var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Sign Up Account Verification"]);
             var verifyUrl = urlFor(action="verify", onlyPath=false);
             verifyUrl = verifyUrl & "?token=" & verificationToken;
             
@@ -917,7 +916,7 @@ component extends="app.Controllers.Controller" {
 
     private function verifyToken(required string token) {
         var message="";
-        var token = model("UserToken").findOne(where="token='#token#'");
+        var token = model("UserToken").findOne(where="token = ?", params=[token]);
 
         if (isObject(token)) {
             var user = model("User").findByKey(include="Role", key='#token.user_id#');
@@ -934,7 +933,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private boolean function isRateLimited(required string ipAddress) {
-        var attempts = model("LoginAttempt").findAll(where="ip_address='#ipAddress#' AND created_at > '#dateAdd("n", -15, now())#'");
+        var attempts = model("LoginAttempt").findAll(where="ip_address = ? AND created_at > ?", params=[ipAddress, dateAdd("n", -15, now())]);
         return attempts.recordCount >= 3;
     }
 
@@ -999,7 +998,7 @@ component extends="app.Controllers.Controller" {
         param name="params.email" default="";
         
         try {
-            var user = model("User").findOne(where="email = '#params.email#'");
+            var user = model("User").findOne(where="email = ?", params=[params.email]);
             
             if (isObject(user)) {
                 // Generate reset token
@@ -1051,7 +1050,7 @@ component extends="app.Controllers.Controller" {
         
         try {
             var reset = model("PasswordReset").findOne(
-                where="token = '#params.token#' AND expiresAt > '#now()#' AND used = 0"
+                where="token = ? AND expiresAt > ? AND used = 0", params=[params.token, now()]
             );
 
             if (!isObject(reset)) {
@@ -1084,9 +1083,9 @@ component extends="app.Controllers.Controller" {
         try {
             // Validate token
             var reset = model("PasswordReset").findOne(
-                where="token = '#params.token#' AND expiresAt > '#now()#' AND used = 0"
+                where="token = ? AND expiresAt > ? AND used = 0", params=[params.token, now()]
             );
-            
+
             if (!isObject(reset)) {
                 data = {
                     "success" = false,
@@ -1167,7 +1166,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
             var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
-            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Reset Password")#'");
+            var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Reset Password"]);
             var emailparams = {
                 "name" = name,
                 "buttonTitle" = emaildata.buttonTitle,
@@ -1232,7 +1231,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
             var signUpUrl = urlFor(action="register", onlyPath=false);
-            var emaildata = model("emailTemplate").findAll(where="title = '#trim("Register Your Account")#'");
+            var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Register Your Account"]);
             var emailparams = {
                 "name" = "User",
                 "buttonTitle" = emaildata.buttonTitle,

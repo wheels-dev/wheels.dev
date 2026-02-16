@@ -29,7 +29,7 @@ component extends="app.Controllers.Controller" {
             }
             
             // Check if email already exists
-            var existingUser = model("User").findFirst(where = "email = '#email#'");
+            var existingUser = model("User").findFirst(where="email = ?", params=[email]);
             
             if (isObject(existingUser)) {
                 renderText(serializeJSON({

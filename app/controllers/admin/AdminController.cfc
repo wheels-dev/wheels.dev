@@ -36,8 +36,8 @@ component extends="app.Controllers.Controller" {
             // Get categories and tags for the form
             var categories = model("Category").findAll(order="name ASC");
             var postTypes = model("PostType").findAll(order="name ASC");
-            var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
-            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+            var blogCategories = model("BlogCategory").findAll(where="blogId = ?", params=[blog.id]);
+            var blogTags = model("Tag").findAll(where="blogId = ?", params=[blog.id]);
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -72,7 +72,6 @@ component extends="app.Controllers.Controller" {
             );
             
             // Redirect with error message
-            // redirectTo(route="blog");
         }
     }
 
@@ -145,180 +144,12 @@ component extends="app.Controllers.Controller" {
         }
     }
 
-    // Helper function to update blog post
-    function updateBlog(required struct params, required numeric blogId) {
-        var response = { "success": false, "message": "", "blogId": blogId };
+    // updateBlog() is inherited from Controller.cfc
 
-        try {
-            // Find the blog by ID
-            var blog = model("Blog").findByKey(blogId);
-            
-            if (isNull(blog)) {
-                response.message = "Blog post not found for updating.";
-                return response;
-            }
-            
-            // Generate slug
-            var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
-            slug = rereplace(slug, "-+", "-", "all");
-            params.slug = slug;
-            
-            // Set status based on isDraft flag
-            if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
-                params.statusId = 1; // Draft
-            } else {
-                params.statusId = 2; // Under Review
-            }
-            
-            // Check if a blog with the same title/slug exists (that isn't this one)
-            var existingBlog = model("Blog").findFirst(
-                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
-            );
-            
-            if (isObject(existingBlog)) {
-                response.message = "Another blog post with the same title already exists.";
-                return response;
-            }
-            
-            // Update the blog post
-            blog.title = params.title;
-            blog.content = params.content;
-            blog.slug = params.slug;
-            blog.statusId = params.statusId;
-            
-            // Only update these if they exist in params
-            if (structKeyExists(params, "postTypeId")) {
-                blog.postTypeId = params.postTypeId;
-            }
-            
-            if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
-                blog.postCreatedDate = params.postCreatedDate;
-            }
-            
-            // Update tracking fields
-            blog.updatedAt = now();
-            blog.updatedBy = GetSignedInUserId();
-            
-            // Save the blog post
-            blog.save();
-            
-            response.success = true;
-            response.message = "Blog post updated successfully.";
-        }
-        catch (any e) {
-            response.message = "Error updating blog: " & e.message;
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Error in updateBlog function",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-        }
-        
-        return response;
-    }
-
-    function saveTags(required struct blogData, blogId) {
-        try {
-            if (blogId > 0 && structKeyExists(blogData, "postTags")) {
-                
-                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
-    
-                // Insert new tags
-                for (var tagName in tagArray) {
-                    var newTag = model("Tag").new();
-                    newTag.name = trim(tagName); // Trim spaces if any
-                    newTag.blogId = blogId;
-                    newTag.createdAt = now();
-                    newTag.updatedAt = now();
-                    newTag.save();
-                }
-            }
-        } catch (any e) {
-            local.exception = e;
-        }
-    }
-
-    // Function to delete tags associated with a blog post
-    function deleteBlogTags(required numeric blogId) {
-        try {
-            if (blogId > 0) {
-                // direct delete approach
-                model("Tag").deleteAll(where="blogId = #blogId#");
-                
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to delete blog tags",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
-            );
-            return false;
-        }
-    }
-
-    function saveCategories(required struct blogData, blogId) {
-        try {
-            if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
-                
-                var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
-    
-                // Insert new categories
-                for (var category_Id in categoryArray) {
-                    var newCategory = model("BlogCategory").new();
-                    newCategory.categoryId = category_Id;
-                    newCategory.blogId = blogId;
-                    newCategory.createdAt = now();
-                    newCategory.updatedAt = now();
-                    newCategory.save();
-                }
-            }
-        } catch (any e) {
-            local.exception = e;
-        }
-    }
-
-    // Function to delete categories associated with a blog post
-    function deleteBlogCategories(required numeric blogId) {
-        try {
-            if (blogId > 0) {
-                // Find all category associations for this blog post
-                model("BlogCategory").deleteAll(where="blogId = #blogId#");
-                
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to delete blog categories",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = structKeyExists(session, "userID") ? session.userID : 0
-            );
-            return false;
-        }
-    }
+    // saveTags() is inherited from Controller.cfc
+    // deleteBlogTags() is inherited from Controller.cfc
+    // saveCategories() is inherited from Controller.cfc
+    // deleteBlogCategories() is inherited from Controller.cfc
 
     function comments(){
         comments = model("comment").findAll(
@@ -458,7 +289,7 @@ component extends="app.Controllers.Controller" {
             if (blog.save()) {
                 if(len(trim(publishDate)) && blog.status == "Approved"){
                     var siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
-                    var emaildata = model("emailTemplate").findAll(where="title = '#trim("Publish Blog")#'");
+                    var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Publish Blog"]);
                     var emailparams = {
                         "name" = user.fullname,
                         "buttonTitle" = emaildata.buttonTitle,
@@ -567,7 +398,7 @@ component extends="app.Controllers.Controller" {
 
     private function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
-            where="blog_posts.slug = '#arguments.slug#'",
+            where="blog_posts.slug = ?", params=[arguments.slug],
             include="User,PostStatus"
         );
     }
@@ -579,7 +410,7 @@ component extends="app.Controllers.Controller" {
         // Basic counts
         totalBlogs = model("blog").count();
         totalTestimonials = model("testimonial").count();
-        totalNewUser = model("user").count(where="createdat >= '#dateFormat(now(), "yyyy-mm-dd")#'");
+        totalNewUser = model("user").count(where="createdat >= ?", params=[dateFormat(now(), "yyyy-mm-dd")]);
         totalUser = model("user").count();
         activeUsers = model("user").count(where="status = 'true'"); 
         
@@ -588,7 +419,7 @@ component extends="app.Controllers.Controller" {
         
         // Get list of users from last 7 days (for display)
         last_seven_days_user = model("user").findAll(
-            where="createdat >= '#dateFormat(sevenDaysAgo, "yyyy-mm-dd")#'",
+            where="createdat >= ?", params=[dateFormat(sevenDaysAgo, "yyyy-mm-dd")],
             order="createdat DESC"
         );
         
@@ -604,7 +435,7 @@ component extends="app.Controllers.Controller" {
         {
             startDate: {value: dateFormat(sevenDaysAgo, "yyyy-mm-dd"), cfsqltype: "cf_sql_date"}
         },
-        {datasource: "wheels.dev"}
+        {datasource: application.env.datasource}
         );
         
         // Build complete 7-day series in ColdFusion
@@ -691,7 +522,7 @@ component extends="app.Controllers.Controller" {
         {
             startDate: {value: dateFormat(sevenDaysAgo, "yyyy-mm-dd"), cfsqltype: "cf_sql_date"}
         },
-        {datasource: "wheels.dev"}
+        {datasource: application.env.datasource}
         );
         
         // Build complete 7-day series
@@ -715,94 +546,6 @@ component extends="app.Controllers.Controller" {
         }
         commentJsonData = serializeJSON(commentChartData);
     }
-
-    /**
-     * User Management
-     */
-    function users() {
-        // Get pagination and search parameters
-        var page = param("page", 1);
-        var perPage = param("perPage", 20);
-        var searchTerm = param("search", "");
-
-        // Use service method for fetching users
-        var users = variables.userService.search(
-            term = searchTerm,
-            page = page,
-            perPage = perPage
-        );
-
-        // Set variables for view
-        setVariable("users", users);
-        setVariable("page", page);
-        setVariable("searchTerm", searchTerm);
-    }
-
-    /**
-     * Save User
-     */
-    function saveUser() {
-        // Validate input
-        if (!structKeyExists(form, "email") || !structKeyExists(form, "name")) {
-            flashInsert(error="Missing required fields");
-            redirectTo(action="userForm");
-            return;
-        }
-
-        // Use service to save user
-        var result = variables.userService.save(form);
-
-        if (result.success) {
-            flashInsert(success="User saved successfully");
-            redirectTo(action="users");
-        } else {
-            flashInsert(error=result.message);
-            redirectTo(action="userForm");
-        }
-    }
-
-    /**
-     * Blog Management
-     */
-    function blogs() {
-        var page = param("page", 1);
-        var perPage = param("perPage", 20);
-        var status = param("status", "all");
-
-        // Use service to fetch blogs
-        var blogs = variables.blogService.search(
-            status = status,
-            page = page,
-            perPage = perPage
-        );
-
-        setVariable("blogs", blogs);
-        setVariable("page", page);
-        setVariable("status", status);
-    }
-
-    /**
-     * Update Blog Status
-     */
-    function updateBlogStatus() {
-        var blogId = param("key", 0);
-        var newStatus = param("status", "");
-
-        // Use service to update blog status
-        var result = variables.blogService.updateStatus(
-            blogId = blogId, 
-            status = newStatus
-        );
-
-        if (result.success) {
-            flashInsert(success="Blog status updated successfully");
-        } else {
-            flashInsert(error="Error updating blog status");
-        }
-
-        redirectTo(action="blogs");
-    }
-
 
     /**
      * Utility method for consistent parameter handling
@@ -844,7 +587,7 @@ component extends="app.Controllers.Controller" {
             comment.isPublished = true;
             if(comment.save()){
                 siteurl = urlFor(route="blog-detail",slug=comment.blog.slug ,onlyPath=false);
-                var emaildata = model("emailTemplate").findAll(where="title = '#trim("Publish comment")#'");
+                var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Publish comment"]);
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = emaildata.buttonTitle,
@@ -924,7 +667,7 @@ component extends="app.Controllers.Controller" {
             blog.status = "Rejected"; //reject
             blog.publishedAt = "";
             if (blog.save()) {
-                var emaildata = model("emailTemplate").findAll(where="title = '#trim("Reject blog")#'");
+                var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Reject blog"]);
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = emaildata.buttonTitle,
@@ -1028,7 +771,7 @@ component extends="app.Controllers.Controller" {
             wpId = wpAuth.author_id.__text;
             
             // Find existing user by email
-            user = model("User").findOne(where="email='#email#'");
+            user = model("User").findOne(where="email = ?", params=[email]);
             
             if (!IsObject(user)) {
                 // Create new user if not found
@@ -1128,7 +871,7 @@ component extends="app.Controllers.Controller" {
                 : 1; // Default to ID 1 if not found
             
             // Check if post already exists by WordPress ID
-            var existingPost = model("Blog").findOne(where="title='#escapeSQL(title)#' AND slug='#escapeSQL(slug)#'");
+            var existingPost = model("Blog").findOne(where="title = ? AND slug = ?", params=[title, slug]);
             
             var blogPost = "";
             if (!isObject(existingPost)) {
@@ -1177,8 +920,8 @@ component extends="app.Controllers.Controller" {
                     postMap[wpId] = existingPost.id;
                     
                     // Delete existing categories and tags for this post
-                    model("BlogCategory").deleteAll(where="blogId=#existingPost.id#");
-                    model("Tag").deleteAll(where="blogId=#existingPost.id#");
+                    model("BlogCategory").deleteAll(where="blogId = ?", params=[existingPost.id]);
+                    model("Tag").deleteAll(where="blogId = ?", params=[existingPost.id]);
                     
                     // Process taxonomies (categories and tags)
                     processTaxonomies(item, existingPost.id, arguments.categoryMap, arguments.tagMap);
@@ -1282,7 +1025,7 @@ component extends="app.Controllers.Controller" {
                     categoryId = arguments.categoryMap[categoryName];
                 } else {
                     // Look up category by name
-                    var existingCategory = model("Category").findOne(where="name='#escapeSQL(categoryName)#'");
+                    var existingCategory = model("Category").findOne(where="name = ?", params=[categoryName]);
                     
                     if (isObject(existingCategory)) {
                         categoryId = existingCategory.id;
@@ -1446,7 +1189,7 @@ component extends="app.Controllers.Controller" {
                         }
                         
                         // Check if this comment already exists in our system
-                        var existingComment = model("Comment").findOne(where="wpId='#wpCommentId#'");
+                        var existingComment = model("Comment").findOne(where="wpId = ?", params=[wpCommentId]);
                         
                         // Try to find a user ID for this comment author
                         var userId = 0;
@@ -1458,13 +1201,13 @@ component extends="app.Controllers.Controller" {
                             user = model("User").findByKey(userId);
                         } else if (commentUserId != "0") {
                             // If WordPress specified a user ID, try to find that user
-                            user = model("User").findOne(where="wpId='#commentUserId#'");
+                            user = model("User").findOne(where="wpId = ?", params=[commentUserId]);
                             if (isObject(user)) {
                                 userId = user.id;
                             }
                         } else if (len(trim(authorEmail))) {
                             // Try to find a user with this email
-                            user = model("User").findOne(where="email='#escapeSQL(authorEmail)#'");
+                            user = model("User").findOne(where="email = ?", params=[authorEmail]);
                             if (isObject(user)) {
                                 userId = user.id;
                             }
@@ -1473,25 +1216,25 @@ component extends="app.Controllers.Controller" {
                         // If no user found and we have an email, create a new user with "commenter" role
                         if (!isObject(user) && len(trim(authorEmail))) {
                             // Get the commenter role ID (you'll need to adjust this to your role system)
-                            var commenterRole = model("Role").findOne(where="name='commenter'");
+                            var commenterRole = model("Role").findOne(where="name = ?", params=["commenter"]);
                             var commenterRoleId = isObject(commenterRole) ? commenterRole.id : 4; // Default to role ID 4 if not found
-                            
+
                             // Create names array by splitting author name
                             var names = listToArray(authorName, " ");
                             var firstName = arrayLen(names) >= 1 ? names[1] : "";
                             var lastName = arrayLen(names) >= 2 ? names[2] : "";
-                            
+
                             // Generate a username from the email
                             var username = listFirst(authorEmail, "@");
                             
                             // Check if username exists and append number if needed
                             var baseUsername = username;
                             var counter = 1;
-                            while (model("User").exists(where = "username='#username#'")) {
+                            while (model("User").exists(where="username = ?", params=[username])) {
                                 username = baseUsername & counter;
                                 counter++;
                             }
-                            
+
                             // Create the new user
                             user = model("User").create({
                                 firstName = firstName,
@@ -1520,25 +1263,25 @@ component extends="app.Controllers.Controller" {
                         // Handle case where there's no email but we still have an author name
                         else if (!isObject(user) && !len(trim(authorEmail)) && len(trim(authorName))) {
                             // Get the commenter role ID
-                            var commenterRole = model("Role").findOne(where="name='commenter'");
+                            var commenterRole = model("Role").findOne(where="name = ?", params=["commenter"]);
                             var commenterRoleId = isObject(commenterRole) ? commenterRole.id : 4; // Default to role ID 4 if not found
-                            
+
                             // Create names array by splitting author name
                             var names = listToArray(authorName, " ");
                             var firstName = arrayLen(names) >= 1 ? names[1] : "";
                             var lastName = arrayLen(names) >= 2 ? names[2] : "";
-                            
+
                             // Generate a unique username from the author name
                             var username = replaceNoCase(authorName, " ", "_", "all");
                             username = reReplace(username, "[^a-zA-Z0-9_]", "", "all");
                             if (!len(trim(username))) {
                                 username = "anonymous_" & createUUID();
                             }
-                            
+
                             // Check if username exists and append number if needed
                             var baseUsername = username;
                             var counter = 1;
-                            while (model("User").exists(where = "username='#username#'")) {
+                            while (model("User").exists(where="username = ?", params=[username])) {
                                 username = baseUsername & counter;
                                 counter++;
                             }

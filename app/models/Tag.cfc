@@ -12,7 +12,10 @@ component extends="app.Models.Model" {
         property(name="blogId", column="blog_id", type="integer", required=false, foreignkey=true, references="Blog(id)");
 
         // Define associations
-        belongsTo(name="Blog", foreignKey="blogId"); 
+        belongsTo(name="Blog", foreignKey="blogId");
+
+        validatesPresenceOf(property="name");
+        validatesUniquenessOf(property="name");
     }
 
     // fetch all tags

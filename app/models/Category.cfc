@@ -12,6 +12,9 @@ component extends="app.Models.Model" {
         property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
 
         hasMany(name="BlogCategory", foreignKey="categoryId");
+
+        validatesPresenceOf(property="name");
+        validatesUniquenessOf(property="name");
     }
 
     // fetch all blog_categories

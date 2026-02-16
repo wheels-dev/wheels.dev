@@ -27,7 +27,7 @@
 		<cfif isSingleBlogPost>
 			<!--- Only fetch blog post for individual post pages, not listings --->
 			<cfset post = model("Blog").findOne(
-				where="slug = '#blogSlug#'",
+				where="slug = ?", params=[blogSlug],
 				include="User",
 				cache=10
 			)>

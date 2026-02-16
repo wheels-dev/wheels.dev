@@ -19,7 +19,7 @@ component extends="app.Models.Model" {
     // Find active reset token
     public function findActiveToken(required string token) {
         return findOne(
-            where="token = '#arguments.token#' AND expires_at > '#now()#' AND used = 0"
+            where="token = ? AND expires_at > ? AND used = 0", params=[arguments.token, now()]
         );
     }
 

@@ -15,5 +15,7 @@ component extends="app.Models.Model" {
         property(name="createdAt", column="createdat", type="datetime", required=false, default="");
         property(name="updatedAt", column="updatedat", type="datetime", required=false, default="");
         property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
+
+        validatesPresenceOf(properties="title,subject,message");
     }
 }

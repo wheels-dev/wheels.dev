@@ -39,8 +39,10 @@ component extends="app.Models.Model" {
         hasMany(name="BlogCategory", foreignKey="blogId");
         hasmany(name="tag", foreignKey="blogId"); 
         hasMany("ReadingHistories");
-        hasMany("Bookmarks"); 
+        hasMany("Bookmarks");
 
+        validatesPresenceOf(properties="title,content");
+        validatesUniquenessOf(property="slug");
     }
 
     // Fetch all latest blog posts with corresponding users

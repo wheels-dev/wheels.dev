@@ -19,7 +19,7 @@ component extends="app.Controllers.Controller" {
 
 		// Find bookmark
 		bookmark = model("Bookmark").findOne(
-			where="userId=#session.userID# AND blogId=#params.blogId#"
+			where="userId = ? AND blogId = ?", params=[session.userID, params.blogId]
 		);
 
 		if (IsObject(bookmark)) {
@@ -34,7 +34,7 @@ component extends="app.Controllers.Controller" {
 		} else {
 			// Check if a soft-deleted bookmark exists
 			deletedBookmark = model("Bookmark").findOne(
-				where="userId=#session.userID# AND blogId=#params.blogId#",
+				where="userId = ? AND blogId = ?", params=[session.userID, params.blogId],
 				includeSoftDeletes=true
 			);
 
@@ -77,7 +77,7 @@ component extends="app.Controllers.Controller" {
 
 		bookmarks = model("Bookmark")
 			.findAll(
-				where="userId=#session.userID#",
+				where="userId = ?", params=[session.userID],
 				include="Blog",
 				order="createdAt DESC",
 				perPage=20,
@@ -96,13 +96,15 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		where = "userId=#session.userID#";
+		var whereParams = [session.userID];
+		where = "userId = ?";
 		if (StructKeyExists(params, "searchTerm") && params.searchTerm != "") {
-			where &= " AND Blog.title LIKE '%#params.searchTerm#%'";
+			where &= " AND Blog.title LIKE ?";
+			arrayAppend(whereParams, "%#params.searchTerm#%");
 		}
 
 		bookmarks = model("Bookmark").findAll(
-			where=where,
+			where=where, params=whereParams,
 			include="Blog",
 			order="createdAt DESC",
 			perPage=20,

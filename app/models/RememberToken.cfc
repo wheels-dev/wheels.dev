@@ -75,12 +75,12 @@ component extends="app.Models.Model" {
     // Find token by value
     public function findByToken(required string token) {
         return findOne(
-            where="token = '#arguments.token#' AND expires_at > '#now()#'"
+            where="token = ? AND expires_at > ?", params=[arguments.token, now()]
         );
     }
 
     // Delete expired tokens
     public function deleteExpiredTokens() {
-        return deleteAll(where="expires_at <= '#now()#'");
+        return deleteAll(where="expires_at <= ?", params=[now()]);
     }
 } 

@@ -153,14 +153,14 @@ component extends="app.Controllers.Controller" {
     function edit() {
         try {
             // Find the user's testimonial
-            testimonial = model("Testimonial").findOne(where="userId=#GetSignedInUserId()#");
-            
+            testimonial = model("Testimonial").findOne(where="userId = ?", params=[GetSignedInUserId()]);
+
             if (!IsObject(testimonial)) {
                 flashInsert(error="You haven't submitted a testimonial yet.");
                 redirectTo(action="new");
                 return;
             }
-            
+
             // If this is an AJAX request, render without layout
             if (isHtmx()) {
                 renderView(testimonial=testimonial, layout=false);
@@ -178,8 +178,8 @@ component extends="app.Controllers.Controller" {
     function update() {
         try {
             // Find the user's testimonial
-            testimonial = model("Testimonial").findOne(where="userId=#GetSignedInUserId()#");
-            
+            testimonial = model("Testimonial").findOne(where="userId = ?", params=[GetSignedInUserId()]);
+
             if (!IsObject(testimonial)) {
                 if (isHtmx()) {
                     renderWith(data={

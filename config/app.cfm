@@ -12,7 +12,12 @@
 	// Set the session timeout (based on inactivity days,hours,minutes,seconds)
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0,2,0,0);
-	this.sessioncookie  = {timeout=createTimeSpan(0,2,0,0)};
+	this.sessioncookie  = {
+		timeout=createTimeSpan(0,2,0,0),
+		httponly=true,
+		secure=true,
+		samesite="Strict"
+	};
 	this.sessionStorage = this.env.sessionStorage;
 	this.sessionCluster = this.env.sessionCluster;
 

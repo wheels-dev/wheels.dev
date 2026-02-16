@@ -29,7 +29,7 @@
                                         #left(comments.content[j], 30)#
                                     </a></td>
                                 <td>
-                                    <cfset  parentComment= model("comment").findAll(select="content", where="id='#comments.commentParentId[j]#'")>
+                                    <cfset  parentComment= model("comment").findAll(select="content", where="id = ?", params=[comments.commentParentId[j]])>
                                     #left(parentComment.content, 30)#
                                 </td>
                                 <td>#comments.FullName[j]#</td>

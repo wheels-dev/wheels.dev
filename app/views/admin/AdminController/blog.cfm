@@ -51,7 +51,7 @@
                                     <cfscript>
                                         var categories = model("BlogCategory").findAll(
                                             select = "name",
-                                            where = "blogId = #blogs.id[i]#",
+                                            where = "blogId = ?", params=[blogs.id[i]],
                                             include = "Blog,Category"
                                         );
                                         var categoryNames = valueList(categories.name);

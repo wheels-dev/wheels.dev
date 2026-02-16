@@ -111,6 +111,8 @@
 
 			// error routes
 			.get(name = "error403", pattern = "error403", to = "errorController##error403")
+			.get(name = "error404", pattern = "error404", to = "errorController##error404")
+			.get(name = "error500", pattern = "error500", to = "errorController##error500")
 
 			// guides
 			.get(name = "load-Guides", pattern = "/guides", to = "web.GuideController##index")
@@ -128,7 +130,7 @@
 			.get(name = "addFeature", pattern = "feature/add", to = "FeatureController##addFeature")
 			.get(name = "editFeature", pattern = "feature/edit/[id]", to = "FeatureController##addFeature")
 			.post(name = "storeFeature", pattern = "feature/store", to = "FeatureController##store")
-			.get(name = "deleteFeature", pattern = "feature/delete/[id]", to = "FeatureController##delete")
+			.delete(name = "deleteFeature", pattern = "feature/delete/[id]", to = "FeatureController##delete")
 			.get(name = "blog", pattern = "blog", to = "AdminController##blog")
 			.get(name = "blogEdit", pattern = "blog/edit/[id]", to = "AdminController##editBlog")
 			.post(name = "blogDelete", pattern = "blog/delete", to = "AdminController##deleteBlog")
@@ -185,9 +187,9 @@
 			.get(name = "user-add", pattern = "user/add", to = "UserController##addUser")
 			.get(name = "user-add", pattern = "user/edit/[id]", to = "UserController##addUser")
 			.post(name = "user-store", pattern = "user/store", to = "UserController##store")
-			.get(name = "user-delete", pattern= "user/delete/[obfuscatedId]", to="UserController##delete")
-			.get(name = "user-unlock", pattern = "user/unlockUser/[obfuscatedId]", to = "UserController##unlockUser")
-			.get(name = "user-toggle-lock", pattern = "user/toggleLock/[obfuscatedId]", to = "UserController##toggleUserLock")
+			.delete(name = "user-delete", pattern= "user/delete/[obfuscatedId]", to="UserController##delete")
+			.post(name = "user-unlock", pattern = "user/unlockUser/[obfuscatedId]", to = "UserController##unlockUser")
+			.post(name = "user-toggle-lock", pattern = "user/toggleLock/[obfuscatedId]", to = "UserController##toggleUserLock")
 
 			.get(name = "user-changePassword", pattern = "user/change-password", to = "UserController##changePassword")
 			.post(name = "user-updatePassword", pattern = "user/update-Password", to = "UserController##updatePassword")
@@ -211,10 +213,6 @@
 			.post(name="delete-contributors", pattern="delete/contributors", to="SettingsController##deleteContributors")
 		.end()
 
-
-		// The "wildcard" call below enables automatic mapping of "controller/action" type routes.
-		// This way you don't need to explicitly add a route every time you create a new action in a controller.
-		.wildcard()
 
 		// The root route below is the one that will be called on your application's home page (e.g. http://127.0.0.1/).
 		//.root(to = "home##index", method = "get")

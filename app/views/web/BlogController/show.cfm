@@ -180,7 +180,7 @@
                                                 </div>
                                                 <div id="reply-#Id#"></div>
                                             </cfif>
-                                            <cfset childComments = model("comment").findAll(include ="User", where="commentParentId = '#Id#'", order ="commentParentId")>
+                                            <cfset childComments = model("comment").findAll(include ="User", where="commentParentId = ?", params=[Id], order ="commentParentId")>
                                             <cfif childComments.recordcount neq 0>
                                                 <cfloop query="childComments">
                                                     <div class="mt-4">

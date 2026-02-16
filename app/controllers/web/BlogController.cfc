@@ -124,8 +124,8 @@ component extends="app.Controllers.Controller" {
         // Try to get both stats in one query if your database supports it
         try {
             return {
-                "totalPosts": model("Blog").count(where="createdBy = #arguments.authorId#"),
-                "totalComments": model("Comment").count(where="authorId = #arguments.authorId#")
+                "totalPosts": model("Blog").count(where="createdBy = ?", params=[arguments.authorId]),
+                "totalComments": model("Comment").count(where="authorId = ?", params=[arguments.authorId])
             };
         } catch (any e) {
             model("Log").log(
@@ -228,8 +228,8 @@ component extends="app.Controllers.Controller" {
             // Get categories and tags for the form
             var categories = model("Category").findAll(order="name ASC");
             var postTypes = model("PostType").findAll(order="name ASC");
-            var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
-            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+            var blogCategories = model("BlogCategory").findAll(where="blogId = ?", params=[blog.id]);
+            var blogTags = model("Tag").findAll(where="blogId = ?", params=[blog.id]);
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -271,7 +271,8 @@ component extends="app.Controllers.Controller" {
     private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp AND createdBy = #authorId#",
+                where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp AND createdBy = ?",
+                params=[authorId],
                 include="User",
                 order="postDate DESC",
                 page = arguments.page,
@@ -282,7 +283,8 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp AND createdBy = #authorId#"
+            where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp AND createdBy = ?",
+            params=[authorId]
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -299,7 +301,7 @@ component extends="app.Controllers.Controller" {
 			return val(authorParam);
 		} else {
 			// Lookup user by username
-			var user = model("user").findOne(where="username = '#authorParam#'");
+			var user = model("user").findOne(where="username = ?", params=[authorParam]);
 			if (isObject(user)) {
 				return user.id;
 			} else {
@@ -323,20 +325,23 @@ component extends="app.Controllers.Controller" {
         isInfiniteScroll = params.infiniteScroll;
 
         if (len(trim(searchTerm))) {
+            var searchPattern = "%#searchTerm#%";
             var query = model("blog").findAll(
                 where="status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp
-                AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')",
+                AND (slug LIKE ? OR title LIKE ? OR content LIKE ? OR fullname LIKE ? OR email LIKE ?)",
+                params=[searchPattern, searchPattern, searchPattern, searchPattern, searchPattern],
                 include="User, PostStatus, PostType",
                 order = "postDate DESC",
                 page = page,
                 perPage = perPage
             );
-            
+
             if (isInfiniteScroll) {
                 totalCount = model("blog").count(
                     include="User, PostStatus, PostType",
                     where="status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp
-                    AND (slug LIKE '%#searchTerm#%' OR title LIKE '%#searchTerm#%' OR content LIKE '%#searchTerm#%' OR fullname LIKE '%#searchTerm#%' OR email LIKE '%#searchTerm#%')"
+                    AND (slug LIKE ? OR title LIKE ? OR content LIKE ? OR fullname LIKE ? OR email LIKE ?)",
+                    params=[searchPattern, searchPattern, searchPattern, searchPattern, searchPattern]
                 );
                 hasMore = (page * perPage) < totalCount;
                 isSearched = true;
@@ -420,9 +425,24 @@ component extends="app.Controllers.Controller" {
                 var uploadedFile = fileUpload(uploadPath, "attachment");
 
                 if (!structIsEmpty(uploadedFile) && structKeyExists(uploadedFile, "serverFile")) {
-                    var originalFileName = uploadedFile.serverFile; // This is the uploaded file name
-                    var fileExtension = listLast(originalFileName, "."); // Extract extension
-                    var uniqueFileName = createUUID() & "." & fileExtension; // Generate unique name
+                    var originalFileName = uploadedFile.serverFile;
+                    var fileExtension = lcase(listLast(originalFileName, "."));
+                    var allowedExtensions = "jpg,jpeg,png,gif,webp,pdf,doc,docx";
+                    var maxFileSizeBytes = 10 * 1024 * 1024; // 10MB
+
+                    // Validate file extension
+                    if (!listFindNoCase(allowedExtensions, fileExtension)) {
+                        fileDelete(uploadedFile.serverDirectory & "/" & originalFileName);
+                        throw("Invalid file type. Allowed types: #allowedExtensions#", "InvalidFileType");
+                    }
+
+                    // Validate file size
+                    if (uploadedFile.fileSize > maxFileSizeBytes) {
+                        fileDelete(uploadedFile.serverDirectory & "/" & originalFileName);
+                        throw("File size exceeds the 10MB limit.", "FileTooLarge");
+                    }
+
+                    var uniqueFileName = createUUID() & "." & fileExtension;
 
                     // Rename file to unique name
                     var newFilePath = uploadPath & "/" & uniqueFileName;
@@ -491,7 +511,7 @@ component extends="app.Controllers.Controller" {
             // Track reading history
             if (StructKeyExists(session, "userID")) {
                 history = model("ReadingHistory").findOne(
-                    where="userId=#session.userID# AND blogId=#blog.id#",
+                    where="userId = ? AND blogId = ?", params=[session.userID, blog.id],
                     includeSoftDeletes=true
                 );
                 if (IsObject(history)) {
@@ -510,7 +530,7 @@ component extends="app.Controllers.Controller" {
 
                 // Check if bookmarked
                 isBookmarked = model("Bookmark").exists(
-                    where="userId=#session.userId# AND blogId=#blog.id#"
+                    where="userId = ? AND blogId = ?", params=[session.userId, blog.id]
                 );
             } else {
                 isBookmarked = false;
@@ -622,16 +642,15 @@ component extends="app.Controllers.Controller" {
             );
 
             if(structKeyExists(form, "title")) {
-                // Build the query condition
-                var whereClause = "title='#form.title#'";
+                var whereClause = "title = ?";
+                var whereParams = [form.title];
 
-                // If we're in edit mode, exclude the current blog post
                 if(structKeyExists(form, "id") && isNumeric(form.id) && form.id > 0) {
-                    whereClause &= " AND id != #form.id#";
+                    whereClause &= " AND id != ?";
+                    arrayAppend(whereParams, form.id);
                 }
 
-                // Check if any other blogs have this title
-                var blogModel = model("Blog").findAll(where=whereClause);
+                var blogModel = model("Blog").findAll(where=whereClause, params=whereParams);
 
                 if(blogModel.recordCount != 0) {
                     renderText('<span class="text-danger">A blog already exists with this title!</span><input type="hidden" id="titleExists" value="1">');
@@ -762,7 +781,9 @@ component extends="app.Controllers.Controller" {
         }
 
         // Fetch all related users at once
-        authors = model("User").findAll(where="id IN (#arrayToList(authorIds)#)", returnAs="structs");
+        var authorPlaceholders = repeatString("?,", arrayLen(authorIds));
+        authorPlaceholders = left(authorPlaceholders, len(authorPlaceholders) - 1);
+        authors = model("User").findAll(where="id IN (#authorPlaceholders#)", params=authorIds, returnAs="structs");
 
         // Map authors by ID for quick lookup
         authorMap = {};
@@ -814,7 +835,8 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.published_at IS NOT NULL AND blog_posts.published_at <= current_timestamp",
+                where="blog_posts.post_created_date BETWEEN ? AND ? AND blog_posts.status='Approved' AND blog_posts.published_at IS NOT NULL AND blog_posts.published_at <= current_timestamp",
+                params=[startdate, enddate],
                 order="postCreatedDate DESC",
                 include="User",
                 returnAs="query",
@@ -826,7 +848,8 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.published_at IS NOT NULL AND blog_posts.published_at <= current_timestamp"
+            where="blog_posts.post_created_date BETWEEN ? AND ? AND blog_posts.status='Approved' AND blog_posts.published_at IS NOT NULL AND blog_posts.published_at <= current_timestamp",
+            params=[startdate, enddate]
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -836,20 +859,24 @@ component extends="app.Controllers.Controller" {
     // Fetch Blogs by Category
     public function getBlogsByCategory(required string categoryName, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         // Get category ID from name
-        var category = model("Category").findOne(where="name = '#arguments.categoryName#'");
+        var category = model("Category").findOne(where="name = ?", params=[arguments.categoryName]);
         if (!isObject(category)) return {query=queryNew(""), hasMore=false, totalCount=0};
 
-        // Get all blog-category mappings with that category
         var blogCategoryQuery = model("BlogCategory")
-            .findAll(where="categoryId = '#category.id#'", returnAs="query");
+            .findAll(where="categoryId = ?", params=[category.id], returnAs="query");
         if (blogCategoryQuery.recordCount == 0) return {query=queryNew(""), hasMore=false, totalCount=0};
 
-        // Extract blogIds
         var blogIds = blogCategoryQuery.columnData("blogId");
+
+        var blogPlaceholders = repeatString("?,", arrayLen(blogIds));
+        blogPlaceholders = left(blogPlaceholders, len(blogPlaceholders) - 1);
+        var inParams = duplicate(blogIds);
+        arrayAppend(inParams, category.id);
 
         var result = {
             query = model("Blog").findAll(
-                where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
+                where="id IN (#blogPlaceholders#) AND categoryId = ? AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
+                params=inParams,
                 order="createdAt DESC",
                 include="User,BlogCategory",
                 returnAs="query",
@@ -861,7 +888,8 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="id IN (#arrayToList(blogIds)#) AND categoryId = '#category.id#' AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
+            where="id IN (#blogPlaceholders#) AND categoryId = ? AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
+            params=inParams,
             include="User,BlogCategory"
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -873,7 +901,8 @@ component extends="app.Controllers.Controller" {
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="name = '#tag#' AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
+                where="name = ? AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
+                params=[tag],
                 order="createdAt DESC",
                 include="User,tag",
                 returnAs="query",
@@ -884,7 +913,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="name = '#tag#' AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp", include="User,tag");
+        result.totalCount = model("Blog").count(where="name = ? AND status ='Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp", params=[tag], include="User,tag");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;
@@ -892,18 +921,8 @@ component extends="app.Controllers.Controller" {
 
     private function getBlogById(required numeric id) {
         return model("Blog").findOne(
-            where="blog_posts.id = #arguments.id#",
-            include="User, PostStatus",
-            options={
-                sql="SELECT blog_posts.title AS blogTitle, blog_posts.content AS blogContent,
-                    blog_posts.createdat AS createdDate,
-                    users.fullName AS authorName,
-                    post_statuses.name AS statusName
-                    FROM blog_posts
-                    INNER JOIN users ON users.id = blog_posts.userId
-                    INNER JOIN post_statuses ON post_statuses.id = blog_posts.statusId
-                    WHERE blog_posts.id = #arguments.id#"
-            }
+            where="blog_posts.id = ?", params=[arguments.id],
+            include="User, PostStatus"
         );
     }
 
@@ -956,7 +975,7 @@ component extends="app.Controllers.Controller" {
             } else {
                 // Check if a blog post with the same title already exists
                 var existingBlog = model("Blog").findFirst(
-                    where="title = '#blogData.title#' AND slug = '#blogData.slug#'"
+                    where="title = ? AND slug = ?", params=[blogData.title, blogData.slug]
                 );
 
                 if (!isObject(existingBlog)) {
@@ -1000,97 +1019,7 @@ component extends="app.Controllers.Controller" {
         return response;
     }
 
-    // Helper function to update blog post
-    function updateBlog(required struct params, required numeric blogId) {
-        var response = { "success": false, "message": "", "blogId": blogId };
-
-        try {
-            // Find the blog by ID
-            var blog = model("Blog").findByKey(blogId);
-
-            if (isNull(blog)) {
-                response.message = "Blog post not found for updating.";
-                return response;
-            }
-
-            // Generate slug
-            var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
-            slug = rereplace(slug, "-+", "-", "all");
-            params.slug = slug;
-
-            // Set status based on isDraft flag and user role
-            if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
-                params.statusId = 1; // Draft
-            } else if (isUserAdmin()) {
-                // Auto-approve and publish for admin users
-                params.statusId = 2;
-                params.status = "Approved";
-                params.publishedAt = now();
-            } else {
-                params.statusId = 2; // Under Review
-            }
-
-            // Check if a blog with the same title/slug exists (that isn't this one)
-            var existingBlog = model("Blog").findFirst(
-                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
-            );
-
-            if (isObject(existingBlog)) {
-                response.message = "Another blog post with the same title already exists.";
-                return response;
-            }
-
-            // Update the blog post
-            blog.title = params.title;
-            blog.content = params.content;
-            blog.slug = params.slug;
-            blog.statusId = params.statusId;
-
-            // Set approval status fields for admin auto-approval
-            if (structKeyExists(params, "status")) {
-                blog.status = params.status;
-            }
-            if (structKeyExists(params, "publishedAt") && len(trim(params.publishedAt))) {
-                blog.publishedAt = params.publishedAt;
-            }
-
-            // Only update these if they exist in params
-            if (structKeyExists(params, "postTypeId")) {
-                blog.postTypeId = params.postTypeId;
-            }
-
-            if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
-                blog.postCreatedDate = params.postCreatedDate;
-            }
-
-            // Update tracking fields
-            blog.updatedAt = now();
-            blog.updatedBy = GetSignedInUserId();
-
-            // Save the blog post
-            blog.save();
-
-            response.success = true;
-            response.message = "Blog post updated successfully.";
-        }
-        catch (any e) {
-            response.message = "Error updating blog: " & e.message;
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Error in updateBlog function",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-        }
-
-        return response;
-    }
+    // updateBlog() is inherited from Controller.cfc
 
     private function deleteBlog(required numeric id) {
         var message = "";
@@ -1121,53 +1050,8 @@ component extends="app.Controllers.Controller" {
         return model("Tag").findAll();
     }
 
-    function saveTags(required struct blogData, blogId) {
-        try {
-            if (blogId > 0 && structKeyExists(blogData, "postTags")) {
-
-                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
-
-                // Insert new tags
-                for (var tagName in tagArray) {
-                    var newTag = model("Tag").new();
-                    newTag.name = trim(tagName); // Trim spaces if any
-                    newTag.blogId = blogId;
-                    newTag.createdAt = now();
-                    newTag.updatedAt = now();
-                    newTag.save();
-                }
-            }
-        } catch (any e) {
-            local.exception = e;
-        }
-    }
-
-    // Function to delete tags associated with a blog post
-    function deleteBlogTags(required numeric blogId) {
-        try {
-            if (blogId > 0) {
-                // direct delete approach
-                model("Tag").deleteAll(where="blogId = #blogId#");
-
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to delete blog tags",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-            return false;
-        }
-    }
+    // saveTags() is inherited from Controller.cfc
+    // deleteBlogTags() is inherited from Controller.cfc
 
     // Categories
 
@@ -1175,64 +1059,8 @@ component extends="app.Controllers.Controller" {
         return model("Category").findAll();
     }
 
-    function saveCategories(required struct blogData, blogId) {
-        try {
-            if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
-
-                var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
-
-                // Insert new categories
-                for (var category_Id in categoryArray) {
-                    var newCategory = model("BlogCategory").new();
-                    newCategory.categoryId = category_Id;
-                    newCategory.blogId = blogId;
-                    newCategory.createdAt = now();
-                    newCategory.updatedAt = now();
-                    newCategory.save();
-                }
-            }
-        } catch (any e) {
-    model("Log").log(
-        category = "wheels.blog.tags",
-        level = "ERROR",
-        message = "Failed to save blog tags for blogId: #blogId#",
-        details = {
-            "blog_id": blogId,
-            "error_message": e.message,
-            "error_detail": e.detail,
-            "error_type": e.type
-        },
-        userId = GetSignedInUserId()
-    );
-        }
-    }
-
-    // Function to delete categories associated with a blog post
-    function deleteBlogCategories(required numeric blogId) {
-        try {
-            if (blogId > 0) {
-                // Find all category associations for this blog post
-                model("BlogCategory").deleteAll(where="blogId = #blogId#");
-
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to delete blog categories",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-            return false;
-        }
-    }
+    // saveCategories() is inherited from Controller.cfc
+    // deleteBlogCategories() is inherited from Controller.cfc
 
     //Attachement
 
@@ -1241,7 +1069,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function getAllCommentsByBlogid(required numeric id) {
-        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = '#arguments.id#' AND commentParentId ISNULL ", cache=5);
+        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = ? AND commentParentId IS NULL", params=[arguments.id], cache=5);
 
         return comments;
     }
@@ -1291,7 +1119,7 @@ component extends="app.Controllers.Controller" {
                 response = saveComment(params);
             }
             if(structKeyExists(response, "Id")){
-                comments = commentModel.findAll(include="User", where="id ='#response.Id#' AND isPublished = 1");
+                comments = commentModel.findAll(include="User", where="id = ? AND isPublished = 1", params=[response.Id]);
                 renderPartial(partial="partials/comment");
             }
         } catch (any e) {

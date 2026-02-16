@@ -25,7 +25,9 @@ component extends="app.Models.Model" {
         // Define associations
         belongsTo(name="User", foreignKey="authorId"); 
         belongsTo(name="Blog", foreignKey="blogId"); 
-        belongsTo(name="Comment", foreignKey="commentParentId"); 
+        belongsTo(name="Comment", foreignKey="commentParentId");
+
+        validatesPresenceOf(property="content");
     }
     
     // fetch all comments

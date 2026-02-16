@@ -51,14 +51,14 @@ component extends="app.Models.Model" {
     // Check if user is locked out (either by failed attempts or admin lock)
     public function isUserLocked(required string email) {
         // First check if user is manually locked by admin
-        var user = model("User").findOne(where="email='#arguments.email#'");
+        var user = model("User").findOne(where="email = ?", params=[arguments.email]);
         if (!isNull(user) && user.locked) {
             return true;
         }
         
         // Then check for automatic lock due to failed attempts
         var attempts = findAll(
-            where="email='#arguments.email#'"
+            where="email = ?", params=[arguments.email]
         );
         return attempts.recordCount >= 3;
     }
@@ -66,7 +66,7 @@ component extends="app.Models.Model" {
     // Get remaining attempts before lockout
     public function getRemainingAttempts(required string email) {
         var attempts = findAll(
-            where="email='#arguments.email#'"
+            where="email = ?", params=[arguments.email]
         );
         return 3 - attempts.recordCount;
     }
@@ -81,6 +81,6 @@ component extends="app.Models.Model" {
 
     // Clear failed attempts for a user
     public function clearFailedAttempts(required string email) {
-        return deleteAll(where="email='#arguments.email#'");
+        return deleteAll(where="email = ?", params=[arguments.email]);
     }
 } 

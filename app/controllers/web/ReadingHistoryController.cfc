@@ -19,7 +19,7 @@ component extends="app.Controllers.Controller" {
 
 		histories = model("ReadingHistory")
 			.findAll(
-				where="userId=#session.userID#",
+				where="userId = ?", params=[session.userID],
 				include="Blog",
 				order="lastReadAt DESC",
 				perPage=20,
@@ -28,7 +28,7 @@ component extends="app.Controllers.Controller" {
 
 		bookmarks = model("Bookmark")
 			.findAll(
-				where="userId=#session.userID#",
+				where="userId = ?", params=[session.userID],
 				include="Blog",
 				order="createdAt DESC"
 			);
@@ -46,7 +46,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		history = model("ReadingHistory").findOne(
-			where="userId=#session.userID# AND blogId=#params.blogId#"
+			where="userId = ? AND blogId = ?", params=[session.userID, params.blogId]
 		);
 
 		if (IsObject(history)) {
@@ -78,7 +78,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		history = model("ReadingHistory").findOne(
-			where="userId=#session.userID# AND blogId=#params.blogId#"
+			where="userId = ? AND blogId = ?", params=[session.userID, params.blogId]
 		);
 
 		if (IsObject(history)) {
@@ -100,7 +100,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		model("ReadingHistory").deleteAll(
-			where="userId=#session.userID#"
+			where="userId = ?", params=[session.userID]
 		);
 
 		flashInsert(success="Reading history cleared");
@@ -118,13 +118,15 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		where = "userId=#session.userID#";
+		var whereParams = [session.userID];
+		where = "userId = ?";
 		if (StructKeyExists(params, "searchTerm") && params.searchTerm != "") {
-			where &= " AND Blog.title LIKE '%#params.searchTerm#%'";
+			where &= " AND Blog.title LIKE ?";
+			arrayAppend(whereParams, "%#params.searchTerm#%");
 		}
 
 		histories = model("ReadingHistory").findAll(
-			where=where,
+			where=where, params=whereParams,
 			include="Blog",
 			order="lastReadAt DESC",
 			perPage=20,
@@ -145,7 +147,8 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		where = "userId=#session.userID#";
+		var whereParams = [session.userID];
+		where = "userId = ?";
 		if (StructKeyExists(params, "status")) {
 			if (params.status == "completed") {
 				where &= " AND isCompleted=1";
@@ -155,7 +158,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		histories = model("ReadingHistory").findAll(
-			where=where,
+			where=where, params=whereParams,
 			include="Blog",
 			order="lastReadAt DESC",
 			perPage=20,
