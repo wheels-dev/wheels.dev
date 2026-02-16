@@ -127,12 +127,16 @@ jobs:
 
       - name: Deploy stack to swarm
         run: |
-          # Use commit SHA tag to force Swarm to pull the new image
-          sed -i "s|ghcr.io/wheels-dev/wheels-dev:latest|ghcr.io/wheels-dev/wheels-dev:${GITHUB_SHA}|" deploy/swarm/docker-compose.yml
           docker stack deploy \
             --with-registry-auth \
             -c deploy/swarm/docker-compose.yml \
             wheels-dev
+          # Force service update to pull the new :latest image on all nodes
+          docker service update \
+            --with-registry-auth \
+            --image ghcr.io/wheels-dev/wheels-dev:latest \
+            --force \
+            wheels-dev_wheels-dev
 
       - name: Verify deployment
         run: |
