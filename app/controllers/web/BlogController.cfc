@@ -653,15 +653,13 @@ component extends="app.Controllers.Controller" {
             );
 
             if(structKeyExists(form, "title")) {
-                var whereClause = "title = ?";
-                var whereParams = [form.title];
+                var whereClause = "title = '#form.title#'";
 
                 if(structKeyExists(form, "id") && isNumeric(form.id) && form.id > 0) {
-                    whereClause &= " AND id != ?";
-                    arrayAppend(whereParams, form.id);
+                    whereClause &= " AND id != #val(form.id)#";
                 }
 
-                var blogModel = model("Blog").findAll(where=whereClause, params=whereParams);
+                var blogModel = model("Blog").findAll(where=whereClause);
 
                 if(blogModel.recordCount != 0) {
                     renderText('<span class="text-danger">A blog already exists with this title!</span><input type="hidden" id="titleExists" value="1">');
@@ -792,9 +790,8 @@ component extends="app.Controllers.Controller" {
         }
 
         // Fetch all related users at once
-        var authorPlaceholders = repeatString("?,", arrayLen(authorIds));
-        authorPlaceholders = left(authorPlaceholders, len(authorPlaceholders) - 1);
-        authors = model("User").findAll(where="id IN (#authorPlaceholders#)", params=authorIds, returnAs="structs");
+        var authorIdList = arrayToList(authorIds);
+        authors = model("User").findAll(where="id IN (#authorIdList#)", returnAs="structs");
 
         // Map authors by ID for quick lookup
         authorMap = {};

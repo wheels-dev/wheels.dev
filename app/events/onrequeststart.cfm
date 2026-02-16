@@ -24,11 +24,11 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
 
         // Look up remember-me record
         var record = model("RememberToken").findOne(
-            where = "token = ? AND expiresAt > ? AND userAgent = ?", params = [hashedToken, now(), cgi.http_user_agent]
+            where = "token = '#hashedToken#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#' AND userAgent = '#cgi.http_user_agent#'"
         );
 
         if (isObject(record)) {
-            var user = model("User").findOne(where="id = ?", params=[record.userId], include="Role");
+            var user = model("User").findOne(where="id = #val(record.userId)#", include="Role");
             if (isObject(user)) {
                 // Rebuild session
                 session.userID = user.id;
@@ -87,13 +87,13 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
             }
         }else{
             var record = model("RememberToken").findOne(
-                where = "token = ?", params = [hashedToken],
+                where = "token = '#hashedToken#'",
                 includeSoftDeletes = true
             );
             if(isObject(record)){
                 // Suspicious activity
                 if (record.userAgent NEQ cgi.http_user_agent) {
-                    model("RememberToken").deleteAll(where="userId = ?", params=[record.userId]);
+                    model("RememberToken").deleteAll(where="userId = #val(record.userId)#");
 
                     model("Log").log(
                         category = "wheels.auth",
@@ -107,7 +107,7 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
                     );
                 }else{
                     // Expired attempt
-                    model("RememberToken").deleteAll(where="userId = ?", params=[record.userId]);
+                    model("RememberToken").deleteAll(where="userId = #val(record.userId)#");
                     model("Log").log(
                         category = "wheels.auth",
                         level = "WARN",

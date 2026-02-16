@@ -29,7 +29,7 @@
                                 <td>#categories.name[i]#</td>
                                 <td>#categories.description[i]#</td>
                                 <td>
-                                    <cfset parentCategory = model("category").findAll(where="id = ?", params=[categories.parentId[i]])>
+                                    <cfset parentCategory = model("category").findAll(where="id = #val(categories.parentId[i])#")>
                                     <cfif parentCategory.recordCount neq 0>
                                         #parentCategory.name#
                                     </cfif>

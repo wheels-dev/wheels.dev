@@ -216,7 +216,7 @@ component extends="app.Models.Model" {
     
     // Check if user has submitted a testimonial
     public function hasSubmittedTestimonial() {
-        testimonial = model("Testimonial").findOne(where="userId = ?", params=[this.id]);
+        testimonial = model("Testimonial").findOne(where="userId = #val(this.id)#");
         return IsObject(testimonial);
     }
     
