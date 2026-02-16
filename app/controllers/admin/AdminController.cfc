@@ -14,7 +14,7 @@ component extends="app.Controllers.Controller" {
 
     function blog() {
         blogs = getAllBlogs();
-
+        blogCategoryMap = buildBlogCategoryMap(blogs);
     }
 
     // Function to edit a blog post
@@ -159,7 +159,8 @@ component extends="app.Controllers.Controller" {
             select="id,Content,isPublished,commentParentId,createdat,authorId,blogId,slug,FullName,title",
             include="User, Blog",
             order="createdAt DESC");
-    }   
+        parentCommentMap = buildParentCommentMap(comments);
+    }
 
     function viewComments(){
         id = params.id;
@@ -167,8 +168,15 @@ component extends="app.Controllers.Controller" {
             select="id,Content,isPublished,commentParentId,createdat,authorId,blogId,slug,FullName,title",
             include="User, Blog"
             );
+        parentCommentContent = "";
+        if (isObject(comments) && val(comments.commentParentId) > 0) {
+            var parentComment = model("comment").findByKey(key=val(comments.commentParentId), select="content");
+            if (isObject(parentComment)) {
+                parentCommentContent = parentComment.content;
+            }
+        }
         renderPartial(partial="partials/commentView");
-    }  
+    }
 
     function blogApprove() {
         try {
@@ -195,12 +203,19 @@ component extends="app.Controllers.Controller" {
     }
 
     function blogBulkApprove(){
+        if (!structKeyExists(params, "selectedBlogIds") || !isArray(params.selectedBlogIds) || arrayLen(params.selectedBlogIds) == 0) {
+            blogs = getAllBlogs();
+            blogCategoryMap = buildBlogCategoryMap(blogs);
+            renderPartial(partial="partials/blogs");
+            return;
+        }
         try{
             for (blogId in params.selectedBlogIds) {
                 var message = blogApproval(blogId);
             }
             success="Blogs are approved successfully!";
             blogs = getAllBlogs();
+            blogCategoryMap = buildBlogCategoryMap(blogs);
             renderPartial(partial="partials/blogs");
         } catch(e) {
             cfheader(statusCode=500);
@@ -227,12 +242,19 @@ component extends="app.Controllers.Controller" {
     }
 
     function blogBulkReject(){
+        if (!structKeyExists(params, "selectedBlogIds") || !isArray(params.selectedBlogIds) || arrayLen(params.selectedBlogIds) == 0) {
+            blogs = getAllBlogs();
+            blogCategoryMap = buildBlogCategoryMap(blogs);
+            renderPartial(partial="partials/blogs");
+            return;
+        }
         try{
             for (blogId in params.selectedBlogIds) {
                 var message = blogReject(blogId);
             }
             success="Blogs are rejected successfully!";
             blogs = getAllBlogs();
+            blogCategoryMap = buildBlogCategoryMap(blogs);
             renderPartial(partial="partials/blogs");
         } catch(e) {
             cfheader(statusCode=500);
@@ -281,7 +303,7 @@ component extends="app.Controllers.Controller" {
         var blog = model("Blog").findByKey(blogData.id);
         var user = model("user").findByKey(blog.createdby);
 
-        if (!isNull(blog)) {
+        if (isObject(blog)) {
             if(blog.status == "Approved"){
                 if(len(trim(publishDate))){
                     blog.publishedAt = parseDateTime(publishDate);
@@ -346,7 +368,7 @@ component extends="app.Controllers.Controller" {
     function unpublishComment(){
         try{
             var comment = model("comment").findbyKey(key="#params.id#");
-            if(!isNull(comment)){
+            if(isObject(comment)){
                 comment.isPublished = false;
                 if(comment.save()){
                     renderText('<span class="badge bg-danger">Hidden</span>');
@@ -548,6 +570,43 @@ component extends="app.Controllers.Controller" {
             : (structKeyExists(form, name) ? form[name] : defaultValue);
     }
 
+    private struct function buildBlogCategoryMap(required query blogs) {
+        var map = {};
+        var blogIds = valueList(arguments.blogs.id);
+        if (!len(blogIds)) return map;
+        var allCategories = model("BlogCategory").findAll(
+            select="blogId,name",
+            where="blogId IN (#blogIds#)",
+            include="Blog,Category"
+        );
+        for (var row in allCategories) {
+            if (!structKeyExists(map, row.blogId)) {
+                map[row.blogId] = [];
+            }
+            arrayAppend(map[row.blogId], row.name);
+        }
+        return map;
+    }
+
+    private struct function buildParentCommentMap(required query comments) {
+        var map = {};
+        var parentIds = [];
+        for (var row in arguments.comments) {
+            if (val(row.commentParentId) > 0) {
+                arrayAppend(parentIds, val(row.commentParentId));
+            }
+        }
+        if (!arrayLen(parentIds)) return map;
+        var parentComments = model("comment").findAll(
+            select="id,content",
+            where="id IN (#arrayToList(parentIds)#)"
+        );
+        for (var pc in parentComments) {
+            map[pc.id] = pc.content;
+        }
+        return map;
+    }
+
     public function getAllBlogs() {
         return model("Blog").findAll(
             include="User, PostStatus, PostType",
@@ -575,7 +634,7 @@ component extends="app.Controllers.Controller" {
     function publishComment(id){
         var comment = model("comment").findbyKey(key="#id#", include="Blog");
         var user = model("user").findByKey(comment.authorId);
-        if(!isNull(comment)){
+        if(isObject(comment)){
             comment.isPublished = true;
             if(comment.save()){
                 siteurl = urlFor(route="blog-detail",slug=comment.blog.slug ,onlyPath=false);
@@ -616,8 +675,8 @@ component extends="app.Controllers.Controller" {
         var blog = model("Blog").findByKey(id);
         var user = model("user").findByKey(blog.createdby);
 
-        if (!isNull(blog)) {
-            
+        if (isObject(blog)) {
+
             blog.status = "Approved"; //approved            
             if (blog.save()) {
                 return {
@@ -643,8 +702,8 @@ component extends="app.Controllers.Controller" {
         var blog = model("Blog").findByKey(id);
         var user = model("user").findByKey(blog.createdby);
 
-        if (!isNull(blog)) {
-            
+        if (isObject(blog)) {
+
             blog.status = "Rejected"; //reject
             blog.publishedAt = "";
             if (blog.save()) {

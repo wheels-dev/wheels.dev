@@ -48,15 +48,7 @@
                                     <td class="text-center">#i#</td>
                                     <td><a href="blog/#blogs.slug[i]#" class="cursor-pointer text-primary">#blogs.title[i]#</a></td>
                                     <td>#blogs.NAME[i]#</td>
-                                    <cfscript>
-                                        var categories = model("BlogCategory").findAll(
-                                            select = "name",
-                                            where = "blogId = #val(blogs.id[i])#",
-                                            include = "Blog,Category"
-                                        );
-                                        var categoryNames = valueList(categories.name);
-                                    </cfscript>
-                                    <td>#categoryNames#</td>
+                                    <td><cfif structKeyExists(blogCategoryMap, blogs.id[i])>#arrayToList(blogCategoryMap[blogs.id[i]])#</cfif></td>
                                     <td>
                                         <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-post="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
                                     </td>

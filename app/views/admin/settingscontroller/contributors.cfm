@@ -35,14 +35,13 @@
                                 <td>
                                     <cfscript>
                                         var roleIds = listToArray(contributors.roles[i], ",");
-                                        for (var i=1; i <= arrayLen(roleIds); i++) {
-                                            var role = model("contributor_role").findOneById(roleIds[i]);
-                                            if(arrayLen(roleIds) != i){
-                                                writeOutput(role.rolename & ", ");
-                                            }else{
-                                                writeOutput(role.rolename & " ");
+                                        var roleNames = [];
+                                        for (var rid in roleIds) {
+                                            if (structKeyExists(contributorRolesMap, rid)) {
+                                                arrayAppend(roleNames, contributorRolesMap[rid]);
                                             }
                                         }
+                                        writeOutput(arrayToList(roleNames, ", "));
                                     </cfscript>
                                 </td>
                                 <td class="text-end">

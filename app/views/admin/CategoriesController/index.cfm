@@ -29,10 +29,7 @@
                                 <td>#categories.name[i]#</td>
                                 <td>#categories.description[i]#</td>
                                 <td>
-                                    <cfset parentCategory = model("category").findAll(where="id = #val(categories.parentId[i])#")>
-                                    <cfif parentCategory.recordCount neq 0>
-                                        #parentCategory.name#
-                                    </cfif>
+                                    <cfif structKeyExists(parentCategoryMap, val(categories.parentId[i]))>#parentCategoryMap[val(categories.parentId[i])]#</cfif>
                                 </td>
                                 <td>
                                     <cfif categories.isactive[i] eq 1>

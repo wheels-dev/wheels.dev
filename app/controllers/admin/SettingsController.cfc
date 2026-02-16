@@ -49,6 +49,16 @@ component extends="app.Controllers.Controller" {
             syncContributors();
             contributors = model("contributor").getAll();
         }
+        contributorRolesMap = buildContributorRolesMap();
+    }
+
+    private struct function buildContributorRolesMap() {
+        var map = {};
+        var roles = model("contributor_role").findAll();
+        for (var r in roles) {
+            map[r.id] = r.rolename;
+        }
+        return map;
     }
 
     function syncContributors() {

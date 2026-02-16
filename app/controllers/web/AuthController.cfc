@@ -82,7 +82,7 @@ component extends="app.Controllers.Controller" {
             if (model("LoginAttempt").isUserLocked(params.email)) {
                 // Check if it's a manual lock by admin
                 var user = model("User").findOne(where="email = '#params.email#'");
-                var isManuallyLocked = !isNull(user) && isStruct(user) && structKeyExists(user, "locked") && user.locked;
+                var isManuallyLocked = isObject(user) && structKeyExists(user, "locked") && user.locked;
                 
                 model("Log").log(
                     category = "wheels.auth",

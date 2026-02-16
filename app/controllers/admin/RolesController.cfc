@@ -76,7 +76,7 @@ component extends="app.Controllers.Controller" {
         try{
             if (RoleData.id > 0) {
                 var Role = model("Role").findByKey(RoleData.id);
-                if (!isNull(Role)) {
+                if (isObject(Role)) {
                     // Edit the existing Role post
                     Role.name = RoleData.Name;
                     Role.description = RoleData.description;

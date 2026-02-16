@@ -193,7 +193,7 @@ component extends="app.Controllers.Controller" {
             var token = params.token;
             var subscriber = model("NewsletterSubscriber").findOne(where="verification_token = '#token#' AND status = 'pending'");
             
-            if (isNull(subscriber)) {
+            if (!isObject(subscriber)) {
                 // Log invalid verification attempt
                session.toastMessage = {
                 title = "Verification Failed",
@@ -289,7 +289,7 @@ component extends="app.Controllers.Controller" {
 
             // Check if email exists in users table
             var user = model("User").findOne(where="email = '#email#'");
-            if (!isNull(user)) {
+            if (isObject(user)) {
                 // Update user's newsletter subscription
                 user.update(newsletter = false);
                 
@@ -319,7 +319,7 @@ component extends="app.Controllers.Controller" {
 
             // Check if email exists in newsletter_subscribers table
             var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
-            if (!isNull(subscriber)) {
+            if (isObject(subscriber)) {
                 // Update subscriber status
                 subscriber.update(status = "inactive");
                 

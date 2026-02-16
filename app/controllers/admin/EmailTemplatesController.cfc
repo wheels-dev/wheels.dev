@@ -24,7 +24,7 @@ component extends="app.Controllers.Controller" {
         try{
             email = model("emailTemplate").findOne(where="id = #val(params.id)#");
             if(structKeyExists(params, "id")){
-                if (not isNull(email)) {
+                if (isObject(email)) {
                     // Edit the existing email post
                     email.subject = params.subject;
                     email.message = params.message;

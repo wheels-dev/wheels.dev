@@ -203,7 +203,7 @@ component extends="app.Controllers.Controller" {
             
             if (type == "user") {
                 var user = model("User").findOne(where="email = '#email#'");
-                if (!isNull(user)) {
+                if (isObject(user)) {
                     user.update(newsletter=false);
                     model("Log").log(
                         category = "wheels.newsletter",
@@ -228,7 +228,7 @@ component extends="app.Controllers.Controller" {
                 }
             } else {
                 var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
-                if (!isNull(subscriber)) {
+                if (isObject(subscriber)) {
                     subscriber.update(status="inactive");
                     model("Log").log(
                         category = "wheels.newsletter",

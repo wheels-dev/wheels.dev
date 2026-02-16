@@ -58,7 +58,7 @@ component extends="app.Controllers.Controller" {
         var message = "";
         if (featureData.id > 0) {
             var feature = model("Feature").findByKey(featureData.id);
-            if (!isNull(feature)) {
+            if (isObject(feature)) {
                 feature.title = featureData.title;
                 feature.image = featureData.image;
                 feature.description = featureData.description;
@@ -86,7 +86,7 @@ component extends="app.Controllers.Controller" {
     // Soft delete feature
     private function softDelete(id) {
         var feature = model("Feature").findByKey(arguments.id);
-        if (!isNull(feature)) {
+        if (isObject(feature)) {
             feature.deletedAt = now();
             feature.save();
             return { success = true, message = "Feature deleted successfully." };

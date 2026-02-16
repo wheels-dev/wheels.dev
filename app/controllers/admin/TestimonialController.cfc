@@ -212,9 +212,9 @@ component extends="app.Controllers.Controller" {
         var Testimonial = model("Testimonial").findByKey(id);
         var user = model("user").findByKey(Testimonial.userId);
 
-        if (!isNull(Testimonial)) {
-            
-            Testimonial.status = "Approved"; //approved 
+        if (isObject(Testimonial)) {
+
+            Testimonial.status = "Approved"; //approved
             Testimonial.isApproved = true;           
             if (Testimonial.save()) {
                 siteurl = urlFor(route="home", onlyPath=false);
@@ -257,8 +257,8 @@ component extends="app.Controllers.Controller" {
         var Testimonial = model("Testimonial").findByKey(id);
         var user = model("user").findByKey(Testimonial.userId);
         
-        if (!isNull(Testimonial)) {
-            
+        if (isObject(Testimonial)) {
+
             Testimonial.status = "Rejected"; //reject
             Testimonial.isApproved = false;
             if (Testimonial.save()) {

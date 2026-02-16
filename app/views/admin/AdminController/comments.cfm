@@ -29,8 +29,7 @@
                                         #left(comments.content[j], 30)#
                                     </a></td>
                                 <td>
-                                    <cfset  parentComment= model("comment").findAll(select="content", where="id = #val(comments.commentParentId[j])#")>
-                                    #left(parentComment.content, 30)#
+                                    <cfif structKeyExists(parentCommentMap, val(comments.commentParentId[j]))>#left(parentCommentMap[val(comments.commentParentId[j])], 30)#</cfif>
                                 </td>
                                 <td>#comments.FullName[j]#</td>
                                 <td><a href="blog/#comments.slug[j]#" class="cursor-pointer text-primary">#comments.title[j]#</a></td>

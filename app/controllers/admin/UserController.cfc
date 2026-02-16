@@ -78,9 +78,9 @@ component extends="app.Controllers.Controller" {
     function approve(userId) {
         local.user = model("User").findByKey(arguments.userId);
 
-        if (!isNull(local.user)) {
+        if (isObject(local.user)) {
             local.user.update(
-                isApproved = true, 
+                isApproved = true,
                 approvedAt = now()
             );
 
@@ -95,7 +95,7 @@ component extends="app.Controllers.Controller" {
     function toggleStatus(userId) {
         local.user = model("User").findByKey(arguments.userId);
 
-        if (!isNull(local.user)) {
+        if (isObject(local.user)) {
             local.user.update(
                 isActive = !local.user.isActive
             );
@@ -268,7 +268,7 @@ component extends="app.Controllers.Controller" {
             if (userData.id > 0) {
                 var user = model("User").findByKey(userData.id);
 
-                if (not isNull(user)) {
+                if (isObject(user)) {
                     // Edit the existing user post
                     user.firstname = userData.firstName;
                     user.lastname = userData.lastName;
@@ -345,8 +345,8 @@ component extends="app.Controllers.Controller" {
     private function softDelete(id) {
         var user = model("User").findByKey(arguments.id);
         
-        if (!isNull(user)) {
-            
+        if (isObject(user)) {
+
             if (user.delete()) {
                 model("LoginAttempt").deleteAll(where="email = '#user.email#'");
                 return {
@@ -387,7 +387,7 @@ component extends="app.Controllers.Controller" {
             return;
         }
         var user = model("User").findByKey(userId);
-        if (!isNull(user)) {
+        if (isObject(user)) {
             model("LoginAttempt").clearFailedAttempts(user.email);
             flashInsert(success = "User #user.email# has been unlocked.");
         } else {
@@ -414,7 +414,7 @@ component extends="app.Controllers.Controller" {
             return;
         }
         var user = model("User").findByKey(userId);
-        if (!isNull(user)) {
+        if (isObject(user)) {
             // Toggle the locked status
             user.locked = !user.locked;
             if (user.save()) {

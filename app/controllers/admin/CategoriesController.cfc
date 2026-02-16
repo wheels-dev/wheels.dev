@@ -10,6 +10,26 @@ component extends="app.Controllers.Controller" {
 
     function index(){
         categories = model("category").getAll();
+        parentCategoryMap = buildParentCategoryMap(categories);
+    }
+
+    private struct function buildParentCategoryMap(required query categories) {
+        var map = {};
+        var parentIds = [];
+        for (var row in arguments.categories) {
+            if (val(row.parentId) > 0) {
+                arrayAppend(parentIds, val(row.parentId));
+            }
+        }
+        if (!arrayLen(parentIds)) return map;
+        var parents = model("category").findAll(
+            select="id,name",
+            where="id IN (#arrayToList(parentIds)#)"
+        );
+        for (var p in parents) {
+            map[p.id] = p.name;
+        }
+        return map;
     }
 
     function add(){
@@ -55,7 +75,7 @@ component extends="app.Controllers.Controller" {
             if (categoryData.id > 0) {
                 var category = model("category").findByKey(categoryData.id);
 
-                if (not isNull(category)) {
+                if (isObject(category)) {
                     // Edit the existing category post
                     category.name = categoryData.Name;
                     category.description = categoryData.description;

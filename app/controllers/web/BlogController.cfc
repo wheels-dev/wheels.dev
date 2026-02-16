@@ -944,7 +944,7 @@ component extends="app.Controllers.Controller" {
             if (structKeyExists(blogData, "id") && blogData.id > 0) {
                 var blog = model("Blog").findByKey(blogData.id);
 
-                if (not isNull(blog)) {
+                if (isObject(blog)) {
                     // Update the existing blog post
                     blog.title = blogData.title;
                     blog.content = blogData.content;
@@ -1015,7 +1015,7 @@ component extends="app.Controllers.Controller" {
         try {
             var blog = model("Blog").findByKey(id);
 
-            if (not isNull(blog)) {
+            if (isObject(blog)) {
                 blog.isDeleted = true;
                 blog.updatedAt = now();
                 blog.updatedBy = GetSignedInUserId();

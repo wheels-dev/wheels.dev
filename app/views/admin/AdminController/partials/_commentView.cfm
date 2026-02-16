@@ -14,8 +14,7 @@
                     <tr>
                         <th>Parent comment:</th>
                         <td>
-                            <cfset  parentComment= model("comment").findAll(select="content", where="id = #val(comments.commentparentId)#")>
-                            #left(parentComment.content, 30)#
+                            #left(parentCommentContent, 30)#
                         </td>
                     </tr>
                     <tr>
