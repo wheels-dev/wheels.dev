@@ -65,7 +65,7 @@ component extends="wheels.Controller" {
         var accesspermission = model("RolePermission").findAll(
             select="roleId, permissionId, name, permissionName, permissionstatus, controller, permissiondescription",
             include="Role, Permission",
-            where="name = ? AND permissions.Name = ? AND permissions.controller = ?", params=[session.role, action, controller]
+            where="name = '#session.role#' AND permissions.Name = '#action#' AND permissions.controller = '#controller#'"
             );
         if(accesspermission.recordCount == 0){
             if (structKeyExists(getHttpRequestData().headers, "HX-Request")) {
@@ -102,7 +102,7 @@ component extends="wheels.Controller" {
     // Shared business logic across multiple controllers
     public function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
-            where="blog_posts.slug = ? AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp", params=[arguments.slug],
+            where="blog_posts.slug = '#arguments.slug#' AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL",
             include="User,PostStatus",
             cache=10
         );
@@ -115,7 +115,7 @@ component extends="wheels.Controller" {
 
     function getCategoriesByBlogid(required numeric id) {
         return model("BlogCategory").findAll(
-            where = "blogId = ?", params=[arguments.id],
+            where = "blogId = #val(arguments.id)#",
             include = "Blog,Category",
             cache = 10
         );
@@ -290,7 +290,7 @@ component extends="wheels.Controller" {
         try {
             if (blogId > 0) {
                 // direct delete approach
-                model("Tag").deleteAll(where="blogId = ?", params=[blogId]);
+                model("Tag").deleteAll(where="blogId = #val(arguments.blogId)#");
 
                 return true;
             }
@@ -349,7 +349,7 @@ component extends="wheels.Controller" {
         try {
             if (blogId > 0) {
                 // Find all category associations for this blog post
-                model("BlogCategory").deleteAll(where="blogId = ?", params=[blogId]);
+                model("BlogCategory").deleteAll(where="blogId = #val(arguments.blogId)#");
 
                 return true;
             }
@@ -404,7 +404,7 @@ component extends="wheels.Controller" {
 
             // Check if a blog with the same title/slug exists (that isn't this one)
             var existingBlog = model("Blog").findFirst(
-                where="title = ? AND slug = ? AND id != ?", params=[params.title, params.slug, blogId]
+                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #val(blogId)#"
             );
 
             if (isObject(existingBlog)) {
