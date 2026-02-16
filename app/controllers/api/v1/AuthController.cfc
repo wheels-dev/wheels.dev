@@ -1,6 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="checkEmail", params="key", paramsTypes="integer", handler="index");
         usesLayout("/responseLayout");
     }

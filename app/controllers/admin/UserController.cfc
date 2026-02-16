@@ -2,6 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess,unlockUser,toggleUserLock", params="key", paramsTypes="integer", handler="index");
         usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
         filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic,unlockUser,toggleUserLock");

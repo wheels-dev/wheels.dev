@@ -2,6 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,deleteBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
@@ -210,7 +211,8 @@ component extends="app.Controllers.Controller" {
 
         var blog = model("Blog").findByKey(params.id);
         if (!isObject(blog)) {
-        redirectTo(action="blog", errorMessage="Blog post not found.");
+            redirectTo(action="blog", errorMessage="Blog post not found.");
+            return;
         }
         try {
             blog.statusId = 7;
@@ -218,7 +220,6 @@ component extends="app.Controllers.Controller" {
             blog.deletedAt = now();
             blog.deletedBy = GetSignedInUserId();
             blog.save();
-            blog.delete()
             redirectTo(action="blog", success="Blog post moved to trash.");
         } catch (any e) {
             redirectTo(action="blog", errorMessage="Error trashing blog post.");

@@ -58,11 +58,11 @@
                                     </cfscript>
                                     <td>#categoryNames#</td>
                                     <td>
-                                        <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
+                                        <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-post="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
                                     </td>
                                     <td>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" id="closeComment-#blogs.id[i]#" name="closeComment-#blogs.id[i]#" type="checkbox" <cfif blogs.iscommentClosed[i]> checked </cfif> hx-get="/admin/closeComments/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                            <input class="form-check-input" id="closeComment-#blogs.id[i]#" name="closeComment-#blogs.id[i]#" type="checkbox" <cfif blogs.iscommentClosed[i]> checked </cfif> hx-post="/admin/closeComments/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
                                         </div>
                                     </td>
                                     <td>#blogs.fullName[i]#</td>

@@ -1,5 +1,6 @@
 component extends="app.Controllers.Controller" {
     function config() {
+        super.config();
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
     }

@@ -2,6 +2,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="index,create,loadFeatures,loadBlogs,loadGuides,loadTestimonials,sitemap,downloads", params="key", paramsTypes="integer", handler="index");
         usesLayout("/layout");
     }
@@ -516,7 +517,7 @@ component extends="app.Controllers.Controller" {
     }
     
     function downloads() {
-        // redirectTo(url="https://github.com/wheels-dev/wheels/releases", statusCode=301);
+        redirectTo(url="https://github.com/wheels-dev/wheels/releases", statusCode=301);
     }
 
     private string function getBaseUrl() {

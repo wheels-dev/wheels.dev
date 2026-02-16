@@ -3,6 +3,7 @@ component extends="app.Controllers.Controller" {
     
     // Configuration function
     function config() {
+        super.config();
         verifies(except="index,publicList,new,create,edit,update,check,error,clearPromptFlag", params="key", paramsTypes="integer", handler="error");
         filters(through="restrictAccess", only="new,create,edit,update");
         usesLayout("/layout");

@@ -1,6 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="login,authenticate,logout,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword", params="key", paramsTypes="integer", handler="login");
         usesLayout("/layout");
         filters(through="authenticate", except="login,logout,authenticate,register,store,error,verify,forgotPassword,sendResetLink,resetPassword,updatePassword");

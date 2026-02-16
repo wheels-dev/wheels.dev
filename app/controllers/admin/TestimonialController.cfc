@@ -1,6 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="testimonials,testimonialDetails,delete,approve,reject,checkAdminAccess,featuredTestimonial", params="key", paramsTypes="integer");
         usesLayout(template="/layout", except="testimonials,store,delete,approve,reject,checkAdminAccess");
         usesLayout(template="/admin/AdminController/layout", except="approve,reject");

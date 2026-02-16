@@ -1,6 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="index,enableTestimonials,updateSlackInvite,checkAdminAccess,checkRoleExistance,contributors,syncContributors,editContributors,storeContributors,updateContributorApi", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");

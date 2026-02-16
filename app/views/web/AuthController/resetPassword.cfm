@@ -67,7 +67,7 @@
                         <div class="invalid-feedback px-3 py-1">Passwords must match.</div>
                     </div>
                     <cfoutput>
-                        <input type="hidden" name="token" value="#params.token#"/>
+                        <input type="hidden" name="token" value="#encodeForHTMLAttribute(params.token)#"/>
                     </cfoutput>
                     <div class="space-y-3">
                         <button type="submit" class="bg--primary d-block w-100 text-white px-3 py-2 rounded-3 fs-16 hover:bg-primary-dark transition-all" aria-label="Submitting... ">

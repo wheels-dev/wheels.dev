@@ -1,5 +1,6 @@
 component extends="app.Controllers.Controller" {
     function config() {
+        super.config();
         // Set the layout for all actions
         verifies(except="verify,subscribe,unsubscribe", params="token", paramsTypes="string");
         usesLayout(template="/layout", except="verify");

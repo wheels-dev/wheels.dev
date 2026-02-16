@@ -137,7 +137,7 @@
 			.put(name = "blog-update", pattern = "blog/blogUpdate/[id]", to = "AdminController##update")
 			.get(name = "comment", pattern = "comment", to = "AdminController##comments")
 			.get(name = "show-blog", pattern = "blog/[slug]", to = "AdminController##showBlog")
-			.get(name = "blog-List", pattern = "blog/list", to = "AdminController##blogList")
+			.get(name = "blog-list", pattern = "blog/list", to = "AdminController##blogList")
 			.post(name = "blog-approve", pattern = "approve", to = "AdminController##blogApprove")
 			.post(name = "bulk-approve", pattern = "bulkApprove", to = "AdminController##blogBulkApprove")
 			.post(name = "blog-reject", pattern = "reject", to = "AdminController##rejectBlog")
@@ -145,8 +145,8 @@
 			.post(name = "comment-publish", pattern = "publish", to = "AdminController##commentsPublish")
 			.post(name = "comment-unpublish", pattern = "hide", to = "AdminController##unpublishComment")
 			.get(name = "view-comment", pattern = "commentDetails/[id]", to = "AdminController##viewComments")
-			.get(name = "close-comments", pattern = "closeComments/[id]", to = "AdminController##closeComments")
-			.get(name = "publish-blog", pattern = "publishblog/[id]", to = "AdminController##publishblog")
+			.post(name = "close-comments", pattern = "closeComments/[id]", to = "AdminController##closeComments")
+			.post(name = "publish-blog", pattern = "publishblog/[id]", to = "AdminController##publishblog")
 			.get(name = "import-data", pattern="import-data", to="AdminController##importData")
 
 			// Admin Newsletter Routes
@@ -159,7 +159,7 @@
 
 			.get(name="testimonial", pattern="testimonial", to="TestimonialController##testimonials")
 			.get(name = "view-testimonials", pattern = "testimonials/view/[id]", to = "TestimonialController##testimonialDetails")
-			.get(name = "Featured-testimonial", pattern = "featuredTestimonial/[id]", to = "TestimonialController##featuredTestimonial")
+			.post(name = "featured-testimonial", pattern = "featuredTestimonial/[id]", to = "TestimonialController##featuredTestimonial")
 			.post(name = "approve-testimonials", pattern = "testimonials/approve", to = "TestimonialController##approve")
 			.post(name = "reject-testimonials", pattern = "testimonials/reject", to = "TestimonialController##reject")
 

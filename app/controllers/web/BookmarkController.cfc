@@ -1,6 +1,7 @@
 component extends="app.Controllers.Controller" {
 
 	function config() {
+		super.config();
 		verifies(except="toggle,index", params="key", paramsTypes="integer", handler="index");
 		filters(through="restrictAccess");
 		usesLayout("/layout");

@@ -3,6 +3,7 @@ component extends="app.Controllers.Controller" {
 
     // Configuration function
     function config() {
+        super.config();
         verifies(except="index,create,store,show,update,destroy,loadCategories,loadStatuses,loadPostTypes,Categories,blogs,comment,feed,error,checkTitle,edit,update,AuthorProfileBlogs,blogSearch,commentsFeed,unpublish", params="key", paramsTypes="integer", handler="index");
         filters(through="restrictAccess", only="create,store,comment,edit,update");
         usesLayout("/layout");
@@ -428,12 +429,22 @@ component extends="app.Controllers.Controller" {
                     var originalFileName = uploadedFile.serverFile;
                     var fileExtension = lcase(listLast(originalFileName, "."));
                     var allowedExtensions = "jpg,jpeg,png,gif,webp,pdf,doc,docx";
+                    var allowedContentTypes = "image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
                     var maxFileSizeBytes = 10 * 1024 * 1024; // 10MB
 
                     // Validate file extension
                     if (!listFindNoCase(allowedExtensions, fileExtension)) {
                         fileDelete(uploadedFile.serverDirectory & "/" & originalFileName);
                         throw("Invalid file type. Allowed types: #allowedExtensions#", "InvalidFileType");
+                    }
+
+                    // Validate MIME content type
+                    if (structKeyExists(uploadedFile, "contentType") && structKeyExists(uploadedFile, "contentSubType")) {
+                        var detectedContentType = uploadedFile.contentType & "/" & uploadedFile.contentSubType;
+                        if (!listFindNoCase(allowedContentTypes, detectedContentType)) {
+                            fileDelete(uploadedFile.serverDirectory & "/" & originalFileName);
+                            throw("Invalid file content type. The uploaded file does not match allowed types.", "InvalidContentType");
+                        }
                     }
 
                     // Validate file size
@@ -501,6 +512,9 @@ component extends="app.Controllers.Controller" {
             if (!structKeyExists(blog, "id")) {
                 throw("Blog not found");
             }
+
+            // Set blog post data for layout meta tags (avoids DB query in view)
+            request.blogPostForMeta = blog;
 
             // Get other necessary data
             tags = getTagsByBlogid(blog.id);

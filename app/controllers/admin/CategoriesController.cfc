@@ -1,6 +1,7 @@
 component extends="app.Controllers.Controller" {
 
     function config() {
+        super.config();
         verifies(except="index,add,store,edit,delete,loadCategories,checkAdminAccess", params="key", paramsTypes="integer");
 
         usesLayout(template="/admin/AdminController/layout");

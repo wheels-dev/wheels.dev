@@ -48,7 +48,7 @@
                                 </td>
                                 <td>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" id="isFeatured-#TestimonialId#" name="isFeatured-#TestimonialId#" type="checkbox" <cfif Testimonial.isFeatured[i]> checked </cfif> hx-get="/admin/featuredTestimonial/#TestimonialId#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                        <input class="form-check-input" id="isFeatured-#TestimonialId#" name="isFeatured-#TestimonialId#" type="checkbox" <cfif Testimonial.isFeatured[i]> checked </cfif> hx-post="/admin/featuredTestimonial/#TestimonialId#" hx-trigger="change" hx-target="this" hx-swap="none"/>
                                     </div>
                                 </td>
                                 <td>

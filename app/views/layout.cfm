@@ -24,13 +24,9 @@
 		<cfset blogSlug = listLast(pathInfo, "/")>
 		<cfset isSingleBlogPost = (listLen(pathInfo, "/") GT 1 AND blogSlug NEQ "blog" AND blogSlug NEQ "create" AND blogSlug NEQ "feed" AND NOT find("/blog/category/", pathInfo) AND NOT find("/blog/author/", pathInfo) AND NOT find("/blog/tag/", pathInfo))>
 
-		<cfif isSingleBlogPost>
-			<!--- Only fetch blog post for individual post pages, not listings --->
-			<cfset post = model("Blog").findOne(
-				where="slug = ?", params=[blogSlug],
-				include="User",
-				cache=10
-			)>
+		<!--- Use blog post data set by the controller instead of querying in the view --->
+		<cfif isSingleBlogPost AND structKeyExists(request, "blogPostForMeta")>
+			<cfset post = request.blogPostForMeta>
 		</cfif>
 
 		<cfif isDefined("post") AND isStruct(post) AND structKeyExists(post, "id")>
@@ -251,14 +247,14 @@
 			<cfoutput>#csrfMetaTags()#</cfoutput>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title><cfoutput>#pageTitle#</cfoutput></title>
+			<title><cfoutput>#encodeForHTML(pageTitle)#</cfoutput></title>
 			<link rel="icon" href="/img/favicon.ico" type="image/x-icon">
 			<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
 			<meta name="keywords" content="cfwheels,cfml,ruby,framework">
-			<cfoutput><meta name="description" content="#metaDescription#">
+			<cfoutput><meta name="description" content="#encodeForHTMLAttribute(metaDescription)#">
 			<!--- Open Graph Tags --->
-			<meta property="og:title" content="#ogTitle#">
-			<meta property="og:description" content="#ogDescription#">
+			<meta property="og:title" content="#encodeForHTMLAttribute(ogTitle)#">
+			<meta property="og:description" content="#encodeForHTMLAttribute(ogDescription)#">
 			<meta property="og:type" content="<cfif isBlog>article<cfelse>website</cfif>">
 			<meta property="og:url" content="#getBaseUrl()##cgi.path_info#<cfif len(cgi.query_string)>?#cgi.query_string#</cfif>">
 			<meta property="og:site_name" content="Wheels">
@@ -302,8 +298,8 @@
 			{
 				"@context": "https://schema.org",
 				"@type": "BlogPosting",
-				"headline": "#post.title#",
-				"description": "#metaDescription#",
+				"headline": "#encodeForJavaScript(post.title)#",
+				"description": "#encodeForJavaScript(metaDescription)#",
 				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/img/wheels-logo.png</cfif>",
 				"datePublished": "#dateFormat(post.postDate, "yyyy-mm-dd")#",
 				"dateModified": "#dateFormat(post.updatedAt, "yyyy-mm-dd")#",
@@ -400,7 +396,7 @@
 					,{
 						"@type": "ListItem",
 						"position": 3,
-						"name": "#post.title#",
+						"name": "#encodeForJavaScript(post.title)#",
 						"item": "#getBaseUrl()##cgi.path_info#"
 					}
 					</cfif>
