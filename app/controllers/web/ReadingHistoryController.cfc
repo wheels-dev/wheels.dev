@@ -20,7 +20,7 @@ component extends="app.Controllers.Controller" {
 
 		histories = model("ReadingHistory")
 			.findAll(
-				where="userId = ?", params=[session.userID],
+				where="userId = #val(session.userID)#",
 				include="Blog",
 				order="lastReadAt DESC",
 				perPage=20,
@@ -29,7 +29,7 @@ component extends="app.Controllers.Controller" {
 
 		bookmarks = model("Bookmark")
 			.findAll(
-				where="userId = ?", params=[session.userID],
+				where="userId = #val(session.userID)#",
 				include="Blog",
 				order="createdAt DESC"
 			);
@@ -47,7 +47,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		history = model("ReadingHistory").findOne(
-			where="userId = ? AND blogId = ?", params=[session.userID, params.blogId]
+			where="userId = #val(session.userID)# AND blogId = #val(params.blogId)#"
 		);
 
 		if (IsObject(history)) {
@@ -79,7 +79,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		history = model("ReadingHistory").findOne(
-			where="userId = ? AND blogId = ?", params=[session.userID, params.blogId]
+			where="userId = #val(session.userID)# AND blogId = #val(params.blogId)#"
 		);
 
 		if (IsObject(history)) {
@@ -101,7 +101,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		model("ReadingHistory").deleteAll(
-			where="userId = ?", params=[session.userID]
+			where="userId = #val(session.userID)#"
 		);
 
 		flashInsert(success="Reading history cleared");
@@ -119,15 +119,13 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		var whereParams = [session.userID];
-		where = "userId = ?";
+		where = "userId = #val(session.userID)#";
 		if (StructKeyExists(params, "searchTerm") && params.searchTerm != "") {
-			where &= " AND Blog.title LIKE ?";
-			arrayAppend(whereParams, "%#params.searchTerm#%");
+			where &= " AND Blog.title LIKE '%#params.searchTerm#%'";
 		}
 
 		histories = model("ReadingHistory").findAll(
-			where=where, params=whereParams,
+			where=where,
 			include="Blog",
 			order="lastReadAt DESC",
 			perPage=20,
@@ -148,8 +146,7 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		var whereParams = [session.userID];
-		where = "userId = ?";
+		where = "userId = #val(session.userID)#";
 		if (StructKeyExists(params, "status")) {
 			if (params.status == "completed") {
 				where &= " AND isCompleted=1";
@@ -159,7 +156,7 @@ component extends="app.Controllers.Controller" {
 		}
 
 		histories = model("ReadingHistory").findAll(
-			where=where, params=whereParams,
+			where=where,
 			include="Blog",
 			order="lastReadAt DESC",
 			perPage=20,

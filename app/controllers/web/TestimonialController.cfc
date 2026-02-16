@@ -154,7 +154,7 @@ component extends="app.Controllers.Controller" {
     function edit() {
         try {
             // Find the user's testimonial
-            testimonial = model("Testimonial").findOne(where="userId = ?", params=[GetSignedInUserId()]);
+            testimonial = model("Testimonial").findOne(where="userId = #val(GetSignedInUserId())#");
 
             if (!IsObject(testimonial)) {
                 flashInsert(error="You haven't submitted a testimonial yet.");
@@ -179,7 +179,7 @@ component extends="app.Controllers.Controller" {
     function update() {
         try {
             // Find the user's testimonial
-            testimonial = model("Testimonial").findOne(where="userId = ?", params=[GetSignedInUserId()]);
+            testimonial = model("Testimonial").findOne(where="userId = #val(GetSignedInUserId())#");
 
             if (!IsObject(testimonial)) {
                 if (isHtmx()) {

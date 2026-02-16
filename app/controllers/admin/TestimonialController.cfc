@@ -13,7 +13,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function testimonialdetails(){
-        Testimonial = model("Testimonial").findAll(where="id = ?", params=[params.id], include = "User");
+        Testimonial = model("Testimonial").findAll(where="id = #val(params.id)#", include = "User");
     }
 
     function approve() {
@@ -218,7 +218,7 @@ component extends="app.Controllers.Controller" {
             Testimonial.isApproved = true;           
             if (Testimonial.save()) {
                 siteurl = urlFor(route="home", onlyPath=false);
-                var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Publish Testimonial"]);
+                var emaildata = model("emailTemplate").findAll(where="title = 'Publish Testimonial'");
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = emaildata.buttonTitle,

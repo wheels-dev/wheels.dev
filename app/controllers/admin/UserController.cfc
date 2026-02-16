@@ -141,7 +141,7 @@ component extends="app.Controllers.Controller" {
         var hashedPassword = bCryptHashPW(params.passwordHash, bCryptGenSalt());
         var updateUserPassword = model("User").updateAll(
                 passwordHash = hashedPassword,
-                where = "id = ?", params=[session.userID]
+                where = "id = #val(session.userID)#"
             );
         renderText("Password updated successfully!");
         return;
@@ -190,7 +190,7 @@ component extends="app.Controllers.Controller" {
                 }
 
                 var savedFileName = uploadedFile.serverFile;
-                model("User").updateAll(profilePicture = savedFileName, where = "id = ?", params=[session.userID]);
+                model("User").updateAll(profilePicture = savedFileName, where = "id = #val(session.userID)#");
                 session.profilePic = savedFileName;
                 renderText("Profile picture uploaded successfully!");
                 return;
@@ -254,7 +254,7 @@ component extends="app.Controllers.Controller" {
      * @id User identifier
      */
     private function findById(id) {
-        return model("User").findAll(where="id = ?", params=[arguments.id], returnAs="query");
+        return model("User").findAll(where="id = #val(arguments.id)#", returnAs="query");
     }
 
     /**
@@ -287,7 +287,7 @@ component extends="app.Controllers.Controller" {
                 }
             } else {
                 // Check if user with the same email already exists
-                var existingUser = model("User").findFirst(where="email = ?", params=[userData.email]);
+                var existingUser = model("User").findFirst(where="email = '#userData.email#'");
 
                 if (!isObject(existingUser)) {
                     // Create a new user
@@ -324,16 +324,13 @@ component extends="app.Controllers.Controller" {
      */
     private function search(term = "", page = 1, perPage = 20) {
         var whereCondition = "1=1";
-        var searchParams = [];
 
         if (len(trim(arguments.term))) {
-            whereCondition = "1=1 AND (name LIKE ? OR email LIKE ?)";
-            searchParams = ["%#arguments.term#%", "%#arguments.term#%"];
+            whereCondition = "1=1 AND (name LIKE '%#arguments.term#%' OR email LIKE '%#arguments.term#%')";
         }
 
         return model("User").findAll(
             where = whereCondition,
-            params = searchParams,
             order = "createdAt DESC",
             page = arguments.page,
             perPage = arguments.perPage,
@@ -351,7 +348,7 @@ component extends="app.Controllers.Controller" {
         if (!isNull(user)) {
             
             if (user.delete()) {
-                model("LoginAttempt").deleteAll(where="email = ?", params=[user.email]);
+                model("LoginAttempt").deleteAll(where="email = '#user.email#'");
                 return {
                     success = true,
                     message = "User soft deleted successfully"

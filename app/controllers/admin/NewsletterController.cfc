@@ -202,7 +202,7 @@ component extends="app.Controllers.Controller" {
             );
             
             if (type == "user") {
-                var user = model("User").findOne(where="email = ?", params=[email]);
+                var user = model("User").findOne(where="email = '#email#'");
                 if (!isNull(user)) {
                     user.update(newsletter=false);
                     model("Log").log(
@@ -227,7 +227,7 @@ component extends="app.Controllers.Controller" {
                     };
                 }
             } else {
-                var subscriber = model("NewsletterSubscriber").findOne(where="email = ?", params=[email]);
+                var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
                 if (!isNull(subscriber)) {
                     subscriber.update(status="inactive");
                     model("Log").log(
@@ -369,7 +369,7 @@ component extends="app.Controllers.Controller" {
         
         if (len(trim(searchTerm))) {
             // Search in users table
-            var userSubscribers = model("User").findAll(where="newsletter = 1 AND (email LIKE ? OR firstname LIKE ? OR lastname LIKE ?)", params=["%#searchTerm#%", "%#searchTerm#%", "%#searchTerm#%"]);
+            var userSubscribers = model("User").findAll(where="newsletter = 1 AND (email LIKE '%#searchTerm#%' OR firstname LIKE '%#searchTerm#%' OR lastname LIKE '%#searchTerm#%')");
             for (var user in userSubscribers) {
                 subscribers.append({
                     email: user.email,
@@ -380,7 +380,7 @@ component extends="app.Controllers.Controller" {
             }
             
             // Search in newsletter_subscribers table
-            var nonUserSubscribers = model("NewsletterSubscriber").findAll(where="email LIKE ?", params=["%#searchTerm#%"]);
+            var nonUserSubscribers = model("NewsletterSubscriber").findAll(where="email LIKE '%#searchTerm#%'");
             for (var subscriber in nonUserSubscribers) {
                 subscribers.append({
                     email: subscriber.email,

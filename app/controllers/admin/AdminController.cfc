@@ -37,8 +37,8 @@ component extends="app.Controllers.Controller" {
             // Get categories and tags for the form
             var categories = model("Category").findAll(order="name ASC");
             var postTypes = model("PostType").findAll(order="name ASC");
-            var blogCategories = model("BlogCategory").findAll(where="blogId = ?", params=[blog.id]);
-            var blogTags = model("Tag").findAll(where="blogId = ?", params=[blog.id]);
+            var blogCategories = model("BlogCategory").findAll(where="blogId = #val(blog.id)#");
+            var blogTags = model("Tag").findAll(where="blogId = #val(blog.id)#");
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -292,7 +292,7 @@ component extends="app.Controllers.Controller" {
             if (blog.save()) {
                 if(len(trim(publishDate)) && blog.status == "Approved"){
                     var siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
-                    var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Publish Blog"]);
+                    var emaildata = model("emailTemplate").findAll(where="title = 'Publish Blog'");
                     var emailparams = {
                         "name" = user.fullname,
                         "buttonTitle" = emaildata.buttonTitle,
@@ -390,7 +390,7 @@ component extends="app.Controllers.Controller" {
 
     private function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
-            where="blog_posts.slug = ?", params=[arguments.slug],
+            where="blog_posts.slug = '#arguments.slug#'",
             include="User,PostStatus"
         );
     }
@@ -402,7 +402,7 @@ component extends="app.Controllers.Controller" {
         // Basic counts
         totalBlogs = model("blog").count();
         totalTestimonials = model("testimonial").count();
-        totalNewUser = model("user").count(where="createdat >= ?", params=[dateFormat(now(), "yyyy-mm-dd")]);
+        totalNewUser = model("user").count(where="createdat >= '#dateFormat(now(), "yyyy-mm-dd")#'");
         totalUser = model("user").count();
         activeUsers = model("user").count(where="status = 'true'"); 
         
@@ -411,7 +411,7 @@ component extends="app.Controllers.Controller" {
         
         // Get list of users from last 7 days (for display)
         last_seven_days_user = model("user").findAll(
-            where="createdat >= ?", params=[dateFormat(sevenDaysAgo, "yyyy-mm-dd")],
+            where="createdat >= '#dateFormat(sevenDaysAgo, "yyyy-mm-dd")#'",
             order="createdat DESC"
         );
         
@@ -579,7 +579,7 @@ component extends="app.Controllers.Controller" {
             comment.isPublished = true;
             if(comment.save()){
                 siteurl = urlFor(route="blog-detail",slug=comment.blog.slug ,onlyPath=false);
-                var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Publish comment"]);
+                var emaildata = model("emailTemplate").findAll(where="title = 'Publish comment'");
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = emaildata.buttonTitle,
@@ -648,7 +648,7 @@ component extends="app.Controllers.Controller" {
             blog.status = "Rejected"; //reject
             blog.publishedAt = "";
             if (blog.save()) {
-                var emaildata = model("emailTemplate").findAll(where="title = ?", params=["Reject blog"]);
+                var emaildata = model("emailTemplate").findAll(where="title = 'Reject blog'");
                 var emailparams = {
                     "name" = user.fullname,
                     "buttonTitle" = emaildata.buttonTitle,
@@ -741,7 +741,7 @@ component extends="app.Controllers.Controller" {
             wpId = wpAuth.author_id.__text;
             
             // Find existing user by email
-            user = model("User").findOne(where="email = ?", params=[email]);
+            user = model("User").findOne(where="email = '#email#'");
             
             if (!IsObject(user)) {
                 // Create new user if not found
@@ -841,7 +841,7 @@ component extends="app.Controllers.Controller" {
                 : 1; // Default to ID 1 if not found
             
             // Check if post already exists by WordPress ID
-            var existingPost = model("Blog").findOne(where="title = ? AND slug = ?", params=[title, slug]);
+            var existingPost = model("Blog").findOne(where="title = '#title#' AND slug = '#slug#'");
             
             var blogPost = "";
             if (!isObject(existingPost)) {
@@ -890,8 +890,8 @@ component extends="app.Controllers.Controller" {
                     postMap[wpId] = existingPost.id;
                     
                     // Delete existing categories and tags for this post
-                    model("BlogCategory").deleteAll(where="blogId = ?", params=[existingPost.id]);
-                    model("Tag").deleteAll(where="blogId = ?", params=[existingPost.id]);
+                    model("BlogCategory").deleteAll(where="blogId = #val(existingPost.id)#");
+                    model("Tag").deleteAll(where="blogId = #val(existingPost.id)#");
                     
                     // Process taxonomies (categories and tags)
                     processTaxonomies(item, existingPost.id, arguments.categoryMap, arguments.tagMap);
@@ -995,7 +995,7 @@ component extends="app.Controllers.Controller" {
                     categoryId = arguments.categoryMap[categoryName];
                 } else {
                     // Look up category by name
-                    var existingCategory = model("Category").findOne(where="name = ?", params=[categoryName]);
+                    var existingCategory = model("Category").findOne(where="name = '#categoryName#'");
                     
                     if (isObject(existingCategory)) {
                         categoryId = existingCategory.id;
@@ -1159,7 +1159,7 @@ component extends="app.Controllers.Controller" {
                         }
                         
                         // Check if this comment already exists in our system
-                        var existingComment = model("Comment").findOne(where="wpId = ?", params=[wpCommentId]);
+                        var existingComment = model("Comment").findOne(where="wpId = '#wpCommentId#'");
                         
                         // Try to find a user ID for this comment author
                         var userId = 0;
@@ -1171,13 +1171,13 @@ component extends="app.Controllers.Controller" {
                             user = model("User").findByKey(userId);
                         } else if (commentUserId != "0") {
                             // If WordPress specified a user ID, try to find that user
-                            user = model("User").findOne(where="wpId = ?", params=[commentUserId]);
+                            user = model("User").findOne(where="wpId = '#commentUserId#'");
                             if (isObject(user)) {
                                 userId = user.id;
                             }
                         } else if (len(trim(authorEmail))) {
                             // Try to find a user with this email
-                            user = model("User").findOne(where="email = ?", params=[authorEmail]);
+                            user = model("User").findOne(where="email = '#authorEmail#'");
                             if (isObject(user)) {
                                 userId = user.id;
                             }
@@ -1186,7 +1186,7 @@ component extends="app.Controllers.Controller" {
                         // If no user found and we have an email, create a new user with "commenter" role
                         if (!isObject(user) && len(trim(authorEmail))) {
                             // Get the commenter role ID (you'll need to adjust this to your role system)
-                            var commenterRole = model("Role").findOne(where="name = ?", params=["commenter"]);
+                            var commenterRole = model("Role").findOne(where="name = 'commenter'");
                             var commenterRoleId = isObject(commenterRole) ? commenterRole.id : 4; // Default to role ID 4 if not found
 
                             // Create names array by splitting author name
@@ -1200,7 +1200,7 @@ component extends="app.Controllers.Controller" {
                             // Check if username exists and append number if needed
                             var baseUsername = username;
                             var counter = 1;
-                            while (model("User").exists(where="username = ?", params=[username])) {
+                            while (model("User").exists(where="username = '#username#'")) {
                                 username = baseUsername & counter;
                                 counter++;
                             }
@@ -1233,7 +1233,7 @@ component extends="app.Controllers.Controller" {
                         // Handle case where there's no email but we still have an author name
                         else if (!isObject(user) && !len(trim(authorEmail)) && len(trim(authorName))) {
                             // Get the commenter role ID
-                            var commenterRole = model("Role").findOne(where="name = ?", params=["commenter"]);
+                            var commenterRole = model("Role").findOne(where="name = 'commenter'");
                             var commenterRoleId = isObject(commenterRole) ? commenterRole.id : 4; // Default to role ID 4 if not found
 
                             // Create names array by splitting author name
@@ -1251,7 +1251,7 @@ component extends="app.Controllers.Controller" {
                             // Check if username exists and append number if needed
                             var baseUsername = username;
                             var counter = 1;
-                            while (model("User").exists(where="username = ?", params=[username])) {
+                            while (model("User").exists(where="username = '#username#'")) {
                                 username = baseUsername & counter;
                                 counter++;
                             }

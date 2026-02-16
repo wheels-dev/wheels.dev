@@ -13,16 +13,16 @@ component extends="app.Controllers.Controller" {
     }
 
     function view(){
-        email = model("emailTemplate").findAll(where="id = ?", params=[params.id]);
+        email = model("emailTemplate").findAll(where="id = #val(params.id)#");
     }
 
     function edit(){
-        email = model("emailTemplate").findAll(where="id = ?", params=[params.id]);
+        email = model("emailTemplate").findAll(where="id = #val(params.id)#");
     }
 
     function save(){
         try{
-            email = model("emailTemplate").findOne(where="id = ?", params=[params.id]);
+            email = model("emailTemplate").findOne(where="id = #val(params.id)#");
             if(structKeyExists(params, "id")){
                 if (not isNull(email)) {
                     // Edit the existing email post

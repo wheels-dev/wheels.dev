@@ -27,7 +27,7 @@ component extends="app.Controllers.Controller" {
             );
 
             // Check if email exists in users table
-            var user = model("User").findOne(where="email = ?", params=[email]);
+            var user = model("User").findOne(where="email = '#email#'");
             if (isStruct(user) && structKeyExists(user, "id")) {
                 // Update existing user's newsletter subscription
                 user.update(newsletter = true);
@@ -57,7 +57,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Check if email exists in newsletter_subscribers table
-            var subscriber = model("NewsletterSubscriber").findOne(where="email = ?", params=[email]);
+            var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
             if (isStruct(subscriber) && structKeyExists(subscriber, "status")) {
                 if (subscriber.status == "inactive") {
                     // Reactivate subscriber
@@ -191,7 +191,7 @@ component extends="app.Controllers.Controller" {
     function verify() {
         try {
             var token = params.token;
-            var subscriber = model("NewsletterSubscriber").findOne(where="verification_token = ? AND status = ?", params=[token, "pending"]);
+            var subscriber = model("NewsletterSubscriber").findOne(where="verification_token = '#token#' AND status = 'pending'");
             
             if (isNull(subscriber)) {
                 // Log invalid verification attempt
@@ -288,7 +288,7 @@ component extends="app.Controllers.Controller" {
             );
 
             // Check if email exists in users table
-            var user = model("User").findOne(where="email = ?", params=[email]);
+            var user = model("User").findOne(where="email = '#email#'");
             if (!isNull(user)) {
                 // Update user's newsletter subscription
                 user.update(newsletter = false);
@@ -318,7 +318,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Check if email exists in newsletter_subscribers table
-            var subscriber = model("NewsletterSubscriber").findOne(where="email = ?", params=[email]);
+            var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
             if (!isNull(subscriber)) {
                 // Update subscriber status
                 subscriber.update(status = "inactive");
