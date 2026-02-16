@@ -275,7 +275,7 @@ component extends="app.Controllers.Controller" {
                 where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp AND createdBy = ?",
                 params=[authorId],
                 include="User",
-                order="postDate DESC",
+                order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
                 perPage = arguments.perPage
             ),
@@ -332,7 +332,7 @@ component extends="app.Controllers.Controller" {
                 AND (slug LIKE ? OR title LIKE ? OR content LIKE ? OR fullname LIKE ? OR email LIKE ?)",
                 params=[searchPattern, searchPattern, searchPattern, searchPattern, searchPattern],
                 include="User, PostStatus, PostType",
-                order = "postDate DESC",
+                order = "COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = page,
                 perPage = perPage
             );
@@ -827,7 +827,7 @@ component extends="app.Controllers.Controller" {
             query = model("Blog").findAll(
                 where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp",
                 include="User",
-                order="postDate DESC",
+                order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
                 perPage = arguments.perPage,
                 cache = 5
