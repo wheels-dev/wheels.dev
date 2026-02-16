@@ -614,7 +614,7 @@
 			<cfoutput>
 				<cfif flashMessages() neq "">
 					<script>
-						const html = '#flashMessages()#';
+						const html = '#jsStringFormat(flashMessages())#';
 					</script>
 					<script src="/js/flashMessage.js"></script>
 				</cfif>

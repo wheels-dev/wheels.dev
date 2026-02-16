@@ -24,9 +24,6 @@ component extends="app.Controllers.Controller" {
         isInfiniteScroll = structKeyExists(params, "infiniteScroll") ? params.infiniteScroll : false;
         userId = GetSignedInUserId();
         
-        // Log request details
-        logBlogRequest(filterType, filterValue, page, perPage, userId);
-        
         try {
             var result = getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll);
             
@@ -61,10 +58,6 @@ component extends="app.Controllers.Controller" {
             return arguments.defaultValue;
         }
         return trim(arguments.param);
-    }
-
-    // Helper function to log blog requests (no-op for performance; enable for debugging)
-    private void function logBlogRequest(filterType, filterValue, page, perPage, userId) {
     }
 
     // Main data retrieval logic
@@ -809,10 +802,6 @@ component extends="app.Controllers.Controller" {
 
     // Business Logic
 
-    private function getAll() {
-        return model("Blog").findAll();
-    }
-
     private function getAllBlogs(numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
@@ -1029,7 +1018,7 @@ component extends="app.Controllers.Controller" {
             if (not isNull(blog)) {
                 blog.isDeleted = true;
                 blog.updatedAt = now();
-                blog.updatedBy = 1; // Replace with logged-in user ID
+                blog.updatedBy = GetSignedInUserId();
                 blog.save();
                 message = "Blog post deleted successfully.";
             } else {
@@ -1195,7 +1184,7 @@ component extends="app.Controllers.Controller" {
 
             if (blog.createdBy != currentUserId AND !isUserAdmin()) {
                 renderText(" UnauthorizedAccess : You do not have permission to unpublish this blog");
-                return
+                return;
             }
 
             blog.publishedAt = "";
