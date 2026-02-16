@@ -439,23 +439,25 @@ component extends="app.Controllers.Controller" {
     }
 
     private function blogPublish(blogData){
-        isPublished = false;
-        if(structKeyExists(blogData, "isPublished-#blogData.id#")){
-            isPublished = true;
+        var publishDate = "";
+        if(structKeyExists(blogData, "publishDate-#blogData.id#") && len(trim(blogData["publishDate-#blogData.id#"]))){
+            publishDate = blogData["publishDate-#blogData.id#"];
         }
-        
+
         var blog = model("Blog").findByKey(blogData.id);
         var user = model("user").findByKey(blog.createdby);
 
         if (!isNull(blog)) {
             if(blog.status == "Approved"){
-                blog.isPublished = isPublished;
-                blog.publishedat = now();         
+                if(len(trim(publishDate))){
+                    blog.publishedAt = parseDateTime(publishDate);
+                } else {
+                    blog.publishedAt = "";
+                }
             }
             if (blog.save()) {
-                var siteurl = "";
-                if(isPublished && blog.status == "Approved"){
-                    siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
+                if(len(trim(publishDate)) && blog.status == "Approved"){
+                    var siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
                     var emaildata = model("emailTemplate").findAll(where="title = '#trim("Publish Blog")#'");
                     var emailparams = {
                         "name" = user.fullname,
@@ -471,33 +473,33 @@ component extends="app.Controllers.Controller" {
                     };
                     emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                     cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                    cfmail( 
-                        to = "#user.email#", 
-                        from = "#application.env.mail_from#", 
-                        subject = "#emaildata.subject#", 
-                        server = "#application.env.smtp_host#", 
-                        port = "#application.env.smtp_port#", 
-                        username = "#application.env.smtp_username#", 
-                        password = "#application.env.smtp_password#", 
+                    cfmail(
+                        to = "#user.email#",
+                        from = "#application.env.mail_from#",
+                        subject = "#emaildata.subject#",
+                        server = "#application.env.smtp_host#",
+                        port = "#application.env.smtp_port#",
+                        username = "#application.env.smtp_username#",
+                        password = "#application.env.smtp_password#",
                         type = "html"
-                    ) { 
+                    ) {
                         writeOutput(emailContent);
                     };
                     return {
                         success = true,
-                        message = "Blog Published successfully!"
+                        message = "Blog scheduled for publishing!"
                     };
                 }else{
                     return {
                         success = true,
-                        message = "Blog UnPublished successfully!"
+                        message = "Blog unpublished successfully!"
                     };
                 }
             } else {
                 return {
                     success = false,
                     errors = blog.allErrors(),
-                    message = "Failed to publish/unPublish blog!"
+                    message = "Failed to update publish date!"
                 };
             }
         }
@@ -920,7 +922,7 @@ component extends="app.Controllers.Controller" {
         if (!isNull(blog)) {
             
             blog.status = "Rejected"; //reject
-            blog.isPublished = false;
+            blog.publishedAt = "";
             if (blog.save()) {
                 var emaildata = model("emailTemplate").findAll(where="title = '#trim("Reject blog")#'");
                 var emailparams = {

@@ -25,7 +25,7 @@
                             <a href="/blog/edit/#blog.id#" class="btn bg--primary text-white rounded-3" id="editBlogBtn">
                                 <i class="bi bi-pencil"></i> Edit
                             </a> 
-                            <cfif blog.isPublished>
+                            <cfif len(trim(blog.publishedAt)) AND blog.publishedAt LTE now()>
                                 <button 
                                     class="btn btn-danger rounded-3"
                                     hx-post="/blog/unpublish"

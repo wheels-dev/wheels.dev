@@ -24,7 +24,7 @@
                         <th>Title</th>
                         <th>Status</th>
                         <th>Categories</th>
-                        <th>Publish</th>
+                        <th>Publish Date</th>
                         <th>Disable Comments</th>
                         <th>Created By</th>
                         <th>Approval Status</th>
@@ -55,9 +55,7 @@
                             </cfscript>
                             <td>#categoryNames#</td>
                             <td>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" id="isPublished-#blogs.id[i]#" name="isPublished-#blogs.id[i]#" type="checkbox" <cfif blogs.isPublished[i]> checked </cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
-                                </div>
+                                <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
                             </td>
                             <td>
                                 <div class="form-check form-switch">

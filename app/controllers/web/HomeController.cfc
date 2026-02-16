@@ -321,7 +321,7 @@ component extends="app.Controllers.Controller" {
             });
             
             // Add blog posts
-            var blogPosts = model("Blog").findAll(where="statusid <> 1 AND status = 'Approved' AND isPublished = 1");
+            var blogPosts = model("Blog").findAll(where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp");
             for (var post in blogPosts) {
                 arrayAppend(urls, {
                     loc: getBaseUrl() & "/blog/" & post.slug,
@@ -336,7 +336,7 @@ component extends="app.Controllers.Controller" {
                 select="username",
                 include="User",
                 distinct="true",
-                where="statusid <> 1 AND status = 'Approved' AND isPublished = 1 AND createdBy IS NOT NULL"
+                where="statusid <> 1 AND status = 'Approved' AND published_at IS NOT NULL AND published_at <= current_timestamp AND createdBy IS NOT NULL"
             );
             for (var author in authors) {
                 arrayAppend(urls, {

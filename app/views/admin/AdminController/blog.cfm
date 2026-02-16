@@ -7,6 +7,7 @@
                         <h1 class="fs-24 mb-3 fw-bold">Blogs</h1>
                     </div>
                     <div class="d-flex gap-2">
+                        <a href="#urlFor(route='blog-create')#" class="btn bg--primary text-white mb-3">Create New Article</a>
                         <form id="bulkRejectForm" hx-post="/admin/bulkReject" hx-target="##responseTable" hx-swap="innerHTML"></form>
                         <button id="bulkRejectBtn" class="btn btn-ligh border solid mb-3">Reject Selected</button>
                         <form id="bulkForm" hx-post="/admin/bulkApprove" hx-target="##responseTable" hx-swap="innerHTML"></form>
@@ -26,7 +27,7 @@
                                 <th>Title</th>
                                 <th>Status</th>
                                 <th>Categories</th>
-                                <th>Publish</th>
+                                <th>Publish Date</th>
                                 <th>Disable Comments</th>
                                 <th>Author</th>
                                 <th>Approval Status</th>
@@ -57,9 +58,7 @@
                                     </cfscript>
                                     <td>#categoryNames#</td>
                                     <td>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" id="isPublished-#blogs.id[i]#" name="isPublished-#blogs.id[i]#" type="checkbox" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif blogs.isPublished[i]> checked </cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
-                                        </div>
+                                        <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-get="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
                                     </td>
                                     <td>
                                         <div class="form-check form-switch">
