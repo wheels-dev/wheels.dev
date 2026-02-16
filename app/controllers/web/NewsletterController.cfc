@@ -152,18 +152,7 @@ component extends="app.Controllers.Controller" {
             // Send verification email
             var emailContent = renderView(template="verify", layout=false, returnAs="string", subscriber = subscriber);
             cfheader(name="Content-Type", value="text/html; charset=UTF-8");
-            cfmail( 
-                from = application.env.mail_from,
-                to = email,
-                subject = "Verify your newsletter subscription",
-                server = application.env.smtp_host, 
-                port = application.env.smtp_port, 
-                username = application.env.smtp_username, 
-                password = application.env.smtp_password, 
-                type = "text/html"
-            ){ 
-                writeOutput(emailContent);
-            };
+            sendAppEmail(to=email, subject="Verify your newsletter subscription", htmlContent=emailContent);
 
             data = {
                 "success" = true,
@@ -253,18 +242,7 @@ component extends="app.Controllers.Controller" {
             // Send welcome email
             var emailContent = renderView(template="welcome", layout=false, returnAs="string", subscriber = subscriber);
             cfheader(name="Content-Type", value="text/html; charset=UTF-8");
-            cfmail( 
-                from = application.env.mail_from,
-                to = subscriber.email,
-                subject = "Welcome to our newsletter!",
-                server = application.env.smtp_host, 
-                port = application.env.smtp_port, 
-                username = application.env.smtp_username, 
-                password = application.env.smtp_password, 
-                type = "text/html"
-            ){ 
-                writeOutput(emailContent);
-            };
+            sendAppEmail(to=subscriber.email, subject="Welcome to our newsletter!", htmlContent=emailContent);
 
             location("/", false);
         } catch (any e) {

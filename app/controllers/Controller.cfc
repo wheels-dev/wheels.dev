@@ -239,6 +239,31 @@ component extends="wheels.Controller" {
         return application.env.application_host;
      }
 
+    // ==================== Shared Email Helper ====================
+
+    /**
+     * Send an HTML email using the application's SMTP configuration.
+     * Centralizes the cfmail pattern used across all controllers.
+     *
+     * @to Recipient email address
+     * @subject Email subject line
+     * @htmlContent Rendered HTML email body
+     */
+    function sendAppEmail(required string to, required string subject, required string htmlContent) {
+        cfmail(
+            to = arguments.to,
+            from = application.env.mail_from,
+            subject = arguments.subject,
+            server = application.env.smtp_host,
+            port = application.env.smtp_port,
+            username = application.env.smtp_username,
+            password = application.env.smtp_password,
+            type = "html"
+        ) {
+            writeOutput(arguments.htmlContent);
+        };
+    }
+
     // ==================== Shared Blog Helper Functions ====================
     // Used by both web.BlogController and admin.AdminController
 

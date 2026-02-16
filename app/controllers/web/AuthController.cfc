@@ -54,7 +54,7 @@ component extends="app.Controllers.Controller" {
             // Check if user exists first (regardless of status)
             var existingUser = model("User").findOne(where="email = ?", params=[params.email], include="Role");
             
-            // If user doesn't exist, send registration invitation
+            // If user doesn't exist, send registration invitation but return generic message
             if (!isObject(existingUser)) {
                 model("Log").log(
                     category = "wheels.auth",
@@ -65,19 +65,14 @@ component extends="app.Controllers.Controller" {
                         "ip_address": cgi.REMOTE_ADDR
                     }
                 );
-                
-                // Send registration invitation email
-                if (sendRegistrationInvitationEmail(params.email)) {
-                    data = {
-                        "success" = false,
-                        "message" = "No account found with this email. We've sent you a registration invitation. Please check your email to create your account."
-                    };
-                } else {
-                    data = {
-                        "success" = false,
-                        "message" = "No account found with this email. Please register to create an account."
-                    };
-                }
+
+                // Send registration invitation email silently
+                try { sendRegistrationInvitationEmail(params.email); } catch (any e) {}
+
+                data = {
+                    "success" = false,
+                    "message" = "If an account exists with this email, you will receive a login notification."
+                };
                 renderWith(data=data, hideDebugInformation=true, status=400, layout='/responseLayout');
                 return;
             }
@@ -175,6 +170,8 @@ component extends="app.Controllers.Controller" {
                         "role": (isObject(user.role) ? user.role.name : "")
                     }
                 );
+                // Regenerate session ID to prevent session fixation
+                sessionRotate();
                 // Store user data in session
                 session.userID = user.id;
                 session.username = user.fullname;
@@ -768,18 +765,7 @@ component extends="app.Controllers.Controller" {
         
         if (isObject(user)){
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            cfmail( 
-                to = "#user.email#", 
-                from = "#application.env.mail_from#", 
-                subject = "#emaildata.subject#", 
-                server = "#application.env.smtp_host#", 
-                port = "#application.env.smtp_port#", 
-                username = "#application.env.smtp_username#", 
-                password = "#application.env.smtp_password#", 
-                type = "html"
-            ) { 
-                writeOutput(emailContent);
-            }
+            sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
             return true;
         }
         return false;
@@ -814,19 +800,8 @@ component extends="app.Controllers.Controller" {
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            cfmail( 
-                to = "#email#", 
-                from = "#application.env.mail_from#", 
-                subject = "#emaildata.subject#", 
-                server = "#application.env.smtp_host#", 
-                port = "#application.env.smtp_port#", 
-                username = "#application.env.smtp_username#", 
-                password = "#application.env.smtp_password#", 
-                type = "html"
-            ) { 
-                writeOutput(emailContent);
-            }
-            
+            sendAppEmail(to=email, subject=emaildata.subject, htmlContent=emailContent);
+
             return true;
         } catch (any e) {
             model("Log").log(
@@ -884,19 +859,8 @@ component extends="app.Controllers.Controller" {
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            cfmail( 
-                to = "#user.email#", 
-                from = "#application.env.mail_from#", 
-                subject = "#emaildata.subject#", 
-                server = "#application.env.smtp_host#", 
-                port = "#application.env.smtp_port#", 
-                username = "#application.env.smtp_username#", 
-                password = "#application.env.smtp_password#", 
-                type = "html"
-            ) { 
-                writeOutput(emailContent);
-            }
-            
+            sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
+
             return true;
         } catch (any e) {
             model("Log").log(
@@ -1180,18 +1144,7 @@ component extends="app.Controllers.Controller" {
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            cfmail( 
-                to = "#arguments.email#", 
-                from = "#application.env.mail_from#", 
-                subject = "#emaildata.subject#", 
-                server = "#application.env.smtp_host#", 
-                port = "#application.env.smtp_port#", 
-                username = "#application.env.smtp_username#", 
-                password = "#application.env.smtp_password#", 
-                type = "html"
-            ) { 
-                writeOutput(emailContent);
-            };
+            sendAppEmail(to=arguments.email, subject=emaildata.subject, htmlContent=emailContent);
             model("Log").log(
                 category = "wheels.auth",
                 level = "INFO",
@@ -1245,18 +1198,7 @@ component extends="app.Controllers.Controller" {
             };
             var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
             cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            cfmail( 
-                to = "#arguments.email#", 
-                from = "#application.env.mail_from#", 
-                subject = "#emaildata.subject#", 
-                server = "#application.env.smtp_host#", 
-                port = "#application.env.smtp_port#", 
-                username = "#application.env.smtp_username#", 
-                password = "#application.env.smtp_password#", 
-                type = "html"
-            ) { 
-                writeOutput(emailContent);
-            };
+            sendAppEmail(to=arguments.email, subject=emaildata.subject, htmlContent=emailContent);
             model("Log").log(
                 category = "wheels.auth",
                 level = "INFO",

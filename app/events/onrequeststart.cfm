@@ -1,19 +1,18 @@
 <cfscript>
 // Place code here that should be executed on the "onRequestStart" event.
-if (structKeyExists(session, "userId") && session.userId neq "") {
+if (structKeyExists(session, "userID") && session.userID neq "") {
     // Check if lastActivity is set
     if (structKeyExists(session, "lastActivity")) {
         var timeSinceLastActivity = dateDiff("n", session.lastActivity, now());
-        
+
         // If idle for more than 30 minutes, log out
         if (timeSinceLastActivity >= 30) {
-            structDelete(session, "userId");
-            structDelete(session, "lastActivity");
+            structClear(session);
             location(url="/login", addtoken=false);
             return false;
         }
     }
-    
+
     // Update last activity timestamp
     session.lastActivity = now();
 }
@@ -25,11 +24,11 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
 
         // Look up remember-me record
         var record = model("RememberToken").findOne(
-            where = "token = '#hashedToken#' AND expiresAt > '#NOW()#' AND userAgent = '#cgi.http_user_agent#'"
+            where = "token = ? AND expiresAt > ? AND userAgent = ?", params = [hashedToken, now(), cgi.http_user_agent]
         );
 
         if (isObject(record)) {
-            var user = model("User").findOne(where="id='#record.userId#'", include="Role");
+            var user = model("User").findOne(where="id = ?", params=[record.userId], include="Role");
             if (isObject(user)) {
                 // Rebuild session
                 session.userID = user.id;
@@ -56,11 +55,11 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
                     );
                     if (len(newToken)) {
                     cfcookie(
-                        name="remember_me", 
-                        value=newToken, 
-                        expires="07", 
-                        secure="true", 
-                        httponly="true", 
+                        name="remember_me",
+                        value=newToken,
+                        expires="07",
+                        secure="true",
+                        httponly="true",
                         samesite="Strict"
                     );
                     record.delete(); // remove the old token
@@ -88,13 +87,13 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
             }
         }else{
             var record = model("RememberToken").findOne(
-                where = "token = '#hashedToken#'",
+                where = "token = ?", params = [hashedToken],
                 includeSoftDeletes = true
             );
             if(isObject(record)){
                 // Suspicious activity
                 if (record.userAgent NEQ cgi.http_user_agent) {
-                    model("RememberToken").deleteAll(where="userId = #record.userId#");
+                    model("RememberToken").deleteAll(where="userId = ?", params=[record.userId]);
 
                     model("Log").log(
                         category = "wheels.auth",
@@ -108,7 +107,7 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
                     );
                 }else{
                     // Expired attempt
-                    model("RememberToken").deleteAll(where="userId = #record.userId#");
+                    model("RememberToken").deleteAll(where="userId = ?", params=[record.userId]);
                     model("Log").log(
                         category = "wheels.auth",
                         level = "WARN",

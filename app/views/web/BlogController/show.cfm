@@ -180,7 +180,7 @@
                                                 </div>
                                                 <div id="reply-#Id#"></div>
                                             </cfif>
-                                            <cfset childComments = model("comment").findAll(include ="User", where="commentParentId = ?", params=[Id], order ="commentParentId")>
+                                            <cfquery name="childComments" dbtype="query">SELECT * FROM allBlogComments WHERE commentParentId = <cfqueryparam value="#Id#" cfsqltype="cf_sql_integer"></cfquery>
                                             <cfif childComments.recordcount neq 0>
                                                 <cfloop query="childComments">
                                                     <div class="mt-4">

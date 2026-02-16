@@ -220,7 +220,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Check if user has permission to edit this post
-            if (!hasEditorAccess() && blog.userId != session.userID) {
+            if (!hasEditorAccess() && blog.createdBy != session.userID) {
                 throw("You don't have permission to edit this post", "UnauthorizedAccess");
             }
 
@@ -507,6 +507,7 @@ component extends="app.Controllers.Controller" {
             categories = getCategoriesByBlogid(blog.id);
             attachments = getAttachmentsByBlogid(blog.id);
             comments = getAllCommentsByBlogid(blog.id);
+            allBlogComments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = ?", params=[blog.id], order="commentParentId, createdAt", cache=5);
 
             // Track reading history
             if (StructKeyExists(session, "userID")) {
@@ -530,7 +531,7 @@ component extends="app.Controllers.Controller" {
 
                 // Check if bookmarked
                 isBookmarked = model("Bookmark").exists(
-                    where="userId = ? AND blogId = ?", params=[session.userId, blog.id]
+                    where="userId = ? AND blogId = ?", params=[session.userID, blog.id]
                 );
             } else {
                 isBookmarked = false;
@@ -576,21 +577,23 @@ component extends="app.Controllers.Controller" {
             // Set additional parameters from the form
             params.isDraft = isNumeric(params.isDraft) ? params.isDraft : 0;
 
-            response = updateBlog(params, blogId);
+            transaction {
+                response = updateBlog(params, blogId);
 
-            // Update relationships
-            deleteBlogTags(blogId);
-            deleteBlogCategories(blogId);
+                // Update relationships
+                deleteBlogTags(blogId);
+                deleteBlogCategories(blogId);
 
-            // Handle tags which are passed as a comma-separated string in postTags
-            if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
-                params.tags = params.postTags;
-                saveTags(params, blogId);
-            }
+                // Handle tags which are passed as a comma-separated string in postTags
+                if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
+                    params.tags = params.postTags;
+                    saveTags(params, blogId);
+                }
 
-            // Handle categories which are passed as selected values in categoryId
-            if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
-                saveCategories(params, blogId);
+                // Handle categories which are passed as selected values in categoryId
+                if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
+                    saveCategories(params, blogId);
+                }
             }
 
             model("Log").log(

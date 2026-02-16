@@ -232,18 +232,7 @@ component extends="app.Controllers.Controller" {
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                cfmail( 
-                    to = "#user.email#", 
-                    from = "#application.env.mail_from#", 
-                    subject = "#emaildata.subject#", 
-                    server = "#application.env.smtp_host#", 
-                    port = "#application.env.smtp_port#", 
-                    username = "#application.env.smtp_username#", 
-                    password = "#application.env.smtp_password#", 
-                    type = "html"
-                ) { 
-                    writeOutput(emailContent);
-                };
+                sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
                 return {
                     success = true,
                     message = "Testimonial approved successfully."

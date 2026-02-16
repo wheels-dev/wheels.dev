@@ -206,9 +206,8 @@ private string function getSaltFromEnvironment() {
 	if (structKeyExists(application, "env") && structKeyExists(application.env, "wheels_id_salt")) {
 		return application.env.wheels_id_salt;
 	}
-	
-	// Final fallback
-	return "wheels_dev_salt_2025";
+
+	throw(type="ConfigurationError", message="wheels_id_salt environment variable is not configured");
 }
 
 </cfscript>

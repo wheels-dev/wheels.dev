@@ -32,7 +32,7 @@
                             var isLocked = model("LoginAttempt").isUserLocked(users.email[i]);
                             // Check if user is manually locked by admin (with fallback if column doesn't exist)
                             var isManuallyLocked = structKeyExists(users, "locked") ? users.locked[i] == 1 : false;
-                            if(users.id[i] neq "#session.userId#"){
+                            if(users.id[i] neq "#session.userID#"){
                                 writeOutput('<tr> <td>' & i & '</td>');
                                 writeOutput('<td>' & users.firstname[i] & '</td>');
                                 writeOutput('<td>' & users.lastname[i] & '</td>');

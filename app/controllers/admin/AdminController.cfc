@@ -28,7 +28,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Check if user has permission to edit this post
-            if (session.role != "admin" && blog.userId != session.userID) {
+            if (session.role != "admin" && blog.createdBy != session.userID) {
                 throw("You don't have permission to edit this post", "UnauthorizedAccess");
             }
 
@@ -94,21 +94,23 @@ component extends="app.Controllers.Controller" {
                 userId = structKeyExists(session, "userID") ? session.userID : 0
             );
             
-            response = updateBlog(params, blogId);
-            
-            // Update relationships
-            deleteBlogTags(blogId);
-            deleteBlogCategories(blogId);
-            
-            // Handle tags which are passed as a comma-separated string in postTags
-            if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
-                params.tags = params.postTags;
-                saveTags(params, blogId);
-            }
-            
-            // Handle categories which are passed as selected values in categoryId
-            if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
-                saveCategories(params, blogId);
+            transaction {
+                response = updateBlog(params, blogId);
+
+                // Update relationships
+                deleteBlogTags(blogId);
+                deleteBlogCategories(blogId);
+
+                // Handle tags which are passed as a comma-separated string in postTags
+                if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
+                    params.tags = params.postTags;
+                    saveTags(params, blogId);
+                }
+
+                // Handle categories which are passed as selected values in categoryId
+                if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
+                    saveCategories(params, blogId);
+                }
             }
 
             model("Log").log(
@@ -304,18 +306,7 @@ component extends="app.Controllers.Controller" {
                     };
                     emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                     cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                    cfmail(
-                        to = "#user.email#",
-                        from = "#application.env.mail_from#",
-                        subject = "#emaildata.subject#",
-                        server = "#application.env.smtp_host#",
-                        port = "#application.env.smtp_port#",
-                        username = "#application.env.smtp_username#",
-                        password = "#application.env.smtp_password#",
-                        type = "html"
-                    ) {
-                        writeOutput(emailContent);
-                    };
+                    sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
                     return {
                         success = true,
                         message = "Blog scheduled for publishing!"
@@ -601,18 +592,7 @@ component extends="app.Controllers.Controller" {
                     "isSubscriber" = user.newsletter
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-                cfmail( 
-                    to = "#user.email#", 
-                    from = "#application.env.mail_from#", 
-                    subject = "#emaildata.subject#", 
-                    server = "#application.env.smtp_host#", 
-                    port = "#application.env.smtp_port#", 
-                    username = "#application.env.smtp_username#", 
-                    password = "#application.env.smtp_password#", 
-                    type = "html"
-                ) { 
-                    writeOutput(emailContent);
-                };
+                sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
                 return {
                     success = true,
                     message = "Comment Published successfully!"
@@ -682,18 +662,7 @@ component extends="app.Controllers.Controller" {
                 };
                 emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
                 cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                cfmail( 
-                    to = "#user.email#", 
-                    from = "#application.env.mail_from#", 
-                    subject = "#emaildata.subject#", 
-                    server = "#application.env.smtp_host#", 
-                    port = "#application.env.smtp_port#", 
-                    username = "#application.env.smtp_username#", 
-                    password = "#application.env.smtp_password#", 
-                    type = "html"
-                ) { 
-                    writeOutput(emailContent);
-                };
+                sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
                 return {
                     success = true,
                     message = "Blog rejected successfully"

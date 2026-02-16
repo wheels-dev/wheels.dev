@@ -110,7 +110,7 @@ component extends="app.Controllers.Controller" {
 
     function profile(){
         param name="id" default=0;
-        id = session.userId
+        id = session.userID
         user;
         if(id > 0) {
             user = findById(id);
@@ -129,7 +129,7 @@ component extends="app.Controllers.Controller" {
 
         if(!structKeyExists(params, "confirmPassword")){
             renderText("Please enter confirm password!");
-            renderText
+            return;
         }
 
         if(params.passwordHash != params.confirmPassword){
@@ -140,7 +140,7 @@ component extends="app.Controllers.Controller" {
         var hashedPassword = bCryptHashPW(params.passwordHash, bCryptGenSalt());
         var updateUserPassword = model("User").updateAll(
                 passwordHash = hashedPassword,
-                where = "id = ?", params=[session.userId]
+                where = "id = ?", params=[session.userID]
             );
         renderText("Password updated successfully!");
         return;
@@ -189,7 +189,7 @@ component extends="app.Controllers.Controller" {
                 }
 
                 var savedFileName = uploadedFile.serverFile;
-                model("User").updateAll(profilePicture = savedFileName, where = "id = ?", params=[session.userId]);
+                model("User").updateAll(profilePicture = savedFileName, where = "id = ?", params=[session.userID]);
                 session.profilePic = savedFileName;
                 renderText("Profile picture uploaded successfully!");
                 return;
