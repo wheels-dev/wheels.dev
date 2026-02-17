@@ -1,4 +1,1 @@
-<cfcontent type="application/json">
-<cfoutput>
-#serializeJSON(data)#
-</cfoutput>
+<cfset request.wheels.showDebugInformation = false><cfcontent type="application/json"><cfoutput>#serializeJSON(data)#</cfoutput>

@@ -12,7 +12,7 @@
                 <h1 class="fs-24 mb-0 fw-bold text--secondary">Reset Password</h1>
                 <p class="fs-16 text--secondary fw-medium pt-2">Enter your email to get a password reset link</p>
 
-                <form hx-boost="true" class="pt-4 needs-validation" id="forgotPasswordForm" novalidate
+                <form class="pt-4 needs-validation" id="forgotPasswordForm" novalidate
                     hx-post="/auth/send-reset-link" hx-swap="none" aria-label="Forgot Password Form">
                     <cfoutput>#authenticityTokenField()#</cfoutput>
 

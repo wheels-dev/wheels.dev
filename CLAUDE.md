@@ -111,6 +111,31 @@ Active deployment config lives in `deploy/swarm/`. See `deploy/swarm/DEPLOYMENT-
 
 > `deploy/prod/` and `deploy/stage/` are legacy (pre-Swarm systemd deployment) and kept for reference only.
 
+## HTMX Error Handling Pattern
+
+This app uses HTMX 2.0 for AJAX form submissions. A two-layer error handling pattern ensures errors are always visible to users and developers:
+
+### Layer 1: Server-side (`public/Application.cfc` `onError`)
+
+The `onError` method detects HTMX requests via the `HX-Request` header and returns JSON errors instead of HTML error pages:
+- **Development mode**: Returns actual error message, detail, and type for debugging
+- **Production mode**: Returns generic user-friendly message
+- Always returns `500` status with `application/json` content type
+- Uses `cfcontent(reset=true)` to clear any buffered output
+
+### Layer 2: Client-side (`public/javascripts/global.js`)
+
+Two global HTMX event listeners at the top of `global.js` act as safety nets:
+- **`htmx:beforeSwap`**: Blocks full HTML error pages (`<!DOCTYPE`) from being swapped into the DOM. Extracts the `<title>` for a meaningful error notification.
+- **`htmx:responseError`**: Catches 5xx responses, parses JSON error body from Layer 1, and shows notification with the error message. Logs detail to console in dev mode.
+
+### Best Practices for HTMX Endpoints
+
+1. **Always include `authenticityTokenField()`** in forms that use `hx-post`/`hx-put`/`hx-delete`. Missing CSRF tokens cause silent failures.
+2. **JSON API views** (like `authenticate.cfm`) should set `request.wheels.showDebugInformation = false` to prevent the Wheels debug toolbar from corrupting JSON responses in development mode.
+3. **Detect HTMX in controllers** using `structKeyExists(getHttpRequestData().headers, "HX-Request")` — see `Controller.cfc` `checkRoleAccess()` for an example of returning `HX-Redirect` headers.
+4. **Use `renderWith()` with `layout='/responseLayout'`** for JSON API responses to avoid the full HTML layout wrapper.
+
 ## Key URLs
 
 - `/` - Homepage

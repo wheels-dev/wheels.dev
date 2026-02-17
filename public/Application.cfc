@@ -265,6 +265,31 @@ component output="false" {
 	}
 
 	public void function onError( any Exception, string EventName ) {
+		// For HTMX requests, return JSON error instead of HTML error page.
+		// This prevents HTMX from receiving HTML when it expects JSON, which causes
+		// silent failures or page corruption in the browser.
+		try {
+			if (structKeyExists(getHTTPRequestData().headers, "HX-Request")) {
+				local.errorResponse = {"success": false};
+				local.isDev = structKeyExists(application, "wheels")
+					&& structKeyExists(application.wheels, "environment")
+					&& application.wheels.environment == "development";
+				if (local.isDev) {
+					local.errorResponse["message"] = arguments.Exception.message;
+					local.errorResponse["detail"] = arguments.Exception.detail;
+					local.errorResponse["type"] = arguments.Exception.type;
+				} else {
+					local.errorResponse["message"] = "An unexpected error occurred. Please try again.";
+				}
+				cfheader(statusCode=500, statusText="Internal Server Error");
+				cfcontent(type="application/json", reset=true);
+				writeOutput(serializeJSON(local.errorResponse));
+				return;
+			}
+		} catch (any htmxErr) {
+			// If HTMX detection itself fails, fall through to standard error handling
+		}
+
 		wirebox = new wirebox.system.ioc.Injector("wheels.Wirebox");
 		application.wo = wirebox.getInstance("global");
 
