@@ -13,6 +13,7 @@
                         </div>
                     </cfif>
                     <form id="blogForm" method="post" action='/admin/blog/blogUpdate/#blog.id#' class="needs-validation" novalidate hx-validate="true" enctype="multipart/form-data" onsubmit="document.getElementById('editLoader').style.display = 'block';">
+                        #authenticityTokenField()#
                         <input type="hidden" name="_method" value="#isEdit ? 'PUT' : 'POST'#">
                         <input class="form-control" type="hidden" name="id" id="id" value="#isEdit ? blog.id : ''#">
     

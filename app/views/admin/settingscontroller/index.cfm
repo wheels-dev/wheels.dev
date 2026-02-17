@@ -26,6 +26,7 @@
                     <div class="mb-4">
                         <h6 class="mb-3">Slack Community</h6>
                         <form hx-post="/admin/settings/updateSlackInvite" hx-swap="none">
+                            #authenticityTokenField()#
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" name="slackInviteLink" 
@@ -47,6 +48,7 @@
                     <div class="mb-4">
                         <h6 class="mb-3">Wheels Contributor</h6>
                         <form hx-post="/admin/settings/updateContributorApi" hx-swap="none">
+                            #authenticityTokenField()#
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" name="wheelsContributorLink" 

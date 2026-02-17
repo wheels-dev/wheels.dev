@@ -8,9 +8,9 @@
                     </div>
                     <div class="d-flex gap-2">
                         <a href="#urlFor(route='blog-create')#" class="btn bg--primary text-white mb-3">Create New Article</a>
-                        <form id="bulkRejectForm" hx-post="/admin/bulkReject" hx-target="##responseTable" hx-swap="innerHTML"></form>
+                        <form id="bulkRejectForm" hx-post="/admin/bulkReject" hx-target="##responseTable" hx-swap="innerHTML">#authenticityTokenField()#</form>
                         <button id="bulkRejectBtn" class="btn btn-ligh border solid mb-3">Reject Selected</button>
-                        <form id="bulkForm" hx-post="/admin/bulkApprove" hx-target="##responseTable" hx-swap="innerHTML"></form>
+                        <form id="bulkForm" hx-post="/admin/bulkApprove" hx-target="##responseTable" hx-swap="innerHTML">#authenticityTokenField()#</form>
                         <button id="bulkApproveBtn" class="btn bg--primary text-white mb-3">Approve Selected</button>
                     </div>
                 </div>

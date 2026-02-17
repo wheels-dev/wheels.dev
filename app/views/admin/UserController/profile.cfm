@@ -24,6 +24,7 @@
                 
                 
                 <form class="pt-3 px-1 needs-validation" id="userForm" novalidate hx-post="/admin/user/store" hx-validate="true" enctype="multipart/form-data">
+                    #authenticityTokenField()#
                     <input name="id" type="hidden" id="id" value="#id#">
 
                     <div class="mb-3">

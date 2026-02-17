@@ -155,6 +155,7 @@
                 </div>
                 <div class="modal-body">
                     <form hx-post="/admin/newsletter/send" hx-swap="none">
+                        #authenticityTokenField()#
                         <div class="mb-3">
                             <label for="subject" class="form-label mb-2">Newsletter Subject</label>
                             <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter newsletter subject" required>
