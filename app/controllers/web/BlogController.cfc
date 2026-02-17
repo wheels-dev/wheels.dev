@@ -206,7 +206,7 @@ component extends="app.Controllers.Controller" {
             }
 
             // Get the blog post
-            var blog = model("Blog").findByKey(key=params.id, include="User,PostStatus");
+            blog = model("Blog").findByKey(key=params.id, include="User,PostStatus");
 
             // Check if blog exists
             if (!isObject(blog)) {
@@ -218,17 +218,16 @@ component extends="app.Controllers.Controller" {
                 throw("You don't have permission to edit this post", "UnauthorizedAccess");
             }
 
-
             // Get categories and tags for the form
-            var categories = model("Category").findAll(order="name ASC");
-            var postTypes = model("PostType").findAll(order="name ASC");
+            categories = model("Category").findAll(order="name ASC");
+            postTypes = model("PostType").findAll(order="name ASC");
             var blogCategories = model("BlogCategory").findAll(where="blogId = #val(blog.id)#");
             var blogTags = model("Tag").findAll(where="blogId = #val(blog.id)#");
 
             // Prepare data for the view
             var selectedCategories = [];
             for (var cat in blogCategories) {
-                arrayAppend(selectedCategories, cat.categoryId);
+                arrayAppend(selectedCategories, val(cat.categoryId));
             }
 
             var selectedTags = [];
@@ -239,9 +238,9 @@ component extends="app.Controllers.Controller" {
             // Set view variables
             blog.categories = selectedCategories;
             blog.tags = arrayToList(selectedTags, ",");
+            isEdit = true;
 
-            // Render the edit form with the blog data
-            renderView(template="create", blog=blog, categories=categories, postTypes=postTypes, isEdit=true);
+            renderView(template="create");
 
         } catch (any e) {
             // Log the error

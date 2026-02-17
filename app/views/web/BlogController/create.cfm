@@ -35,7 +35,7 @@
                                 <option value="">Select Categories</option>
                                 <cfif isEdit>
                                     <cfloop query="categories">
-                                        <option value="#categories.id#" <cfif arrayFind(blog.categories, categories.id)>selected</cfif>>#categories.name#</option>
+                                        <option value="#categories.id#" <cfif arrayFind(blog.categories, val(categories.id))>selected</cfif>>#categories.name#</option>
                                     </cfloop>
                                 <cfelse>
                                     <option value="" disabled>Loading categories...</option>
