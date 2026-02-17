@@ -514,7 +514,6 @@ component extends="app.Controllers.Controller" {
             if (StructKeyExists(session, "userID")) {
                 history = model("ReadingHistory").findOne(
                     where="userId = #session.userID# AND blogId = #blog.id#",
-                    returnAs="query",
                     includeSoftDeletes=true
                 );
                 if (IsObject(history)) {
