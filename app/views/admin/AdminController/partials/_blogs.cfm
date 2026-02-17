@@ -6,9 +6,9 @@
                     <h1 class="fs-24 mb-5 fw-bold">Blogs</h1>
                 </div>
                 <div class="d-flex gap-2">
-                    <form id="bulkRejectForm" hx-post="/admin/bulkReject" hx-target="##responseTable" hx-swap="innerHTML"></form>
+                    <form id="bulkRejectForm" hx-post="/admin/bulkReject" hx-target="##responseTable" hx-swap="innerHTML">#authenticityTokenField()#</form>
                     <button id="bulkRejectBtn" class="btn btn-ligh border solid mb-3">Reject Selected</button>
-                    <form id="bulkForm" hx-post="bulkApprove" hx-target="##responseTable" hx-swap="innerHTML"></form>
+                    <form id="bulkForm" hx-post="bulkApprove" hx-target="##responseTable" hx-swap="innerHTML">#authenticityTokenField()#</form>
                     <button id="bulkApproveBtn" class="btn bg--primary text-white mb-3">Approve Selected</button>
                 </div>
             </div>
@@ -47,11 +47,11 @@
                             <td>#blogs.NAME[i]#</td>
                             <td><cfif structKeyExists(blogCategoryMap, blogs.id[i])>#arrayToList(blogCategoryMap[blogs.id[i]])#</cfif></td>
                             <td>
-                                <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-post="/admin/publishblog/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
+                                <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-post="/admin/publishblog/#blogs.id[i]#" hx-vals='{"authenticityToken": "#authenticityToken()#"}' hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
                             </td>
                             <td>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" id="closeComment-#blogs.id[i]#" name="closeComment-#blogs.id[i]#" type="checkbox" <cfif blogs.iscommentClosed[i]> checked </cfif> hx-post="/admin/closeComments/#blogs.id[i]#" hx-trigger="change" hx-target="this" hx-swap="none"/>
+                                    <input class="form-check-input" id="closeComment-#blogs.id[i]#" name="closeComment-#blogs.id[i]#" type="checkbox" <cfif blogs.iscommentClosed[i]> checked </cfif> hx-post="/admin/closeComments/#blogs.id[i]#" hx-vals='{"authenticityToken": "#authenticityToken()#"}' hx-trigger="change" hx-target="this" hx-swap="none"/>
                                 </div>
                             </td>
                             <td>#blogs.fullName[i]#</td>
@@ -73,20 +73,20 @@
                                     </div>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <button 
+                                            <button
                                                 class="dropdown-item text-success fs-16"
-                                                hx-post="approve" 
-                                                hx-vals='{"id": "#blogs.id[i]#"}'
+                                                hx-post="approve"
+                                                hx-vals='{"id": "#blogs.id[i]#", "authenticityToken": "#authenticityToken()#"}'
                                                 hx-target=".approval-status-#blogId#"
                                                 hx-swap="innerHTML"
                                                 hx-confirm="Are you sure you want to approve this blog?"
                                             >Approve</button>
                                         </li>
                                         <li>
-                                            <button 
+                                            <button
                                                 class="dropdown-item text-danger fs-16"
-                                                hx-post="reject" 
-                                                hx-vals='{"id": "#blogs.id[i]#"}'
+                                                hx-post="reject"
+                                                hx-vals='{"id": "#blogs.id[i]#", "authenticityToken": "#authenticityToken()#"}'
                                                 hx-target=".approval-status-#blogId#"
                                                 hx-swap="innerHTML"
                                                 hx-confirm="Are you sure you want to reject this blog?"

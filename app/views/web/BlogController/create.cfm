@@ -75,7 +75,13 @@
                             <input type="hidden" name="postTags" id="postTags" value="<cfif isEdit>#blog.tags#</cfif>">
                         </div>
     
-                        <input class="form-control fs-14" type="hidden" name="postCreatedDate" id="postCreatedDate" value="<cfif isEdit>#dateFormat(blog.postCreatedDate, 'yyyy-mm-dd')#</cfif>">
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fs-14 fw-medium">
+                                Publish Date
+                            </label>
+                            <input class="form-control fs-14" type="datetime-local" name="postCreatedDate" id="postCreatedDate" value="<cfif isEdit>#dateFormat(blog.postCreatedDate, 'yyyy-mm-dd')#T#timeFormat(blog.postCreatedDate, 'HH:mm')#</cfif>">
+                            <small class="text-muted mt-1 d-block fs-13">Leave empty to use the current date and time</small>
+                        </div>
     
                         <div class="mb-3">
                             <label class="form-label mb-1 fs-14 fw-medium">
