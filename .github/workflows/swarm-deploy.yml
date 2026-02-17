@@ -125,13 +125,66 @@ jobs:
         run: |
           echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
 
-      - name: Deploy stack to swarm
+      - name: Set task history limit
+        run: docker swarm update --task-history-limit 2
+
+      - name: Deploy stack via Portainer API
+        env:
+          PORTAINER_URL: ${{ secrets.PORTAINER_URL }}
+          PORTAINER_API_KEY: ${{ secrets.PORTAINER_API_KEY }}
+          PORTAINER_ENDPOINT_ID: ${{ secrets.PORTAINER_ENDPOINT_ID }}
         run: |
-          docker stack deploy \
-            --with-registry-auth \
-            -c deploy/swarm/docker-compose.yml \
-            wheels-dev
-          # Force service update to pull the new :latest image on all nodes
+          COMPOSE_CONTENT=$(cat deploy/swarm/docker-compose.yml)
+
+          # Get the swarm ID from Portainer
+          SWARM_ID=$(curl -sf \
+            -H "X-API-Key: ${PORTAINER_API_KEY}" \
+            "${PORTAINER_URL}/api/endpoints/${PORTAINER_ENDPOINT_ID}/docker/swarm" \
+            | jq -r '.ID')
+          echo "Swarm ID: ${SWARM_ID}"
+
+          # Check if the stack already exists
+          STACK_INFO=$(curl -sf \
+            -H "X-API-Key: ${PORTAINER_API_KEY}" \
+            "${PORTAINER_URL}/api/stacks" \
+            | jq -r '.[] | select(.Name == "wheels-dev")')
+
+          if [ -n "$STACK_INFO" ]; then
+            STACK_ID=$(echo "$STACK_INFO" | jq -r '.Id')
+            echo "Updating existing stack (ID: ${STACK_ID})..."
+            HTTP_CODE=$(curl -s -o /tmp/portainer-response.json -w "%{http_code}" \
+              -X PUT \
+              -H "X-API-Key: ${PORTAINER_API_KEY}" \
+              -H "Content-Type: application/json" \
+              "${PORTAINER_URL}/api/stacks/${STACK_ID}?endpointId=${PORTAINER_ENDPOINT_ID}" \
+              -d "$(jq -n --arg content "$COMPOSE_CONTENT" '{
+                "stackFileContent": $content,
+                "prune": true
+              }')")
+          else
+            echo "Creating new stack..."
+            HTTP_CODE=$(curl -s -o /tmp/portainer-response.json -w "%{http_code}" \
+              -X POST \
+              -H "X-API-Key: ${PORTAINER_API_KEY}" \
+              -H "Content-Type: application/json" \
+              "${PORTAINER_URL}/api/stacks/create/swarm/string?endpointId=${PORTAINER_ENDPOINT_ID}" \
+              -d "$(jq -n --arg name "wheels-dev" --arg swarm "$SWARM_ID" --arg content "$COMPOSE_CONTENT" '{
+                "name": $name,
+                "swarmID": $swarm,
+                "stackFileContent": $content
+              }')")
+          fi
+
+          echo "Portainer API response code: ${HTTP_CODE}"
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Error response:"
+            cat /tmp/portainer-response.json
+            exit 1
+          fi
+          echo "Stack deployed successfully via Portainer"
+
+      - name: Force pull latest image
+        run: |
           docker service update \
             --with-registry-auth \
             --image ghcr.io/wheels-dev/wheels-dev:latest \
