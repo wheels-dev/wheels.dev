@@ -185,11 +185,15 @@ jobs:
 
       - name: Force pull latest image
         run: |
-          docker service update \
-            --with-registry-auth \
-            --image ghcr.io/wheels-dev/wheels-dev:latest \
-            --force \
-            wheels-dev_wheels-dev
+          for i in 1 2 3 4 5; do
+            docker service update \
+              --with-registry-auth \
+              --image ghcr.io/wheels-dev/wheels-dev:latest \
+              --force \
+              wheels-dev_wheels-dev && break
+            echo "Attempt $i failed (update out of sequence), retrying in 15s..."
+            sleep 15
+          done
 
       - name: Verify deployment
         run: |
