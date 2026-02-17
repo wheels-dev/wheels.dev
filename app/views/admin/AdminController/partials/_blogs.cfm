@@ -92,6 +92,16 @@
                                                 hx-confirm="Are you sure you want to reject this blog?"
                                             >Reject</button>
                                         </li>
+                                        <li>
+                                            <button
+                                                class="dropdown-item text-warning fs-16"
+                                                hx-post="unpublish"
+                                                hx-vals='{"id": "#blogs.id[i]#", "authenticityToken": "#authenticityToken()#"}'
+                                                hx-target=".approval-status-#blogId#"
+                                                hx-swap="innerHTML"
+                                                hx-confirm="Are you sure you want to unpublish this blog? It will revert to draft status."
+                                            >Unpublish</button>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>

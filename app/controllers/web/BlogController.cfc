@@ -118,8 +118,8 @@ component extends="app.Controllers.Controller" {
         // Try to get both stats in one query if your database supports it
         try {
             return {
-                "totalPosts": model("Blog").count(where="createdBy = #val(arguments.authorId)#"),
-                "totalComments": model("Comment").count(where="authorId = #val(arguments.authorId)#")
+                "totalPosts": model("Blog").count(where="createdBy = #arguments.authorId#"),
+                "totalComments": model("Comment").count(where="authorId = #arguments.authorId#")
             };
         } catch (any e) {
             model("Log").log(
@@ -221,8 +221,8 @@ component extends="app.Controllers.Controller" {
             // Get categories and tags for the form
             categories = model("Category").findAll(order="name ASC");
             postTypes = model("PostType").findAll(order="name ASC");
-            var blogCategories = model("BlogCategory").findAll(where="blogId = #val(blog.id)#");
-            var blogTags = model("Tag").findAll(where="blogId = #val(blog.id)#");
+            var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
+            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -264,7 +264,7 @@ component extends="app.Controllers.Controller" {
     private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.createdBy = #val(arguments.authorId)#",
+                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.createdBy = #arguments.authorId#",
                 include="User",
                 order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
@@ -275,7 +275,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.createdBy = #val(arguments.authorId)#"
+            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.createdBy = #arguments.authorId#"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -648,7 +648,7 @@ component extends="app.Controllers.Controller" {
                 var whereClause = "title = '#form.title#'";
 
                 if(structKeyExists(form, "id") && isNumeric(form.id) && form.id > 0) {
-                    whereClause &= " AND id != #val(form.id)#";
+                    whereClause &= " AND id != #form.id#";
                 }
 
                 var blogModel = model("Blog").findAll(where=whereClause);
@@ -857,7 +857,7 @@ component extends="app.Controllers.Controller" {
         if (!isObject(category)) return {query=queryNew(""), hasMore=false, totalCount=0};
 
         var blogCategoryQuery = model("BlogCategory")
-            .findAll(where="categoryId = #val(category.id)#", returnAs="query");
+            .findAll(where="categoryId = #category.id#", returnAs="query");
         if (blogCategoryQuery.recordCount == 0) return {query=queryNew(""), hasMore=false, totalCount=0};
 
         var blogIds = blogCategoryQuery.columnData("blogId");
@@ -865,7 +865,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.id IN (#blogIdList#) AND categoryId = #val(category.id)# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
+                where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
                 order="createdAt DESC",
                 include="User,BlogCategory",
                 returnAs="query",
@@ -877,7 +877,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.id IN (#blogIdList#) AND categoryId = #val(category.id)# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
+            where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
             include="User,BlogCategory"
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -908,7 +908,7 @@ component extends="app.Controllers.Controller" {
 
     private function getBlogById(required numeric id) {
         return model("Blog").findOne(
-            where="blog_posts.id = #val(arguments.id)#",
+            where="blog_posts.id = #arguments.id#",
             include="User, PostStatus"
         );
     }
@@ -993,7 +993,18 @@ component extends="app.Controllers.Controller" {
                     }
                     newBlog.save();
 
-                    response.blogId = newBlog.id;
+                    // Retrieve the generated ID by looking up the just-created blog by slug.
+                    // Wheels' PostgreSQL adapter does not always return the auto-generated
+                    // primary key after INSERT (e.g. when the column uses a BIGINT default
+                    // or trigger-based ID generation rather than SERIAL).
+                    if (!len(trim(newBlog.id))) {
+                        var createdBlog = model("Blog").findOne(where="slug = '#blogData.slug#'");
+                        if (isObject(createdBlog)) {
+                            response.blogId = createdBlog.id;
+                        }
+                    } else {
+                        response.blogId = newBlog.id;
+                    }
                     response.message = "Blog post created successfully.";
                 } else {
                     response.message = "A blog post with the same title already exists.";
@@ -1056,7 +1067,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function getAllCommentsByBlogid(required numeric id) {
-        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = #val(arguments.id)# AND commentParentId IS NULL", cache=5);
+        var comments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = #arguments.id# AND commentParentId IS NULL", cache=5);
 
         return comments;
     }
@@ -1106,7 +1117,7 @@ component extends="app.Controllers.Controller" {
                 response = saveComment(params);
             }
             if(structKeyExists(response, "Id")){
-                comments = commentModel.findAll(include="User", where="id = #val(response.Id)# AND isPublished = 1");
+                comments = commentModel.findAll(include="User", where="id = #response.Id# AND isPublished = 1");
                 renderPartial(partial="partials/comment");
             }
         } catch (any e) {
@@ -1172,7 +1183,7 @@ component extends="app.Controllers.Controller" {
                 throw("Invalid blog ID", "InvalidRequest");
             }
 
-            var blogId = val(params.id);
+            var blogId = params.id;
             var blog = model("Blog").findByKey(blogId);
             var user = model("User").findByKey(currentUserId);
 

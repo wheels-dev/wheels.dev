@@ -141,6 +141,7 @@
 			.post(name = "blog-approve", pattern = "approve", to = "AdminController##blogApprove")
 			.post(name = "bulk-approve", pattern = "bulkApprove", to = "AdminController##blogBulkApprove")
 			.post(name = "blog-reject", pattern = "reject", to = "AdminController##rejectBlog")
+			.post(name = "blog-unpublish-admin", pattern = "unpublish", to = "AdminController##unpublishBlog")
 			.post(name = "bulk-reject", pattern = "bulkReject", to = "AdminController##blogBulkReject")
 			.post(name = "comment-publish", pattern = "publish", to = "AdminController##commentsPublish")
 			.post(name = "comment-unpublish", pattern = "hide", to = "AdminController##unpublishComment")

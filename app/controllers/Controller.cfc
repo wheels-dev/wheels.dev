@@ -115,7 +115,7 @@ component extends="wheels.Controller" {
 
     function getCategoriesByBlogid(required numeric id) {
         return model("BlogCategory").findAll(
-            where = "blogId = #val(arguments.id)#",
+            where = "blogId = #arguments.id#",
             include = "Blog,Category",
             cache = 10
         );
@@ -386,11 +386,34 @@ component extends="wheels.Controller" {
                     newTag.blogId = blogId;
                     newTag.createdAt = now();
                     newTag.updatedAt = now();
-                    newTag.save();
+                    if (!newTag.save()) {
+                        model("Log").log(
+                            category = "wheels.blog.tags",
+                            level = "ERROR",
+                            message = "Failed to save tag '#trim(tagName)#' for blogId: #blogId#",
+                            details = {
+                                "blog_id": blogId,
+                                "tag_name": trim(tagName),
+                                "errors": newTag.allErrors()
+                            },
+                            userId = GetSignedInUserId()
+                        );
+                    }
                 }
             }
         } catch (any e) {
-            local.exception = e;
+            model("Log").log(
+                category = "wheels.blog.tags",
+                level = "ERROR",
+                message = "Failed to save blog tags for blogId: #blogId#",
+                details = {
+                    "blog_id": blogId,
+                    "error_message": e.message,
+                    "error_detail": e.detail,
+                    "error_type": e.type
+                },
+                userId = GetSignedInUserId()
+            );
         }
     }
 
@@ -399,7 +422,7 @@ component extends="wheels.Controller" {
         try {
             if (blogId > 0) {
                 // direct delete approach
-                model("Tag").deleteAll(where="blogId = #val(arguments.blogId)#");
+                model("Tag").deleteAll(where="blogId = #arguments.blogId#");
 
                 return true;
             }
@@ -458,7 +481,7 @@ component extends="wheels.Controller" {
         try {
             if (blogId > 0) {
                 // Find all category associations for this blog post
-                model("BlogCategory").deleteAll(where="blogId = #val(arguments.blogId)#");
+                model("BlogCategory").deleteAll(where="blogId = #arguments.blogId#");
 
                 return true;
             }
@@ -513,7 +536,7 @@ component extends="wheels.Controller" {
 
             // Check if a blog with the same title/slug exists (that isn't this one)
             var existingBlog = model("Blog").findFirst(
-                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #val(blogId)#"
+                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
             );
 
             if (isObject(existingBlog)) {

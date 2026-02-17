@@ -15,7 +15,7 @@ component extends="app.Models.Model" {
         belongsTo(name="Blog", foreignKey="blogId");
 
         validatesPresenceOf(property="name");
-        validatesUniquenessOf(property="name");
+        validatesUniquenessOf(property="name", scope="blogId");
     }
 
     // fetch all tags

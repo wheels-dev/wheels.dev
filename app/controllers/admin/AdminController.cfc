@@ -3,7 +3,7 @@ component extends="app.Controllers.Controller" {
 
     function config() {
         super.config();
-        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,deleteBlog,update,blogList,blogApprove,rejectBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
+        verifies(except="index,dashboard,checkAdminAccess,blog,editBlog,deleteBlog,update,blogList,blogApprove,rejectBlog,unpublishBlog,showBlog,commentsPublish,unpublishComment,comments,blogBulkApprove,blogBulkReject,viewComments,publishblog,closeComments", params="key", paramsTypes="integer");
         usesLayout(template="/admin/AdminController/layout");
         filters(through="checkAdminAccess");
     }
@@ -37,8 +37,8 @@ component extends="app.Controllers.Controller" {
             // Get categories and tags for the form
             var categories = model("Category").findAll(order="name ASC");
             var postTypes = model("PostType").findAll(order="name ASC");
-            var blogCategories = model("BlogCategory").findAll(where="blogId = #val(blog.id)#");
-            var blogTags = model("Tag").findAll(where="blogId = #val(blog.id)#");
+            var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
+            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -199,6 +199,16 @@ component extends="app.Controllers.Controller" {
             // Handle error
             cfheader(statusCode=500);
             return;
+        }
+    }
+
+    function unpublishBlog() {
+        try {
+            blogUnpublish(params.id);
+            renderText('<span class="badge bg-warning text-dark">Pending</span>');
+        } catch (any e) {
+            cfheader(statusCode=500);
+            renderText(e.message);
         }
     }
 
@@ -742,6 +752,33 @@ component extends="app.Controllers.Controller" {
         };
     }
 
+    private function blogUnpublish(id){
+        var blog = model("Blog").findByKey(id);
+
+        if (isObject(blog)) {
+            blog.statusId = 1;
+            blog.status = "";
+            blog.publishedAt = "";
+            if (blog.save()) {
+                return {
+                    success = true,
+                    message = "Blog unpublished successfully!"
+                };
+            } else {
+                return {
+                    success = false,
+                    errors = blog.allErrors(),
+                    message = "Failed to unpublish blog!"
+                };
+            }
+        }
+
+        return {
+            success = false,
+            message = "Blog not found"
+        };
+    }
+
     public void function importData() {
 
         // 1) Load & parse JSON
@@ -949,8 +986,8 @@ component extends="app.Controllers.Controller" {
                     postMap[wpId] = existingPost.id;
                     
                     // Delete existing categories and tags for this post
-                    model("BlogCategory").deleteAll(where="blogId = #val(existingPost.id)#");
-                    model("Tag").deleteAll(where="blogId = #val(existingPost.id)#");
+                    model("BlogCategory").deleteAll(where="blogId = #existingPost.id#");
+                    model("Tag").deleteAll(where="blogId = #existingPost.id#");
                     
                     // Process taxonomies (categories and tags)
                     processTaxonomies(item, existingPost.id, arguments.categoryMap, arguments.tagMap);
