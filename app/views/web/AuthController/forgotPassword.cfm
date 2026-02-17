@@ -14,6 +14,7 @@
 
                 <form hx-boost="true" class="pt-4 needs-validation" id="forgotPasswordForm" novalidate
                     hx-post="/auth/send-reset-link" hx-swap="none" aria-label="Forgot Password Form">
+                    <cfoutput>#authenticityTokenField()#</cfoutput>
 
                     <div class="mb-3">
                         <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2 transition-all hover:border-primary">

@@ -24,6 +24,7 @@
     </div>
     <div class="row">
         <form class="row g-3 mb-6 needs-validation" id="categoryForm" novalidate hx-post="/admin/category/save" hx-target="body" hx-validate="true">
+            #authenticityTokenField()#
             <input name="id" type="hidden" id="id" value="#id#">
 
             <div class="col-sm-6 col-md-6 col-lg-12 mb-3">

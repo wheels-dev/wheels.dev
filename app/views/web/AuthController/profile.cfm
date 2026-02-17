@@ -11,6 +11,7 @@
                 </div>
 
                 <form class="pt-3 px-1 h-70vh overflow-y-auto no-scrollbar needs-validation" id="updateProfileForm" novalidate>
+                    <cfoutput>#authenticityTokenField()#</cfoutput>
                     <div class="mb-3">
                         <label for="firstName" class="form-label fs-14 fw-medium">First name</label>
                         <input type="text" placeholder="Enter your firstname" class="form-control fs-14" id="firstName" required>

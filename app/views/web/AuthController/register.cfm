@@ -45,6 +45,7 @@
 
                     <form class="pt-3 needs-validation" id="registrationForm" novalidate hx-post="/auth/store"
                         hx-validate="true">
+                        <cfoutput>#authenticityTokenField()#</cfoutput>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2">

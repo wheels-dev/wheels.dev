@@ -14,6 +14,9 @@
 
                 <form hx-boost="true" class="pt-4 needs-validation" id="loginForm" novalidate
                     hx-post="/auth/authenticate" hx-swap="none" aria-label="Login Form">
+                    <cfoutput>
+                        #authenticityTokenField()#
+                    </cfoutput>
 
                     <div class="mb-3">
                         <div class="bg--input d-flex align-items-center px-3 py-3 rounded-4 border gap-2 transition-all hover:border-primary">

@@ -11,6 +11,7 @@
                 </div>
 
                 <form class="pt-3 px-1 needs-validation" id="loginForm" novalidate>
+                    <cfoutput>#authenticityTokenField()#</cfoutput>
                     <div class="mb-3">
                         <label for="password" class="form-label fs-14 fw-medium">Password</label>
                         <input type="password" placeholder="Enter your password" class="form-control fs-14"

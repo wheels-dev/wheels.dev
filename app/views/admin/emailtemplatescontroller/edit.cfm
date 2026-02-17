@@ -9,6 +9,7 @@
     </div>
     <div class="row">
         <form class="row g-3 mb-6 needs-validation" id="emailForm" novalidate method="POST" action="#urlFor(route="adminemail-save")#">
+            #authenticityTokenField()#
             <input name="id" type="hidden" id="id" value="#email.id#">
             <input name="title" type="hidden" id="title" value="#email.title#">
 

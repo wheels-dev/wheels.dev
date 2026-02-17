@@ -13,6 +13,7 @@
                     </cfoutput>
                 </div>
                 <form class="pt-3 px-1 needs-validation" id="profilePicForm" enctype="multipart/form-data" novalidate hx-post="/admin/user/upload-profile-pic" hx-validate="true">
+                    <cfoutput>#authenticityTokenField()#</cfoutput>
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Profile Picture</label>
                         <input type="file" id="imageInput" class="form-control" name="profilePic" accept="image/*" required>
