@@ -264,7 +264,7 @@ component extends="app.Controllers.Controller" {
     private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.createdBy = #arguments.authorId#",
+                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP AND blog_posts.createdBy = #arguments.authorId#",
                 include="User",
                 order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
@@ -275,7 +275,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.createdBy = #arguments.authorId#"
+            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP AND blog_posts.createdBy = #arguments.authorId#"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -318,7 +318,7 @@ component extends="app.Controllers.Controller" {
         if (len(trim(searchTerm))) {
             var searchPattern = "%#searchTerm#%";
             var query = model("blog").findAll(
-                where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')",
+                where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')",
                 include="User, PostStatus, PostType",
                 order = "COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = page,
@@ -328,7 +328,7 @@ component extends="app.Controllers.Controller" {
             if (isInfiniteScroll) {
                 totalCount = model("blog").count(
                     include="User, PostStatus, PostType",
-                    where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')"
+                    where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')"
                 );
                 hasMore = (page * perPage) < totalCount;
                 isSearched = true;
@@ -750,7 +750,7 @@ component extends="app.Controllers.Controller" {
     public function feed() {
         // Fetch all blogs
         blogPosts = model("Blog").findAll(
-            where="blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL",
+            where="blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
             include="User",
             order="postDate DESC",
             cache=10
@@ -804,7 +804,7 @@ component extends="app.Controllers.Controller" {
     private function getAllBlogs(numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL",
+                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
                 include="User",
                 order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
@@ -816,7 +816,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL",
+            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
             cache = 5
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -831,7 +831,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL",
+                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
                 order="postCreatedDate DESC",
                 include="User",
                 returnAs="query",
@@ -843,7 +843,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL"
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -865,7 +865,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
+                where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
                 order="createdAt DESC",
                 include="User,BlogCategory",
                 returnAs="query",
@@ -877,7 +877,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
+            where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
             include="User,BlogCategory"
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -889,7 +889,7 @@ component extends="app.Controllers.Controller" {
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL",
+                where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP",
                 order="createdAt DESC",
                 include="User,tag",
                 returnAs="query",
@@ -900,7 +900,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL", include="User,tag");
+        result.totalCount = model("Blog").count(where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= CURRENT_TIMESTAMP", include="User,tag");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;
