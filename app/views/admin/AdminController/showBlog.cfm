@@ -31,15 +31,15 @@
                         <div class="col-12 d-flex flex-column">
                             <div class="d-flex my-3 align-items-center gap-3">
                                 <div>
-                                    <cfif !len(blog.user.profilePicture) OR findNoCase("avatar-rounded", blog.user.profilePicture)>
-                                        <div 
-                                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blog.user.fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-                                            style="width:3rem; height:3rem;">
-                                            #ucase(left(listLast(blog.user.fullName, " "), 1))#
-                                        </div>
-                                    <cfelse>
-                                        <img src="/img/#blog.user.profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5" alt="profile-picture">
-                                    </cfif>
+                                    <img src="#gravatarUrl(blog.user.email, 96)#"
+                                        class="rounded-circle"
+                                        style="width:3rem; height:3rem;"
+                                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                        alt="avatar">
+                                    <div style="display:none;width:3rem;height:3rem;"
+                                        class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blog.user.fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                                        #ucase(left(listLast(blog.user.fullName, " "), 1))#
+                                    </div>
                                 </div>
                                 <p class="fs-18 text--secondary fw-semibold p-0 m-0">#blog.user.fullName#</p>
                             </div>

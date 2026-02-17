@@ -36,4 +36,9 @@
     function verifyCSRFToken(required string token) {
         return structKeyExists(session, "csrf_token") && token == session.csrf_token;
     }
+
+	string function gravatarUrl(required string email, numeric size=80) {
+		var emailHash = lcase(hash(lcase(trim(arguments.email)), "MD5"));
+		return "https://www.gravatar.com/avatar/" & emailHash & "?s=" & arguments.size & "&d=404";
+	}
 </cfscript>

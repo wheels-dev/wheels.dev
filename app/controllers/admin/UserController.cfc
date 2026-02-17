@@ -3,10 +3,10 @@ component extends="app.Controllers.Controller" {
 
     function config() {
         super.config();
-        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,uploadProfilePic,updateProfilePic,checkAdminAccess,unlockUser,toggleUserLock", params="key", paramsTypes="integer", handler="index");
-        usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic" );
-        filters(through="checkAdminAccess", except="changePassword,updatePassword,uploadProfilePic,updateProfilePic,unlockUser,toggleUserLock");
-        filters(through="checkUserAccess", only="changePassword,updatePassword,uploadProfilePic,updateProfilePic");
+        verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,updateProfilePic,checkAdminAccess,unlockUser,toggleUserLock", params="key", paramsTypes="integer", handler="index");
+        usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,updateProfilePic" );
+        filters(through="checkAdminAccess", except="changePassword,updatePassword,updateProfilePic,unlockUser,toggleUserLock");
+        filters(through="checkUserAccess", only="changePassword,updatePassword,updateProfilePic");
         filters(through="checkRoleAccess", only="index,addUser,delete");
     }
 
@@ -147,62 +147,8 @@ component extends="app.Controllers.Controller" {
         return;
     }
 
-    // user profile pic form
+    // user profile pic page (now shows Gravatar instructions)
     function updateProfilePic(){}
-
-    // update user profile pic
-    function uploadProfilePic(){
-
-        var uploadPath = expandPath("/images");
-
-        if (structKeyExists(form, "profilePic")) {
-            try {
-                // Ensure directory exists
-                if (!directoryExists(uploadPath)) {
-                directoryCreate(uploadPath);
-                }
-
-                // Accept only image files
-                var uploadedFile = fileUpload(
-                destination = uploadPath,
-                nameConflict = "makeUnique",
-                fileField = form.profilePic,
-                accept = "image/*"
-                );
-                var fileExt = lcase(listLast(uploadedFile.serverFile, "."));
-                var allowedTypes = "jpg,jpeg,png,gif,webp";
-                var allowedContentTypes = "image/jpeg,image/png,image/gif,image/webp";
-
-                if (!listFindNoCase(allowedTypes, fileExt)) {
-                    fileDelete(uploadPath & "/" & uploadedFile.serverFile);
-                    renderText("Please upload a valid image file (png, jpg, jpeg, gif, webp).");
-                    return;
-                }
-
-                // Validate MIME content type
-                if (structKeyExists(uploadedFile, "contentType") && structKeyExists(uploadedFile, "contentSubType")) {
-                    var detectedContentType = uploadedFile.contentType & "/" & uploadedFile.contentSubType;
-                    if (!listFindNoCase(allowedContentTypes, detectedContentType)) {
-                        fileDelete(uploadPath & "/" & uploadedFile.serverFile);
-                        renderText("Invalid file content type. Only JPEG, PNG, GIF, and WebP images are allowed.");
-                        return;
-                    }
-                }
-
-                var savedFileName = uploadedFile.serverFile;
-                model("User").updateAll(profilePicture = savedFileName, where = "id = #val(session.userID)#");
-                session.profilePic = savedFileName;
-                renderText("Profile picture uploaded successfully!");
-                return;
-            } catch (any e) {
-                renderText("Error uploading file: #e.message#");
-                return;
-            }
-        } else {
-            renderText("Please select a profile picture to upload!");
-            return;
-        }
-    }
     // Business Logic
 
     private function checkUserAccess() {

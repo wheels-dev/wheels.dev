@@ -34,7 +34,7 @@ if (!structKeyExists(session, "userID") && structKeyExists(cookie, "remember_me"
                 session.userID = user.id;
                 session.username = user.fullname;
                 session.role = (isObject(user.role) ? user.role.name : "");
-                session.profilePic = user.profilePicture;
+                session.email = user.email;
                 session.lastActivity = now();
                 // rotate token
                 var newToken = createUUID() & generateSecretKey("AES");

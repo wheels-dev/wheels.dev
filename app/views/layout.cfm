@@ -500,18 +500,16 @@
 							</div>
 							<div class="nav-item d-xl-none d-block dropdown navHandlers">
 								<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-									<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
-										<cfset session.profilePic = "avatar-rounded.webp">
-									</cfif>
 									<cfoutput>
-										<cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
-											<div 
-												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase size-40">
-												#ucase(left(listLast(session.username, " "), 1))#
-											</div>
-										<cfelse>
-											<img src ='/img/#session.profilePic#' alt="user profile pic" height="40" width="40" class="rounded-circle">
-										</cfif>
+										<img src="#gravatarUrl(session.email, 80)#"
+											class="rounded-circle"
+											style="width:2.5rem; height:2.5rem;"
+											onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+											alt="avatar">
+										<div style="display:none;width:2.5rem;height:2.5rem;"
+											class="align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+											#ucase(left(listLast(session.username, " "), 1))#
+										</div>
 									</cfoutput>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
@@ -519,7 +517,7 @@
 									<li class="dropdown-item-text fw-bold">Profile</li>
 									<cfoutput>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='adminuser-changePassword')#">Change Password</a></li>
-										<li><a class="dropdown-item fw-normal ps-4" href="#urlfor(route="adminUser-update-profile-pic")#">Update Profile Pic</a></li>
+										<li><a class="dropdown-item fw-normal ps-4" href="https://gravatar.com" target="_blank" rel="noopener noreferrer">Update Profile Pic</a></li>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='readingHistory')#">Reading History</a></li>
 										<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='bookmarks')#">Bookmarks</a></li>
 										
@@ -568,18 +566,16 @@
 								</li>
 								<li class="nav-item d-xl-block d-none dropdown px-3 navHandlers">
 									<a href="javascript:void(0)" class="nav-link p-0" id="profilePicDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-										<cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
-											<cfset session.profilePic = "avatar-rounded.webp">
-										</cfif>
 										<cfoutput>
-											<cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
-												<div 
-													class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase size-40">
-													#ucase(left(listLast(session.username, " "), 1))#
-												</div>
-											<cfelse>
-												<img src = '/img/#session.profilePic#' alt="user profile pic" height="40" width="40" class="rounded-circle">
-											</cfif>
+											<img src="#gravatarUrl(session.email, 80)#"
+												class="rounded-circle"
+												style="width:2.5rem; height:2.5rem;"
+												onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+												alt="avatar">
+											<div style="display:none;width:2.5rem;height:2.5rem;"
+												class="align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+												#ucase(left(listLast(session.username, " "), 1))#
+											</div>
 										</cfoutput>
 									</a>
 									<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilePicDropdown">
@@ -587,7 +583,7 @@
 										<li class="dropdown-item-text fw-bold">Profile</li>
 										<cfoutput>
 											<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='adminuser-changePassword')#">Change Password</a></li>
-											<li><a class="dropdown-item fw-normal ps-4" href="#urlfor(route="adminUser-update-profile-pic")#">Update Profile Pic</a></li>
+											<li><a class="dropdown-item fw-normal ps-4" href="https://gravatar.com" target="_blank" rel="noopener noreferrer">Update Profile Pic</a></li>
 											<li><hr class="dropdown-divider"></li>
 											<li><a class="dropdown-item fw-normal ps-4" href="#urlFor(route='readingHistory')#">Reading History</a></li>
 											<li><hr class="dropdown-divider"></li>

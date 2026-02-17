@@ -13,19 +13,15 @@
             <cfset blogUrl = "/blog/#blogs.slug#">
             <cfset authorHxGet = "/blog/list/author/#blogs.createdby#?page=1&perPage=6&infiniteScroll=true">
             <cfset formattedDate = dateformat(blogs.postDate, 'MMMM DD, YYYY')>
-            <cfif !len(blogs.profilePicture) OR findNoCase("avatar-rounded", blogs.profilePicture)>
-                <cfset profileImageTag = '<div class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blogs.fullname, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-                    style="width:3rem; height:3rem;">
+            <cfset profileImageTag = '<img src="#gravatarUrl(blogs.email, 80)#"
+                    class="rounded-circle"
+                    style="width:2.5rem; height:2.5rem;"
+                    onerror="this.style.display=''none'';this.nextElementSibling.style.display=''flex'';"
+                    alt="avatar">
+                <div style="display:none;width:2.5rem;height:2.5rem;"
+                    class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blogs.fullname, " "), 1)))# text-white rounded-circle fw-bold text-uppercase">
                     #ucase(left(listLast(blogs.fullName, " "), 1))#
                 </div>'>
-            <cfelse>
-                <cfset profileImageTag = '<img
-                    src="/img/#blogs.profilePicture#" ?: "/img/default-avatar.png"
-                    style="width:2.5rem; height:2.5rem"
-                    class="bg-body-secondary rounded-5 flex-shrink-0"
-                    alt="Profile picture of #blogs.fullName#"
-                >'>
-            </cfif>
             
             <article class="pb-4 blog-item" data-blog-id="#blogs.id#">
                 <div class="d-flex flex-column rounded-bottom-4 rounded-top-4 shadow-sm bg-white px-0 overflow-hidden justify-content-between">
@@ -90,21 +86,14 @@
             
             <!--- Author Info (only render once if needed) --->
             <cfif isDefined('author') AND blogs.currentRow EQ 1>
+                <cfset authorAvatarHtml = '<img src="' & gravatarUrl(blogs.email, 96) & '" class="rounded-circle" style="width:3rem; height:3rem;" onerror="this.style.display=''none'';this.nextElementSibling.style.display=''flex'';" alt="avatar"><div style="display:none;width:3rem;height:3rem;" class="d-flex align-items-center justify-content-center ' & getAvatarColorByLetter(ucase(left(listLast(blogs.fullName, " "), 1))) & ' text-white rounded-circle fw-bold text-uppercase">' & ucase(left(listLast(blogs.fullName, " "), 1)) & '</div>'>
                 <div id="blogAuthorInfo" style="display:none;"
                     data-author-id="#blogs.createdby#"
                     data-page="#page#"
                     data-author-name="#htmlEditFormat(blogs.fullName)#"
                     data-total-comments="#author.totalcomments#"
                     data-total-posts="#author.totalposts#"
-                    <cfif !len(blogs.profilePicture) OR findNoCase("avatar-rounded", blogs.profilePicture)>
-                        data-profile-picture='<div 
-                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blogs.fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-                            style="width:3rem; height:3rem;">
-                            #ucase(left(listLast(blogs.fullName, " "), 1))#
-                        </div>'
-                    <cfelse>
-                        data-profile-picture="#htmlEditFormat('<img src="/img/#blogs.profilePicture#" style="width:3rem; height:3rem" class="bg-body-secondary rounded-5" alt=htmlEditFormat(blogs.fullName)>')#"
-                    </cfif>>
+                    data-profile-picture="#htmlEditFormat(authorAvatarHtml)#">
                 </div>
             </cfif>
         </cfloop>

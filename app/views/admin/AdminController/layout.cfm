@@ -175,22 +175,19 @@
                         Back to Wheels.dev
                     </a>
                     <ul class="navbar-nav navbar-nav-icons flex-row">
-                        <cfif !structKeyExists(session, "profilePic") OR session.profilePic == "">
-                            <cfset session.profilePic = "avatar-rounded.webp">
-                        </cfif>
                         <div class="nav-item dropdown">
                             <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="javascript:void(0)" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                                 <div class="avatar avatar-l ">
                                     <cfoutput>
-                                        <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
-											<div 
-												class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-												style="width:40px; height:40px;">
-												#ucase(left(listLast(session.username, " "), 1))#
-											</div>
-										<cfelse>
-                                            <img src = '/img/#session.profilePic#' class="rounded-circle" alt="user profile picture">
-										</cfif>
+                                        <img src="#gravatarUrl(session.email, 80)#"
+                                            class="rounded-circle"
+                                            style="width:40px; height:40px;"
+                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                            alt="avatar">
+                                        <div style="display:none;width:40px;height:40px;"
+                                            class="align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                                            #ucase(left(listLast(session.username, " "), 1))#
+                                        </div>
                                     </cfoutput>
                                 </div>
                             </a>
@@ -200,15 +197,15 @@
                                     <div class="text-center pt-4">
                                     <div class="avatar avatar-xl ">
                                         <cfoutput>
-                                            <cfif !len(session.profilePic) OR findNoCase("avatar-rounded", session.profilePic)>
-                                                <div 
-                                                    class="d-flex align-items-center fs-24 justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, " "), 1)))# text-white rounded-circle fw-bold text-uppercase" 
-                                                    style="width:3rem; height:3rem;">
-                                                    #ucase(left(listLast(session.username, " "), 1))#
-                                                </div>
-                                            <cfelse>
-                                                <img src = '/img/#session.profilePic#' class="rounded-circle" alt="profile-picture">
-                                            </cfif>
+                                            <img src="#gravatarUrl(session.email, 96)#"
+                                                class="rounded-circle"
+                                                style="width:3rem; height:3rem;"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                                alt="avatar">
+                                            <div style="display:none;width:3rem;height:3rem;"
+                                                class="align-items-center justify-content-center fs-24 #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                                                #ucase(left(listLast(session.username, " "), 1))#
+                                            </div>
                                         </cfoutput>
                                     </div>
                                     <h6 class="mt-2 text-body-emphasis"><cfoutput>#session.username#</cfoutput></h6>

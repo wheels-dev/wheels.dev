@@ -177,7 +177,7 @@ component extends="app.Controllers.Controller" {
                 session.userID = user.id;
                 session.username = user.fullname;
                 session.role = (isObject(user.role) ? user.role.name : "");
-                session.profilePic = user.profilePicture;
+                session.email = user.email;
                 session.lastActivity = now();
                 // Handle remember me
                 if (structKeyExists(params, "rememberMe")) {
@@ -547,6 +547,7 @@ component extends="app.Controllers.Controller" {
             session.userID = user.id;
             session.username = user.fullname;
             session.role = user.role.name;
+            session.email = user.email;
 
             session.message = "Register and Login Successfully!"
             redirectto(route="home");

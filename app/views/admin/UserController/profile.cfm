@@ -69,10 +69,18 @@
                         <label class="form-label mb-1 fs-14 fw-medium">
                             Profile Picture
                         </label>
-                        <cfif len(user.profilePicture)>
-                            <img src="/img/#user.profilePicture#" width="100" alt="Wheels.dev Profile Picture">
-                        </cfif>
-                        <input class="form-control fs-14" type="file" name="profilePicture" accept="image/*">
+                        <div class="d-flex align-items-center gap-3 mt-1">
+                            <img src="#gravatarUrl(email, 200)#"
+                                class="rounded-circle"
+                                style="width:100px; height:100px;"
+                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                alt="avatar">
+                            <div style="display:none;width:100px;height:100px;font-size:2rem;"
+                                class="align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(firstName & ' ' & lastName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                                #ucase(left(listLast(firstName & " " & lastName, " "), 1))#
+                            </div>
+                            <span class="fs-12 text-muted">Powered by <a href="https://gravatar.com" target="_blank" rel="noopener noreferrer">Gravatar</a></span>
+                        </div>
                     </div>
                     
 

@@ -5,15 +5,15 @@
             <cfif commentParentId eq '' or commentParentId eq 0>
                 <div class="d-flex align-items-start gap-3">
                     <div>
-                        <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
-                            <div
-                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase"
-                                style="width:3rem; height:3rem;">
-                                #encodeForHTML(ucase(left(listLast(fullName, " "), 1)))#
-                            </div>
-                        <cfelse>
-                            <img src='/img/#encodeForHTMLAttribute(profilePicture)#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
-                        </cfif>
+                        <img src="#gravatarUrl(email, 96)#"
+                            class="rounded-circle"
+                            style="width:3rem; height:3rem;"
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                            alt="avatar">
+                        <div style="display:none;width:3rem;height:3rem;"
+                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                            #encodeForHTML(ucase(left(listLast(fullName, " "), 1)))#
+                        </div>
                     </div>
                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                         <h6 class="fs-16 fw-bold">#encodeForHTML(fullName)#</h6>
@@ -56,15 +56,15 @@
             <cfif commentParentId neq '' and commentParentId neq 0>
                 <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                     <div>
-                        <cfif !len(profilePicture) OR findNoCase("avatar-rounded", profilePicture)>
-                            <div
-                                class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, " "), 1)))# text-white rounded-circle fw-bold text-uppercase"
-                                style="width:3rem; height:3rem;">
-                                #encodeForHTML(ucase(left(listLast(fullName, " "), 1)))#
-                            </div>
-                        <cfelse>
-                            <img src='/img/#encodeForHTMLAttribute(profilePicture)#' style="width:3rem; height:3rem" class="bg-body-secondary rounded-5 flex-shrink-0" alt="profile-picture">
-                        </cfif>
+                        <img src="#gravatarUrl(email, 96)#"
+                            class="rounded-circle"
+                            style="width:3rem; height:3rem;"
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                            alt="avatar">
+                        <div style="display:none;width:3rem;height:3rem;"
+                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                            #encodeForHTML(ucase(left(listLast(fullName, " "), 1)))#
+                        </div>
                     </div>
                     <div class="p-3 rounded-4 bg-light">
                         <h6 class="fs-16 fw-bold">#encodeForHTML(fullName)#</h6>
