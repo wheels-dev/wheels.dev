@@ -2,22 +2,22 @@ component extends="app.Models.Model" {
     function config(){
         table("blog_posts");
 
-        property(name="id", column="id", type="integer", required=true, primaryKey=true);
+        property(name="id", column="id", dataType="string");
 
-        property(name="title", column="title", type="string", required=true, default="", limit=255);
-        property(name="content", column="content", type="text", required=true, default="");
-        property(name="slug", column="slug", type="string", required=true, default="", limit=255);
-        property(name="coverImagePath", column="cover_image_path", type="string", required=false, default="", limit=100);
-        property(name="status", column="status", type="string", required=false, default="");
+        property(name="title", column="title", dataType="string", defaultValue = "");
+        property(name="content", column="content", dataType="text", defaultValue = "");
+        property(name="slug", column="slug", dataType="string", defaultValue = "");
+        property(name="coverImagePath", column="cover_image_path", dataType="string", defaultValue="");
+        property(name="status", column="status", dataType="string", defaultValue = "");
 
-        property(name="isCommentClosed", column="is_comment_closed", type="boolean", required=true, default=false);
-        property(name="isPublished", column="is_published", type="boolean", required=true, default=false);
+        property(name="isCommentClosed", column="is_comment_closed", dataType="boolean", defaultValue=false);
+        property(name="isPublished", column="is_published", dataType="boolean", defaultValue=false);
 
-        property(name="postCreatedDate", column="post_created_date", type="datetime", required=false);
-        property(name="createdAt", column="createdat", type="datetime", required=false);
-        property(name="updatedAt", column="updatedat", type="datetime", required=false);
-        property(name="deletedAt", column="deletedat", type="datetime", required=false);
-        property(name="publishedAt", column="published_at", type="datetime", required=false);
+        property(name="postCreatedDate", column="post_created_date", dataType="datetime");
+        property(name="createdAt", column="createdat", dataType="datetime");
+        property(name="updatedAt", column="updatedat", dataType="datetime");
+        property(name="deletedAt", column="deletedat", dataType="datetime");
+        property(name="publishedAt", column="published_at", dataType="datetime");
 
         property(
             name="postDate", 
@@ -26,11 +26,11 @@ component extends="app.Models.Model" {
         );
 
         // Defining the foreign key
-        property(name="statusId", column="status_id", type="integer", required=true, foreignkey=true, references="PostStatus(id)");
-        property(name="postTypeId", column="post_type_id", type="integer", required=true, foreignkey=true, references="PostType(id)");
-        property(name="createdBy", column="created_by", type="integer", required=true, foreignkey=true, references="User(id)");
-        property(name="updatedBy", column="updated_by", type="integer", required=false, foreignkey=true, references="User(id)");
-        property(name="deletedBy", column="deleted_by", type="integer", required=false, foreignkey=true, references="User(id)");
+        property(name="statusId", column="status_id", dataType="integer", foreignkey=true, references="PostStatus(id)");
+        property(name="postTypeId", column="post_type_id", dataType="integer", foreignkey=true, references="PostType(id)");
+        property(name="createdBy", column="created_by", dataType="integer", foreignkey=true, references="User(id)");
+        property(name="updatedBy", column="updated_by", dataType="integer", foreignkey=true, references="User(id)");
+        property(name="deletedBy", column="deleted_by", dataType="integer", foreignkey=true, references="User(id)");
 
         // Define associations
         belongsTo(name="User", foreignKey="createdBy"); 

@@ -2,8 +2,8 @@ component extends="app.Models.Model" {
 	function config() {
 		table("bookmarks");
 		// Properties
-		property(name="userId", column="user_id", dataType="integer");
-		property(name="blogId", column="blog_id", dataType="integer");
+		property(name="userId", column="user_id", dataType="string");
+		property(name="blogId", column="blog_id", dataType="string");
 
 		// Associations
 		belongsTo("User");

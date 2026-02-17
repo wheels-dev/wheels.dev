@@ -507,12 +507,12 @@ component extends="app.Controllers.Controller" {
             categories = getCategoriesByBlogid(blog.id);
             attachments = getAttachmentsByBlogid(blog.id);
             comments = getAllCommentsByBlogid(blog.id);
-            allBlogComments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = #val(blog.id)#", order="commentParentId, createdAt", cache=5);
+            allBlogComments = model("Comment").findAll(include="User", where="isPublished = 1 AND blogid = #blog.id#", order="commentParentId, createdAt", cache=5);
 
             // Track reading history
             if (StructKeyExists(session, "userID")) {
                 history = model("ReadingHistory").findOne(
-                    where="userId = #val(session.userID)# AND blogId = #val(blog.id)#",
+                    where="userId = #session.userID# AND blogId = #blog.id#",
                     includeSoftDeletes=true
                 );
                 if (IsObject(history)) {
@@ -531,7 +531,7 @@ component extends="app.Controllers.Controller" {
 
                 // Check if bookmarked
                 isBookmarked = model("Bookmark").exists(
-                    where="userId = #val(session.userID)# AND blogId = #val(blog.id)#"
+                    where="userId = #session.userID# AND blogId = #blog.id#"
                 );
             } else {
                 isBookmarked = false;

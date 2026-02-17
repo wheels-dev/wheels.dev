@@ -2,13 +2,13 @@ component extends="app.Models.Model" {
     function config() {
         table("blog_categories");
 
-        property(name="id", column="id", type="integer", required=true, primarykey=true);
-        property(name="categoryId", column="category_id", type="integer", required=false, default="");
-        property(name="createdAt", column="createdat", type="datetime", required=false, default="");
-        property(name="updatedAt", column="updatedat", type="datetime", required=false, default="");
-        property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
+        property(name="id", column="id", dataType="string");
+        property(name="categoryId", column="category_id", dataType="integer", defaultValue = "");
+        property(name="createdAt", column="createdat", dataType="datetime", defaultValue = "");
+        property(name="updatedAt", column="updatedat", dataType="datetime", defaultValue = "");
+        property(name="deletedAt", column="deletedat", dataType="datetime", defaultValue = "");
 
-        property(name="blogId", column="blog_id", type="integer", required=false);
+        property(name="blogId", column="blog_id", dataType="integer");
 
         // Associations
         belongsTo(name="Blog", foreignKey="blogId"); 
