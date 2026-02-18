@@ -529,7 +529,8 @@ component extends="wheels.Controller" {
                 // Auto-approve and publish for admin users
                 params.statusId = 2;
                 params.status = "Approved";
-                params.publishedAt = now();
+                // Convert to UTC
+                params.publishedAt = toUTC(now());
             } else {
                 params.statusId = 2; // Under Review
             }
@@ -564,7 +565,8 @@ component extends="wheels.Controller" {
             }
 
             if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
-                blog.postCreatedDate = params.postCreatedDate;
+                // Convert the provided date to UTC before saving
+                blog.postCreatedDate = toUTC(params.postCreatedDate);
             }
 
             // Update tracking fields

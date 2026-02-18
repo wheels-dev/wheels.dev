@@ -793,6 +793,21 @@
 			<script src="/js/swiper.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
 			<script src="/js/global.js"></script>
+			<script>
+				// Convert UTC dates to local timezone for elements with data-utc attribute
+				document.addEventListener("DOMContentLoaded", function() {
+					var utcElements = document.querySelectorAll('[data-utc]');
+					utcElements.forEach(function(el) {
+						var utcDate = el.getAttribute('data-utc');
+						if (utcDate) {
+							var date = new Date(utcDate);
+							if (!isNaN(date.getTime())) {
+								el.textContent = date.toLocaleString();
+							}
+						}
+					});
+				});
+			</script>
 		</body>
 	</html>
 </cfif>
