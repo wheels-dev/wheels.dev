@@ -13,13 +13,13 @@
             <cfset blogUrl = "/blog/#blogs.slug#">
             <cfset authorHxGet = "/blog/list/author/#blogs.createdby#?page=1&perPage=6&infiniteScroll=true">
             <cfset formattedDate = dateformat(blogs.postDate, 'MMMM DD, YYYY')>
-            <cfset profileImageTag = '<img src="#gravatarUrl(blogs.email, 80)#"
+            <cfset profileImageTag = '<img src="#gravatarUrl(blogs.email, 80)#&d=404"
                     class="rounded-circle"
                     style="width:2.5rem; height:2.5rem;"
-                    onerror="this.style.display=''none'';this.nextElementSibling.style.display=''flex'';"
+                    onerror="this.classList.add(''d-none'');this.nextElementSibling.classList.remove(''d-none'');"
                     alt="avatar">
-                <div style="display:none;width:2.5rem;height:2.5rem;"
-                    class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blogs.fullname, " "), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                <div class="d-none d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(blogs.fullname, " "), 1)))# text-white rounded-circle fw-bold text-uppercase"
+                    style="width:2.5rem;height:2.5rem;">
                     #ucase(left(listLast(blogs.fullName, " "), 1))#
                 </div>'>
             
