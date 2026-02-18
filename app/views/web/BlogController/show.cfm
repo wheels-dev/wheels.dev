@@ -129,16 +129,16 @@
                                             <cfif commentParentId eq '' or commentParentId eq 0>                              
                                                 <div class="d-flex align-items-start gap-3">
                                                     <div>
-                                                        <img src="#gravatarUrl(email, 96)#"
+                                                        <img src="#gravatarUrl(email, 96)#&d=404"
                                                             class="rounded-circle"
                                                             style="width:3rem; height:3rem;"
-                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                                            onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"
                                                             alt="avatar">
-                                                        <div style="display:none;width:3rem;height:3rem;"
-                                                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
+                                                        <div class="d-none d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase"
+                                                            style="width:3rem;height:3rem;">
                                                             #ucase(left(listLast(fullName, " "), 1))#
                                                         </div>
-                                                    </div>                                   
+                                                    </div>                          
                                                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                                                         <h6 class="fs-16 fw-bold">#fullName#</h6>
                                                         <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
@@ -186,18 +186,18 @@
                                                     <div class="mt-4">
                                                         <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                                             <div>
-                                                                <img src="#gravatarUrl(email, 96)#"
+                                                                <img src="#gravatarUrl(session.email, 96)#&d=404"
                                                                     class="rounded-circle"
                                                                     style="width:3rem; height:3rem;"
-                                                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                                                    onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"
                                                                     alt="avatar">
-                                                                <div style="display:none;width:3rem;height:3rem;"
-                                                                    class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
-                                                                    #ucase(left(listLast(fullName, " "), 1))#
+                                                                <div class="d-none d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase"
+                                                                    style="width:3rem;height:3rem;">
+                                                                    #ucase(left(listLast(session.username, " "), 1))#
                                                                 </div>
-                                                            </div>  
+                                                            </div> 
                                                             <div class="p-3 rounded-4 flex-grow-1 bg-light">
-                                                                <h6 class="fs-16 fw-bold">#fullName#</h6>
+                                                                <h6 class="fs-16 fw-bold">#session.username#</h6>
 
                                                                 <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
                                                                     <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
@@ -220,14 +220,14 @@
                             <cfif isLoggedInUser() AND canUserComment()>
                                 <form hx-target="##comment" hx-on:htmx:after-request="handleClear()" hx-swap="beforeend" id="commentForm" hx-post="/blog/comment" class="pt-3 px-1 needs-validation" novalidate hx-validate="true">
                                     <div class="d-flex gap-3 align-items-start">
-                                        <img src="#gravatarUrl(session.email, 96)#"
+                                        <img src="#gravatarUrl(session.email, 96)#&d=404"
                                             class="rounded-circle"
                                             style="width:3rem; height:3rem;"
-                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                                            onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"
                                             alt="avatar">
-                                        <div style="display:none;width:3rem;height:3rem;"
-                                            class="d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.USERNAME, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase">
-                                            #ucase(left(listLast(session.USERNAME, " "), 1))#
+                                        <div class="d-none d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase"
+                                            style="width:3rem;height:3rem;">
+                                            #ucase(left(listLast(session.username, " "), 1))#
                                         </div>
                                         <div class="flex-grow-1 gap-2 d-flex justify-content-between align-items-center">
                                             <input class="form-control" type="hidden" name="blogId" id="blogId" value="#blog.Id#">
