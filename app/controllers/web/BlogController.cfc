@@ -931,10 +931,11 @@ component extends="app.Controllers.Controller" {
             // Auto-approve and publish for admin users
             blogData.statusId = 2;
             blogData.status = "Approved";
-            if (structKeyExists(blogData, "postCreatedDate") && len(blogData.postCreatedDate)) {
+            if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
                 blogData.publishedAt = blogData.postCreatedDate;
             } else {
                 blogData.publishedAt = now();
+                blogData.postCreatedDate = now();
             }
         } else {
             blogData.statusId = 2; // Under Review
@@ -986,11 +987,8 @@ component extends="app.Controllers.Controller" {
                     if (structKeyExists(blogData, "status")) {
                         newBlog.status = blogData.status;
                     }
-                    if (structKeyExists(blogData, "postCreatedDate") && len(trim(blogData.postCreatedDate))) {
-                        newBlog.publishedAt = blogData.publishedAt;
-                    }
-
-                    if(!isNull(blogData.postCreatedDate)){
+                    if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
+                        newBlog.publishedAt = blogData.postCreatedDate;
                         newBlog.postCreatedDate = blogData.postCreatedDate;
                     } else {
                         newBlog.postCreatedDate = now();
