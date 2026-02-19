@@ -149,7 +149,7 @@ component extends="app.Controllers.Controller" {
 
 		docs = getDocJSON(params.version);
 		if (structIsEmpty(docs)) {
-			renderWith(statusCode=404, text="Unknown version");
+			renderWith(status = 404, text="Unknown version");
 			return;
 		}
 
@@ -178,14 +178,14 @@ component extends="app.Controllers.Controller" {
 
 		docs = getDocJSON(params.version);
 		if (structIsEmpty(docs)) {
-			renderWith(statusCode=404, text="Unknown version");
+			renderWith(status=404, text="Unknown version");
 			return;
 		}
 
 		func = getFunctionFromDocs(docs, params.slug);
 
 		if (structIsEmpty(func)) {
-			renderWith(statusCode=404, text="Function not found");
+			renderWith(status=404, text="Function not found");
 			return;
 		}
 
@@ -203,7 +203,7 @@ component extends="app.Controllers.Controller" {
 		
 		docs = getDocJSON(params.version);
 		if (structIsEmpty(docs)) {
-			renderWith(statusCode=404, text="Version not found");
+			renderWith(status=404, text="Version not found");
 			return;
 		}
 
@@ -239,7 +239,7 @@ component extends="app.Controllers.Controller" {
 
 		docs = getDocJSON(params.version);
 		if (structIsEmpty(docs)) {
-			renderWith(statusCode=404, text="Version not found");
+			renderWith(status=404, text="Version not found");
 			return;
 		}
 

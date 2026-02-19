@@ -314,6 +314,34 @@ component extends="app.Controllers.Controller" {
                     collectGuideUrls(summaryData);
                 }
             }
+            
+            // Add API functions from all versions dynamically
+            var apiVersions = getAvailableVersions();
+            for (var version in apiVersions) {
+                var versionClean = replace(version, "v", "", "one");
+                var docData = getDocJSON(version);
+                if (!structIsEmpty(docData) && structKeyExists(docData, "functions")) {
+                    for (var func in docData.functions) {
+                        if (structKeyExists(func, "slug")) {
+                            // Get the function details using getFunctionFromDocs to verify it exists
+                            var verifiedFunc = getFunctionFromDocs(docData, func.slug);
+                            if (!structIsEmpty(verifiedFunc)) {
+                                // Add all format routes for this function
+                                var formats = ["html", "json", "xml", "pdf"];
+                                for (var fmt in formats) {
+                                    arrayAppend(urls, {
+                                        loc: getBaseUrl() & "/api/v" & versionClean & "/" & func.slug & "." & fmt,
+                                        lastmod: dateFormat(now(), "yyyy-mm-dd"),
+                                        changefreq: "weekly",
+                                        priority: "0.6"
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
             // Add other public pages
             var publicPages = [
                 "/blog",
