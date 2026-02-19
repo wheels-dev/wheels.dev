@@ -411,7 +411,7 @@ component extends="app.Controllers.Controller" {
     }
     
     function downloads() {
-        redirectTo(url="https://github.com/wheels-dev/wheels/releases", statusCode=301);
+        // serves download page
     }
 
     private string function getBaseUrl() {
