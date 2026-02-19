@@ -15,7 +15,7 @@
                           <cfif isBookmarked>
                             <span class="text-success fw-bold">★ Bookmarked</span>
                           <cfelse>
-                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #blog.id#}' hx-target="this" hx-swap="outerHTML"
+                            <button hx-post="/bookmark/toggle" hx-vals='{"blogId": #blog.id#, "authenticityToken": "#authenticityToken()#"}' hx-target="this" hx-swap="outerHTML"
                                     class="btn btn-outline-primary">
                               ☆ Bookmark
                             </button>
