@@ -315,33 +315,6 @@ component extends="app.Controllers.Controller" {
                 }
             }
             
-            // Add API functions from all versions dynamically
-            var apiVersions = getAvailableVersions();
-            for (var version in apiVersions) {
-                var versionClean = replace(version, "v", "", "one");
-                var docData = getDocJSON(version);
-                if (!structIsEmpty(docData) && structKeyExists(docData, "functions")) {
-                    for (var func in docData.functions) {
-                        if (structKeyExists(func, "slug")) {
-                            // Get the function details using getFunctionFromDocs to verify it exists
-                            var verifiedFunc = getFunctionFromDocs(docData, func.slug);
-                            if (!structIsEmpty(verifiedFunc)) {
-                                // Add all format routes for this function
-                                var formats = ["html", "json", "xml", "pdf"];
-                                for (var fmt in formats) {
-                                    arrayAppend(urls, {
-                                        loc: getBaseUrl() & "/api/v" & versionClean & "/" & func.slug & "." & fmt,
-                                        lastmod: dateFormat(now(), "yyyy-mm-dd"),
-                                        changefreq: "weekly",
-                                        priority: "0.6"
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
             // Add other public pages
             var publicPages = [
                 "/blog",
@@ -376,21 +349,24 @@ component extends="app.Controllers.Controller" {
             }
             
             // Generate XML
-            var xml = '<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-            
+            xml = '<?xml version="1.0" encoding="UTF-8"?>' & chr(10);
+            xml &= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+            xml = replace(xml, "\\n", chr(10), "all");
             for (var link in urls) {
-                xml &= '
-    <url>
-        <loc>#link.loc#</loc>
-        <lastmod>#link.lastmod#</lastmod>
-        <changefreq>#link.changefreq#</changefreq>
-        <priority>#link.priority#</priority>
-    </url>';
+                // Skip if loc is missing or empty
+                if (!structKeyExists(link, "loc") || !len(trim(link.loc ?: ""))) continue;
+                var loc = xmlEscape(link.loc ?: "");
+                var lastmod = xmlEscape(link.lastmod ?: "");
+                var changefreq = xmlEscape(link.changefreq ?: "");
+                var priority = xmlEscape(link.priority ?: "");
+                xml &= '<url>' &
+                    '    <loc>' & loc & '</loc>' &
+                    '    <lastmod>' & lastmod & '</lastmod>' &
+                    '    <changefreq>' & changefreq & '</changefreq>' &
+                    '    <priority>' & priority & '</priority>' &
+                '</url>';
             }
-            
-            xml &= '
-</urlset>';
+            xml &= chr(10) & '</urlset>';
 
             var sitemapPath = expandPath("/sitemap/sitemap.xml");
             model("Log").log(
@@ -436,6 +412,18 @@ component extends="app.Controllers.Controller" {
             // Show error message
             renderText(text="Failed to generate sitemap. Please try again later.");
         }
+    }
+
+    // Escape XML special characters for safe XML output
+    private string function xmlEscape(required string value) {
+        if (isNull(arguments.value) || !len(arguments.value & "")) return "";
+        var s = arguments.value & ""; // force string
+        s = replace(s, "&", "&amp;", "all");
+        s = replace(s, "<", "&lt;", "all");
+        s = replace(s, ">", "&gt;", "all");
+        s = replace(s, '"', "&quot;", "all");
+        s = replace(s, "'", "&apos;", "all");
+        return s;
     }
     
     function downloads() {

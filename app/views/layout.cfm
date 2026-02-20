@@ -15,6 +15,19 @@
 	<cfset isNews = find("/news", pathInfo) or isBlog and !find("/blog/create", pathInfo)>
 	<cfset isAuthPage = (isLogin OR isRegister OR isForgotPassword OR isResetPassword)>
 
+	<!--- Set og:image for key public pages --->
+	<cfif isHome>
+		<cfset ogImage = getBaseUrl() & "/images/og/home-og.png">
+	<cfelseif isCommunity>
+		<cfset ogImage = getBaseUrl() & "/images/og/community-og.png">
+	<cfelseif isGuideDocs>
+		<cfset ogImage = getBaseUrl() & "/images/og/guides-og.png">
+	<cfelseif isDocs>
+		<cfset ogImage = getBaseUrl() & "/images/og/docs-og.png">
+	<cfelseif isApi>
+		<cfset ogImage = getBaseUrl() & "/images/og/api-og.png">
+	</cfif>
+
 	<cfset pageTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
 	<cfset ogTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
 	<cfset metaDescription = "Modern CFML web framework inspired by Rails. Build powerful, fast, and clean web apps with Wheels.dev's intuitive MVC architecture.">
