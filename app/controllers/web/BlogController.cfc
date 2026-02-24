@@ -556,11 +556,9 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to update an existing blog
-    public void function update() {
-        // Get request parameters
-        var blogModel = model("Blog");
+    public function update() {
         var blogId = params.id;
-
+        result = { success: false, message: "", blogId: blogId };
         try {
             model("Log").log(
                 category = "wheels.blog",
@@ -573,24 +571,15 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = GetSignedInUserId()
             );
-
-            // Set additional parameters from the form
             params.isDraft = isNumeric(params.isDraft) ? params.isDraft : 0;
-
             transaction {
-                response = updateBlog(params, blogId);
-
-                // Update relationships
+                result = updateBlog(params, blogId);
                 deleteBlogTags(blogId);
                 deleteBlogCategories(blogId);
-
-                // Handle tags which are passed as a comma-separated string in postTags
                 if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
                     params.tags = params.postTags;
                     saveTags(params, blogId);
                 }
-
-                // Handle categories which are passed as selected values in categoryId
                 if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
                     saveCategories(params, blogId);
                 }
@@ -607,8 +596,12 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = GetSignedInUserId()
             );
-
-            redirectTo(route="blog");
+            result.success = true;
+            if (!structKeyExists(result, "message") || !len(result.message)) {
+                result.message = "Blog post updated successfully.";
+            }
+            // Add redirectUrl to show page
+            result.redirectUrl = urlFor(action="show", slug=params.slug);
         } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",
@@ -624,9 +617,11 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = GetSignedInUserId()
             );
-            // Handle error
-            redirectTo(action="error", errorMessage="Failed to update blog post.");
+            result.success = false;
+            result.message = "Failed to update blog post.";
         }
+        renderWith(data=result, hideDebugInformation=true, layout='/responseLayout');
+        return;
     }
 
     // function to check title is unique
