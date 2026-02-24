@@ -2,14 +2,15 @@ component extends="app.Models.Model" {
     function config() {
         table("categories");
 
-        property(name="id", column="id", type="integer", required=true, primarykey=true);
-        property(name="name", column="name", type="string", required=false, default="");
-        property(name="parentId", column="parent_id", type="string", required=false, default="");
-        property(name="description", column="description", type="text", required=false, default="");
-        property(name="isActive", column="is_active", type="boolean", required=false, default="");
-        property(name="createdAt", column="createdat", type="datetime", required=false, default="");
-        property(name="updatedAt", column="updatedat", type="datetime", required=false, default="");
-        property(name="deletedAt", column="deletedat", type="datetime", required=false, default="");
+        property(name="id", column="id", dataType="string", primarykey=true);
+        property(name="name", column="name", dataType="string", defaultValue="");
+        property(name="parentId", column="parent_id", dataType="string", defaultValue="");
+        property(name="description", column="description", dataType="text", defaultValue="");
+        property(name="isActive", column="is_active", dataType="boolean", defaultValue="");
+        
+        property(name="createdAt", column="createdat", dataType="datetime", defaultValue="");
+        property(name="updatedAt", column="updatedat", dataType="datetime", defaultValue="");
+        property(name="deletedAt", column="deletedat", dataType="datetime", defaultValue="");
 
         hasMany(name="BlogCategory", foreignKey="categoryId");
 

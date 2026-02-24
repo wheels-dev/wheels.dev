@@ -2,11 +2,11 @@ component extends="app.Models.Model" {
     function config() {
         table("tags");
 
-        property(name="id", column="id", type="integer", primarykey=true);
-        property(name="name", column="name", type="string", defaultValue = "");
-        property(name="createdAt", column="createdat", type="datetime", defaultValue = "");
-        property(name="updatedAt", column="updatedat", type="datetime", defaultValue = "");
-        property(name="deletedAt", column="deletedat", type="datetime", defaultValue = "");
+        property(name="id", column="id", dataType = "integer", primarykey=true);
+        property(name="name", column="name", dataType = "string", defaultValue = "");
+        property(name="createdAt", column="createdat", dataType = "datetime", defaultValue = "");
+        property(name="updatedAt", column="updatedat", dataType = "datetime", defaultValue = "");
+        property(name="deletedAt", column="deletedat", dataType = "datetime", defaultValue = "");
 
         hasMany(name="BlogTag", foreignKey="tagId");
 
