@@ -222,7 +222,7 @@ component extends="app.Controllers.Controller" {
             categories = model("Category").findAll(order="name ASC");
             postTypes = model("PostType").findAll(order="name ASC");
             var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
-            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+            var blogTags = model("BlogTag").findAll(where="blogId = #blog.id#", include="Tag");
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -231,8 +231,8 @@ component extends="app.Controllers.Controller" {
             }
 
             var selectedTags = [];
-            for (var tag in blogTags) {
-                arrayAppend(selectedTags, tag.name);
+            for (var blogTag in blogTags) {
+                arrayAppend(selectedTags, blogTag.name);
             }
 
             // Set view variables
@@ -887,11 +887,27 @@ component extends="app.Controllers.Controller" {
 
     // Fetch Blogs by Tag
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
+        // First, find the tag by name
+        var targetTag = model("Tag").findOne(where="name = '#arguments.tag#'");
+        
+        if (!isObject(targetTag)) {
+            return {query: queryNew(""), hasMore: false, totalCount: 0};
+        }
+        
+        // Get all blog_ids associated with this tag
+        var blogTags = model("BlogTag").findAll(where="tagId = #targetTag.id#", returnAs="query");
+        
+        if (blogTags.recordCount == 0) {
+            return {query: queryNew(""), hasMore: false, totalCount: 0};
+        }
+        
+        var blogIds = valueList(blogTags.blogId);
+        
         var result = {
             query = model("Blog").findAll(
-                where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
                 order="createdAt DESC",
-                include="User,tag",
+                include="User",
                 returnAs="query",
                 page = arguments.page,
                 perPage = arguments.perPage
@@ -900,7 +916,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'", include="User,tag");
+        result.totalCount = model("Blog").count(where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;

@@ -109,7 +109,11 @@ component extends="wheels.Controller" {
     }
 
     function getTagsByBlogid(required numeric id) {
-        return model("Tag").findAllByBlogId(value="#arguments.id#", cache=10);
+        return model("BlogTag").findAll(
+            where="blogId = #arguments.id#",
+            include="Tag",
+            cache=10
+        );
     }
 
 
@@ -377,31 +381,74 @@ component extends="wheels.Controller" {
         try {
             if (blogId > 0 && structKeyExists(blogData, "postTags")) {
 
-                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
+                var tagArray = listToArray(blogData.postTags, ",");
 
-                // Insert new tags
                 for (var tagName in tagArray) {
-                    var newTag = model("Tag").new();
-                    newTag.name = trim(tagName); // Trim spaces if any
-                    newTag.blogId = blogId;
-                    newTag.createdAt = now();
-                    newTag.updatedAt = now();
-                    if (!newTag.save()) {
-                        model("Log").log(
-                            category = "wheels.blog.tags",
-                            level = "ERROR",
-                            message = "Failed to save tag '#trim(tagName)#' for blogId: #blogId#",
-                            details = {
-                                "blog_id": blogId,
-                                "tag_name": trim(tagName),
-                                "errors": newTag.allErrors()
-                            },
-                            userId = GetSignedInUserId()
-                        );
+                    var trimmedTagName = trim(tagName);
+                    
+                    if (len(trimmedTagName) == 0) continue;
+                    
+                    // Check if tag exists in master tags table
+                    var existingTag = model("Tag").findOne(
+                        where="name = '#trimmedTagName#'"
+                    );
+                    
+                    if (!isObject(existingTag)) {
+                        // Create new tag in master table
+                        var newTag = model("Tag").new();
+                        newTag.name = trimmedTagName;
+                        newTag.createdAt = now();
+                        newTag.updatedAt = now();
+                        newTag.save();
+                        var tagId = newTag.id;
+                    } else {
+                        var tagId = existingTag.id;
+                    }
+                    
+                    // Check if blog-tag association already exists
+                    var existingBlogTag = model("BlogTag").findOne(
+                        where="blogId = #blogId# AND tagId = #tagId#"
+                    );
+                    
+                    if (!isObject(existingBlogTag)) {
+                        // Create blog-tag junction record
+                        var blogTag = model("BlogTag").new();
+                        blogTag.blogId = blogId;
+                        blogTag.tagId = tagId;
+                        blogTag.createdAt = now();
+                        blogTag.updatedAt = now();
+                        
+                        // Save with error handling for duplicate
+                        if (!blogTag.save()) {
+                            // Check if it's a duplicate key error - if so, ignore it
+                            var errors = blogTag.allErrors();
+                            var isDuplicateError = false;
+                            for (var err in errors) {
+                                if (find("already exists", err.message) > 0) {
+                                    isDuplicateError = true;
+                                    break;
+                                }
+                            }
+                            // If not a duplicate error, log the actual error
+                            if (!isDuplicateError) {
+                                model("Log").log(
+                                    category = "wheels.blog.tags",
+                                    level = "ERROR",
+                                    message = "Failed to save blog-tag for blogId: #blogId#, tag: #trimmedTagName#",
+                                    details = {
+                                        "blog_id": blogId,
+                                        "tag_name": trimmedTagName,
+                                        "errors": errors
+                                    },
+                                    userId = GetSignedInUserId()
+                                );
+                            }
+                        }
                     }
                 }
             }
         } catch (any e) {
+            // Log error but don't throw - allow blog saving to continue
             model("Log").log(
                 category = "wheels.blog.tags",
                 level = "ERROR",
@@ -421,8 +468,8 @@ component extends="wheels.Controller" {
     function deleteBlogTags(required numeric blogId) {
         try {
             if (blogId > 0) {
-                // direct delete approach
-                model("Tag").deleteAll(where="blogId = #arguments.blogId#");
+                // Delete blog-tag junction records
+                model("BlogTag").deleteAll(where="blogId = #arguments.blogId#");
 
                 return true;
             }
