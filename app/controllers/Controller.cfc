@@ -109,7 +109,11 @@ component extends="wheels.Controller" {
     }
 
     function getTagsByBlogid(required numeric id) {
-        return model("Tag").findAllByBlogId(value="#arguments.id#", cache=10);
+        return model("BlogTag").findAll(
+            where="blogId = #arguments.id#",
+            include="Tag",
+            cache=10
+        );
     }
 
 
@@ -376,32 +380,86 @@ component extends="wheels.Controller" {
     function saveTags(required struct blogData, blogId) {
         try {
             if (blogId > 0 && structKeyExists(blogData, "postTags")) {
+                model("Log").log(
+                    category = "wheels.blog",
+                    level = "DEBUG",
+                    message = "saveTags called",
+                    details = {
+                        "blogId": blogId,
+                        "postTags": blogData.postTags
+                    },
+                    userId = structKeyExists(session, "userId") ? session.userId : 0
+                );
+                var tagArray = listToArray(blogData.postTags, ",");
 
-                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
-
-                // Insert new tags
                 for (var tagName in tagArray) {
-                    var newTag = model("Tag").new();
-                    newTag.name = trim(tagName); // Trim spaces if any
-                    newTag.blogId = blogId;
-                    newTag.createdAt = now();
-                    newTag.updatedAt = now();
-                    if (!newTag.save()) {
+                    var trimmedTagName = trim(tagName);
+                    if (len(trimmedTagName) == 0) {
+                        continue;
+                    }
+                    // Check if tag exists in master tags table
+                    var existingTag = model("Tag").findOne(where="name = '#trimmedTagName#'");
+                    if (!isObject(existingTag)) {
+                        // Create new tag in master table
+                        var newTag = model("Tag").new();
+                        newTag.name = trimmedTagName;
+                        newTag.createdAt = now();
+                        newTag.updatedAt = now();
+                        newTag.save();
+                        var tagId = newTag.id;
                         model("Log").log(
-                            category = "wheels.blog.tags",
-                            level = "ERROR",
-                            message = "Failed to save tag '#trim(tagName)#' for blogId: #blogId#",
-                            details = {
-                                "blog_id": blogId,
-                                "tag_name": trim(tagName),
-                                "errors": newTag.allErrors()
-                            },
-                            userId = GetSignedInUserId()
+                            category = "wheels.blog",
+                            level = "DEBUG",
+                            message = "Created new tag",
+                            details = { "tagName": trimmedTagName, "tagId": tagId },
+                            userId = structKeyExists(session, "userId") ? session.userId : 0
+                        );
+                    } else {
+                        var tagId = existingTag.id;
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level = "DEBUG",
+                            message = "Found existing tag",
+                            details = { "tagName": trimmedTagName, "tagId": tagId },
+                            userId = structKeyExists(session, "userId") ? session.userId : 0
+                        );
+                    }
+                    // Check if blog-tag association already exists
+                    var existingBlogTag = model("BlogTag").findOne(where="blogId = #blogId# AND tagId = #tagId#");
+                    if (!isObject(existingBlogTag)) {
+                        // Create blog-tag junction record
+                        var blogTag = model("BlogTag").new();
+                        blogTag.blogId = blogId;
+                        blogTag.tagId = tagId;
+                        blogTag.createdAt = now();
+                        blogTag.updatedAt = now();
+                        try {
+                            blogTag.save();
+                            model("Log").log(
+                                category = "wheels.blog",
+                                level = "DEBUG",
+                                message = "Created blog-tag association",
+                                details = { "blogId": blogId, "tagId": tagId },
+                                userId = structKeyExists(session, "userId") ? session.userId : 0
+                            );
+                        } catch (any dbEx) {
+                            if (!(find("duplicate key", dbEx.message) > 0 || find("already exists", dbEx.detail) > 0)) {
+                                rethrow;
+                            }
+                        }
+                    } else {
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level = "DEBUG",
+                            message = "Blog-tag association already exists",
+                            details = { "blogId": blogId, "tagId": tagId },
+                            userId = structKeyExists(session, "userId") ? session.userId : 0
                         );
                     }
                 }
             }
         } catch (any e) {
+            // Log error but don't throw - allow blog saving to continue
             model("Log").log(
                 category = "wheels.blog.tags",
                 level = "ERROR",
@@ -421,8 +479,8 @@ component extends="wheels.Controller" {
     function deleteBlogTags(required numeric blogId) {
         try {
             if (blogId > 0) {
-                // direct delete approach
-                model("Tag").deleteAll(where="blogId = #arguments.blogId#");
+                // Delete blog-tag junction records
+                model("BlogTag").deleteAll(where="blogId = #arguments.blogId#");
 
                 return true;
             }
@@ -447,24 +505,26 @@ component extends="wheels.Controller" {
     function saveCategories(required struct blogData, blogId) {
         try {
             if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
-
                 var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
 
-                // Insert new categories
+                // Prevent duplicates: only insert if not already present
                 for (var category_Id in categoryArray) {
-                    var newCategory = model("BlogCategory").new();
-                    newCategory.categoryId = category_Id;
-                    newCategory.blogId = blogId;
-                    newCategory.createdAt = now();
-                    newCategory.updatedAt = now();
-                    newCategory.save();
+                    var exists = model("BlogCategory").findOne(where="blogId = #blogId# AND categoryId = #category_Id#");
+                    if (!isStruct(exists) || !structKeyExists(exists, "id")) {
+                        var newCategory = model("BlogCategory").new();
+                        newCategory.categoryId = category_Id;
+                        newCategory.blogId = blogId;
+                        newCategory.createdAt = now();
+                        newCategory.updatedAt = now();
+                        newCategory.save();
+                    }
                 }
             }
         } catch (any e) {
             model("Log").log(
-                category = "wheels.blog.tags",
+                category = "wheels.blog.categories",
                 level = "ERROR",
-                message = "Failed to save blog tags for blogId: #blogId#",
+                message = "Failed to save blog categories for blogId: #blogId#",
                 details = {
                     "blog_id": blogId,
                     "error_message": e.message,
@@ -488,7 +548,7 @@ component extends="wheels.Controller" {
             return false;
         } catch (any e) {
             model("Log").log(
-                category = "wheels.blog",
+                category = "wheels.blog.categories",
                 level = "ERROR",
                 message = "Failed to delete blog categories",
                 details = {

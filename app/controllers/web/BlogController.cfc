@@ -222,7 +222,7 @@ component extends="app.Controllers.Controller" {
             categories = model("Category").findAll(order="name ASC");
             postTypes = model("PostType").findAll(order="name ASC");
             var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
-            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+            var blogTags = model("BlogTag").findAll(where="blogId = #blog.id#", include="Tag");
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -231,8 +231,8 @@ component extends="app.Controllers.Controller" {
             }
 
             var selectedTags = [];
-            for (var tag in blogTags) {
-                arrayAppend(selectedTags, tag.name);
+            for (var blogTag in blogTags) {
+                arrayAppend(selectedTags, blogTag.name);
             }
 
             // Set view variables
@@ -556,11 +556,9 @@ component extends="app.Controllers.Controller" {
     }
 
     // Function to update an existing blog
-    public void function update() {
-        // Get request parameters
-        var blogModel = model("Blog");
+    public function update() {
         var blogId = params.id;
-
+        result = { success: false, message: "", blogId: blogId };
         try {
             model("Log").log(
                 category = "wheels.blog",
@@ -573,24 +571,15 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = GetSignedInUserId()
             );
-
-            // Set additional parameters from the form
             params.isDraft = isNumeric(params.isDraft) ? params.isDraft : 0;
-
             transaction {
-                response = updateBlog(params, blogId);
-
-                // Update relationships
+                result = updateBlog(params, blogId);
                 deleteBlogTags(blogId);
                 deleteBlogCategories(blogId);
-
-                // Handle tags which are passed as a comma-separated string in postTags
                 if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
                     params.tags = params.postTags;
                     saveTags(params, blogId);
                 }
-
-                // Handle categories which are passed as selected values in categoryId
                 if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
                     saveCategories(params, blogId);
                 }
@@ -607,8 +596,12 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = GetSignedInUserId()
             );
-
-            redirectTo(route="blog");
+            result.success = true;
+            if (!structKeyExists(result, "message") || !len(result.message)) {
+                result.message = "Blog post updated successfully.";
+            }
+            // Add redirectUrl to show page
+            result.redirectUrl = urlFor(action="show", slug=params.slug);
         } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",
@@ -624,9 +617,11 @@ component extends="app.Controllers.Controller" {
                 },
                 userId = GetSignedInUserId()
             );
-            // Handle error
-            redirectTo(action="error", errorMessage="Failed to update blog post.");
+            result.success = false;
+            result.message = "Failed to update blog post.";
         }
+        renderWith(data=result, hideDebugInformation=true, layout='/responseLayout');
+        return;
     }
 
     // function to check title is unique
@@ -887,11 +882,27 @@ component extends="app.Controllers.Controller" {
 
     // Fetch Blogs by Tag
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
+        // First, find the tag by name
+        var targetTag = model("Tag").findOne(where="name = '#arguments.tag#'");
+        
+        if (!isObject(targetTag)) {
+            return {query: queryNew(""), hasMore: false, totalCount: 0};
+        }
+        
+        // Get all blog_ids associated with this tag
+        var blogTags = model("BlogTag").findAll(where="tagId = #targetTag.id#", returnAs="query");
+        
+        if (blogTags.recordCount == 0) {
+            return {query: queryNew(""), hasMore: false, totalCount: 0};
+        }
+        
+        var blogIds = valueList(blogTags.blogId);
+        
         var result = {
             query = model("Blog").findAll(
-                where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
                 order="createdAt DESC",
-                include="User,tag",
+                include="User",
                 returnAs="query",
                 page = arguments.page,
                 perPage = arguments.perPage
@@ -900,7 +911,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="name = '#arguments.tag#' AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'", include="User,tag");
+        result.totalCount = model("Blog").count(where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;

@@ -1,10 +1,9 @@
 component extends="app.Models.Model" {
     function config() {
-        table("blog_categories");
+        table("blog_tags");
 
         property(name="id", column="id", dataType="string");
-        property(name="categoryId", column="category_id", dataType="integer", defaultValue = "");
-        
+        property(name="tagId", column="tag_id", dataType="integer", defaultValue = "");
         property(name="createdAt", column="createdat", dataType="datetime", defaultValue = "");
         property(name="updatedAt", column="updatedat", dataType="datetime", defaultValue = "");
         property(name="deletedAt", column="deletedat", dataType="datetime", defaultValue = "");
@@ -13,14 +12,13 @@ component extends="app.Models.Model" {
 
         // Associations
         belongsTo(name="Blog", foreignKey="blogId"); 
-        belongsTo(name="Category", foreignKey="categoryId");
-
-        validatesUniquenessOf(property="categoryId", scope="blogId"); // Ensure unique category per blog
+        belongsTo(name="Tag", foreignKey="tagId");
     }
 
-    // fetch all blog categories with category name
+    // fetch all blog tags with tag name
     public function getAll(){
-        var categories = findAll(include="Category"); // include associated Category
-        return categories;
+        var blogTags = findAll(include="Tag"); // include associated Tag
+        return blogTags;
     }
 }
+
