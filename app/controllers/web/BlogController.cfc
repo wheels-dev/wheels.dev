@@ -572,14 +572,40 @@ component extends="app.Controllers.Controller" {
                 userId = GetSignedInUserId()
             );
             params.isDraft = isNumeric(params.isDraft) ? params.isDraft : 0;
+
+            // Allow title change and check uniqueness
+            if (structKeyExists(params, "title")) {
+                var existingBlog = model("Blog").findFirst(where="title = '#params.title#' AND id != #blogId#");
+                if (isObject(existingBlog)) {
+                    result.success = false;
+                    result.message = "A blog post with this title already exists.";
+                    model("Log").log(
+                        category = "wheels.blog",
+                        level = "DEBUG",
+                        message = "[UPDATE] Duplicate title found",
+                        details = { "blog_id": blogId, "title": params.title },
+                        userId = GetSignedInUserId()
+                    );
+                    renderWith(data=result, hideDebugInformation=true, layout='/responseLayout');
+                    return;
+                }
+            }
+
             transaction {
                 result = updateBlog(params, blogId);
+
+                if (!result.success) {
+                    throw(type="BlogUpdateFailed", message=result.message);
+                }
+
                 deleteBlogTags(blogId);
                 deleteBlogCategories(blogId);
+
                 if (structKeyExists(params, "postTags") && len(trim(params.postTags))) {
                     params.tags = params.postTags;
                     saveTags(params, blogId);
                 }
+
                 if (structKeyExists(params, "categoryId") && len(trim(params.categoryId))) {
                     saveCategories(params, blogId);
                 }
