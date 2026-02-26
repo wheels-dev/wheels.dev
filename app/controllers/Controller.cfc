@@ -399,7 +399,7 @@ component extends="wheels.Controller" {
             } else if (isUserAdmin()) {
                 params.statusId = 2;
                 params.status = "Approved";
-                params.publishedAt = now();
+                // Do NOT set publishedAt on update
             } else {
                 params.statusId = 2;
             }
@@ -421,9 +421,7 @@ component extends="wheels.Controller" {
             if (structKeyExists(params, "status")) {
                 blog.status = params.status;
             }
-            if (structKeyExists(params, "publishedAt") && len(trim(params.publishedAt))) {
-                blog.publishedAt = params.publishedAt;
-            }
+            // Only update publishedAt if this is a creation, not update
             if (structKeyExists(params, "postTypeId")) {
                 blog.postTypeId = params.postTypeId;
             }
