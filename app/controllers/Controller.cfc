@@ -109,7 +109,11 @@ component extends="wheels.Controller" {
     }
 
     function getTagsByBlogid(required numeric id) {
-        return model("Tag").findAllByBlogId(value="#arguments.id#", cache=10);
+        return model("BlogTag").findAll(
+            where="blogId = #arguments.id#",
+            include="Tag",
+            cache=10
+        );
     }
 
 
@@ -373,169 +377,33 @@ component extends="wheels.Controller" {
     // ==================== Shared Blog Helper Functions ====================
     // Used by both web.BlogController and admin.AdminController
 
-    function saveTags(required struct blogData, blogId) {
-        try {
-            if (blogId > 0 && structKeyExists(blogData, "postTags")) {
-
-                var tagArray = listToArray(blogData.postTags, ","); // Convert postTags string into an array
-
-                // Insert new tags
-                for (var tagName in tagArray) {
-                    var newTag = model("Tag").new();
-                    newTag.name = trim(tagName); // Trim spaces if any
-                    newTag.blogId = blogId;
-                    newTag.createdAt = now();
-                    newTag.updatedAt = now();
-                    if (!newTag.save()) {
-                        model("Log").log(
-                            category = "wheels.blog.tags",
-                            level = "ERROR",
-                            message = "Failed to save tag '#trim(tagName)#' for blogId: #blogId#",
-                            details = {
-                                "blog_id": blogId,
-                                "tag_name": trim(tagName),
-                                "errors": newTag.allErrors()
-                            },
-                            userId = GetSignedInUserId()
-                        );
-                    }
-                }
-            }
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog.tags",
-                level = "ERROR",
-                message = "Failed to save blog tags for blogId: #blogId#",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-        }
-    }
-
-    // Function to delete tags associated with a blog post
-    function deleteBlogTags(required numeric blogId) {
-        try {
-            if (blogId > 0) {
-                // direct delete approach
-                model("Tag").deleteAll(where="blogId = #arguments.blogId#");
-
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to delete blog tags",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-            return false;
-        }
-    }
-
-    function saveCategories(required struct blogData, blogId) {
-        try {
-            if (blogId > 0 && structKeyExists(blogData, "categoryId")) {
-
-                var categoryArray = listToArray(blogData.categoryId, ","); // Convert categoryId string into an array
-
-                // Insert new categories
-                for (var category_Id in categoryArray) {
-                    var newCategory = model("BlogCategory").new();
-                    newCategory.categoryId = category_Id;
-                    newCategory.blogId = blogId;
-                    newCategory.createdAt = now();
-                    newCategory.updatedAt = now();
-                    newCategory.save();
-                }
-            }
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog.tags",
-                level = "ERROR",
-                message = "Failed to save blog tags for blogId: #blogId#",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-        }
-    }
-
-    // Function to delete categories associated with a blog post
-    function deleteBlogCategories(required numeric blogId) {
-        try {
-            if (blogId > 0) {
-                // Find all category associations for this blog post
-                model("BlogCategory").deleteAll(where="blogId = #arguments.blogId#");
-
-                return true;
-            }
-            return false;
-        } catch (any e) {
-            model("Log").log(
-                category = "wheels.blog",
-                level = "ERROR",
-                message = "Failed to delete blog categories",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
-                },
-                userId = GetSignedInUserId()
-            );
-            return false;
-        }
-    }
-
     // Shared helper function to update blog post
-    // Used by both web.BlogController and admin.AdminController
-    function updateBlog(required struct params, required numeric blogId) {
-        var response = { "success": false, "message": "", "blogId": blogId };
+    function updateBlog(required struct params, required blogId) {
+        response = { "success": false, "message": "", "blogId": blogId };
 
         try {
             // Find the blog by ID
             var blog = model("Blog").findByKey(blogId);
 
             if (!isObject(blog)) {
-                response.message = "Blog post not found for updating.";
+                response.message = "Blog post not found.";
                 return response;
             }
 
-            // Generate slug
-            var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all"); // Replace non-alphanumeric with "-"
+            var slug = rereplace(lcase(params.title), "[^a-z0-9]", "-", "all");
             slug = rereplace(slug, "-+", "-", "all");
             params.slug = slug;
 
-            // Set status based on isDraft flag and user role
             if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
-                params.statusId = 1; // Draft
+                params.statusId = 1;
             } else if (isUserAdmin()) {
-                // Auto-approve and publish for admin users
                 params.statusId = 2;
                 params.status = "Approved";
-                // Convert to UTC
-                params.publishedAt = toUTC(now());
+                // Do NOT set publishedAt on update
             } else {
-                params.statusId = 2; // Under Review
+                params.statusId = 2;
             }
 
-            // Check if a blog with the same title/slug exists (that isn't this one)
             var existingBlog = model("Blog").findFirst(
                 where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
             );
@@ -545,56 +413,300 @@ component extends="wheels.Controller" {
                 return response;
             }
 
-            // Update the blog post
-            blog.title = params.title;
-            blog.content = params.content;
-            blog.slug = params.slug;
+            blog.title    = params.title;
+            blog.content  = params.content;
+            blog.slug     = params.slug;
             blog.statusId = params.statusId;
 
-            // Set approval status fields for admin auto-approval
             if (structKeyExists(params, "status")) {
                 blog.status = params.status;
             }
-            if (structKeyExists(params, "publishedAt") && len(trim(params.publishedAt))) {
-                blog.publishedAt = params.publishedAt;
-            }
-
-            // Only update these if they exist in params
+            // Only update publishedAt if this is a creation, not update
             if (structKeyExists(params, "postTypeId")) {
                 blog.postTypeId = params.postTypeId;
             }
-
             if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
-                // Convert the provided date to UTC before saving
-                blog.postCreatedDate = toUTC(params.postCreatedDate);
+                blog.postCreatedDate = params.postCreatedDate;
             }
 
-            // Update tracking fields
             blog.updatedAt = now();
             blog.updatedBy = GetSignedInUserId();
 
-            // Save the blog post
-            blog.save();
+            var saveResult = blog.update();
+
+            if (!saveResult) {
+                throw(
+                    type    = "BlogSaveFailed",
+                    message = "blog.update() returned false. Validation errors: #serializeJSON(blog.allErrors())#"
+                );
+            }
 
             response.success = true;
             response.message = "Blog post updated successfully.";
-        }
-        catch (any e) {
-            response.message = "Error updating blog: " & e.message;
+
+        } catch (any e) {
             model("Log").log(
                 category = "wheels.blog",
-                level = "ERROR",
-                message = "Error in updateBlog function",
-                details = {
-                    "blog_id": blogId,
-                    "error_message": e.message,
-                    "error_detail": e.detail,
-                    "error_type": e.type
+                level    = "ERROR",
+                message  = "[UPDATEBLOG] Error updating blog",
+                details  = {
+                    "blogId"       : blogId,
+                    "errorMessage" : e.message,
+                    "errorDetail"  : e.detail,
+                    "errorType"    : e.type
                 },
                 userId = GetSignedInUserId()
             );
+            rethrow;
         }
 
         return response;
+    }
+
+    function deleteBlogTags(required blogId) {
+        try {
+            if (!isEmpty(blogId)) {
+                model("BlogTag").deleteAll(where="blogId = #arguments.blogId#");
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level    = "ERROR",
+                message  = "[DELETEBLOGTAGS] Failed to delete blog tags",
+                details  = {
+                    "blogId"       : blogId,
+                    "errorMessage" : e.message,
+                    "errorDetail"  : e.detail,
+                    "errorType"    : e.type
+                },
+                userId = GetSignedInUserId()
+            );
+            rethrow;
+        }
+    }
+
+
+    function deleteBlogCategories(required blogId) {
+        try {
+            if (!isEmpty(blogId)) {
+                model("BlogCategory").deleteAll(where="blogId = #arguments.blogId#");
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level    = "ERROR",
+                message  = "[DELETEBLOGCATEGORIES] Failed to delete blog categories",
+                details  = {
+                    "blogId"       : blogId,
+                    "errorMessage" : e.message,
+                    "errorDetail"  : e.detail,
+                    "errorType"    : e.type
+                },
+                userId = GetSignedInUserId()
+            );
+            rethrow;
+        }
+    }
+
+    function saveTags(required struct blogData, blogId) {
+        try {
+            if (val(blogId) gt 0 && structKeyExists(blogData, "postTags")) {
+                var tagArray = listToArray(blogData.postTags, ",");
+
+                for (var tagName in tagArray) {
+                    var trimmedTagName = trim(tagName);
+                    if (len(trimmedTagName) == 0) continue;
+
+                    // includeSoftDeletes=true — find tag even if it was soft-deleted
+                    var existingTag = model("Tag").findOne(
+                        where              = "name = '#trimmedTagName#'",
+                        includeSoftDeletes = true
+                    );
+
+                    if (!isObject(existingTag)) {
+                        // Tag never existed — create fresh
+                        var newTag       = model("Tag").new();
+                        newTag.name      = trimmedTagName;
+                        newTag.createdAt = now();
+                        newTag.updatedAt = now();
+
+                        if (!newTag.save()) {
+                            throw(
+                                type    = "TagSaveFailed",
+                                message = "Failed to save tag '#trimmedTagName#'. Errors: #serializeJSON(newTag.allErrors())#"
+                            );
+                        }
+                        var tagId = newTag.id;
+
+                    } else if (structKeyExists(existingTag, "deletedAt") && isDate(existingTag.deletedAt) && len(trim(existingTag.deletedAt))) {
+                        // Tag exists but was soft-deleted — restore it
+                        existingTag.deletedAt = "";
+                        existingTag.updatedAt = now();
+
+                        if (!existingTag.save()) {
+                            throw(
+                                type    = "TagRestoreFailed",
+                                message = "Failed to restore tag '#trimmedTagName#'. Errors: #serializeJSON(existingTag.allErrors())#"
+                            );
+                        }
+                        var tagId = existingTag.id;
+
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level    = "DEBUG",
+                            message  = "[SAVETAGS] Restored soft-deleted tag",
+                            details  = { "tagName": trimmedTagName, "tagId": tagId },
+                            userId   = GetSignedInUserId()
+                        );
+
+                    } else {
+                        // Tag exists and is active — just use it
+                        var tagId = existingTag.id;
+                    }
+
+                    // includeSoftDeletes=true — restore blog-tag if soft-deleted
+                    var existingBlogTag = model("BlogTag").findOne(
+                        where              = "blogId = #blogId# AND tagId = #tagId#",
+                        includeSoftDeletes = true
+                    );
+
+                    if (isObject(existingBlogTag)) {
+                        // Restore soft-deleted blog-tag association
+                        existingBlogTag.deletedAt = "";
+                        existingBlogTag.updatedAt = now();
+
+                        if (!existingBlogTag.save()) {
+                            throw(
+                                type    = "BlogTagRestoreFailed",
+                                message = "Failed to restore blog-tag. blogId=#blogId#, tagId=#tagId#. Errors: #serializeJSON(existingBlogTag.allErrors())#"
+                            );
+                        }
+
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level    = "DEBUG",
+                            message  = "[SAVETAGS] Restored soft-deleted blog-tag association",
+                            details  = { "blogId": blogId, "tagId": tagId, "tagName": trimmedTagName },
+                            userId   = GetSignedInUserId()
+                        );
+
+                    } else {
+                        // Fresh insert
+                        var blogTag       = model("BlogTag").new();
+                        blogTag.blogId    = blogId;
+                        blogTag.tagId     = tagId;
+                        blogTag.createdAt = now();
+                        blogTag.updatedAt = now();
+
+                        if (!blogTag.save()) {
+                            throw(
+                                type    = "BlogTagSaveFailed",
+                                message = "Failed to save blog-tag. blogId=#blogId#, tagId=#tagId#. Errors: #serializeJSON(blogTag.allErrors())#"
+                            );
+                        }
+
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level    = "DEBUG",
+                            message  = "[SAVETAGS] Created new blog-tag association",
+                            details  = { "blogId": blogId, "tagId": tagId, "tagName": trimmedTagName },
+                            userId   = GetSignedInUserId()
+                        );
+                    }
+                }
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level    = "ERROR",
+                message  = "[SAVETAGS] Failed to save blog tags",
+                details  = {
+                    "blogId"       : blogId,
+                    "errorMessage" : e.message,
+                    "errorDetail"  : e.detail,
+                    "errorType"    : e.type
+                },
+                userId = GetSignedInUserId()
+            );
+            rethrow;
+        }
+    }
+
+
+    function saveCategories(required struct blogData, blogId) {
+        try {
+            if (val(blogId) gt 0 && structKeyExists(blogData, "categoryId")) {
+                var categoryArray = listToArray(blogData.categoryId, ",");
+
+                for (var categoryId in categoryArray) {
+                    var trimmedCategoryId = trim(categoryId);
+                    if (len(trimmedCategoryId) == 0) continue;
+
+                    // includeSoftDeletes=true so we can see soft-deleted rows
+                    // and restore them instead of inserting a duplicate
+                    var existingBlogCategory = model("BlogCategory").findOne(
+                        where              = "blogId = #blogId# AND categoryId = #trimmedCategoryId#",
+                        includeSoftDeletes = true
+                    );
+
+                    if (isObject(existingBlogCategory)) {
+                        // Row exists (soft-deleted) — restore it
+                        existingBlogCategory.deletedAt = "";
+                        existingBlogCategory.updatedAt = now();
+
+                        if (!existingBlogCategory.save()) {
+                            throw(
+                                type    = "BlogCategoryRestoreFailed",
+                                message = "Failed to restore blog-category. blogId=#blogId#, categoryId=#trimmedCategoryId#. Errors: #serializeJSON(existingBlogCategory.allErrors())#"
+                            );
+                        }
+
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level    = "DEBUG",
+                            message  = "[SAVECATEGORIES] Restored soft-deleted blog-category association",
+                            details  = { "blogId": blogId, "categoryId": trimmedCategoryId },
+                            userId   = GetSignedInUserId()
+                        );
+                    } else {
+                        // Row does not exist at all — insert fresh
+                        var newCategory            = model("BlogCategory").new();
+                        newCategory.blogId         = blogId;
+                        newCategory.categoryId     = trimmedCategoryId;
+                        newCategory.createdAt      = now();
+                        newCategory.updatedAt      = now();
+
+                        if (!newCategory.save()) {
+                            throw(
+                                type    = "BlogCategorySaveFailed",
+                                message = "Failed to save blog-category. blogId=#blogId#, categoryId=#trimmedCategoryId#. Errors: #serializeJSON(newCategory.allErrors())#"
+                            );
+                        }
+
+                        model("Log").log(
+                            category = "wheels.blog",
+                            level    = "DEBUG",
+                            message  = "[SAVECATEGORIES] Created new blog-category association",
+                            details  = { "blogId": blogId, "categoryId": trimmedCategoryId },
+                            userId   = GetSignedInUserId()
+                        );
+                    }
+                }
+            }
+        } catch (any e) {
+            model("Log").log(
+                category = "wheels.blog",
+                level    = "ERROR",
+                message  = "[SAVECATEGORIES] Failed to save blog categories",
+                details  = {
+                    "blogId"       : blogId,
+                    "errorMessage" : e.message,
+                    "errorDetail"  : e.detail,
+                    "errorType"    : e.type
+                },
+                userId = GetSignedInUserId()
+            );
+            rethrow;
+        }
     }
 }

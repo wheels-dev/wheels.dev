@@ -38,7 +38,7 @@ component extends="app.Controllers.Controller" {
             var categories = model("Category").findAll(order="name ASC");
             var postTypes = model("PostType").findAll(order="name ASC");
             var blogCategories = model("BlogCategory").findAll(where="blogId = #blog.id#");
-            var blogTags = model("Tag").findAll(where="blogId = #blog.id#");
+            var blogTags = model("BlogTag").findAll(where="blogId = #blog.id#", include="Tag");
 
             // Prepare data for the view
             var selectedCategories = [];
@@ -47,8 +47,8 @@ component extends="app.Controllers.Controller" {
             }
 
             var selectedTags = [];
-            for (var tag in blogTags) {
-                arrayAppend(selectedTags, tag.name);
+            for (var blogTag in blogTags) {
+                arrayAppend(selectedTags, blogTag.Tag.name);
             }
 
             // Set view variables
