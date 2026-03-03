@@ -8,10 +8,10 @@ component extends="app.Models.Model" {
         property(name="updatedAt", column="updatedat", dataType="datetime", defaultValue = "");
         property(name="deletedAt", column="deletedat", dataType="datetime", defaultValue = "");
 
-        property(name="blogId", column="blog_id", dataType="integer");
+        property(name="blogId", column="blog_id", dataType="string");
 
         // Associations
-        belongsTo(name="Blog", foreignKey="blogId"); 
+        belongsTo(name="Blog", foreignKey="blogId");
         belongsTo(name="Tag", foreignKey="tagId");
     }
 
