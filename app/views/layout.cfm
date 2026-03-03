@@ -17,15 +17,15 @@
 
 	<!--- Set og:image for key public pages --->
 	<cfif isHome>
-		<cfset ogImage = getBaseUrl() & "/images/home-og.png">
+		<cfset ogImage = getBaseUrl() & "/img/home-og.png">
 	<cfelseif isCommunity>
-		<cfset ogImage = getBaseUrl() & "/images/community-og.png">
+		<cfset ogImage = getBaseUrl() & "/img/community-og.png">
 	<cfelseif isGuideDocs>
-		<cfset ogImage = getBaseUrl() & "/images/guides-og.png">
+		<cfset ogImage = getBaseUrl() & "/img/guides-og.png">
 	<cfelseif isDocs>
-		<cfset ogImage = getBaseUrl() & "/images/docs-og.png">
+		<cfset ogImage = getBaseUrl() & "/img/docs-og.png">
 	<cfelseif isApi>
-		<cfset ogImage = getBaseUrl() & "/images/api-og.png">
+		<cfset ogImage = getBaseUrl() & "/img/api-og.png">
 	</cfif>
 
 	<cfset pageTitle = "Wheels - An open source CFML framework inspired by Ruby on Rails">
@@ -806,6 +806,21 @@
 			<script src="/js/swiper.js"></script>
 			<script src="/js/infinite-scroll.pkgd.min.js"></script>
 			<script src="/js/global.js"></script>
+			<script>
+				// Convert UTC dates to local timezone for elements with data-utc attribute
+				document.addEventListener("DOMContentLoaded", function() {
+					var utcElements = document.querySelectorAll('[data-utc]');
+					utcElements.forEach(function(el) {
+						var utcDate = el.getAttribute('data-utc');
+						if (utcDate) {
+							var date = new Date(utcDate);
+							if (!isNaN(date.getTime())) {
+								el.textContent = date.toLocaleString();
+							}
+						}
+					});
+				});
+			</script>
 		</body>
 	</html>
 </cfif>

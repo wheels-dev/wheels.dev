@@ -3,6 +3,17 @@
 public function GetSignedInUserId(){
     return structKeyExists(session, "userID") ? session.userID : 0
 }
+
+/**
+ * Convert a local datetime to UTC using server's timezone offset
+ * @localTime The datetime to convert to UTC
+ * @return The datetime in UTC
+ */
+public datetime function toUTC(required datetime localTime) {
+    var tzInfo = GetTimeZoneInfo();
+    var offsetSeconds = tzInfo.utcTotalOffset * 60;
+    return dateAdd("s", -offsetSeconds, arguments.localTime);
+}
 public function GetUserRoleId(){
     return 3;
 }

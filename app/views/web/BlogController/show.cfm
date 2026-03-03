@@ -54,7 +54,7 @@
                             <cfif categories.recordCount GT 0 OR tags.recordCount GT 0>
                                 <div class="d-flex flex-wrap justify-content-center flex-grow-1 align-items-end gap-lg-5 gap-2 mt-3">
                                     <!-- Blog date -->
-                                    <p class="fw-medium fs-12 text--lightGray mb-0">
+                                    <p class="fw-medium fs-12 text--lightGray mb-0" data-utc="#dateFormat(blog.getDisplayDate(), 'yyyy-mm-dd HH:mm:ss')#">
                                         #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
                                     </p>
 

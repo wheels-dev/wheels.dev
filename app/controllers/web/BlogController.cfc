@@ -969,10 +969,12 @@ component extends="app.Controllers.Controller" {
             blogData.statusId = 2;
             blogData.status = "Approved";
             if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
-                blogData.publishedAt = blogData.postCreatedDate;
+                // Convert the provided date to UTC before saving
+                blogData.publishedAt = toUTC(blogData.postCreatedDate);
             } else {
-                blogData.publishedAt = now();
-                blogData.postCreatedDate = now();
+                // Use current UTC time
+                blogData.publishedAt = toUTC(now());
+                blogData.postCreatedDate = toUTC(now());
             }
         } else {
             blogData.statusId = 2; // Under Review
@@ -1025,10 +1027,12 @@ component extends="app.Controllers.Controller" {
                         newBlog.status = blogData.status;
                     }
                     if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
-                        newBlog.publishedAt = blogData.postCreatedDate;
-                        newBlog.postCreatedDate = blogData.postCreatedDate;
+                        // Convert the provided date to UTC before saving
+                        newBlog.publishedAt = toUTC(blogData.postCreatedDate);
+                        newBlog.postCreatedDate = toUTC(blogData.postCreatedDate);
                     } else {
-                        newBlog.postCreatedDate = now();
+                        // Use current UTC time
+                        newBlog.postCreatedDate = toUTC(now());
                     }
                     newBlog.save();
 

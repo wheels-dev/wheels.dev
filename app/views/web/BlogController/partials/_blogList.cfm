@@ -74,7 +74,7 @@
                                     <p class="text--secondary fw-bold fs-14 m-0 author-name">
                                         #htmlEditFormat(blogs.fullName)#
                                     </p>
-                                    <time class="text--lightGray fs-12 fw-medium" datetime="#dateformat(blogs.postDate, 'yyyy-mm-dd')#">
+                                    <time class="text--lightGray fs-12 fw-medium" datetime="#dateformat(blogs.postDate, 'yyyy-mm-dd')#" data-utc="#dateFormat(blogs.postDate, 'yyyy-mm-dd HH:mm:ss')#">
                                         #formattedDate#
                                     </time>
                                 </button>
