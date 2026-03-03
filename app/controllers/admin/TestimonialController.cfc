@@ -218,22 +218,7 @@ component extends="app.Controllers.Controller" {
             Testimonial.isApproved = true;           
             if (Testimonial.save()) {
                 siteurl = urlFor(route="home", onlyPath=false);
-                var emaildata = model("emailTemplate").findAll(where="title = 'Publish Testimonial'");
-                var emailparams = {
-                    "name" = user.fullname,
-                    "buttonTitle" = emaildata.buttonTitle,
-                    "content" = emaildata.message,
-                    "welcomeMessage"= emaildata.welcomeMessage,
-                    "URl" = siteurl,
-                    "footerNote" = emaildata.footerNote,
-                    "footerGreetings" = emaildata.footerGreating,
-                    "closingRemark" = emaildata.closingRemark,
-                    "teamSignature" = emaildata.teamSignature,
-                    "isSubscriber" = user.newsletter
-                };
-                emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-                cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
+                sendTemplateEmail("Publish Testimonial", user.email, user.fullname, siteurl, user.newsletter);
                 return {
                     success = true,
                     message = "Testimonial approved successfully."

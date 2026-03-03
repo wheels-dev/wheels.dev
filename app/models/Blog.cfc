@@ -45,16 +45,21 @@ component extends="app.Models.Model" {
         validatesUniquenessOf(property="slug");
     }
 
+    // Mirror of Controller.blogStatuses() — keep in sync
+    function blogStatuses() {
+        return { DRAFT=1, POSTED=2, SCHEDULED=3, PENDING_REVIEW=4, ARCHIVED=5, PRIVATE=6, TRASH=7 };
+    }
+
     // Fetch all latest blog posts with corresponding users
     public function getAll() {
-        var blogs = findAll(where='statusid <> 1', include="User", order = "postDate DESC");
+        var blogs = findAll(where='statusid <> #blogStatuses().DRAFT#', include="User", order = "postDate DESC");
         return blogs;
     }
-    
+
     // Fetch ten latest blog posts with corresponding users
     public function getTenLatest() {
         var blogs = findAll(
-            where='statusid <> 1',
+            where='statusid <> #blogStatuses().DRAFT#',
             include="User",
             maxRows=10,
             order="publishedAt DESC",

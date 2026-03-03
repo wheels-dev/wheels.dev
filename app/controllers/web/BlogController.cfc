@@ -264,7 +264,7 @@ component extends="app.Controllers.Controller" {
     private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND blog_posts.createdBy = #arguments.authorId#",
+                where="blog_posts.statusId <> #blogStatuses().DRAFT# AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND blog_posts.createdBy = #arguments.authorId#",
                 include="User",
                 order="publishedAt DESC",
                 page = arguments.page,
@@ -275,7 +275,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND blog_posts.createdBy = #arguments.authorId#"
+            where="blog_posts.statusId <> #blogStatuses().DRAFT# AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND blog_posts.createdBy = #arguments.authorId#"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -825,7 +825,7 @@ component extends="app.Controllers.Controller" {
     private function getAllBlogs(numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.statusId <> #blogStatuses().DRAFT# AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
                 include="User",
                 order="publishedAt DESC",
                 page = arguments.page,
@@ -837,7 +837,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+            where="blog_posts.statusId <> #blogStatuses().DRAFT# AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
             cache = 5
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -961,12 +961,12 @@ component extends="app.Controllers.Controller" {
 
         // Determine status based on draft flag and user role
         if (blogData.isdraft eq 1) {
-            blogData.statusId = 1; // Draft
+            blogData.statusId = blogStatuses().DRAFT;
             blogData.status = "";
             blogData.publishedAt = "";
         } else if (isUserAdmin()) {
             // Auto-approve and publish for admin users
-            blogData.statusId = 2;
+            blogData.statusId = blogStatuses().POSTED;
             blogData.status = "Approved";
             if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
                 blogData.publishedAt = blogData.postCreatedDate;
@@ -975,7 +975,7 @@ component extends="app.Controllers.Controller" {
                 blogData.postCreatedDate = now();
             }
         } else {
-            blogData.statusId = 2; // Under Review
+            blogData.statusId = blogStatuses().PENDING_REVIEW;
             blogData.status = "";
             blogData.publishedAt = "";
         }
@@ -990,6 +990,8 @@ component extends="app.Controllers.Controller" {
                     blog.title = blogData.title;
                     blog.content = blogData.content;
                     blog.statusId = blogData.statusId;
+                    blog.status = blogData.status;
+                    blog.publishedAt = blogData.publishedAt;
                     blog.postTypeId = blogData.postTypeId;
                     blog.slug = blogData.slug;
                     blog.updatedAt = now();
