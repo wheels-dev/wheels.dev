@@ -20,9 +20,9 @@ component extends="app.Models.Model" {
         property(name="publishedAt", column="published_at", dataType="datetime");
 
         property(
-            name="postDate", 
-            sql="COALESCE(post_created_date, blog_posts.createdat)", 
-            label="Created At"
+            name="postDate",
+            sql="blog_posts.published_at",
+            label="Published At"
         );
 
         // Defining the foreign key
@@ -57,7 +57,7 @@ component extends="app.Models.Model" {
             where='statusid <> 1',
             include="User",
             maxRows=10,
-            order="createdAt DESC",
+            order="publishedAt DESC",
             cache=10
         );
         return blogs;
@@ -67,10 +67,6 @@ component extends="app.Models.Model" {
      * Computed property to get the correct post date.
      */
     public function getDisplayDate() {
-        if (NOT isEmpty(this.postCreatedDate)) {
-            return this.postCreatedDate;
-        } else {
-            return this.createdAt;
-        }
+        return this.publishedAt;
     }
 }

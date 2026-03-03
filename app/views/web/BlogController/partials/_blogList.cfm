@@ -12,7 +12,7 @@
             <cfset authorUrl = "/blog/author/#blogs.username#">
             <cfset blogUrl = "/blog/#blogs.slug#">
             <cfset authorHxGet = "/blog/list/author/#blogs.createdby#?page=1&perPage=6&infiniteScroll=true">
-            <cfset formattedDate = dateformat(blogs.postDate, 'MMMM DD, YYYY')>
+            <cfset formattedDate = dateformat(blogs.publishedAt, 'MMMM DD, YYYY')>
             <cfset profileImageTag = '<img src="#gravatarUrl(blogs.email, 80)#&d=404"
                     class="rounded-circle"
                     style="width:2.5rem; height:2.5rem;"
@@ -74,7 +74,7 @@
                                     <p class="text--secondary fw-bold fs-14 m-0 author-name">
                                         #htmlEditFormat(blogs.fullName)#
                                     </p>
-                                    <time class="text--lightGray fs-12 fw-medium" datetime="#dateformat(blogs.postDate, 'yyyy-mm-dd')#">
+                                    <time class="text--lightGray fs-12 fw-medium" datetime="#dateformat(blogs.publishedAt, 'yyyy-mm-dd')#">
                                         #formattedDate#
                                     </time>
                                 </button>

@@ -55,7 +55,7 @@
                                 <div class="d-flex flex-wrap justify-content-center flex-grow-1 align-items-end gap-lg-5 gap-2 mt-3">
                                     <!-- Blog date -->
                                     <p class="fw-medium fs-12 text--lightGray mb-0">
-                                        #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
+                                        #dateformat(blog.publishedAt, 'MMMM DD, YYYY')#
                                     </p>
 
                                     <!-- Post status + Categories -->
