@@ -73,6 +73,8 @@ component extends="app.Controllers.Controller" {
             );
             
             // Redirect with error message
+            flashInsert(error = "Unable to load blog post for editing.");
+            redirectTo(route = "dashboard");
         }
     }
 
