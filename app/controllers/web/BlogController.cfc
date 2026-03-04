@@ -26,28 +26,30 @@ component extends="app.Controllers.Controller" {
 		 ? params.status
 		 : "all";
 
+		// Expose statuses to view (controller methods aren't available in views)
+		statuses = blogStatuses();
+
 		var statusCountsQuery = model("Blog").findAll(
 			select = "statusId, COUNT(*) as cnt",
-			where = "createdBy = #userId# AND blog_posts.statusId <> #blogStatuses().TRASH#",
+			where = "createdBy = #userId# AND blog_posts.statusId <> #statuses.TRASH#",
 			group = "statusId"
 		);
 
 		statusCounts = {"all" = 0, "draft" = 0, "published" = 0, "pending" = 0};
-		var s = blogStatuses();
 		for (var row in statusCountsQuery) {
 			statusCounts.all += row.cnt;
-			if (row.statusId == s.DRAFT) statusCounts.draft = row.cnt;
-			else if (row.statusId == s.POSTED) statusCounts.published = row.cnt;
-			else if (row.statusId == s.PENDING_REVIEW) statusCounts.pending = row.cnt;
+			if (row.statusId == statuses.DRAFT) statusCounts.draft = row.cnt;
+			else if (row.statusId == statuses.POSTED) statusCounts.published = row.cnt;
+			else if (row.statusId == statuses.PENDING_REVIEW) statusCounts.pending = row.cnt;
 		}
 
-		var where = "createdBy = #userId# AND blog_posts.statusId <> #blogStatuses().TRASH#";
+		var where = "createdBy = #userId# AND blog_posts.statusId <> #statuses.TRASH#";
 		if (statusFilter == "draft") {
-			where &= " AND blog_posts.statusId = #blogStatuses().DRAFT#";
+			where &= " AND blog_posts.statusId = #statuses.DRAFT#";
 		} else if (statusFilter == "published") {
-			where &= " AND blog_posts.statusId = #blogStatuses().POSTED#";
+			where &= " AND blog_posts.statusId = #statuses.POSTED#";
 		} else if (statusFilter == "pending") {
-			where &= " AND blog_posts.statusId = #blogStatuses().PENDING_REVIEW#";
+			where &= " AND blog_posts.statusId = #statuses.PENDING_REVIEW#";
 		}
 
 		myBlogs = model("Blog").findAll(
