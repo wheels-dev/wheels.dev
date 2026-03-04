@@ -30,7 +30,7 @@ component extends="app.Controllers.Controller" {
 		statuses = blogStatuses();
 
 		var statusCountsQuery = model("Blog").findAll(
-			select = "statusId, COUNT(*) as cnt",
+			select = "statusId, COUNT(*) as CNT",
 			where = "createdBy = #userId# AND blog_posts.statusId <> #statuses.TRASH#",
 			group = "statusId"
 		);
