@@ -1,5 +1,5 @@
 <cfscript>
-statuses = blogStatuses();
+// statuses is passed from the controller as an instance variable
 
 function statusLabel(statusId) {
 	if (statusId == statuses.DRAFT) return "Draft";
