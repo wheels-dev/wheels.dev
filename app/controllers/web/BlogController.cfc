@@ -23,10 +23,10 @@ component extends="app.Controllers.Controller" {
         perPage = structKeyExists(params, "perPage") ? max(1, min(24, val(sanitizeParam(params.perPage, 6)))) : 6;
         isInfiniteScroll = structKeyExists(params, "infiniteScroll") ? params.infiniteScroll : false;
         userId = GetSignedInUserId();
-        
+
         try {
             var result = getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll);
-            
+
             if (result.query.recordCount == 0) {
                 // Show fallback blogs
                 var fallback = getBlogData("", "", 1, perPage, isInfiniteScroll);
@@ -39,14 +39,14 @@ component extends="app.Controllers.Controller" {
             // Set template variables
             hasMore = result.hasMore;
             totalCount = result.totalCount;
-            
+
             // Set author info if filtering by author
             if (structKeyExists(result, "author")) {
                 author = result.author;
             }
-            
+
             renderPartial(partial="partials/blogList");
-            
+
         } catch (any e) {
             handleBlogError(e, userId, page, perPage, isInfiniteScroll);
         }
@@ -63,35 +63,35 @@ component extends="app.Controllers.Controller" {
     // Main data retrieval logic
     private struct function getBlogData(filterType, filterValue, page, perPage, isInfiniteScroll) {
         var result = {};
-        
+
         // Handle special cases first
         if (len(arguments.filterType) && len(arguments.filterValue)) {
             // Normalize filter value (convert hyphens to dots)
             arguments.filterValue = replace(arguments.filterValue, "-", ".", "all");
-            
+
             // Handle date archive filtering (year/month)
             if (isNumeric(arguments.filterType) && isNumeric(arguments.filterValue)) {
                 return getBlogsByMonthYear(arguments.filterType, arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
             }
-            
+
             // Handle content filtering
             switch (lcase(arguments.filterType)) {
                 case "category":
                     return getBlogsByCategory(arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
-                    
+
                 case "tag":
                     return getAllByTag(arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
-                    
+
                 case "author":
                     return getBlogsWithAuthorData(arguments.filterValue, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
-                    
+
                 default:
                     // Invalid filter type, fallback to all blogs
                     logInvalidFilter(arguments.filterType, arguments.filterValue);
                     return getAllBlogs(arguments.page, arguments.perPage, arguments.isInfiniteScroll);
             }
         }
-        
+
         // Default: return all blogs
         return getAllBlogs(arguments.page, arguments.perPage, arguments.isInfiniteScroll);
     }
@@ -100,16 +100,16 @@ component extends="app.Controllers.Controller" {
     private struct function getBlogsWithAuthorData(authorIdentifier, page, perPage, isInfiniteScroll) {
         var authorId = getBlogAuthorId(arguments.authorIdentifier);
         var result = getBlogsByAuthor(authorId, arguments.page, arguments.perPage, arguments.isInfiniteScroll);
-        
+
         // Get author statistics in a single optimized query if possible
         var authorStats = getAuthorStatistics(authorId);
-        
+
         result.author = {
             "id": authorId,
             "totalposts": authorStats.totalPosts,
             "totalcomments": authorStats.totalComments
         };
-        
+
         return result;
     }
 
@@ -172,18 +172,18 @@ component extends="app.Controllers.Controller" {
             },
             userId = arguments.userId
         );
-        
+
         // Provide fallback data
         try {
             var fallbackResult = getAllBlogs(1, arguments.perPage, arguments.isInfiniteScroll);
             blogs = fallbackResult.query;
             hasMore = fallbackResult.hasMore;
             totalCount = fallbackResult.totalCount;
-            
+
             // Set error flag for template
             hasError = true;
             errorMessage = "We're experiencing some technical difficulties. Showing recent posts instead.";
-            
+
         } catch (any fallbackError) {
             // If even fallback fails, create empty result
             blogs = queryNew("id,title,slug,createdby,postDate,fullName,username,profilePicture", "integer,varchar,varchar,integer,date,varchar,varchar,varchar");
@@ -192,7 +192,7 @@ component extends="app.Controllers.Controller" {
             hasError = true;
             errorMessage = "Unable to load blog posts at this time. Please try again later.";
         }
-        
+
         renderPartial(partial="partials/blogList");
     }
 
@@ -498,6 +498,9 @@ component extends="app.Controllers.Controller" {
             if (!structKeyExists(blog, "id")) {
                 throw("Blog not found");
             }
+
+            // Process embeds in content
+            blog.content = embedAndAutoLink(blog.content);
 
             // Set blog post data for layout meta tags (avoids DB query in view)
             request.blogPostForMeta = blog;
@@ -910,20 +913,20 @@ component extends="app.Controllers.Controller" {
     private function getAllByTag(required string tag, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         // First, find the tag by name
         var targetTag = model("Tag").findOne(where="name = '#arguments.tag#'");
-        
+
         if (!isObject(targetTag)) {
             return {query: queryNew(""), hasMore: false, totalCount: 0};
         }
-        
+
         // Get all blog_ids associated with this tag
         var blogTags = model("BlogTag").findAll(where="tagId = #targetTag.id#", returnAs="query");
-        
+
         if (blogTags.recordCount == 0) {
             return {query: queryNew(""), hasMore: false, totalCount: 0};
         }
-        
+
         var blogIds = valueList(blogTags.blogId);
-        
+
         var result = {
             query = model("Blog").findAll(
                 where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
