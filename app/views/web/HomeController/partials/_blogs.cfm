@@ -8,7 +8,7 @@
         </div>
     
         <div class="d-flex gap-2 justify-content-between align-items-center">
-            <p class="fs-16 truncate fw-medium text--lightGray">#dateformat(blogs.postDate, 'MMMM DD, YYYY')# by #encodeForHTML(blogs.fullName)#</p>
+            <p class="fs-16 truncate fw-medium text--lightGray">#dateformat(blogs.publishedAt, 'MMMM DD, YYYY')# by #encodeForHTML(blogs.fullName)#</p>
             <a href="/blog/#slug#"><button class="bg--primary text-nowrap fs-16 text-white rounded-2 px-3 py-1">Learn more</button></a>
         </div>
     </div>

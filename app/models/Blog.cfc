@@ -20,9 +20,9 @@ component extends="app.Models.Model" {
         property(name="publishedAt", column="published_at", dataType="datetime");
 
         property(
-            name="postDate", 
-            sql="COALESCE(post_created_date, blog_posts.createdat)", 
-            label="Created At"
+            name="postDate",
+            sql="blog_posts.published_at",
+            label="Published At"
         );
 
         // Defining the foreign key
@@ -45,19 +45,24 @@ component extends="app.Models.Model" {
         validatesUniquenessOf(property="slug");
     }
 
+    // Mirror of Controller.blogStatuses() — keep in sync
+    function blogStatuses() {
+        return { DRAFT=1, POSTED=2, SCHEDULED=3, PENDING_REVIEW=4, ARCHIVED=5, PRIVATE=6, TRASH=7 };
+    }
+
     // Fetch all latest blog posts with corresponding users
     public function getAll() {
-        var blogs = findAll(where='statusid <> 1', include="User", order = "postDate DESC");
+        var blogs = findAll(where='statusid <> #blogStatuses().DRAFT#', include="User", order = "postDate DESC");
         return blogs;
     }
-    
+
     // Fetch ten latest blog posts with corresponding users
     public function getTenLatest() {
         var blogs = findAll(
-            where='statusid <> 1',
+            where='statusid <> #blogStatuses().DRAFT#',
             include="User",
             maxRows=10,
-            order="createdAt DESC",
+            order="publishedAt DESC",
             cache=10
         );
         return blogs;
@@ -67,10 +72,6 @@ component extends="app.Models.Model" {
      * Computed property to get the correct post date.
      */
     public function getDisplayDate() {
-        if (NOT isEmpty(this.postCreatedDate)) {
-            return this.postCreatedDate;
-        } else {
-            return this.createdAt;
-        }
+        return this.publishedAt;
     }
 }

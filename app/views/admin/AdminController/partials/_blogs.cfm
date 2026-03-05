@@ -47,7 +47,7 @@
                             <td>#blogs.NAME[i]#</td>
                             <td><cfif structKeyExists(blogCategoryMap, blogs.id[i])>#arrayToList(blogCategoryMap[blogs.id[i]])#</cfif></td>
                             <td>
-                                <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-post="/admin/publishblog/#blogs.id[i]#" hx-vals='{"authenticityToken": "#authenticityToken()#"}' hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
+                                <input class="form-control form-control-sm" id="publishDate-#blogs.id[i]#" name="publishDate-#blogs.id[i]#" type="datetime-local" <cfif blogs.status[i] neq 'Approved'>disabled</cfif> <cfif len(trim(blogs.publishedAt[i]))>value="#dateFormat(blogs.publishedAt[i], 'yyyy-mm-dd')#T#timeFormat(blogs.publishedAt[i], 'HH:mm')#"</cfif> hx-post="/admin/publishblog/#blogs.id[i]#" hx-vals='{"authenticityToken": "#authenticityToken()#"}' hx-trigger="change" hx-target="this" hx-swap="none" style="min-width: 180px;"/>
                             </td>
                             <td>
                                 <div class="form-check form-switch">
@@ -72,6 +72,9 @@
                                         ...
                                     </div>
                                     <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item fs-16" href="blog/edit/#blogs.id[i]#">Edit</a>
+                                        </li>
                                         <li>
                                             <button
                                                 class="dropdown-item text-success fs-16"
@@ -101,6 +104,15 @@
                                                 hx-swap="innerHTML"
                                                 hx-confirm="Are you sure you want to unpublish this blog? It will revert to draft status."
                                             >Unpublish</button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item text-danger fs-16"
+                                                hx-post="/admin/blog/delete"
+                                                hx-vals='{"id": "#blogs.id[i]#", "authenticityToken": "#authenticityToken()#"}'
+                                                hx-target="body"
+                                                hx-swap="innerHTML"
+                                                hx-confirm="Are you sure you want to delete this blog post?"
+                                            >Delete</button>
                                         </li>
                                     </ul>
                                 </div>

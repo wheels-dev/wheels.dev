@@ -20,6 +20,8 @@
 
                             <cfif isEditor>
                                 <cfoutput>
+                                    <a href="#urlFor(route='my-posts')#"
+                                        class="border border--primary text--secondary text-center py-2 fs-16 rounded-3 col-4">My Posts</a>
                                     <a href="#urlFor(route='blog-create')#"
                                         class="bg--primary text-white text-center py-2 fs-16 rounded-3 col-4">Create New Article</a>
                                 </cfoutput>

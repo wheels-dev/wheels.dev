@@ -29,7 +29,7 @@
 			<title><![CDATA[#blogPosts.title#]]></title>
 			<link>#application.env.application_host#/blog/#blogPosts.slug#</link>
 			<dc:creator><![CDATA[#blogPosts.fullname#]]></dc:creator>
-			<pubDate>#dateFormat(blogPosts.updatedAt, "ddd, dd mmm yyyy")# #timeFormat(blogPosts.updatedAt, "HH:mm:ss")# +0000</pubDate>
+			<pubDate>#dateFormat(blogPosts.publishedAt, "ddd, dd mmm yyyy")# #timeFormat(blogPosts.publishedAt, "HH:mm:ss")# +0000</pubDate>
             <cfloop query="category">
                         <category><![CDATA[#category.name#]]></category>
             </cfloop>

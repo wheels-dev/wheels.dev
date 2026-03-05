@@ -55,7 +55,7 @@
                                 <div class="d-flex flex-wrap justify-content-center flex-grow-1 align-items-end gap-lg-5 gap-2 mt-3">
                                     <!-- Blog date -->
                                     <p class="fw-medium fs-12 text--lightGray mb-0">
-                                        #dateformat(blog.getDisplayDate(), 'MMMM DD, YYYY')#
+                                        #dateformat(blog.publishedAt, 'MMMM DD, YYYY')#
                                     </p>
 
                                     <!-- Post status + Categories -->
@@ -186,18 +186,18 @@
                                                     <div class="mt-4">
                                                         <div class="d-flex align-items-start gap-3 position-relative" style="margin-left: 70px;">
                                                             <div>
-                                                                <img src="#gravatarUrl(session.email, 96)#&d=404"
+                                                                <img src="#gravatarUrl(email, 96)#&d=404"
                                                                     class="rounded-circle"
                                                                     style="width:3rem; height:3rem;"
                                                                     onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"
                                                                     alt="avatar">
-                                                                <div class="d-none d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(session.username, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase"
+                                                                <div class="d-none d-flex align-items-center justify-content-center #getAvatarColorByLetter(ucase(left(listLast(fullName, ' '), 1)))# text-white rounded-circle fw-bold text-uppercase"
                                                                     style="width:3rem;height:3rem;">
-                                                                    #ucase(left(listLast(session.username, " "), 1))#
+                                                                    #ucase(left(listLast(fullName, " "), 1))#
                                                                 </div>
                                                             </div>
                                                             <div class="p-3 rounded-4 flex-grow-1 bg-light">
-                                                                <h6 class="fs-16 fw-bold">#session.username#</h6>
+                                                                <h6 class="fs-16 fw-bold">#fullName#</h6>
 
                                                                 <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
                                                                     <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
