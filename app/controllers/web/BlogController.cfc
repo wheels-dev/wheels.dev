@@ -546,6 +546,9 @@ component extends="app.Controllers.Controller" {
 				Throw("Blog not found");
 			}
 
+			// Process embeds in content
+      blog.content = embedAndAutoLink(blog.content);
+
 			// Set blog post data for layout meta tags (avoids DB query in view)
 			request.blogPostForMeta = blog;
 
