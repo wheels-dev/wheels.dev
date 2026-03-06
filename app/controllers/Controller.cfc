@@ -826,38 +826,58 @@ component extends="wheels.Controller" {
 
     /**
      * Converts plain text URLs and embeddable links into HTML
-     * For embeddable URLs (YouTube, Vimeo, etc.), creates embed iframes
+     * Extracts embeddable URLs to the top, then handles remaining links
+     * For embeddable URLs (YouTube, etc.), creates embed iframes at top
      * For other URLs, creates anchor tags
      */
     string function embedAndAutoLink(required string content, string class="text--primary", string target="_blank") {
-        var result = arguments.content;
         var urlPattern = "(https?://[^\s<""'`]+)";
-        var matches = reMatch(urlPattern, result);
+        var matches = reMatch(urlPattern, arguments.content);
 
         // Remove duplicates
         var uniqueUrls = {};
         for (var match in matches) {
             var cleanUrl = trim(match);
             // Skip if it's already part of an href or src
-            if (!findNoCase("href='#cleanUrl#", result) && !findNoCase('href="' & cleanUrl & '"', result) && !findNoCase("src='#cleanUrl#", result) && !findNoCase('src="' & cleanUrl & '"', result)) {
+            if (!findNoCase("href='#cleanUrl#", arguments.content) && !findNoCase('href="' & cleanUrl & '"', arguments.content) && !findNoCase("src='#cleanUrl#", arguments.content) && !findNoCase('src="' & cleanUrl & '"', arguments.content)) {
                 uniqueUrls[cleanUrl] = cleanUrl;
             }
         }
 
-        // Replace each unique URL
+        // Separate embeddable and regular URLs
+        var embeddedHtml = "";
+        var bodyContent = arguments.content;
+        var embeddableUrls = [];
+
         for (var link in uniqueUrls) {
             if (isEmbeddableUrl(link)) {
-                var embedCode = getEmbedHtml(link);
+                var embedCode = getEmbedHtml(link, "100%", "600");
                 if (len(embedCode)) {
-                    result = replace(result, link, embedCode, "all");
+                    arrayAppend(embeddableUrls, embedCode);
+                    // Remove the URL from body content
+                    bodyContent = replace(bodyContent, link, "", "all");
                 }
-            } else {
-                // Regular link
-                var linkHtml = '<a href="' & link & '" class="' & arguments.class & '" target="' & arguments.target & '">' & link & '</a>';
-                result = replace(result, link, linkHtml, "all");
             }
         }
 
-        return result;
+        // Build embedded content section at top
+        if (arrayLen(embeddableUrls) > 0) {
+            embeddedHtml = '<div class="embedded-media-section" style="margin-bottom: 2rem; border-bottom: 2px solid ##e9ecef; padding-bottom: 1.5rem;">';
+            for (var embed in embeddableUrls) {
+                embeddedHtml &= '<div class="embedded-media-item" style="margin-bottom: 1.5rem;">' & embed & '</div>';
+            }
+            embeddedHtml &= '</div>';
+        }
+
+        // Process remaining regular URLs in body content
+        for (var link in uniqueUrls) {
+            if (!isEmbeddableUrl(link)) {
+                // Regular link
+                var linkHtml = '<a href="' & link & '" class="' & arguments.class & '" target="' & arguments.target & '">' & link & '</a>';
+                bodyContent = replace(bodyContent, link, linkHtml, "all");
+            }
+        }
+
+        return embeddedHtml & bodyContent;
     }
 }
