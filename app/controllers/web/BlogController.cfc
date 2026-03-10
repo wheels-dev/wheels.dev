@@ -264,7 +264,7 @@ component extends="app.Controllers.Controller" {
     private function getBlogsByAuthor(required authorId, numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND blog_posts.createdBy = #arguments.authorId#",
+                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#' AND blog_posts.createdBy = #arguments.authorId#",
                 include="User",
                 order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
@@ -275,7 +275,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND blog_posts.createdBy = #arguments.authorId#"
+            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#' AND blog_posts.createdBy = #arguments.authorId#"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -318,7 +318,7 @@ component extends="app.Controllers.Controller" {
         if (len(trim(searchTerm))) {
             var searchPattern = "%#searchTerm#%";
             var query = model("blog").findAll(
-                where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')",
+                where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#' AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')",
                 include="User, PostStatus, PostType",
                 order = "COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = page,
@@ -328,7 +328,7 @@ component extends="app.Controllers.Controller" {
             if (isInfiniteScroll) {
                 totalCount = model("blog").count(
                     include="User, PostStatus, PostType",
-                    where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')"
+                    where="blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#' AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')"
                 );
                 hasMore = (page * perPage) < totalCount;
                 isSearched = true;
@@ -771,7 +771,7 @@ component extends="app.Controllers.Controller" {
     public function feed() {
         // Fetch all blogs
         blogPosts = model("Blog").findAll(
-            where="blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+            where="blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
             include="User",
             order="postDate DESC",
             cache=10
@@ -825,7 +825,7 @@ component extends="app.Controllers.Controller" {
     private function getAllBlogs(numeric page=1, numeric perPage=6, boolean isInfiniteScroll=false) {
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
                 include="User",
                 order="COALESCE(post_created_date, blog_posts.createdat) DESC",
                 page = arguments.page,
@@ -837,7 +837,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+            where="blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
             cache = 5
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -852,7 +852,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
                 order="postCreatedDate DESC",
                 include="User",
                 returnAs="query",
@@ -864,7 +864,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'"
+            where="blog_posts.post_created_date BETWEEN '#startdate#' AND '#enddate#' AND blog_posts.status='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'"
         );
         result.hasMore = (page * perPage) < result.totalCount;
 
@@ -886,7 +886,7 @@ component extends="app.Controllers.Controller" {
 
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
                 order="createdAt DESC",
                 include="User,BlogCategory",
                 returnAs="query",
@@ -898,7 +898,7 @@ component extends="app.Controllers.Controller" {
         };
 
         result.totalCount = model("Blog").count(
-            where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+            where="blog_posts.id IN (#blogIdList#) AND categoryId = #category.id# AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
             include="User,BlogCategory"
         );
         result.hasMore = (page * perPage) < result.totalCount;
@@ -926,7 +926,7 @@ component extends="app.Controllers.Controller" {
         
         var result = {
             query = model("Blog").findAll(
-                where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+                where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'",
                 order="createdAt DESC",
                 include="User",
                 returnAs="query",
@@ -937,7 +937,7 @@ component extends="app.Controllers.Controller" {
             totalCount = 0
         };
 
-        result.totalCount = model("Blog").count(where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'");
+        result.totalCount = model("Blog").count(where="blog_posts.id IN (#blogIds#) AND blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#'");
         result.hasMore = (page * perPage) < result.totalCount;
 
         return result;
@@ -958,26 +958,29 @@ component extends="app.Controllers.Controller" {
         slug = rereplace(slug, "-+", "-", "all");
         blogData.slug = slug;
 
+        // Always set postCreatedDate to UTC now (submission time, UTC)
+        blogData.postCreatedDate = toUTC(now());
 
-        // Determine status based on draft flag and user role
+        // Handle publishedAt and status
         if (blogData.isdraft eq 1) {
-            blogData.statusId = 1; // Draft
+            // Draft: publishedAt is NULL
+            blogData.statusId = 1;
             blogData.status = "";
-            blogData.publishedAt = "";
+            blogData.publishedAt = javaCast("null", "");
         } else if (isUserAdmin()) {
-            // Auto-approve and publish for admin users
+            // Admin: auto-approve and publish
             blogData.statusId = 2;
             blogData.status = "Approved";
-            if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
-                // Convert the provided date to UTC before saving
-                blogData.publishedAt = toUTC(blogData.postCreatedDate);
+            if (structKeyExists(blogData, "publishedAtInput") && len(blogData.publishedAtInput)) {
+                // User supplied a scheduled date (local time)
+                blogData.publishedAt = toSafeUTC(blogData.publishedAtInput, blogData.userTimezone);
             } else {
-                // Use current UTC time
+                // No date: publish now in UTC
                 blogData.publishedAt = toUTC(now());
-                blogData.postCreatedDate = toUTC(now());
             }
         } else {
-            blogData.statusId = 2; // Under Review
+            // Non-admin: under review, publishedAt is NULL
+            blogData.statusId = 2;
             blogData.status = "";
             blogData.publishedAt = "";
         }
@@ -994,8 +997,12 @@ component extends="app.Controllers.Controller" {
                     blog.statusId = blogData.statusId;
                     blog.postTypeId = blogData.postTypeId;
                     blog.slug = blogData.slug;
-                    blog.updatedAt = now();
+                    blog.updatedAt = toUTC(now());
                     blog.updatedBy = GetSignedInUserId();
+                    // Only update publishedAt if explicitly provided
+                    if (structKeyExists(blogData, "publishedAtInput") && len(blogData.publishedAtInput)) {
+                        blog.publishedAt = toSafeUTC(blogData.publishedAtInput, blogData.userTimezone);
+                    }
                     blog.save();
 
                     response.blogId = blog.id;
@@ -1018,22 +1025,16 @@ component extends="app.Controllers.Controller" {
                     newBlog.statusId = blogData.statusId;
                     newBlog.postTypeId = blogData.postTypeId;
                     newBlog.coverImagePath = blogData.coverImagePath;
-                    newBlog.createdAt = now();
-                    newBlog.updatedAt = now();
+                    newBlog.createdAt = toUTC(now());
+                    newBlog.updatedAt = toUTC(now());
                     newBlog.createdBy = GetSignedInUserId();
 
                     // Set approval status fields for admin auto-approval
                     if (structKeyExists(blogData, "status")) {
                         newBlog.status = blogData.status;
                     }
-                    if (structKeyExists(blogData, "postCreatedDate") && !isNull(blogData.postCreatedDate) && !isEmpty(blogData.postCreatedDate)) {
-                        // Convert the provided date to UTC before saving
-                        newBlog.publishedAt = toUTC(blogData.postCreatedDate);
-                        newBlog.postCreatedDate = toUTC(blogData.postCreatedDate);
-                    } else {
-                        // Use current UTC time
-                        newBlog.postCreatedDate = toUTC(now());
-                    }
+                    newBlog.publishedAt = blogData.publishedAt;
+                    newBlog.postCreatedDate = blogData.postCreatedDate;
                     newBlog.save();
 
                     // Retrieve the generated ID by looking up the just-created blog by slug.

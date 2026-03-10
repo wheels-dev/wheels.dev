@@ -124,6 +124,16 @@
                     }
                 }
             }
+            // Set user's timezone in a hidden field for server-side use
+            var tzField = document.getElementById('userTimezone');
+            if (!tzField) {
+                tzField = document.createElement('input');
+                tzField.type = 'hidden';
+                tzField.name = 'userTimezone';
+                tzField.id = 'userTimezone';
+                document.getElementById('blogForm').appendChild(tzField);
+            }
+            tzField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
         });
 
         // Convert local datetime to UTC before form submission via HTMX
@@ -136,6 +146,11 @@
                     // Convert to ISO string (which is in UTC) and update the form parameter
                     event.detail.parameters.postCreatedDate = localDate.toISOString();
                 }
+            }
+            // Always send user's timezone
+            var tzField = document.getElementById('userTimezone');
+            if (tzField) {
+                event.detail.parameters.userTimezone = tzField.value;
             }
         });
     </script>

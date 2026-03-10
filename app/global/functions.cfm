@@ -14,6 +14,26 @@ public datetime function toUTC(required datetime localTime) {
     var offsetSeconds = tzInfo.utcTotalOffset * 60;
     return dateAdd("s", -offsetSeconds, arguments.localTime);
 }
+
+/**
+ * Safely convert a datetime string from a specific timezone to UTC
+ * @dateTimeStr The datetime string to convert (expected to be ISO format from JavaScript)
+ * @timeZone The timezone identifier (e.g., "America/New_York") - kept for compatibility but not used since JS sends UTC
+ * @return The datetime in UTC
+ */
+public datetime function toSafeUTC(required string dateTimeStr, string timeZone="") {
+    try {
+        // Since JavaScript sends ISO string (already in UTC), just parse it
+        if (len(trim(arguments.dateTimeStr))) {
+            return parseDateTime(arguments.dateTimeStr);
+        } else {
+            return toUTC(now());
+        }
+    } catch (any e) {
+        // Fallback: return current UTC time
+        return toUTC(now());
+    }
+}
 public function GetUserRoleId(){
     return 3;
 }
