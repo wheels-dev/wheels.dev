@@ -374,8 +374,45 @@ component extends="wheels.Controller" {
         };
     }
 
+    /**
+     * Look up an email template by title, build the standard param struct,
+     * render it through /email and send via sendAppEmail().
+     *
+     * Returns true on success, false when the template title is not found.
+     */
+    function sendTemplateEmail(
+        required string templateTitle,
+        required string toEmail,
+        string recipientName = "",
+        string url = "",
+        string isSubscriber = ""
+    ) {
+        var emaildata = model("emailTemplate").findAll(where="title = '#arguments.templateTitle#'", cache=10);
+        if (!emaildata.recordCount) return false;
+        var emailparams = {
+            "name" = arguments.recipientName,
+            "buttonTitle" = emaildata.buttonTitle,
+            "content" = emaildata.message,
+            "welcomeMessage" = emaildata.welcomeMessage,
+            "URl" = arguments.url,
+            "footerNote" = emaildata.footerNote,
+            "footerGreetings" = emaildata.footerGreating,
+            "closingRemark" = emaildata.closingRemark,
+            "teamSignature" = emaildata.teamSignature,
+            "isSubscriber" = arguments.isSubscriber
+        };
+        var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
+        cfheader(name="Content-Type" value="text/html; charset=UTF-8");
+        sendAppEmail(to=arguments.toEmail, subject=emaildata.subject, htmlContent=emailContent);
+        return true;
+    }
+
     // ==================== Shared Blog Helper Functions ====================
     // Used by both web.BlogController and admin.AdminController
+
+    function blogStatuses() {
+        return { DRAFT=1, POSTED=2, SCHEDULED=3, PENDING_REVIEW=4, ARCHIVED=5, PRIVATE=6, TRASH=7 };
+    }
 
     // Shared helper function to update blog post
     function updateBlog(required struct params, required blogId) {
@@ -395,13 +432,15 @@ component extends="wheels.Controller" {
             params.slug = slug;
 
             if (structKeyExists(params, "isDraft") && params.isDraft eq 1) {
-                params.statusId = 1;
+                params.statusId = blogStatuses().DRAFT;
             } else if (isUserAdmin()) {
-                params.statusId = 2;
+                params.statusId = blogStatuses().POSTED;
                 params.status = "Approved";
                 // Do NOT set publishedAt on update
             } else {
-                params.statusId = 2;
+                params.statusId = blogStatuses().PENDING_REVIEW;
+                params.status = "";
+                params.publishedAt = "";
             }
 
             var existingBlog = model("Blog").findFirst(
@@ -427,6 +466,9 @@ component extends="wheels.Controller" {
             }
             if (structKeyExists(params, "postCreatedDate") && len(trim(params.postCreatedDate))) {
                 blog.postCreatedDate = params.postCreatedDate;
+            }
+            if (structKeyExists(params, "publishedAt")) {
+                blog.publishedAt = params.publishedAt;
             }
 
             blog.updatedAt = now();
@@ -708,5 +750,134 @@ component extends="wheels.Controller" {
             );
             rethrow;
         }
+    }
+
+    /**
+     * Extracts YouTube video ID from various YouTube URL formats
+     * Supports: https://youtube.com/watch?v=xyz, https://youtu.be/xyz, https://www.youtube.com/embed/xyz
+     */
+    string function extractYouTubeId(required string url) {
+        var id = "";
+        // youtu.be format
+        if (findNoCase("youtu.be/", arguments.url)) {
+            id = listLast(arguments.url, "/");
+            // Remove any query parameters
+            if (findNoCase("?", id)) {
+                id = listFirst(id, "?");
+            }
+        }
+        // youtube.com/watch?v= format
+        else if (findNoCase("youtube.com", arguments.url) && findNoCase("v=", arguments.url)) {
+            var params = listLast(arguments.url, "?");
+            var paramList = listToArray(params, "&");
+            for (var param in paramList) {
+                if (findNoCase("v=", param)) {
+                    id = listLast(param, "=");
+                    break;
+                }
+            }
+        }
+        // Already embed format
+        else if (findNoCase("youtube.com/embed/", arguments.url)) {
+            id = listLast(listFirst(arguments.url, "?"), "/");
+        }
+        return trim(id);
+    }
+
+    /**
+     * Detects if a URL is embeddable and returns embed HTML
+     * Supports: YouTube, Twitter
+     */
+    string function getEmbedHtml(required string url, string width="100%", string height="400") {
+        var embedHtml = "";
+        var youtubeId = "";
+        var vimeoId = "";
+        var trimmedUrl = trim(arguments.url);
+
+        // YouTube
+        if (findNoCase("youtube.com", trimmedUrl) || findNoCase("youtu.be", trimmedUrl)) {
+            youtubeId = extractYouTubeId(trimmedUrl);
+            if (len(youtubeId)) {
+                embedHtml = '<iframe width="#arguments.width#" height="#arguments.height#" src="https://www.youtube.com/embed/#youtubeId#?rel=0" frameborder="0" allowfullscreen style="max-width: 100%; margin: 1rem 0; border-radius: 0.5rem;"></iframe>';
+            }
+        }
+        // Twitter/X
+        else if (findNoCase("twitter.com", trimmedUrl) || findNoCase("x.com", trimmedUrl)) {
+            embedHtml = '<blockquote class="twitter-tweet" style="margin: 1rem 0;"><a href="#trimmedUrl#"></a></blockquote><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>';
+        }
+
+        return embedHtml;
+    }
+
+    /**
+     * Checks if a URL is embeddable
+     */
+    boolean function isEmbeddableUrl(required string url) {
+        var embeddableDomains = ["youtube.com", "youtu.be", "twitter.com", "x.com"];
+        var trimmedUrl = lcase(trim(arguments.url));
+
+        for (var domain in embeddableDomains) {
+            if (findNoCase(domain, trimmedUrl)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Converts plain text URLs and embeddable links into HTML
+     * Extracts embeddable URLs to the top, then handles remaining links
+     * For embeddable URLs (YouTube, etc.), creates embed iframes at top
+     * For other URLs, creates anchor tags
+     */
+    string function embedAndAutoLink(required string content, string class="text--primary", string target="_blank") {
+        var urlPattern = "(https?://[^\s<""'`]+)";
+        var matches = reMatch(urlPattern, arguments.content);
+
+        // Remove duplicates
+        var uniqueUrls = {};
+        for (var match in matches) {
+            var cleanUrl = trim(match);
+            // Skip if it's already part of an href or src
+            if (!findNoCase("href='#cleanUrl#", arguments.content) && !findNoCase('href="' & cleanUrl & '"', arguments.content) && !findNoCase("src='#cleanUrl#", arguments.content) && !findNoCase('src="' & cleanUrl & '"', arguments.content)) {
+                uniqueUrls[cleanUrl] = cleanUrl;
+            }
+        }
+
+        // Separate embeddable and regular URLs
+        var embeddedHtml = "";
+        var bodyContent = arguments.content;
+        var embeddableUrls = [];
+
+        for (var link in uniqueUrls) {
+            if (isEmbeddableUrl(link)) {
+                var embedCode = getEmbedHtml(link, "100%", "600");
+                if (len(embedCode)) {
+                    arrayAppend(embeddableUrls, embedCode);
+                    // Remove the URL from body content
+                    bodyContent = replace(bodyContent, link, "", "all");
+                }
+            }
+        }
+
+        // Build embedded content section at top
+        if (arrayLen(embeddableUrls) > 0) {
+            embeddedHtml = '<div class="embedded-media-section" style="margin-bottom: 2rem; border-bottom: 2px solid ##e9ecef; padding-bottom: 1.5rem;">';
+            for (var embed in embeddableUrls) {
+                embeddedHtml &= '<div class="embedded-media-item" style="margin-bottom: 1.5rem;">' & embed & '</div>';
+            }
+            embeddedHtml &= '</div>';
+        }
+
+        // Process remaining regular URLs in body content
+        for (var link in uniqueUrls) {
+            if (!isEmbeddableUrl(link)) {
+                // Regular link
+                var linkHtml = '<a href="' & link & '" class="' & arguments.class & '" target="' & arguments.target & '">' & link & '</a>';
+                bodyContent = replace(bodyContent, link, linkHtml, "all");
+            }
+        }
+
+        return embeddedHtml & bodyContent;
     }
 }

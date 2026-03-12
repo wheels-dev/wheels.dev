@@ -314,7 +314,7 @@
 				"headline": "#encodeForJavaScript(post.title)#",
 				"description": "#encodeForJavaScript(metaDescription)#",
 				"image": "<cfif isDefined("ogImage")>#ogImage#<cfelse>#getBaseUrl()#/img/wheels-logo.png</cfif>",
-				"datePublished": "#dateFormat(post.postDate, "yyyy-mm-dd")#",
+				"datePublished": "#dateFormat(post.publishedAt, "yyyy-mm-dd")#",
 				"dateModified": "#dateFormat(post.updatedAt, "yyyy-mm-dd")#",
 				"author": {
 					"@type": "Person",

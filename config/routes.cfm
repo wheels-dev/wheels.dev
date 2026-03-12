@@ -60,6 +60,7 @@
 			.get(name = "commentFeed", pattern = "comment/feed", to = "web.BlogController##commentsFeed")
 			.get(name = "allblogs", pattern = "blog/list", to = "web.BlogController##blogs")
 
+			.get(name = "my-posts", pattern = "blog/my-posts", to = "web.BlogController##myPosts")
 			.get(name = "blog-create", pattern = "blog/create", to = "web.BlogController##create")
 			.get(name = "blog-detail", pattern = "blog/[slug]", to = "web.BlogController##show")
 			

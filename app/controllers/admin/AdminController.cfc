@@ -73,6 +73,8 @@ component extends="app.Controllers.Controller" {
             );
             
             // Redirect with error message
+            flashInsert(error = "Unable to load blog post for editing.");
+            redirectTo(route = "dashboard");
         }
     }
 
@@ -240,7 +242,7 @@ component extends="app.Controllers.Controller" {
             return;
         }
         try {
-            blog.statusId = 7;
+            blog.statusId = blogStatuses().TRASH;
             blog.is_deleted = 'true';
             blog.deletedAt = now();
             blog.deletedBy = GetSignedInUserId();
@@ -324,22 +326,7 @@ component extends="app.Controllers.Controller" {
             if (blog.save()) {
                 if(len(trim(publishDate)) && blog.status == "Approved"){
                     var siteurl = urlFor(route="blog-detail",slug=blog.slug ,onlyPath=false);
-                    var emaildata = model("emailTemplate").findAll(where="title = 'Publish Blog'");
-                    var emailparams = {
-                        "name" = user.fullname,
-                        "buttonTitle" = emaildata.buttonTitle,
-                        "content" = emaildata.message,
-                        "welcomeMessage"= emaildata.welcomeMessage,
-                        "URl" = siteurl,
-                        "footerNote" = emaildata.footerNote,
-                        "footerGreetings" = emaildata.footerGreating,
-                        "closingRemark" = emaildata.closingRemark,
-                        "teamSignature" = emaildata.teamSignature,
-                        "isSubscriber" = user.newsletter
-                    };
-                    emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-                    cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                    sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
+                    sendTemplateEmail("Publish Blog", user.email, user.fullname, siteurl, user.newsletter);
                     return {
                         success = true,
                         message = "Blog scheduled for publishing!"
@@ -648,21 +635,7 @@ component extends="app.Controllers.Controller" {
             comment.isPublished = true;
             if(comment.save()){
                 siteurl = urlFor(route="blog-detail",slug=comment.blog.slug ,onlyPath=false);
-                var emaildata = model("emailTemplate").findAll(where="title = 'Publish comment'");
-                var emailparams = {
-                    "name" = user.fullname,
-                    "buttonTitle" = emaildata.buttonTitle,
-                    "content" = emaildata.message,
-                    "welcomeMessage"= emaildata.welcomeMessage,
-                    "URl" = siteurl,
-                    "footerNote" = emaildata.footerNote,
-                    "footerGreetings" = emaildata.footerGreating,
-                    "closingRemark" = emaildata.closingRemark,
-                    "teamSignature" = emaildata.teamSignature,
-                    "isSubscriber" = user.newsletter
-                };
-                emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-                sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
+                sendTemplateEmail("Publish comment", user.email, user.fullname, siteurl, user.newsletter);
                 return {
                     success = true,
                     message = "Comment Published successfully!"
@@ -687,8 +660,10 @@ component extends="app.Controllers.Controller" {
 
         if (isObject(blog)) {
 
-            blog.status = "Approved"; //approved            
+            blog.statusId = blogStatuses().POSTED;
+            blog.status = "Approved"; //approved
             if (blog.save()) {
+                sendTemplateEmail("Approve Blog", user.email, user.fullname, "", user.newsletter);
                 return {
                     success = true,
                     message = "Blog approved successfully!"
@@ -714,25 +689,11 @@ component extends="app.Controllers.Controller" {
 
         if (isObject(blog)) {
 
+            blog.statusId = blogStatuses().DRAFT;
             blog.status = "Rejected"; //reject
             blog.publishedAt = "";
             if (blog.save()) {
-                var emaildata = model("emailTemplate").findAll(where="title = 'Reject blog'");
-                var emailparams = {
-                    "name" = user.fullname,
-                    "buttonTitle" = emaildata.buttonTitle,
-                    "content" = emaildata.message,
-                    "welcomeMessage"= emaildata.welcomeMessage,
-                    "URl" = "",
-                    "footerNote" = emaildata.footerNote,
-                    "footerGreetings" = emaildata.footerGreating,
-                    "closingRemark" = emaildata.closingRemark,
-                    "teamSignature" = emaildata.teamSignature,
-                    "isSubscriber" = user.newsletter
-                };
-                emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-                cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-                sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
+                sendTemplateEmail("Reject blog", user.email, user.fullname, "", user.newsletter);
                 return {
                     success = true,
                     message = "Blog rejected successfully"
@@ -756,7 +717,7 @@ component extends="app.Controllers.Controller" {
         var blog = model("Blog").findByKey(id);
 
         if (isObject(blog)) {
-            blog.statusId = 1;
+            blog.statusId = blogStatuses().DRAFT;
             blog.status = "";
             blog.publishedAt = "";
             if (blog.save()) {

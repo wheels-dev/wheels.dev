@@ -10,7 +10,7 @@ component extends="app.Controllers.Controller" {
 
     function index(){
         try{
-            param name="params.version" default="3.0.0";
+            param name="params.version" default=getLatestVersion();
             param name="params.filePath" default="";
 
             // Sanitize path traversal sequences
@@ -20,6 +20,10 @@ component extends="app.Controllers.Controller" {
                 params.filePath = reReplace(params.filePath, "\.\.[\\/]", "", "all");
                 params.filePath = reReplace(params.filePath, "[^a-zA-Z0-9.\-/]", "", "all");
             }
+
+            // Get available versions dynamically
+            docsPath = expandPath("../docs");
+            availableVersions = getAvailableVersions(docsPath);
 
             // Auto-generate search index if it doesn't exist
             ensureSearchIndexExists(params.version);
@@ -79,7 +83,7 @@ component extends="app.Controllers.Controller" {
 
     public function loadGuideDocs(){
         try{
-            param name="params.version" default="3.0.0";
+            param name="params.version" default=getLatestVersion();
 
             // Sanitize path traversal sequences
             params.version = reReplace(params.version, "\.\.[\\/]", "", "all");
@@ -106,8 +110,8 @@ component extends="app.Controllers.Controller" {
 
                 // Normalize path separators
                 var normalizedPath = replace(file, "\", "/", "all");
-                var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one"); 
-                var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/"); 
+                var relativePath = reReplace(normalizedPath, ".*?/guides/", "", "one");
+                var guideDir = listDeleteAt(relativePath, listLen(relativePath, "/"), "/");
                 var baseHref = "/#params.version#/guides/#guideDir#/";
 
                 // Fix internal <a href=""> links (not starting with http or /)
@@ -149,7 +153,7 @@ component extends="app.Controllers.Controller" {
     // Helper function to ensure search index exists
     private void function ensureSearchIndexExists(required string version) {
         var indexPath = expandPath("/files/#arguments.version#/guides/search_index.json");
-        
+
         // Check if index already exists
         if (!fileExists(indexPath)) {
             // Generate the index silently in the background
@@ -158,7 +162,7 @@ component extends="app.Controllers.Controller" {
             // Optionally check if index is stale (older than 24 hours)
             var fileInfo = getFileInfo(indexPath);
             var hoursSinceGenerated = dateDiff("h", fileInfo.lastModified, now());
-            
+
             // Regenerate if older than 24 hours (optional - you can adjust or remove this)
             if (hoursSinceGenerated > 24) {
                 generateSearchIndexForVersion(arguments.version);
@@ -170,65 +174,65 @@ component extends="app.Controllers.Controller" {
     private void function generateSearchIndexForVersion(required string version) {
         try {
             var docIndexPath = expandPath("/files");
-            
+
             // Create base path if it doesn't exist
             if (!directoryExists(docIndexPath)) {
                 directoryCreate(docIndexPath);
             }
-            
+
             var docsPath = expandPath("../docs");
             var versionPath = docsPath & "/" & arguments.version;
-            
+
             // Check if version directory exists
             if (!directoryExists(versionPath)) {
                 return; // Silently exit if version doesn't exist
             }
-            
+
             var guidesPath = versionPath & "/guides";
-            
+
             // Check if guides directory exists
             if (!directoryExists(guidesPath)) {
                 return; // Silently exit if no guides directory
             }
-            
+
             var searchIndex = [];
             var mdFiles = directoryList(guidesPath, true, "path", "*.md");
-            
+
             for (var file in mdFiles) {
                 try {
                     var fileName = listLast(file, "\");
-                    
+
                     // Skip SUMMARY.md and other system files
                     if (listFindNoCase("summary.md", lcase(fileName))) {
                         continue;
                     }
-                    
+
                     // Read and validate file content
                     if (!fileExists(file)) {
                         continue;
                     }
-                    
+
                     var mdText = fileRead(file, "utf-8");
                     if (len(trim(mdText)) == 0) {
                         continue;
                     }
-                    
+
                     var html = markdownToHtml(mdText);
-                    
+
                     // Enhanced HTML cleaning
                     html = reReplace(html, "<img\b[^>]*>", "", "all");
                     html = reReplace(html, "<script\b[^>]*>.*?</script>", "", "all");
                     html = reReplace(html, "<style\b[^>]*>.*?</style>", "", "all");
-                    
+
                     // Extract title with better fallback logic
                     var title = extractTitle(html, fileName);
-                    
+
                     // Create clean body text with better formatting
                     var cleanBody = createCleanBody(html);
-                    
+
                     // Generate SEO-friendly URL
                     var relativeUrl = generateCleanUrl(file, docIndexPath, arguments.version);
-                    
+
                     // Create search entry with additional metadata
                     var searchEntry = {
                         "title": trim(title),
@@ -239,15 +243,15 @@ component extends="app.Controllers.Controller" {
                         "fileName": fileName,
                         "lastModified": dateFormat(getFileInfo(file).lastModified, "yyyy-mm-dd HH:nn:ss")
                     };
-                    
+
                     arrayAppend(searchIndex, searchEntry);
-                    
+
                 } catch (any fileError) {
                     // Silently continue on error
                     continue;
                 }
             }
-            
+
             // Only write index if we have content
             if (arrayLen(searchIndex) > 0) {
                 // Create version directory if it doesn't exist
@@ -255,18 +259,18 @@ component extends="app.Controllers.Controller" {
                 if (!directoryExists(versionDir)) {
                     directoryCreate(versionDir);
                 }
-                
-                // Create guides directory if it doesn't exist  
+
+                // Create guides directory if it doesn't exist
                 var guidesDir = versionDir & "/guides";
                 if (!directoryExists(guidesDir)) {
                     directoryCreate(guidesDir);
                 }
-                
+
                 var targetPath = docIndexPath & "/" & arguments.version & "/guides/search_index.json";
 
                 fileWrite(targetPath, serializeJSON(searchIndex, true));
             }
-            
+
         } catch (any e) {
             // Silently fail - don't interrupt the guide loading
             // Optionally, you could log this error
@@ -280,10 +284,10 @@ component extends="app.Controllers.Controller" {
         var totalFiles = 0;
         var errors = [];
             verbose = false;
-        
+
         try {
             docIndexPath = expandPath("/files");
-            
+
             // Create base path if it doesn't exist
             if (!directoryExists(docIndexPath)) {
                 directoryCreate(docIndexPath);
@@ -291,11 +295,11 @@ component extends="app.Controllers.Controller" {
                     renderText("Created base directory: #docIndexPath#<br>");
                 }
             }
-            
+
             if (verbose) {
                 renderText("Starting search index generation for: #docIndexPath#<br>");
             }
-            
+
             // Get only directories
             var docsPath = expandPath("../docs");
             versionFolders = getVersionDirectories(docsPath, verbose);
@@ -309,10 +313,10 @@ component extends="app.Controllers.Controller" {
                         }
                         continue;
                     }
-                    
+
                     versionName = listLast(versionPath, "\");
                     guidesPath = versionPath & "/guides";
-                    
+
                     // Create guides folder if it doesn't exist
                     if (!directoryExists(guidesPath)) {
                         directoryCreate(guidesPath);
@@ -342,7 +346,7 @@ component extends="app.Controllers.Controller" {
                             if (!fileExists(file)) {
                                 continue;
                             }
-                            
+
                             mdText = fileRead(file, "utf-8");
                             if (len(trim(mdText)) == 0) {
                                 if (verbose) {
@@ -352,7 +356,7 @@ component extends="app.Controllers.Controller" {
                             }
 
                             html = markdownToHtml(mdText);
-                            
+
                             // Enhanced HTML cleaning
                             html = reReplace(html, "<img\b[^>]*>", "", "all");
                             html = reReplace(html, "<script\b[^>]*>.*?</script>", "", "all");
@@ -360,13 +364,13 @@ component extends="app.Controllers.Controller" {
 
                             // Extract title with better fallback logic
                             title = extractTitle(html, fileName);
-                            
+
                             // Create clean body text with better formatting
                             cleanBody = createCleanBody(html);
-                            
+
                             // Generate SEO-friendly URL
                             relativeUrl = generateCleanUrl(file, docIndexPath, versionName);
-                            
+
                             // Create search entry with additional metadata
                             searchEntry = {
                                 "title": trim(title),
@@ -386,7 +390,7 @@ component extends="app.Controllers.Controller" {
                                 "version": versionName,
                                 "error": fileError.message
                             });
-                            
+
                             if (verbose) {
                                 renderText("Error processing #fileName#: #fileError.message#<br>");
                             }
@@ -395,24 +399,24 @@ component extends="app.Controllers.Controller" {
 
                     // Only write index if we have content
                     if (arrayLen(searchIndex) > 0) {
-                        
+
                         // Create version directory if it doesn't exist
                         versionDir = docIndexPath & "/" & versionName;
                         if (!directoryExists(versionDir)) {
                             directoryCreate(versionDir);
                         }
 
-                        // Create guides directory if it doesn't exist  
+                        // Create guides directory if it doesn't exist
                         guidesDir = versionDir & "/guides";
                         if (!directoryExists(guidesDir)) {
                             directoryCreate(guidesDir);
                         }
 
                         targetPath = docIndexPath & "/" & versionName & "/guides/search_index.json";
-                        
+
                         fileWrite(targetPath, serializeJSON(searchIndex, true));
                         processedVersions++;
-                        
+
                         if (verbose) {
                             renderText("✓ Generated index for #versionName# (#arrayLen(searchIndex)# documents)<br>");
                         }
@@ -427,7 +431,7 @@ component extends="app.Controllers.Controller" {
                         "version": versionName,
                         "error": versionError.message
                     });
-                    
+
                     if (verbose) {
                         renderText("Error processing version #versionName#: #versionError.message#<br>");
                     }
@@ -440,7 +444,7 @@ component extends="app.Controllers.Controller" {
             summary &= "Processed #processedVersions# versions<br>";
             summary &= "Indexed #totalFiles# total files<br>";
             summary &= "Completed in #numberFormat(duration, '0.00')# seconds<br>";
-            
+
             if (arrayLen(errors) > 0) {
                 summary &= "<br>Errors encountered: #arrayLen(errors)#<br>";
                 if (verbose) {
@@ -449,12 +453,12 @@ component extends="app.Controllers.Controller" {
                     }
                 }
             }
-            
+
             renderText(summary);
 
         } catch (any e) {
             var errorMsg = "Error in generating search index";
-            
+
             renderText(errorMsg);
         }
     }
@@ -468,7 +472,7 @@ component extends="app.Controllers.Controller" {
             title = reReplace(title, "<[^>]+>", "", "all"); // Strip any nested tags
             return trim(title);
         }
-        
+
         // Fallback to filename without extension
         return replace(fileName, ".md", "", "one");
     }
@@ -478,15 +482,15 @@ component extends="app.Controllers.Controller" {
         // Remove code blocks first to avoid weird spacing
         var cleanHtml = reReplace(html, "<pre[^>]*>.*?</pre>", " [CODE_BLOCK] ", "all");
         cleanHtml = reReplace(cleanHtml, "<code[^>]*>.*?</code>", " [CODE] ", "all");
-        
+
         // Strip all HTML tags
         var plainText = reReplace(cleanHtml, "<[^>]+>", " ", "all");
-        
+
         // Clean up whitespace and special characters
         plainText = reReplace(plainText, "&[a-zA-Z0-9]+;", " ", "all"); // HTML entities
         plainText = reReplace(plainText, "\s+", " ", "all"); // Multiple spaces
         plainText = reReplace(plainText, "^\s+|\s+$", "", "all"); // Trim
-        
+
         return plainText;
     }
 
@@ -499,45 +503,45 @@ component extends="app.Controllers.Controller" {
             // Fallback to original logic if version not found in path
             var relativePath = "/guides";
         }
-        
+
         // Version-specific URL handling
         if (versionName != "2.5.0") {
             relativePath = replace(relativePath, "getting-started", "readme", "all");
         }
-        
+
         // Convert to web-friendly URL
         var relativeUrl = replace(relativePath, ".md", "", "one");
         relativeUrl = replace(relativeUrl, "\", "/", "all");
-        
+
         // Clean up URL segments
         relativeUrl = reReplace(relativeUrl, "/+", "/", "all"); // Remove double slashes
         relativeUrl = reReplace(relativeUrl, "^|/$", "", "all"); // Remove trailing slashes
-        
+
         return relativeUrl;
     }
 
     // Helper function to get only version directories (excludes files)
     private function getVersionDirectories(required string basePath, boolean verbose = false) {
         var versionFolders = [];
-        
+
         try {
             if (!directoryExists(basePath)) {
                 return versionFolders;
             }
-            
+
             var allItems = directoryList(basePath, false, "query");
-            
+
             for (var item in allItems) {
                 if (item.type == "Dir") {
                     var fullPath = item.directory & "\" & item.name;
-                    
+
                     // Additional validation - skip hidden folders and common non-version folders
                     var folderName = item.name;
                     if (!reFind("^\.", folderName) && // Skip hidden folders (starting with .)
                         !listFindNoCase("assets,images,css,js,static,temp,cache", folderName)) { // Skip common non-version folders
-                        
+
                         arrayAppend(versionFolders, fullPath);
-                        
+
                         if (verbose) {
                             renderText("Found version directory: #folderName#<br>");
                         }
@@ -546,20 +550,20 @@ component extends="app.Controllers.Controller" {
                     renderText("Skipping file: #item.name#<br>");
                 }
             }
-            
+
         } catch (any e) {
             if (verbose) {
                 renderText("Error scanning directories: #e.message#<br>");
             }
         }
-        
+
         return versionFolders;
     }
 
     public function getSearchBook(){
         searchData = fileRead(expandPath("files/#params.version#/guides/search_index.json"));
         renderWith(data=searchData, hideDebugInformation=true, status=200, layout='/responseLayout');
-    } 
+    }
 
     private function missingParams(){
 		redirectTo(route="home");
@@ -584,7 +588,7 @@ component extends="app.Controllers.Controller" {
 
             // Normalize tabs to 2 spaces
             rawLine = replace(rawLine, chr(9), "  ", "all");
-            
+
             // Calculate indentation level
             var indent = len(rawLine) - len(ltrim(rawLine));
             var level = int(indent / 2);
@@ -607,7 +611,7 @@ component extends="app.Controllers.Controller" {
             // Match markdown list items
             if (reFind("^\*\s+", line)) {
                 var node = {};
-                
+
                 // Check if it's a link item: * [Title](path.md)
                 if (reFind("\[([^\]]+)\]\(([^)]+)\)", line)) {
                     // Extract title and path from link
@@ -651,7 +655,7 @@ component extends="app.Controllers.Controller" {
                 } else {
                     // Find parent at level - 1
                     var parentLevel = level - 1;
-                    
+
                     // Look for parent in lastItemAtLevel
                     if (structKeyExists(lastItemAtLevel, parentLevel)) {
                         var parent = lastItemAtLevel[parentLevel];
@@ -710,6 +714,43 @@ component extends="app.Controllers.Controller" {
         }
 
         return result;
+    }
+
+    // Helper function to get the latest available version
+    private function getLatestVersion() {
+        var docsPath = expandPath("../docs");
+        var versionFolders = getVersionDirectories(docsPath, false);
+        var versionNames = [];
+
+        for (var folder in versionFolders) {
+            // Normalize path separators to "/"
+            folder = replace(folder, "\", "/", "all");
+            var versionName = listLast(folder, "/");
+            arrayAppend(versionNames, versionName);
+        }
+
+        // Sort versions in descending order (latest first)
+        arraySort(versionNames, "text", "desc");
+
+        // Return the latest version, or default to "3.0.0" if none found
+        return arrayLen(versionNames) > 0 ? versionNames[1] : "3.0.0";
+    }
+
+    private function getAvailableVersions(required string basePath) {
+        var versionFolders = getVersionDirectories(arguments.basePath, false);
+        var versionNames = [];
+
+        for (var folder in versionFolders) {
+            // Normalize path separators to "/"
+            folder = replace(folder, "\", "/", "all");
+            var versionName = listLast(folder, "/");
+            arrayAppend(versionNames, versionName);
+        }
+
+        // Sort versions in descending order (latest first)
+        arraySort(versionNames, "text", "desc");
+
+        return versionNames;
     }
 
 }

@@ -42,9 +42,9 @@ component extends="app.Controllers.Controller" {
     private array function getBlogs() {
         try {
             var blogQuery = model("Blog").findAll(
-                select = "title, slug, content, postDate",
-                where  = "blog_posts.statusId <> 1 AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#toUTC(now())#' ",
-                order  = "createdAt DESC",
+                select = "title, slug, content, publishedAt",
+                where  = "blog_posts.statusId <> #blogStatuses().DRAFT# AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#' ",
+                order  = "publishedAt DESC",
                 cache  = 10
             );
 
@@ -52,7 +52,7 @@ component extends="app.Controllers.Controller" {
 
             for (var i = 1; i <= blogQuery.recordCount; i++) {
                 // Convert to UTC
-                var localDate = blogQuery.postDate[i];
+                var localDate = blogQuery.publishedAt[i];
                 var utcDate = dateConvert("local2utc", localDate);
 
                 // Format to ISO 8601: yyyy-mm-ddTHH:MM:SSZ

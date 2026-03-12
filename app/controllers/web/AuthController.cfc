@@ -748,28 +748,9 @@ component extends="app.Controllers.Controller" {
             return true;
         }
         var user = model("User").findOne(where="email = '#email#'");
-        var emaildata = model("emailTemplate").findAll(where="title = 'Sign Up Account Verification'");
-        verifyUrl = urlFor(action="verify", onlyPath=false);
-        verifyUrl = verifyUrl & "?token=" & token;
-        var emailparams = {
-            "name" = user.fullname,
-            "buttonTitle" = emaildata.buttonTitle,
-            "content" = emaildata.message,
-            "welcomeMessage"= emaildata.welcomeMessage,
-            "URl" = verifyUrl,
-            "footerNote" = emaildata.footerNote,
-            "footerGreetings" = emaildata.footerGreating,
-            "closingRemark" = emaildata.closingRemark,
-            "teamSignature" = emaildata.teamSignature
-        };
-        emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-        
-        if (isObject(user)){
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
-            return true;
-        }
-        return false;
+        if (!isObject(user)) return false;
+        var verifyUrl = urlFor(action="verify", onlyPath=false) & "?token=" & token;
+        return sendTemplateEmail("Sign Up Account Verification", user.email, user.fullname, verifyUrl);
     }
 
     private function sendRegistrationInvitationEmail(required string email) {
@@ -779,30 +760,11 @@ component extends="app.Controllers.Controller" {
         }
         
         try {
-            // Use the existing "Register Your Account" template
-            var emaildata = model("emailTemplate").findAll(where="title = 'Register Your Account'");
-            if (emaildata.recordCount == 0) {
-                emaildata = model("emailTemplate").findAll(where="title = 'Sign Up Account Verification'");
-            }
-            
             var registerUrl = urlFor(action="register", onlyPath=false);
-            var emailparams = {
-                "name" = "there",
-                "buttonTitle" = emaildata.buttonTitle,
-                "content" = emaildata.message,
-                "welcomeMessage" = emaildata.welcomeMessage,
-                "URl" = registerUrl,
-                "footerNote" = emaildata.footerNote,
-                "footerGreetings" = emaildata.footerGreating,
-                "closingRemark" = emaildata.closingRemark,
-                "teamSignature" = emaildata.teamSignature
-            };
-            
-            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-            
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendAppEmail(to=email, subject=emaildata.subject, htmlContent=emailContent);
-
+            // Try primary template, fall back to verification template
+            if (!sendTemplateEmail("Register Your Account", email, "there", registerUrl)) {
+                sendTemplateEmail("Sign Up Account Verification", email, "there", registerUrl);
+            }
             return true;
         } catch (any e) {
             model("Log").log(
@@ -841,26 +803,8 @@ component extends="app.Controllers.Controller" {
                 var verificationToken = existingToken.token;
             }
             
-            var emaildata = model("emailTemplate").findAll(where="title = 'Sign Up Account Verification'");
-            var verifyUrl = urlFor(action="verify", onlyPath=false);
-            verifyUrl = verifyUrl & "?token=" & verificationToken;
-            
-            var emailparams = {
-                "name" = user.fullname,
-                "buttonTitle" = emaildata.buttonTitle,
-                "content" = emaildata.message,
-                "welcomeMessage" = emaildata.welcomeMessage,
-                "URl" = verifyUrl,
-                "footerNote" = emaildata.footerNote,
-                "footerGreetings" = emaildata.footerGreating,
-                "closingRemark" = emaildata.closingRemark,
-                "teamSignature" = emaildata.teamSignature
-            };
-            
-            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-            
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendAppEmail(to=user.email, subject=emaildata.subject, htmlContent=emailContent);
+            var verifyUrl = urlFor(action="verify", onlyPath=false) & "?token=" & verificationToken;
+            sendTemplateEmail("Sign Up Account Verification", user.email, user.fullname, verifyUrl);
 
             return true;
         } catch (any e) {
@@ -1131,21 +1075,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
             var resetUrl = urlFor(action="resetPassword", token=token, onlyPath=false);
-            var emaildata = model("emailTemplate").findAll(where="title = 'Reset Password'");
-            var emailparams = {
-                "name" = name,
-                "buttonTitle" = emaildata.buttonTitle,
-                "content" = emaildata.message,
-                "welcomeMessage"= emaildata.welcomeMessage,
-                "URl" = resetUrl,
-                "footerNote" = emaildata.footerNote,
-                "footerGreetings" = emaildata.footerGreating,
-                "closingRemark" = emaildata.closingRemark,
-                "teamSignature" = emaildata.teamSignature
-            };
-            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendAppEmail(to=arguments.email, subject=emaildata.subject, htmlContent=emailContent);
+            sendTemplateEmail("Reset Password", arguments.email, name, resetUrl);
             model("Log").log(
                 category = "wheels.auth",
                 level = "INFO",
@@ -1185,21 +1115,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
             var signUpUrl = urlFor(action="register", onlyPath=false);
-            var emaildata = model("emailTemplate").findAll(where="title = 'Register Your Account'");
-            var emailparams = {
-                "name" = "User",
-                "buttonTitle" = emaildata.buttonTitle,
-                "content" = emaildata.message,
-                "welcomeMessage"= emaildata.welcomeMessage,
-                "URl" = signUpUrl,
-                "footerNote" = emaildata.footerNote,
-                "footerGreetings" = emaildata.footerGreating,
-                "closingRemark" = emaildata.closingRemark,
-                "teamSignature" = emaildata.teamSignature
-            };
-            var emailContent = renderView(template="/email", layout=false, returnAs="string", params=emailparams);
-            cfheader(name="Content-Type" value="text/html; charset=UTF-8");
-            sendAppEmail(to=arguments.email, subject=emaildata.subject, htmlContent=emailContent);
+            sendTemplateEmail("Register Your Account", arguments.email, "User", signUpUrl);
             model("Log").log(
                 category = "wheels.auth",
                 level = "INFO",

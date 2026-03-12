@@ -34,8 +34,11 @@
                     <div class="col-lg-4 px-0">
                         <div class="select-version" id="select-version">
                             <select name="docs-version" id="docs-version" class="form-select px-3 mb-3 py-2 transition-all hover:border-primary cursor-pointer" aria-label="select-version">
-                                <option <cfif params.version eq "3.0.0">selected </cfif> value="3.0.0">3.0.0</option>
-                                <option <cfif params.version eq "2.5.0">selected </cfif> value="2.5.0">2.5.0</option>
+															<cfoutput>
+                                <cfloop array="#availableVersions#" index="version">
+                                    <option <cfif params.version eq version>selected </cfif> value="#version#">#version#</option>
+                                </cfloop>
+															</cfoutput>
                             </select>
                         </div>
                     </div>
