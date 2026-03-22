@@ -1,6 +1,7 @@
 <html lang="en">
 <head>
     <cfoutput>#csrfMetaTags()#</cfoutput>
+    <cfoutput><meta name="csrf-token" content="#authenticityToken()#"></cfoutput>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

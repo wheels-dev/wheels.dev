@@ -65,7 +65,8 @@ component extends="wheels.Controller" {
         var accesspermission = model("RolePermission").findAll(
             select="roleId, permissionId, name, permissionName, permissionstatus, controller, permissiondescription",
             include="Role, Permission",
-            where="name = '#session.role#' AND permissions.Name = '#action#' AND permissions.controller = '#controller#'"
+            where="name = :roleName AND permissions.Name = :actionName AND permissions.controller = :controllerName",
+            params={roleName={value=session.role, cfsqltype="cf_sql_varchar"}, actionName={value=action, cfsqltype="cf_sql_varchar"}, controllerName={value=controller, cfsqltype="cf_sql_varchar"}}
             );
         if(accesspermission.recordCount == 0){
             if (structKeyExists(getHttpRequestData().headers, "HX-Request")) {
@@ -102,7 +103,8 @@ component extends="wheels.Controller" {
     // Shared business logic across multiple controllers
     public function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
-            where="blog_posts.slug = '#arguments.slug#' AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#now()#'",
+            where="blog_posts.slug = :slug AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= :now",
+            params={slug={value=arguments.slug, cfsqltype="cf_sql_varchar"}, now={value=now(), cfsqltype="cf_sql_timestamp"}},
             include="User,PostStatus",
             cache=10
         );
@@ -110,7 +112,8 @@ component extends="wheels.Controller" {
 
     function getTagsByBlogid(required numeric id) {
         return model("BlogTag").findAll(
-            where="blogId = #arguments.id#",
+            where="blogId = :blogId",
+            params={blogId={value=arguments.id, cfsqltype="cf_sql_integer"}},
             include="Tag",
             cache=10
         );
@@ -119,7 +122,8 @@ component extends="wheels.Controller" {
 
     function getCategoriesByBlogid(required numeric id) {
         return model("BlogCategory").findAll(
-            where = "blogId = #arguments.id#",
+            where = "blogId = :blogId",
+            params = {blogId={value=arguments.id, cfsqltype="cf_sql_integer"}},
             include = "Blog,Category",
             cache = 10
         );
@@ -387,7 +391,7 @@ component extends="wheels.Controller" {
         string url = "",
         string isSubscriber = ""
     ) {
-        var emaildata = model("emailTemplate").findAll(where="title = '#arguments.templateTitle#'", cache=10);
+        var emaildata = model("emailTemplate").findAll(where="title = :templateTitle", params={templateTitle={value=arguments.templateTitle, cfsqltype="cf_sql_varchar"}}, cache=10);
         if (!emaildata.recordCount) return false;
         var emailparams = {
             "name" = arguments.recipientName,
@@ -444,7 +448,8 @@ component extends="wheels.Controller" {
             }
 
             var existingBlog = model("Blog").findFirst(
-                where="title = '#params.title#' AND slug = '#params.slug#' AND id != #blogId#"
+                where="title = :title AND slug = :slug AND id != :blogId",
+                params={title={value=params.title, cfsqltype="cf_sql_varchar"}, slug={value=params.slug, cfsqltype="cf_sql_varchar"}, blogId={value=blogId, cfsqltype="cf_sql_integer"}}
             );
 
             if (isObject(existingBlog)) {
@@ -508,7 +513,7 @@ component extends="wheels.Controller" {
     function deleteBlogTags(required blogId) {
         try {
             if (!isEmpty(blogId)) {
-                model("BlogTag").deleteAll(where="blogId = #arguments.blogId#");
+                model("BlogTag").deleteAll(where="blogId = :blogId", params={blogId={value=arguments.blogId, cfsqltype="cf_sql_integer"}});
             }
         } catch (any e) {
             model("Log").log(
@@ -531,7 +536,7 @@ component extends="wheels.Controller" {
     function deleteBlogCategories(required blogId) {
         try {
             if (!isEmpty(blogId)) {
-                model("BlogCategory").deleteAll(where="blogId = #arguments.blogId#");
+                model("BlogCategory").deleteAll(where="blogId = :blogId", params={blogId={value=arguments.blogId, cfsqltype="cf_sql_integer"}});
             }
         } catch (any e) {
             model("Log").log(

@@ -258,6 +258,7 @@
 	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
+			<cfoutput><meta name="csrf-token" content="#authenticityToken()#"></cfoutput>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title><cfoutput>#encodeForHTML(pageTitle)#</cfoutput></title>

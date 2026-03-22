@@ -32,7 +32,7 @@ class ReadingTracker {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': this.csrfToken
       },
-      body: JSON.stringify({blogId: this.blogId})
+      body: JSON.stringify({blogId: this.blogId, authenticityToken: this.csrfToken})
     });
   }
 
@@ -43,7 +43,7 @@ class ReadingTracker {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': this.csrfToken
       },
-      body: JSON.stringify({blogId: this.blogId})
+      body: JSON.stringify({blogId: this.blogId, authenticityToken: this.csrfToken})
     });
     clearInterval(this.trackingInterval);
   }

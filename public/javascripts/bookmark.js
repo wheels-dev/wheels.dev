@@ -8,7 +8,7 @@ function toggleBookmark(blogId, button) {
       'Content-Type': 'application/json',
       'X-CSRF-TOKEN': tokenValue
     },
-    body: JSON.stringify({blogId: blogId})
+    body: JSON.stringify({blogId: blogId, authenticityToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''})
   })
   .then(response => response.json())
   .then(data => {

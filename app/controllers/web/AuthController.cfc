@@ -53,7 +53,7 @@ component extends="app.Controllers.Controller" {
                 }
             );
             // Check if user exists first (regardless of status)
-            var existingUser = model("User").findOne(where="email = '#params.email#'", include="Role");
+            var existingUser = model("User").findOne(where="email = :email", params={email={value=params.email, cfsqltype="cf_sql_varchar"}}, include="Role");
             
             // If user doesn't exist, send registration invitation but return generic message
             if (!isObject(existingUser)) {
@@ -81,7 +81,7 @@ component extends="app.Controllers.Controller" {
             // Check if user is locked out
             if (model("LoginAttempt").isUserLocked(params.email)) {
                 // Check if it's a manual lock by admin
-                var user = model("User").findOne(where="email = '#params.email#'");
+                var user = model("User").findOne(where="email = :email", params={email={value=params.email, cfsqltype="cf_sql_varchar"}});
                 var isManuallyLocked = isObject(user) && structKeyExists(user, "locked") && user.locked;
                 
                 model("Log").log(
@@ -303,7 +303,7 @@ component extends="app.Controllers.Controller" {
 
             // Check if user needs to submit testimonial
             if (isObject(user.role) && user.role.name != 'Admin') {
-                var testimonial = model("Testimonial").findOne(where="userId = #val(user.id)#");
+                var testimonial = model("Testimonial").findOne(where="userId = :userId", params={userId={value=val(user.id), cfsqltype="cf_sql_integer"}});
                 
                 model("Log").log(
                     category = "wheels.auth",
@@ -369,7 +369,7 @@ component extends="app.Controllers.Controller" {
                 if (structKeyExists(cookie, "remember_me")) {
                     var rawToken = cookie.remember_me;
                     var hashedToken = hash(rawToken, "SHA-256");
-                    var rememberToken = model("RememberToken").findOne(where="token = '#hashedToken#'");
+                    var rememberToken = model("RememberToken").findOne(where="token = :token", params={token={value=hashedToken, cfsqltype="cf_sql_varchar"}});
                     if (isObject(rememberToken)) {
                         rememberToken.delete();
                     }
@@ -451,7 +451,7 @@ component extends="app.Controllers.Controller" {
                 return;
             }
             // Check for duplicate email before calling saveUser
-            var existingUser = model("User").findFirst(where="email = '#params.email#'");
+            var existingUser = model("User").findFirst(where="email = :email", params={email={value=params.email, cfsqltype="cf_sql_varchar"}});
             if (isObject(existingUser)) {
                 renderText("<p style='color:red;'>An account with this email address already exists.</p>");
                 return;
@@ -608,7 +608,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private function validateCredentials(required string email, required string password) {
-        var user = model("User").findOne(where="email = '#email#' AND status = 'True'", include="Role");
+        var user = model("User").findOne(where="email = :email AND status = 'True'", params={email={value=email, cfsqltype="cf_sql_varchar"}}, include="Role");
         if (!isObject(user)) {
             return false; // User not found
         }
@@ -749,7 +749,7 @@ component extends="app.Controllers.Controller" {
             // Skip email sending in test mode
             return true;
         }
-        var user = model("User").findOne(where="email = '#email#'");
+        var user = model("User").findOne(where="email = :email", params={email={value=email, cfsqltype="cf_sql_varchar"}});
         if (!isObject(user)) return false;
         var verifyUrl = urlFor(action="verify", onlyPath=false) & "?token=" & token;
         return sendTemplateEmail("Sign Up Account Verification", user.email, user.fullname, verifyUrl);
@@ -791,7 +791,7 @@ component extends="app.Controllers.Controller" {
         
         try {
             // Check if user already has a verification token
-            var existingToken = model("UserToken").findOne(where="user_id = #val(user.id)# AND status = 'false'");
+            var existingToken = model("UserToken").findOne(where="user_id = :userId AND status = 'false'", params={userId={value=val(user.id), cfsqltype="cf_sql_integer"}});
             
             if (!isObject(existingToken)) {
                 // Generate a new verification token
@@ -828,7 +828,7 @@ component extends="app.Controllers.Controller" {
 
     private function verifyToken(required string token) {
         var message="";
-        var tokenRecord = model("UserToken").findOne(where="token = '#token#'");
+        var tokenRecord = model("UserToken").findOne(where="token = :token", params={token={value=token, cfsqltype="cf_sql_varchar"}});
 
         if (isObject(tokenRecord)) {
             // Check if token has expired
@@ -854,7 +854,7 @@ component extends="app.Controllers.Controller" {
     }
 
     private boolean function isRateLimited(required string ipAddress) {
-        var attempts = model("LoginAttempt").findAll(where="ip_address = '#ipAddress#' AND created_at > '#dateTimeFormat(dateAdd("n", -15, now()), "yyyy-MM-dd HH:nn:ss")#'");
+        var attempts = model("LoginAttempt").findAll(where="ip_address = :ipAddress AND created_at > :cutoff", params={ipAddress={value=ipAddress, cfsqltype="cf_sql_varchar"}, cutoff={value=dateTimeFormat(dateAdd("n", -15, now()), "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}});
         return attempts.recordCount >= 3;
     }
 
@@ -919,7 +919,7 @@ component extends="app.Controllers.Controller" {
         param name="params.email" default="";
         
         try {
-            var user = model("User").findOne(where="email = '#params.email#'");
+            var user = model("User").findOne(where="email = :email", params={email={value=params.email, cfsqltype="cf_sql_varchar"}});
 
             if (isObject(user)) {
                 // Generate reset token
@@ -971,7 +971,8 @@ component extends="app.Controllers.Controller" {
         
         try {
             var reset = model("PasswordReset").findOne(
-                where="token = '#params.token#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#' AND used = 0"
+                where="token = :token AND expiresAt > :now AND used = 0",
+                params={token={value=params.token, cfsqltype="cf_sql_varchar"}, now={value=dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}}
             );
 
             if (!isObject(reset)) {
@@ -1004,7 +1005,8 @@ component extends="app.Controllers.Controller" {
         try {
             // Validate token
             var reset = model("PasswordReset").findOne(
-                where="token = '#params.token#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#' AND used = 0"
+                where="token = :token AND expiresAt > :now AND used = 0",
+                params={token={value=params.token, cfsqltype="cf_sql_varchar"}, now={value=dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}}
             );
 
             if (!isObject(reset)) {
