@@ -367,8 +367,9 @@ component extends="app.Controllers.Controller" {
 
                 // Clear remember me token if exists
                 if (structKeyExists(cookie, "remember_me")) {
-                    var token = cookie.remember_me;
-                    var rememberToken = model("RememberToken").findOne(where="token = '#token#'");
+                    var rawToken = cookie.remember_me;
+                    var hashedToken = hash(rawToken, "SHA-256");
+                    var rememberToken = model("RememberToken").findOne(where="token = '#hashedToken#'");
                     if (isObject(rememberToken)) {
                         rememberToken.delete();
                     }
@@ -693,13 +694,14 @@ component extends="app.Controllers.Controller" {
             }
             
             // Generate and save verification token
-            var verificationToken = Hash(createUUID());
-            
+            var verificationToken = Hash(createUUID(), "SHA-256");
+
             var newToken = model("UserToken").new();
             newToken.token = verificationToken;
             newToken.user_id = userId; // Now a string, safe
             newToken.status = false;
-            
+            newToken.expiresAt = dateAdd("h", 24, now());
+
             if (!newToken.save()) {
                 model("Log").log(
                     category = "wheels.auth",
@@ -793,11 +795,12 @@ component extends="app.Controllers.Controller" {
             
             if (!isObject(existingToken)) {
                 // Generate a new verification token
-                var verificationToken = Hash(createUUID());
+                var verificationToken = Hash(createUUID(), "SHA-256");
                 var newToken = model("UserToken").new();
                 newToken.token = verificationToken;
                 newToken.user_id = user.id;
                 newToken.status = false; // Not verified
+                newToken.expiresAt = dateAdd("h", 24, now());
                 newToken.save();
             } else {
                 var verificationToken = existingToken.token;
@@ -825,12 +828,21 @@ component extends="app.Controllers.Controller" {
 
     private function verifyToken(required string token) {
         var message="";
-        var token = model("UserToken").findOne(where="token = '#token#'");
+        var tokenRecord = model("UserToken").findOne(where="token = '#token#'");
 
-        if (isObject(token)) {
-            var user = model("User").findByKey(include="Role", key='#token.user_id#');
+        if (isObject(tokenRecord)) {
+            // Check if token has expired
+            if (isDate(tokenRecord.expiresAt) && dateCompare(now(), tokenRecord.expiresAt) > 0) {
+                tokenRecord.delete();
+                message = "false";
+                return message;
+            }
+
+            var user = model("User").findByKey(include="Role", key='#tokenRecord.user_id#');
             if(isObject(user)){
                 user.update(status=SetActive(), roleId=2); // Activate user, set editor role
+                // Consume the token — single use only
+                tokenRecord.delete();
                 return user;
             }else{
                 message="false";

@@ -67,15 +67,15 @@ component extends="app.Models.Model" {
     public function createToken(required numeric userId) {
         var token = new();
         token.userId = arguments.userId;
-        token.token = hash(createUUID() & arguments.userId & now());
+        token.token = hash(createUUID() & arguments.userId & now(), "SHA-256");
         token.expiresAt = dateAdd("d", 30, now());
         return token.save();
     }
 
-    // Find token by value
-    public function findByToken(required string token) {
+    // Find token by hashed value (caller must hash raw cookie value with SHA-256 first)
+    public function findByToken(required string hashedToken) {
         return findOne(
-            where="token = '#arguments.token#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#'"
+            where="token = '#arguments.hashedToken#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#'"
         );
     }
 

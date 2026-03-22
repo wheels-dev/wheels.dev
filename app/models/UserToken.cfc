@@ -9,7 +9,8 @@ component extends="app.Models.Model" {
         property(name="updatedAt", column="updatedat", dataType ="datetime", defaultValue = "");
         property(name="deletedAt", column="deletedat", dataType ="datetime", defaultValue = "");
         property(name="user_id", column="user_id", dataType ="string");
-        
+        property(name="expiresAt", column="expires_at", dataType ="datetime", defaultValue = "");
+
         belongsTo(name="User", foreignKey="user_id");
     }
 
