@@ -3,7 +3,7 @@ component extends="wheels.migrator.Migration" hint="add expires_at column to use
 	function up() {
 		transaction {
 			try {
-				addColumn(table='user_tokens', columnType='datetime', columnName='expires_at', null=true);
+				addColumn(table = 'user_tokens', columnType = 'datetime', columnName = 'expires_at', null = true);
 			} catch (any e) {
 				local.exception = e;
 			}
@@ -20,7 +20,7 @@ component extends="wheels.migrator.Migration" hint="add expires_at column to use
 	function down() {
 		transaction {
 			try {
-				removeColumn(table='user_tokens', columnName='expires_at');
+				removeColumn(table = 'user_tokens', columnName = 'expires_at');
 			} catch (any e) {
 				local.exception = e;
 			}
