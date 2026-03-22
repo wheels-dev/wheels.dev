@@ -34,8 +34,9 @@
     <script src="/js/config.js"></script>
     <script src="/js/lib/easymde.min.js"></script>
     <script src="/js/lib/marked.min.js"></script>
+    <script src="/js/lib/purify.min.js"></script>
 
-    
+
     <script>
         var phoenixIsRTL = window.config.config.phoenixIsRTL;
         if (phoenixIsRTL) {
