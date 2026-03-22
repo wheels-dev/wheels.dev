@@ -3,6 +3,8 @@ class ReadingTracker {
   constructor(blogId) {
     this.blogId = blogId;
     this.trackingInterval = null;
+    var tokenEl = document.querySelector('meta[name="csrf-token"]');
+    this.csrfToken = tokenEl ? tokenEl.getAttribute('content') : '';
     this.init();
   }
 
@@ -26,7 +28,10 @@ class ReadingTracker {
   trackRead() {
     fetch('/reading-history/track', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': this.csrfToken
+      },
       body: JSON.stringify({blogId: this.blogId})
     });
   }
@@ -34,7 +39,10 @@ class ReadingTracker {
   markComplete() {
     fetch('/reading-history/complete', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': this.csrfToken
+      },
       body: JSON.stringify({blogId: this.blogId})
     });
     clearInterval(this.trackingInterval);

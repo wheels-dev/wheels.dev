@@ -296,10 +296,15 @@
                 if (rect.top <= window.innerHeight - 50) {
                     completed = true;
                     const blogId = document.querySelector('[data-blog-id]').getAttribute('data-blog-id');
+                    var csrfToken = document.querySelector('meta[name="csrf-token"]');
+                    var tokenVal = csrfToken ? csrfToken.getAttribute('content') : '';
                     fetch('/reading-history/complete', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        body: 'blogId=' + blogId
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRF-TOKEN': tokenVal
+                        },
+                        body: 'blogId=' + blogId + '&authenticityToken=' + encodeURIComponent(tokenVal)
                     });
                 }
             }

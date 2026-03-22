@@ -1,3 +1,12 @@
+/* Auto-inject CSRF token into all HTMX non-GET requests */
+document.body.addEventListener("htmx:configRequest", function(e) {
+    var token = document.querySelector('meta[name="csrf-token"]');
+    if (token && e.detail.verb !== "get") {
+        e.detail.parameters['authenticityToken'] = token.getAttribute('content');
+        e.detail.headers['X-CSRF-TOKEN'] = token.getAttribute('content');
+    }
+});
+
 /* Global HTMX error handling - two safety nets for AJAX error visibility */
 document.body.addEventListener("htmx:beforeSwap",function(e){var t=e.detail.xhr;if(t&&t.responseText&&t.responseText.indexOf("<!DOCTYPE")>=0){e.detail.shouldSwap=!1,e.detail.isError=!0;var n="An unexpected error occurred. Please try again.";try{var r=t.responseText.match(/<title>(.*?)<\/title>/i);r&&r[1]&&(n=r[1])}catch(e){}console.error("HTMX: Blocked HTML error page swap (status "+t.status+")"),typeof notifier!=="undefined"&&notifier.show("Error",n,"danger","",4e3)}});
 document.body.addEventListener("htmx:responseError",function(e){var t=e.detail.xhr;if(!t)return;var n="An unexpected error occurred. Please try again.";try{var r=JSON.parse(t.responseText);r.message&&(n=r.message),r.detail&&console.error("Server error detail:",r.detail,r.type)}catch(e){t.responseText&&console.error("HTMX error response (status "+t.status+"):",t.responseText.substring(0,500))}typeof showNotificationOnce==="function"?showNotificationOnce("Error",n,"danger",4e3):typeof notifier!=="undefined"&&notifier.show("Error",n,"danger","",4e3)});
