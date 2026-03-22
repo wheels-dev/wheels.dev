@@ -1,6 +1,6 @@
 services:
   wheels-dev:
-    image: ghcr.io/wheels-dev/wheels-dev:latest
+    image: ghcr.io/wheels-dev/wheels-dev:${IMAGE_TAG}
     deploy:
       replicas: 3
       restart_policy:
@@ -44,6 +44,34 @@ services:
       PORT: 8888
       HEALTHCHECK_URI: "http://127.0.0.1:8888/"
       BOX_SERVER_JVM_ARGS: "-Xms2g -Xmx3g"
+      # App configuration (non-secret)
+      environment: production
+      application_host: "https://wheels.dev"
+      datasource: "wheels.dev"
+      wheelsdev_clob: "true"
+      wheelsdev_connectionlimit: "100"
+      wheelsdev_storage: "true"
+      sessionStorage: "wheels.dev"
+      sessionCluster: "true"
+      test_case: "false"
+      mail_from: "noreply@wheels.dev"
+      smtp_host: "smtp.postmarkapp.com"
+      smtp_port: "587"
+      smtp_ssl: "false"
+      smtp_tls: "true"
+      SENTRY_ENVIRONMENT: production
+      # Secrets — resolved by envsubst at deploy time
+      reloadPassword: "${RELOAD_PASSWORD}"
+      cfconfig_adminPassword: "${CFCONFIG_ADMIN_PASSWORD}"
+      wheelsdev_host: "${WHEELSDEV_HOST}"
+      wheelsdev_port: "${WHEELSDEV_PORT}"
+      wheelsdev_databasename: "${WHEELSDEV_DATABASENAME}"
+      wheelsdev_username: "${WHEELSDEV_USERNAME}"
+      wheelsdev_password: "${WHEELSDEV_PASSWORD}"
+      smtp_username: "${SMTP_USERNAME}"
+      smtp_password: "${SMTP_PASSWORD}"
+      wheels_id_salt: "${WHEELS_ID_SALT}"
+      SENTRY_DSN: "${SENTRY_DSN}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:8888/"]
       interval: 30s

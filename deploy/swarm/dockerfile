@@ -1,4 +1,7 @@
-FROM ortussolutions/commandbox:lucee6
+# Pin base image — pass --build-arg to override with digest for reproducible builds
+# Resolve digest: docker pull ortussolutions/commandbox:lucee6 && docker inspect --format='{{index .RepoDigests 0}}' ortussolutions/commandbox:lucee6
+ARG COMMANDBOX_IMAGE=ortussolutions/commandbox:lucee6
+FROM ${COMMANDBOX_IMAGE}
 
 # Install PostgreSQL JDBC extension for CockroachDB connectivity
 ENV LUCEE_EXTENSIONS="BEC20D47-3268-1B354-C0E8E70B5CBC15A1;name=PostgreSQL;version=42.7.4"

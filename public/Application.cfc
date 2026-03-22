@@ -86,6 +86,17 @@ component output="false" {
 			}
 		}
 		
+		// Fall back to OS environment variables for keys not set by .env files
+		// This enables Docker Swarm deployments to inject config via compose environment:
+		try {
+			local.osEnv = createObject("java", "java.lang.System").getenv();
+			for (local.envKey in local.osEnv) {
+				if (!structKeyExists(this.env, local.envKey)) {
+					this.env[local.envKey] = local.osEnv[local.envKey];
+				}
+			}
+		} catch (any e) {}
+
 		// Perform variable interpolation
 		performVariableInterpolation(this.env);
 	}
