@@ -92,7 +92,7 @@ component extends="wheels.Controller" {
 
         // Allow only specific roles
         if (!listFindNoCase("Editor,Admin", session.role)) {
-            // redirectTo(controller="HomeController", action="index");
+            redirectTo(controller="HomeController", action="index");
             return false;
         }
 

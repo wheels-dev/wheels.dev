@@ -5,7 +5,7 @@ component extends="app.Controllers.Controller" {
         super.config();
         verifies(except="index,loadUsers,loadRoles,addUser,store,delete,profile,changePassword,updatePassword,updateProfilePic,checkAdminAccess,unlockUser,toggleUserLock", params="key", paramsTypes="integer", handler="index");
         usesLayout(template="/admin/AdminController/layout", except="changePassword,updatePassword,updateProfilePic" );
-        filters(through="checkAdminAccess", except="changePassword,updatePassword,updateProfilePic,unlockUser,toggleUserLock");
+        filters(through="checkAdminAccess", except="changePassword,updatePassword,updateProfilePic");
         filters(through="checkUserAccess", only="changePassword,updatePassword,updateProfilePic");
         filters(through="checkRoleAccess", only="index,addUser,delete");
     }
