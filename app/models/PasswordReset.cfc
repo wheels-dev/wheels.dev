@@ -19,7 +19,11 @@ component extends="app.Models.Model" {
     // Find active reset token
     public function findActiveToken(required string token) {
         return findOne(
-            where="token = '#arguments.token#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#' AND used = 0"
+            where="token = :token AND expiresAt > :now AND used = 0",
+            params={
+                token={value=arguments.token, cfsqltype="cf_sql_varchar"},
+                now={value=dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}
+            }
         );
     }
 
