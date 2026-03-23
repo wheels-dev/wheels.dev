@@ -9,21 +9,21 @@
                 <table class="table fs-9 mb-0 border-top border-translucent">
                     <tr>
                         <th>Comment Content:</th>
-                        <td>#Comments.Content#</td>
+                        <td>#encodeForHTML(Comments.Content)#</td>
                     </tr>
                     <tr>
                         <th>Parent comment:</th>
                         <td>
-                            #left(parentCommentContent, 30)#
+                            #encodeForHTML(left(parentCommentContent, 30))#
                         </td>
                     </tr>
                     <tr>
                         <th>Author</th>
-                        <td>#comments.User.FullName#</td>
+                        <td>#encodeForHTML(comments.User.FullName)#</td>
                     </tr>
                     <tr>
                         <th>Blog title</th>
-                        <td><a href="/admin/blog/#comments.blog.slug#" class="cursor-pointer text-primary">#comments.blog.title#</a></td>
+                        <td><a href="/admin/blog/#encodeForURL(comments.blog.slug)#" class="cursor-pointer text-primary">#encodeForHTML(comments.blog.title)#</a></td>
                     </tr>
                     <tr>
                         <th>Posted At</th>

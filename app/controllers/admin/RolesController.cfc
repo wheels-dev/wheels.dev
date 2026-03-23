@@ -18,7 +18,7 @@ component extends="app.Controllers.Controller" {
         if(id > 0) {
             role = model("role").findByKey(params.id);
             permissions = model("permission").findAll();
-            activePermission = model("RolePermission").findAll(select="permissionId", where="roleId = #val(params.id)#");
+            activePermission = model("RolePermission").findAll(select="permissionId", where="roleId = :roleId", params={roleId={value=val(params.id), cfsqltype="cf_sql_integer"}});
             existingPermissionIds = [];
             for (row in activePermission) {
                 arrayAppend(existingPermissionIds, row.permissionId);
@@ -32,7 +32,7 @@ component extends="app.Controllers.Controller" {
     }
 
     function checkRoleExistance(){
-        var checkExistingRole = model("Role").findAll(where="name = '#params.Name#'");
+        var checkExistingRole = model("Role").findAll(where="name = :name", params={name={value=params.Name, cfsqltype="cf_sql_varchar"}});
         if(checkExistingRole.recordcount != 0){
             renderText('<p class="fs-12 ms-2">A role already exist with this name! Role name must be unique.');
             return;
@@ -43,7 +43,7 @@ component extends="app.Controllers.Controller" {
 
     function store(){
         try {
-            var checkExistingRole = model("Role").findAll(where="name = '#params.Name#'");
+            var checkExistingRole = model("Role").findAll(where="name = :name", params={name={value=params.Name, cfsqltype="cf_sql_varchar"}});
             if(checkExistingRole.recordcount != 0 && params.id == 0){
                 redirectTo(action="index", error="A role already exist with name' #params.Name#'. Role name must be unique.");
                 return;
@@ -85,7 +85,7 @@ component extends="app.Controllers.Controller" {
 
                     // Update role permissions
                     permissionList = [];
-                    model("RolePermission").deleteAll(where="roleId = #val(RoleData.id)#");
+                    model("RolePermission").deleteAll(where="roleId = :roleId", params={roleId={value=val(RoleData.id), cfsqltype="cf_sql_integer"}});
                     for (fieldName in RoleData) {
                         if (left(fieldName, 11) == "permission-") {
                             // Extract the numeric part after the dash

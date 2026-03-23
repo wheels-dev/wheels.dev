@@ -43,7 +43,7 @@
                         <div class="col-lg-12 col-12 d-flex flex-column">
 
                             <h1 class="col-md-8 mx-auto fs-36 fw-bold text-center text--secondary mb-0">
-                                #blog.title#
+                                #encodeForHTML(blog.title)#
                             </h1>
                             <div id="editLoader" class="position-fixed top-50 start-50 translate-middle" style="display: none; z-index: 9999;">
                                 <div class="spinner-border text-primary" role="status">
@@ -111,13 +111,9 @@
                         </div>
 
                         <div class="col-12">
-                            <cfif findNoCase("```", blog.content) OR findNoCase("##", blog.content) OR findNoCase("**", blog.content) OR findNoCase("__", blog.content) OR findNoCase(">", blog.content)>
-                                <div class="markdown-content">
-                                    <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
-                                </div>
-                            <cfelse>
-                                #embedAndAutoLink(blog.content,"text--primary")#
-                            </cfif>
+                            <div class="markdown-content">
+                                <cfoutput>#encodeForHTML(blog.content)#</cfoutput>
+                            </div>
                         </div>
                     </div>
                     <cfif not blog.isCommentClosed>
@@ -140,12 +136,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
-                                                        <h6 class="fs-16 fw-bold">#fullName#</h6>
-                                                        <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
-                                                                <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
-                                                        <cfelse>
-                                                            <p class="fs-14 fw-normal text-dark">#content#</p>
-                                                        </cfif>
+                                                        <h6 class="fs-16 fw-bold">#encodeForHTML(fullName)#</h6>
+                                                        <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
                                                         <div class="d-flex flex-wrap justify-content-end align-items-center gap-4">
                                                             <cfif isLoggedInUser()>
                                                                 <div class="d-flex cursor-pointer align-items-center gap-2">
@@ -197,13 +189,9 @@
                                                                 </div>
                                                             </div>
                                                             <div class="p-3 rounded-4 flex-grow-1 bg-light">
-                                                                <h6 class="fs-16 fw-bold">#fullName#</h6>
+                                                                <h6 class="fs-16 fw-bold">#encodeForHTML(fullName)#</h6>
 
-                                                                <cfif findNoCase("```", content) OR findNoCase("##", content) OR findNoCase("**", content) OR findNoCase("__", content) OR findNoCase(">", content)>
-                                                                    <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
-                                                                <cfelse>
-                                                                    <p class="fs-14 fw-normal text-dark">#content#</p>
-                                                                </cfif>
+                                                                <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
                                                                 <div class="d-flex cursor-pointer align-items-center justify-content-end gap-2">
                                                                     <p class="fs-14 text--primary mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
                                                                 </div>
@@ -308,10 +296,15 @@
                 if (rect.top <= window.innerHeight - 50) {
                     completed = true;
                     const blogId = document.querySelector('[data-blog-id]').getAttribute('data-blog-id');
+                    var csrfToken = document.querySelector('meta[name="csrf-token"]');
+                    var tokenVal = csrfToken ? csrfToken.getAttribute('content') : '';
                     fetch('/reading-history/complete', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        body: 'blogId=' + blogId
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRF-TOKEN': tokenVal
+                        },
+                        body: 'blogId=' + blogId + '&authenticityToken=' + encodeURIComponent(tokenVal)
                     });
                 }
             }

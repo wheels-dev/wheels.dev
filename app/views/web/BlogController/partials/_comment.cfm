@@ -17,7 +17,7 @@
                     </div>
                     <div class="p-3 rounded-4 flex-grow-1 bg-light">
                         <h6 class="fs-16 fw-bold">#encodeForHTML(fullName)#</h6>
-                        <p class="fs-14 fw-normal markdown-content text-dark">#content#</p>
+                        <p class="fs-14 fw-normal markdown-content text-dark">#encodeForHTML(content)#</p>
                         <div class="d-flex flex-wrap justify-content-end align-items-center gap-4">
                             <cfif isLoggedInUser()>
                                 <div class="d-flex cursor-pointer align-items-center gap-2">
@@ -68,7 +68,7 @@
                     </div>
                     <div class="p-3 rounded-4 bg-light">
                         <h6 class="fs-16 fw-bold">#encodeForHTML(fullName)#</h6>
-                        <p class="fs-14 fw-normal markdown-content text-dark">#content#</p>
+                        <p class="fs-14 fw-normal markdown-content text-dark">#encodeForHTML(content)#</p>
                     </div>
                 </div>
             </cfif>

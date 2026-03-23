@@ -18,9 +18,12 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
+		var userIdParam = {userId={value=val(session.userID), cfsqltype="cf_sql_integer"}};
+
 		histories = model("ReadingHistory")
 			.findAll(
-				where="userId = #val(session.userID)#",
+				where="userId = :userId",
+				params=userIdParam,
 				include="Blog",
 				order="lastReadAt DESC",
 				perPage=20,
@@ -29,7 +32,8 @@ component extends="app.Controllers.Controller" {
 
 		bookmarks = model("Bookmark")
 			.findAll(
-				where="userId = #val(session.userID)#",
+				where="userId = :userId",
+				params=userIdParam,
 				include="Blog",
 				order="createdAt DESC"
 			);
@@ -47,7 +51,11 @@ component extends="app.Controllers.Controller" {
 		}
 
 		history = model("ReadingHistory").findOne(
-			where="userId = #val(session.userID)# AND blogId = #val(params.blogId)#"
+			where="userId = :userId AND blogId = :blogId",
+			params={
+				userId={value=val(session.userID), cfsqltype="cf_sql_integer"},
+				blogId={value=val(params.blogId), cfsqltype="cf_sql_integer"}
+			}
 		);
 
 		if (IsObject(history)) {
@@ -79,7 +87,11 @@ component extends="app.Controllers.Controller" {
 		}
 
 		history = model("ReadingHistory").findOne(
-			where="userId = #val(session.userID)# AND blogId = #val(params.blogId)#"
+			where="userId = :userId AND blogId = :blogId",
+			params={
+				userId={value=val(session.userID), cfsqltype="cf_sql_integer"},
+				blogId={value=val(params.blogId), cfsqltype="cf_sql_integer"}
+			}
 		);
 
 		if (IsObject(history)) {
@@ -101,7 +113,8 @@ component extends="app.Controllers.Controller" {
 		}
 
 		model("ReadingHistory").deleteAll(
-			where="userId = #val(session.userID)#"
+			where="userId = :userId",
+			params={userId={value=val(session.userID), cfsqltype="cf_sql_integer"}}
 		);
 
 		flashInsert(success="Reading history cleared");
@@ -119,13 +132,16 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		where = "userId = #val(session.userID)#";
+		var whereClause = "userId = :userId";
+		var queryParams = {userId={value=val(session.userID), cfsqltype="cf_sql_integer"}};
 		if (StructKeyExists(params, "searchTerm") && params.searchTerm != "") {
-			where &= " AND Blog.title LIKE '%#params.searchTerm#%'";
+			whereClause &= " AND Blog.title LIKE :searchTerm";
+			queryParams.searchTerm = {value="%" & params.searchTerm & "%", cfsqltype="cf_sql_varchar"};
 		}
 
 		histories = model("ReadingHistory").findAll(
-			where=where,
+			where=whereClause,
+			params=queryParams,
 			include="Blog",
 			order="lastReadAt DESC",
 			perPage=20,
@@ -146,17 +162,19 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		where = "userId = #val(session.userID)#";
+		var whereClause = "userId = :userId";
+		var queryParams = {userId={value=val(session.userID), cfsqltype="cf_sql_integer"}};
 		if (StructKeyExists(params, "status")) {
 			if (params.status == "completed") {
-				where &= " AND isCompleted=1";
+				whereClause &= " AND isCompleted=1";
 			} else if (params.status == "inprogress") {
-				where &= " AND isCompleted=0";
+				whereClause &= " AND isCompleted=0";
 			}
 		}
 
 		histories = model("ReadingHistory").findAll(
-			where=where,
+			where=whereClause,
+			params=queryParams,
 			include="Blog",
 			order="lastReadAt DESC",
 			perPage=20,
