@@ -111,6 +111,7 @@
   * [Service Architecture](command-line-tools/cli-guides/service-architecture.md)
   * [Migrations Guide](command-line-tools/cli-guides/migrations.md)
   * [Testing Guide](command-line-tools/cli-guides/testing.md)
+  * [lucee.json Reference](command-line-tools/cli-guides/lucee-json-reference.md)
 
 ## Working with Wheels
 
@@ -207,7 +208,6 @@
 
 * [Source Code](https://github.com/wheels-dev/wheels)
 * [Issue Tracker](https://github.com/wheels-dev/wheels/issues)
-* [Sponsor Us](https://opencollective.com/wheels)
 * [Community](https://github.com/wheels-dev/wheels/discussions)
 
 ## Plugins
