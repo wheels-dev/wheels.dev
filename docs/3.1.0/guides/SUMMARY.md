@@ -99,12 +99,19 @@
     * [wheels plugin init](command-line-tools/commands/plugins/plugins-init.md)
   * Asset Management
     * [asset management commands](command-line-tools/commands/assets-cache-management.md)
+  * Job Commands
+    * [wheels jobs work](command-line-tools/commands/jobs/jobs-work.md)
+    * [wheels jobs status](command-line-tools/commands/jobs/jobs-status.md)
+    * [wheels jobs retry](command-line-tools/commands/jobs/jobs-retry.md)
+    * [wheels jobs purge](command-line-tools/commands/jobs/jobs-purge.md)
+    * [wheels jobs monitor](command-line-tools/commands/jobs/jobs-monitor.md)
 * CLI Development Guides
   * [Configuration Management](command-line-tools/configuration.md)
   * [Creating Commands](command-line-tools/cli-guides/creating-commands.md)
   * [Service Architecture](command-line-tools/cli-guides/service-architecture.md)
   * [Migrations Guide](command-line-tools/cli-guides/migrations.md)
   * [Testing Guide](command-line-tools/cli-guides/testing.md)
+  * [lucee.json Reference](command-line-tools/cli-guides/lucee-json-reference.md)
 
 ## Working with Wheels
 
@@ -120,6 +127,7 @@
 * [Contributing to Wheels Windows Installer](working-with-wheels/contributing-to-wheels-windows-installer.md)
 * [Contributing to Wheels macOS Installer](working-with-wheels/contributing-to-wheels-macos-installer.md)
 * [Background Jobs](working-with-wheels/background-jobs.md)
+* [Dependency Injection](working-with-wheels/dependency-injection.md)
 * [Submitting Pull Requests](working-with-wheels/submitting-pull-requests.md)
 * [Documenting your Code](working-with-wheels/documenting-your-code.md)
 
@@ -200,7 +208,6 @@
 
 * [Source Code](https://github.com/wheels-dev/wheels)
 * [Issue Tracker](https://github.com/wheels-dev/wheels/issues)
-* [Sponsor Us](https://opencollective.com/wheels)
 * [Community](https://github.com/wheels-dev/wheels/discussions)
 
 ## Plugins

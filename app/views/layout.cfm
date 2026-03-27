@@ -258,6 +258,7 @@
 	<html lang="en">
 		<head>
 			<cfoutput>#csrfMetaTags()#</cfoutput>
+			<cfoutput><meta name="csrf-token" content="#authenticityToken()#"></cfoutput>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title><cfoutput>#encodeForHTML(pageTitle)#</cfoutput></title>
@@ -474,7 +475,8 @@
 			<script src="/js/lunr.min.js"></script>
 			<script src="/js/quill.min.js"></script>
 			<script src="/js/lib/easymde.min.js"></script>
-			<script src="/js/lib/marked.min.js"></script>			
+			<script src="/js/lib/marked.min.js"></script>
+			<script src="/js/lib/purify.min.js"></script>
 			<script src="/js/select2.min.js"></script>
 			</cfif>
 

@@ -1,0 +1,29 @@
+# Secrets — NEVER include in image
+.env
+.env.*
+!.env.example
+
+# Git and CI
+.git
+.github
+.gitignore
+
+# IDE and tooling
+.vscode
+.project
+.settings
+.classpath
+.CommandBox
+.claude
+.beads
+.runtime
+
+# Documentation
+*.md
+
+# Tests
+tests/
+
+# Deploy configs (not needed in image)
+deploy/prod/
+deploy/stage/

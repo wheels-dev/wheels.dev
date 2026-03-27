@@ -10,26 +10,47 @@ Get up and running with Wheels CLI in minutes.
 
 ## Prerequisites
 
-- CommandBox 5.0+
-- Java 8+
+- **LuCLI** (recommended) or CommandBox 5.0+
 - Database (MySQL, PostgreSQL, SQL Server, or H2)
 
 ## Installation
 
-### Install CommandBox
+### Option A: LuCLI (Recommended)
+
+LuCLI is faster (< 1s startup), lighter (~40 MB), and includes built-in MCP support for AI editors.
 
 ```bash
-# macOS/Linux
-curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add -
-echo "deb https://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a /etc/apt/sources.list.d/commandbox.list
+# macOS
+brew install lucli
+
+# Windows
+choco install lucli
+
+# Manual (any OS) — download from https://github.com/cybersonic/LuCLI/releases
+```
+
+Then install the Wheels module:
+
+```bash
+lucli modules install wheels
+```
+
+### Option B: CommandBox
+
+```bash
+# macOS
+brew install commandbox
+
+# Linux (Debian/Ubuntu)
+curl -fsSl https://downloads.ortussolutions.com/debs/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/commandbox.gpg > /dev/null
+echo "deb [signed-by=/usr/share/keyrings/commandbox.gpg] https://downloads.ortussolutions.com/debs/noarch /" | sudo tee /etc/apt/sources.list.d/commandbox.list
 sudo apt-get update && sudo apt-get install commandbox
 
-# Windows (PowerShell as Admin)
-iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+# Windows
 choco install commandbox
 ```
 
-### Install Wheels CLI
+Then install the Wheels CLI module:
 
 ```bash
 box install wheels-cli
@@ -312,9 +333,9 @@ wheels db shell --web
 ## Next Steps
 
 1. **Read the Guides:**
-   - [Service Architecture](service-architecture.md)
-   - [Testing Guide](testing.md)
-   - [Migration Guide](migrations.md)
+   - [Service Architecture](cli-guides/service-architecture.md)
+   - [Testing Guide](cli-guides/testing.md)
+   - [Migration Guide](cli-guides/migrations.md)
 
 2. **Explore Commands:**
    - `wheels --help`

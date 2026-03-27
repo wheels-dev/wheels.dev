@@ -88,7 +88,7 @@ mapper()
 
 ## Built-in Middleware
 
-Wheels ships with three middleware components you can use immediately.
+Wheels ships with four middleware components you can use immediately.
 
 ### RequestId
 
@@ -153,6 +153,32 @@ set(middleware = [
 
 For simple CORS needs, you may prefer the existing [CORS Requests](cors-requests.md) guide which covers header-only approaches.
 
+### TenantResolver
+
+Resolves the current tenant from the incoming request and sets `request.wheels.tenant` for automatic per-request datasource switching. Supports three resolution strategies.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `resolver` | `""` | Closure that receives the request struct and returns a tenant struct (`{id, dataSource, config}`). Return `{}` for unrecognized tenants. |
+| `strategy` | `"custom"` | Resolution strategy: `"custom"`, `"header"`, or `"subdomain"` |
+| `headerName` | `"X-Tenant-ID"` | HTTP header to read when strategy is `"header"` |
+
+```javascript
+set(middleware = [
+    new wheels.middleware.TenantResolver(
+        resolver = function(req) {
+            var t = model("Tenant").findOne(where="domain='#cgi.server_name#'");
+            if (IsObject(t)) return {id: t.id, dataSource: t.dsName};
+            return {};
+        }
+    )
+]);
+```
+
+The middleware locks the tenant for the duration of the request and cleans up automatically. All model queries are transparently routed to the tenant's datasource (except models marked with `sharedModel()`).
+
+For the full multi-tenancy guide — including shared models, tenant migrations, and background jobs — see [Multi-Tenancy](../working-with-wheels/multi-tenancy.md).
+
 ## Writing Custom Middleware
 
 Create a CFC that implements `wheels.middleware.MiddlewareInterface`:
@@ -170,7 +196,7 @@ component implements="wheels.middleware.MiddlewareInterface" output="false" {
         // Check rate limit (pseudo-code)
         local.clientIp = cgi.remote_addr;
         if ($isRateLimited(local.clientIp)) {
-            cfheader(statusCode="429", statusText="Too Many Requests");
+            cfheader(statusCode="429");
             return "Rate limit exceeded. Try again later.";
         }
 
