@@ -20,11 +20,7 @@ component extends="app.Controllers.Controller" {
 
 		// Find bookmark
 		bookmark = model("Bookmark").findOne(
-			where="userId = :userId AND blogId = :blogId",
-			params={
-				userId={value=val(session.userID), cfsqltype="cf_sql_integer"},
-				blogId={value=val(params.blogId), cfsqltype="cf_sql_integer"}
-			}
+			where="userId = #val(session.userID)# AND blogId = #val(params.blogId)#"
 		);
 
 		if (IsObject(bookmark)) {
@@ -39,11 +35,7 @@ component extends="app.Controllers.Controller" {
 		} else {
 			// Check if a soft-deleted bookmark exists
 			deletedBookmark = model("Bookmark").findOne(
-				where="userId = :userId AND blogId = :blogId",
-				params={
-					userId={value=val(session.userID), cfsqltype="cf_sql_integer"},
-					blogId={value=val(params.blogId), cfsqltype="cf_sql_integer"}
-				},
+				where="userId = #val(session.userID)# AND blogId = #val(params.blogId)#",
 				includeSoftDeletes=true
 			);
 
@@ -86,8 +78,7 @@ component extends="app.Controllers.Controller" {
 
 		bookmarks = model("Bookmark")
 			.findAll(
-				where="userId = :userId",
-				params={userId={value=val(session.userID), cfsqltype="cf_sql_integer"}},
+				where="userId = #val(session.userID)#",
 				include="Blog",
 				order="createdAt DESC",
 				perPage=20,
@@ -106,16 +97,13 @@ component extends="app.Controllers.Controller" {
 			params.page = 1;
 		}
 
-		var whereClause = "userId = :userId";
-		var queryParams = {userId={value=val(session.userID), cfsqltype="cf_sql_integer"}};
+		var whereClause = "userId = #val(session.userID)#";
 		if (StructKeyExists(params, "searchTerm") && params.searchTerm != "") {
-			whereClause &= " AND Blog.title LIKE :searchTerm";
-			queryParams.searchTerm = {value="%" & params.searchTerm & "%", cfsqltype="cf_sql_varchar"};
+			whereClause &= " AND Blog.title LIKE '%#params.searchTerm#%'";
 		}
 
 		bookmarks = model("Bookmark").findAll(
 			where=whereClause,
-			params=queryParams,
 			include="Blog",
 			order="createdAt DESC",
 			perPage=20,

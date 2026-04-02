@@ -162,6 +162,6 @@ component extends="app.Models.Model" {
     // Clear old logs
     public function clearOldLogs(numeric days = 90) {
         var cutoffDate = dateAdd("d", -arguments.days, now());
-        deleteAll(where = "createdat < :cutoffDate", params = {cutoffDate = cutoffDate});
+        deleteAll(where = "createdat < '#dateTimeFormat(cutoffDate, "yyyy-MM-dd HH:nn:ss")#'");
     }
 } 

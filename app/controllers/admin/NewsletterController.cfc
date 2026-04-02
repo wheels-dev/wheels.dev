@@ -202,7 +202,7 @@ component extends="app.Controllers.Controller" {
             );
             
             if (type == "user") {
-                var user = model("User").findOne(where="email = :email", params={email={value=email, cfsqltype="cf_sql_varchar"}});
+                var user = model("User").findOne(where="email = '#email#'");
                 if (isObject(user)) {
                     user.update(newsletter=false);
                     model("Log").log(
@@ -227,7 +227,7 @@ component extends="app.Controllers.Controller" {
                     };
                 }
             } else {
-                var subscriber = model("NewsletterSubscriber").findOne(where="email = :email", params={email={value=email, cfsqltype="cf_sql_varchar"}});
+                var subscriber = model("NewsletterSubscriber").findOne(where="email = '#email#'");
                 if (isObject(subscriber)) {
                     subscriber.update(status="inactive");
                     model("Log").log(
@@ -371,8 +371,7 @@ component extends="app.Controllers.Controller" {
             // Search in users table
             var searchPattern = "%" & searchTerm & "%";
             var userSubscribers = model("User").findAll(
-                where="newsletter = 1 AND (email LIKE :term OR firstname LIKE :term OR lastname LIKE :term)",
-                params={term={value=searchPattern, cfsqltype="cf_sql_varchar"}}
+                where="newsletter = 1 AND (email LIKE '#searchPattern#' OR firstname LIKE '#searchPattern#' OR lastname LIKE '#searchPattern#')"
             );
             for (var user in userSubscribers) {
                 subscribers.append({
@@ -385,8 +384,7 @@ component extends="app.Controllers.Controller" {
             
             // Search in newsletter_subscribers table
             var nonUserSubscribers = model("NewsletterSubscriber").findAll(
-                where="email LIKE :term",
-                params={term={value=searchPattern, cfsqltype="cf_sql_varchar"}}
+                where="email LIKE '#searchPattern#'"
             );
             for (var subscriber in nonUserSubscribers) {
                 subscribers.append({
