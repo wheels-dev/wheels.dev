@@ -62,7 +62,7 @@
                                     hx-target=".main"
 <!---                                     hx-vals='{"category_id": "#blog.Category.id#"}' --->
                                     >
-                                    #blog.PostStatus.name# in <span class="text--primary">#categoryList#</span>
+                                    #blog.status# in <span class="text--primary">#categoryList#</span>
                                  </p>
                                 <p class="fw-medium fs-12 text--lightGray">Tags: <span class="text--primary">#tagList#</span></p>
                             </div>

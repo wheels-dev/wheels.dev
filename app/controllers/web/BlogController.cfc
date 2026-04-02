@@ -258,7 +258,7 @@ component extends="app.Controllers.Controller" {
 			}
 
 			// Get the blog post
-			blog = model("Blog").findByKey(key = params.id, include = "User,PostStatus");
+			blog = model("Blog").findByKey(key = params.id, include = "User");
 
 			// Check if blog exists
 			if (!IsObject(blog)) {
@@ -376,7 +376,7 @@ component extends="app.Controllers.Controller" {
 			var query = model("blog").findAll(
 				where = "blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#Now()#' AND (blog_posts.slug LIKE :pattern OR blog_posts.title LIKE :pattern OR blog_posts.content LIKE :pattern OR fullname LIKE :pattern OR email LIKE :pattern)",
 				params = {pattern={value=searchPattern, cfsqltype="cf_sql_varchar"}},
-				include = "User, PostStatus, PostType",
+				include = "User",
 				order = "publishedAt DESC",
 				page = page,
 				perPage = perPage
@@ -384,7 +384,7 @@ component extends="app.Controllers.Controller" {
 
 			if (isInfiniteScroll) {
 				totalCount = model("blog").count(
-					include = "User, PostStatus, PostType",
+					include = "User",
 					where = "blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#Now()#' AND (blog_posts.slug LIKE :pattern OR blog_posts.title LIKE :pattern OR blog_posts.content LIKE :pattern OR fullname LIKE :pattern OR email LIKE :pattern)",
 					params = {pattern={value=searchPattern, cfsqltype="cf_sql_varchar"}}
 				);
@@ -995,7 +995,7 @@ component extends="app.Controllers.Controller" {
 	}
 
 	private function getBlogById(required numeric id) {
-		return model("Blog").findOne(where = "blog_posts.id = #arguments.id#", include = "User, PostStatus");
+		return model("Blog").findOne(where = "blog_posts.id = #arguments.id#", include = "User");
 	}
 
 	private function saveBlog(required struct blogData) {

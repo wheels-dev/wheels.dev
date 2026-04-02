@@ -61,7 +61,7 @@
                                     <!-- Post status + Categories -->
                                     <cfif categories.recordCount GT 0>
                                         <p class="fw-medium fs-12 text--lightGray mb-0">
-                                            #blog.PostStatus.name# in
+                                            #blog.status# in
                                             <cfoutput query="categories">
                                                 <strong
                                                     class="text--primary"

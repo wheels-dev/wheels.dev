@@ -105,7 +105,7 @@ component extends="wheels.Controller" {
         return model("Blog").findOne(
             where="blog_posts.slug = :slug AND blog_posts.status = 'Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= :now",
             params={slug={value=arguments.slug, cfsqltype="cf_sql_varchar"}, now={value=now(), cfsqltype="cf_sql_timestamp"}},
-            include="User,PostStatus",
+            include="User",
             cache=10
         );
     }
