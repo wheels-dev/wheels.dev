@@ -57,6 +57,9 @@
   * Testing Commands
     * [wheels test run](command-line-tools/commands/test/test-run.md)
     * [wheels advanced testing](command-line-tools/commands/test/test-advanced.md)
+  * Playwright Commands
+    * [wheels playwright:init](command-line-tools/commands/playwright/playwright-init.md)
+    * [wheels playwright:install](command-line-tools/commands/playwright/playwright-install.md)
   * Environment Management
     * [wheels env setup](command-line-tools/commands/environment/env-setup.md)
     * [wheels env list](command-line-tools/commands/environment/env-list.md)
@@ -76,8 +79,6 @@
     * [wheels docker init](command-line-tools/commands/docker/docker-init.md)
     * [wheels docker build](command-line-tools/commands/docker/docker-build.md)
     * [wheels docker deploy](command-line-tools/commands/docker/docker-deploy.md)
-    * [wheels docker push](command-line-tools/commands/docker/docker-push.md)
-    * [wheels docker login](command-line-tools/commands/docker/docker-login.md)
     * [wheels docker logs](command-line-tools/commands/docker/docker-logs.md)
     * [wheels docker exec](command-line-tools/commands/docker/docker-exec.md)
     * [wheels docker stop](command-line-tools/commands/docker/docker-stop.md)
@@ -120,6 +121,7 @@
 * [Directory Structure](working-with-wheels/directory-structure.md)
 * [Switching Environments](working-with-wheels/switching-environments.md)
 * [Testing Your Application](working-with-wheels/testing-your-application.md)
+* [End-to-End Testing](working-with-wheels/end-to-end-testing.md)
 * [Using the Test Environment](working-with-wheels/using-the-test-environment.md)
 * [Overriding Core Methods](working-with-wheels/overriding-core-methods.md)
 * [Contributing to Wheels](working-with-wheels/contributing-to-wheels.md)

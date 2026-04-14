@@ -52,8 +52,7 @@ component extends="app.Models.Model" {
     public function isUserLocked(required string email) {
         // First check if user is manually locked by admin
         var user = model("User").findOne(
-            where="email = :email",
-            params={email={value=arguments.email, cfsqltype="cf_sql_varchar"}}
+            where="email = '#arguments.email#'"
         );
         if (!isNull(user) && user.locked) {
             return true;
@@ -62,11 +61,7 @@ component extends="app.Models.Model" {
         // Check for automatic lock due to failed attempts within the last 15 minutes
         var cutoff = dateAdd("n", -15, now());
         var attempts = findAll(
-            where="email = :email AND createdAt > :cutoff",
-            params={
-                email={value=arguments.email, cfsqltype="cf_sql_varchar"},
-                cutoff={value=dateTimeFormat(cutoff, "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}
-            }
+            where="email = '#arguments.email#' AND createdAt > '#dateTimeFormat(cutoff, "yyyy-MM-dd HH:nn:ss")#'"
         );
         return attempts.recordCount >= 3;
     }
@@ -75,11 +70,7 @@ component extends="app.Models.Model" {
     public function getRemainingAttempts(required string email) {
         var cutoff = dateAdd("n", -15, now());
         var attempts = findAll(
-            where="email = :email AND createdAt > :cutoff",
-            params={
-                email={value=arguments.email, cfsqltype="cf_sql_varchar"},
-                cutoff={value=dateTimeFormat(cutoff, "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}
-            }
+            where="email = '#arguments.email#' AND createdAt > '#dateTimeFormat(cutoff, "yyyy-MM-dd HH:nn:ss")#'"
         );
         return 3 - attempts.recordCount;
     }
@@ -95,8 +86,7 @@ component extends="app.Models.Model" {
     // Clear failed attempts for a user
     public function clearFailedAttempts(required string email) {
         return deleteAll(
-            where="email = :email",
-            params={email={value=arguments.email, cfsqltype="cf_sql_varchar"}}
+            where="email = '#arguments.email#'"
         );
     }
 } 

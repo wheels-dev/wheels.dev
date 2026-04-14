@@ -258,7 +258,7 @@ component extends="app.Controllers.Controller" {
 			}
 
 			// Get the blog post
-			blog = model("Blog").findByKey(key = params.id, include = "User,PostStatus");
+			blog = model("Blog").findByKey(key = params.id, include = "User");
 
 			// Check if blog exists
 			if (!IsObject(blog)) {
@@ -348,7 +348,7 @@ component extends="app.Controllers.Controller" {
 			return Val(authorParam);
 		} else {
 			// Lookup user by username
-			var user = model("user").findOne(where = "username = :username", params={username={value=arguments.authorParam, cfsqltype="cf_sql_varchar"}});
+			var user = model("user").findOne(where = "username = '#arguments.authorParam#'");
 			if (IsObject(user)) {
 				return user.id;
 			} else {
@@ -374,9 +374,8 @@ component extends="app.Controllers.Controller" {
 		if (Len(Trim(searchTerm))) {
 			var searchPattern = "%#searchTerm#%";
 			var query = model("blog").findAll(
-				where = "blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#Now()#' AND (blog_posts.slug LIKE :pattern OR blog_posts.title LIKE :pattern OR blog_posts.content LIKE :pattern OR fullname LIKE :pattern OR email LIKE :pattern)",
-				params = {pattern={value=searchPattern, cfsqltype="cf_sql_varchar"}},
-				include = "User, PostStatus, PostType",
+				where = "blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#Now()#' AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')",
+				include = "User",
 				order = "publishedAt DESC",
 				page = page,
 				perPage = perPage
@@ -384,9 +383,8 @@ component extends="app.Controllers.Controller" {
 
 			if (isInfiniteScroll) {
 				totalCount = model("blog").count(
-					include = "User, PostStatus, PostType",
-					where = "blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#Now()#' AND (blog_posts.slug LIKE :pattern OR blog_posts.title LIKE :pattern OR blog_posts.content LIKE :pattern OR fullname LIKE :pattern OR email LIKE :pattern)",
-					params = {pattern={value=searchPattern, cfsqltype="cf_sql_varchar"}}
+					include = "User",
+					where = "blog_posts.status ='Approved' AND blog_posts.publishedAt IS NOT NULL AND blog_posts.publishedAt <= '#Now()#' AND (blog_posts.slug LIKE '#searchPattern#' OR blog_posts.title LIKE '#searchPattern#' OR blog_posts.content LIKE '#searchPattern#' OR fullname LIKE '#searchPattern#' OR email LIKE '#searchPattern#')"
 				);
 				hasMore = (page * perPage) < totalCount;
 				isSearched = true;
@@ -621,7 +619,7 @@ component extends="app.Controllers.Controller" {
 
 			// Allow title change and check uniqueness
 			if (StructKeyExists(params, "title")) {
-				var existingBlog = model("Blog").findFirst(where = "title = :title AND id != :blogId", params={title={value=params.title, cfsqltype="cf_sql_varchar"}, blogId={value=blogId, cfsqltype="cf_sql_integer"}});
+				var existingBlog = model("Blog").findFirst(where = "title = '#params.title#' AND id != #blogId#");
 				if (IsObject(existingBlog)) {
 					result.success = false;
 					result.message = "A blog post with this title already exists.";
@@ -995,7 +993,7 @@ component extends="app.Controllers.Controller" {
 	}
 
 	private function getBlogById(required numeric id) {
-		return model("Blog").findOne(where = "blog_posts.id = #arguments.id#", include = "User, PostStatus");
+		return model("Blog").findOne(where = "blog_posts.id = #arguments.id#", include = "User");
 	}
 
 	private function saveBlog(required struct blogData) {

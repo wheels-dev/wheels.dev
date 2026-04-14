@@ -39,19 +39,14 @@ component extends="app.Models.Model" {
 	// Find token by hashed value (caller must hash raw cookie value with SHA-256 first)
 	public function findByToken(required string hashedToken) {
 		return findOne(
-			where="token = :token AND expiresAt > :now",
-			params={
-				token={value=arguments.hashedToken, cfsqltype="cf_sql_varchar"},
-				now={value=dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}
-			}
+			where="token = '#arguments.hashedToken#' AND expiresAt > '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#'"
 		);
 	}
 
 	// Delete expired tokens
 	public function deleteExpiredTokens() {
 		return deleteAll(
-			where="expiresAt <= :now",
-			params={now={value=dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss"), cfsqltype="cf_sql_timestamp"}}
+			where="expiresAt <= '#dateTimeFormat(now(), "yyyy-MM-dd HH:nn:ss")#'"
 		);
 	}
 

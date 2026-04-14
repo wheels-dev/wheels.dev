@@ -21,7 +21,7 @@ component extends="app.Controllers.Controller" {
     public void function editBlog() {
         try {
             // Get the blog post
-            var blog = model("Blog").findByKey(key=params.id, include="User,PostStatus");
+            var blog = model("Blog").findByKey(key=params.id, include="User");
             
             // Check if blog exists
             if (!isObject(blog)) {
@@ -410,7 +410,7 @@ component extends="app.Controllers.Controller" {
     private function getBlogBySlug(required string slug) {
         return model("Blog").findOne(
             where="blog_posts.slug = '#arguments.slug#'",
-            include="User,PostStatus"
+            include="User"
         );
     }
 
@@ -606,7 +606,7 @@ component extends="app.Controllers.Controller" {
 
     public function getAllBlogs() {
         return model("Blog").findAll(
-            include="User, PostStatus, PostType",
+            include="User",
             order="createdAt DESC",
             options={
                 sql="
