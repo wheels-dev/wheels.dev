@@ -63,41 +63,20 @@
                                         <p class="fw-medium fs-12 text--lightGray mb-0">
                                             #blog.status# in
                                             <cfoutput query="categories">
-                                                <strong
-                                                    class="text--primary"
-                                                    style="cursor: pointer;"
-                                                    hx-get="#urlFor(route="blogsFilter", filterType="category", filterValue="#REReplace(name, '\.', '-', 'all')#")#"
-                                                    hx-target="body"
-                                                    hx-swap="outerHTML"
-                                                    hx-push-url="true"
-                                                >#name#</strong><cfif currentrow LT recordcount>, </cfif>
+                                                <strong class="text--primary"><a href="#urlFor(route="blogsFilter", filterType="category", filterValue="#REReplace(name, '\.', '-', 'all')#")#" target="_blank">#name#</a></strong><cfif currentrow LT recordcount>, </cfif>
                                             </cfoutput>
                                         </p>
                                     </cfif>
                                     <p class="fw-medium fs-12 text--lightGray mb-0">
                                         Posted By:
-                                        <strong
-                                            class="text--primary"
-                                            style="cursor: pointer;"
-                                            hx-get="/blog/author/#blog.userusername#"
-                                            hx-target="body"
-                                            hx-push-url="true"
-                                            hx-swap="outerHTML"
-                                        >#blog.userfullName#</strong>
+                                        <strong class="text--primary"><a href="/blog/author/#blog.userusername#" target="_blank">#blog.userfullName#</a></strong>
                                     </p>
                                     <!-- Tags -->
                                     <cfif tags.recordCount GT 0>
                                         <p class="fw-medium fs-12 text--lightGray mb-0">
                                             Tags:
                                             <cfoutput query="tags">
-                                                <strong
-                                                    class="text--primary"
-                                                    style="cursor: pointer;"
-                                                    hx-get="#urlFor(route="blogsFilter", filterType="tag", filterValue="#REReplace(name, '\.', '-', 'all')#")#"
-                                                    hx-target="body"
-                                                    hx-push-url="true"
-                                                    hx-swap="outerHTML"
-                                                >#name#</strong><cfif currentrow LT recordcount>, </cfif>
+                                                <strong class="text--primary"><a href="#urlFor(route="blogsFilter", filterType="tag", filterValue="#REReplace(name, '\.', '-', 'all')#")#" target="_blank">#name#</a></strong><cfif currentrow LT recordcount>, </cfif>
                                             </cfoutput>
                                         </p>
                                     </cfif>
