@@ -29,20 +29,18 @@ component extends="app.Controllers.Controller" {
 		// Expose statuses to view (controller methods aren't available in views)
 		statuses = blogStatuses();
 
-		var statusCountsQuery = model("Blog").findAll(
-			select = "statusId, COUNT(*) as cnt",
-			where = "createdBy = #userId# AND blog_posts.statusId <> #statuses.TRASH#",
-			group = "statusId",
-			returnAs = "query"
-		);
+		// Count blogs for each status using ORM
+		var draftCount = model("Blog").count(where = "createdBy = #userId# AND statusId = #statuses.DRAFT#");
+		var publishedCount = model("Blog").count(where = "createdBy = #userId# AND statusId = #statuses.POSTED#");
+		var pendingCount = model("Blog").count(where = "createdBy = #userId# AND statusId = #statuses.PENDING_REVIEW#");
+		var allCount = draftCount + publishedCount + pendingCount;
 
-		statusCounts = {"all" = 0, "draft" = 0, "published" = 0, "pending" = 0};
-		for (var row in statusCountsQuery) {
-			statusCounts.all += row.cnt;
-			if (row.statusId == statuses.DRAFT) statusCounts.draft = row.cnt;
-			else if (row.statusId == statuses.POSTED) statusCounts.published = row.cnt;
-			else if (row.statusId == statuses.PENDING_REVIEW) statusCounts.pending = row.cnt;
-		}
+		statusCounts = {
+			"all" = allCount,
+			"draft" = draftCount,
+			"published" = publishedCount,
+			"pending" = pendingCount
+		};
 
 		var where = "createdBy = #userId# AND blog_posts.statusId <> #statuses.TRASH#";
 		if (statusFilter == "draft") {

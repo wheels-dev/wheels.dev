@@ -29,37 +29,37 @@ function statusBadgeClass(statusId) {
 			</div>
 
 			<!--- Status filter tabs --->
-			<ul class="nav nav-pills mb-4 gap-2">
+			<ul class="nav nav-pills mb-4 gap-2 p-3 rounded-4 border border--lightGray bg-white">
 				<li class="nav-item">
 					<a
 						href="#urlFor(route = 'my-posts')#"
-						class="nav-link<cfif statusFilter eq 'all'>active bg--primary<cfelse>text--secondary border border--primary</cfif>"
+						class="nav-link rounded-pill px-4 py-2<cfif statusFilter eq 'all'> active bg--primary text-white border border--primary<cfelse> bg-white text--secondary border border--primary</cfif>"
 					>
-						All <span class="badge bg-white text-dark ms-1">#statusCounts.all#</span>
+						All <span class="badge bg-white text-dark ms-2">#statusCounts.all#</span>
 					</a>
 				</li>
 				<li class="nav-item">
 					<a
 						href="#urlFor(route = 'my-posts')#?status=draft"
-						class="nav-link<cfif statusFilter eq 'draft'>active bg--primary<cfelse>text--secondary border border--primary</cfif>"
+						class="nav-link rounded-pill px-4 py-2<cfif statusFilter eq 'draft'> active bg--primary text-white border border--primary<cfelse> bg-white text--secondary border border--primary</cfif>"
 					>
-						Drafts <span class="badge bg-white text-dark ms-1">#statusCounts.draft#</span>
+						Drafts <span class="badge bg-white text-dark ms-2">#statusCounts.draft#</span>
 					</a>
 				</li>
 				<li class="nav-item">
 					<a
 						href="#urlFor(route = 'my-posts')#?status=published"
-						class="nav-link<cfif statusFilter eq 'published'>active bg--primary<cfelse>text--secondary border border--primary</cfif>"
+						class="nav-link rounded-pill px-4 py-2<cfif statusFilter eq 'published'> active bg--primary text-white border border--primary<cfelse> bg-white text--secondary border border--primary</cfif>"
 					>
-						Published <span class="badge bg-white text-dark ms-1">#statusCounts.published#</span>
+						Published <span class="badge bg-white text-dark ms-2">#statusCounts.published#</span>
 					</a>
 				</li>
 				<li class="nav-item">
 					<a
 						href="#urlFor(route = 'my-posts')#?status=pending"
-						class="nav-link<cfif statusFilter eq 'pending'>active bg--primary<cfelse>text--secondary border border--primary</cfif>"
+						class="nav-link rounded-pill px-4 py-2<cfif statusFilter eq 'pending'> active bg--primary text-white border border--primary<cfelse> bg-white text--secondary border border--primary</cfif>"
 					>
-						Pending Review <span class="badge bg-white text-dark ms-1">#statusCounts.pending#</span>
+						Pending Review <span class="badge bg-white text-dark ms-2">#statusCounts.pending#</span>
 					</a>
 				</li>
 			</ul>
