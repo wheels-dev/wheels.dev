@@ -55,7 +55,7 @@
                                 <div class="d-flex flex-wrap justify-content-center flex-grow-1 align-items-end gap-lg-5 gap-2 mt-3">
                                     <!-- Blog date -->
                                     <p class="fw-medium fs-12 text--lightGray mb-0">
-                                        #dateformat(blog.publishedAt, 'MMMM DD, YYYY')#
+                                        <span data-utc="#blog.publishedAt#">#dateformat(blog.publishedAt, 'MMMM DD, YYYY')#</span>
                                     </p>
 
                                     <!-- Post status + Categories -->
@@ -131,7 +131,7 @@
                                                                 </div>
                                                             </cfif>
                                                             <div class="d-flex cursor-pointer align-items-center gap-2">
-                                                                <p class="fs-14 text--primary mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
+                                                                <p class="fs-14 text--primary mb-0"><span data-utc="#publishedAt#">#dateformat(publishedAt, 'MMM DD, YYYY')#</span></p>
                                                             </div>
                                                             <!-- Reply Form (Hidden by Default) -->
                                                             <div class="reply-form" id="reply-form-#Id#" style="display:none;width:100%;">
@@ -172,7 +172,7 @@
 
                                                                 <p class="fs-14 fw-normal text-dark markdown-content">#encodeForHTML(content)#</p>
                                                                 <div class="d-flex cursor-pointer align-items-center justify-content-end gap-2">
-                                                                    <p class="fs-14 text--primary mb-0">#dateformat(publishedAt, 'MMM DD, YYYY')#</p>
+                                                                    <p class="fs-14 text--primary mb-0"><span data-utc="#publishedAt#">#dateformat(publishedAt, 'MMM DD, YYYY')#</span></p>
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -79,7 +79,7 @@
                             <label class="form-label mb-1 fs-14 fw-medium">
                                 Publish Date
                             </label>
-                            <input class="form-control fs-14" type="datetime-local" name="postCreatedDate" id="postCreatedDate" value="<cfif isEdit>#dateFormat(blog.postCreatedDate, 'yyyy-mm-dd')#T#timeFormat(blog.postCreatedDate, 'HH:mm')#</cfif>">
+                            <input class="form-control fs-14" type="datetime-local" name="postCreatedDate" id="postCreatedDate" value="<cfif isEdit>#dateFormat(blog.postCreatedDate, 'yyyy-mm-dd')#T#timeFormat(blog.postCreatedDate, 'HH:mm')#</cfif>" data-utc-value="<cfif isEdit>#dateFormat(blog.postCreatedDate, 'yyyy-mm-dd')#T#timeFormat(blog.postCreatedDate, 'HH:mm:ss')#</cfif>">
                             <small class="text-muted mt-1 d-block fs-13">Leave empty to use the current date and time</small>
                         </div>
     
@@ -108,4 +108,50 @@
     </div>
 </cfoutput>
     <script src="/js/createBlog.js"></script>
+    <script>
+        // Convert UTC datetime from server to local time for display in datetime-local input
+        document.addEventListener("DOMContentLoaded", function() {
+            var postCreatedDateInput = document.getElementById('postCreatedDate');
+            if (postCreatedDateInput) {
+                var utcValue = postCreatedDateInput.getAttribute('data-utc-value');
+                if (utcValue) {
+                    // Parse the UTC value from server and convert to local time
+                    var utcDate = new Date(utcValue + 'Z');
+                    if (!isNaN(utcDate.getTime())) {
+                        // Convert to local datetime-local format (YYYY-MM-DDTHH:mm)
+                        var localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000));
+                        postCreatedDateInput.value = localDate.toISOString().slice(0, 16);
+                    }
+                }
+            }
+            // Set user's timezone in a hidden field for server-side use
+            var tzField = document.getElementById('userTimezone');
+            if (!tzField) {
+                tzField = document.createElement('input');
+                tzField.type = 'hidden';
+                tzField.name = 'userTimezone';
+                tzField.id = 'userTimezone';
+                document.getElementById('blogForm').appendChild(tzField);
+            }
+            tzField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        });
+
+        // Convert local datetime to UTC before form submission via HTMX
+        document.addEventListener("htmx:configRequest", function(event) {
+            var postCreatedDateInput = document.getElementById('postCreatedDate');
+            if (postCreatedDateInput && postCreatedDateInput.value) {
+                // Parse the local datetime and convert to UTC
+                var localDate = new Date(postCreatedDateInput.value);
+                if (!isNaN(localDate.getTime())) {
+                    // Convert to ISO string (which is in UTC) and update the form parameter
+                    event.detail.parameters.postCreatedDate = localDate.toISOString();
+                }
+            }
+            // Always send user's timezone
+            var tzField = document.getElementById('userTimezone');
+            if (tzField) {
+                event.detail.parameters.userTimezone = tzField.value;
+            }
+        });
+    </script>
 </main>
